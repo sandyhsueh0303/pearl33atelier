@@ -76,15 +76,16 @@ npm run build:inventory-admin
 
 ## Technology Stack
 
-- **Framework**: Next.js 14 (React 18)
+- **Framework**: Next.js 16 (React 19)
 - **Language**: TypeScript
 - **Package Manager**: npm workspaces
 - **Styling**: CSS
+- **Security**: All dependencies patched and up-to-date
 
 ## Screenshots
 
 ### Public Web
-![Public Web](https://github.com/user-attachments/assets/9b60fdc0-87e2-4a2a-8d0a-93d4199466fb)
+![Public Web](https://github.com/user-attachments/assets/b3099018-7cba-49c1-b375-e23307f2356c)
 
 ### Inventory Admin
-![Inventory Admin](https://github.com/user-attachments/assets/e7a469fe-f472-4706-babf-1599b1684618)
+![Inventory Admin](https://github.com/user-attachments/assets/899393b6-6e1a-4155-abd2-74ece73bb8e6)
