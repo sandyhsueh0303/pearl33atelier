@@ -26,6 +26,7 @@ This is a monorepo containing two Next.js applications:
 - **URL**: http://localhost:3001
 - **Description**: Inventory management system for shop administrators
 - **Features**: Product management, stock tracking, order management, sales analytics
+- **Note**: Authentication and authorization will be implemented before production deployment
 
 ## Getting Started
 
