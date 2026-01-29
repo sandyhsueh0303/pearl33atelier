@@ -1,0 +1,15 @@
+{
+  "name": "33pearlatelier",
+  "version": "1.0.0",
+  "description": "Jewelry shop with web and inventory systems",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:public-web": "npm run dev --workspace=apps/public-web",
+    "dev:inventory-admin": "npm run dev --workspace=apps/inventory-admin",
+    "build:public-web": "npm run build --workspace=apps/public-web",
+    "build:inventory-admin": "npm run build --workspace=apps/inventory-admin"
+  }
+}
