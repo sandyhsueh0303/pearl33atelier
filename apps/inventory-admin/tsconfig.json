@@ -26,6 +26,9 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@33pearlatelier/shared": [
+        "../../packages/shared"
       ]
     }
   },

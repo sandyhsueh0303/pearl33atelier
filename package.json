@@ -4,7 +4,8 @@
   "description": "Jewelry shop with web and inventory systems",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "dev:public-web": "npm run dev --workspace=apps/public-web",
