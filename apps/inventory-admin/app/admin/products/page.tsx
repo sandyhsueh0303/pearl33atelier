@@ -1,0 +1,201 @@
+import { createSupabaseClient } from '@33pearlatelier/shared/supabase'
+import type { CatalogProduct } from '@33pearlatelier/shared/types'
+import Link from 'next/link'
+
+export default async function ProductsPage() {
+  let products: CatalogProduct[] = []
+  let error: string | null = null
+
+  try {
+    const supabase = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+
+    const { data, error: supabaseError } = await supabase
+      .from('catalog_products')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (supabaseError) throw supabaseError
+    products = data || []
+  } catch (e) {
+    error = e instanceof Error ? e.message : 'Unknown error'
+  }
+
+  const publishedCount = products.filter(p => p.published).length
+  const draftCount = products.filter(p => !p.published).length
+
+  return (
+    <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1 style={{ margin: 0 }}>產品管理</h1>
+        <Link
+          href="/admin/products/new"
+          style={{
+            padding: '0.75rem 1.5rem',
+            backgroundColor: '#1976d2',
+            color: 'white',
+            borderRadius: '4px',
+            textDecoration: 'none',
+            fontWeight: 'bold'
+          }}
+        >
+          + 新增產品
+        </Link>
+      </div>
+
+      {error && (
+        <div style={{ 
+          padding: '1rem', 
+          backgroundColor: '#fee', 
+          border: '1px solid #c00',
+          borderRadius: '4px',
+          marginBottom: '1rem'
+        }}>
+          <strong>錯誤:</strong> {error}
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+        <div style={{ 
+          flex: 1,
+          padding: '1.5rem', 
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總計</p>
+          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2', margin: 0 }}>
+            {products.length}
+          </p>
+        </div>
+        <div style={{ 
+          flex: 1,
+          padding: '1.5rem', 
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>已發布</p>
+          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2e7d32', margin: 0 }}>
+            {publishedCount}
+          </p>
+        </div>
+        <div style={{ 
+          flex: 1,
+          padding: '1.5rem', 
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>草稿</p>
+          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ef6c00', margin: 0 }}>
+            {draftCount}
+          </p>
+        </div>
+      </div>
+
+      {products.length === 0 ? (
+        <div style={{ 
+          padding: '3rem',
+          textAlign: 'center',
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          <p style={{ fontSize: '1.25rem', color: '#666', marginBottom: '1rem' }}>
+            尚無產品
+          </p>
+          <Link
+            href="/admin/products/new"
+            style={{
+              display: 'inline-block',
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#1976d2',
+              color: 'white',
+              borderRadius: '4px',
+              textDecoration: 'none',
+              fontWeight: 'bold'
+            }}
+          >
+            建立第一個產品
+          </Link>
+        </div>
+      ) : (
+        <div style={{ 
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          overflow: 'hidden'
+        }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>狀態</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Quality</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>標題</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>珍珠類型</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>售價</th>
+                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600' }}>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr key={product.id} style={{ borderBottom: '1px solid #eee' }}>
+                  <td style={{ padding: '1rem' }}>
+                    <span style={{ 
+                      padding: '0.25rem 0.75rem',
+                      borderRadius: '12px',
+                      fontSize: '0.75rem',
+                      fontWeight: 'bold',
+                      backgroundColor: product.published ? '#e8f5e9' : '#fff3e0',
+                      color: product.published ? '#2e7d32' : '#ef6c00'
+                    }}>
+                      {product.published ? '已發布' : '草稿'}
+                    </span>
+                  </td>
+                  <td style={{ padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem', color: '#666' }}>
+                    {product.quality}
+                  </td>
+                  <td style={{ padding: '1rem', fontWeight: '500' }}>
+                    {product.title}
+                  </td>
+                  <td style={{ padding: '1rem' }}>
+                    <span style={{ 
+                      padding: '0.25rem 0.75rem',
+                      backgroundColor: '#e3f2fd',
+                      borderRadius: '12px',
+                      fontSize: '0.875rem'
+                    }}>
+                      {product.pearl_type}
+                    </span>
+                  </td>
+                  <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '500' }}>
+                    {product.sell_price ? `NT$ ${product.sell_price.toLocaleString()}` : '-'}
+                  </td>
+                  <td style={{ padding: '1rem', textAlign: 'center' }}>
+                    <Link
+                      href={`/admin/products/${product.id}`}
+                      style={{
+                        padding: '0.5rem 1rem',
+                        backgroundColor: '#f5f5f5',
+                        color: '#333',
+                        borderRadius: '4px',
+                        textDecoration: 'none',
+                        fontSize: '0.875rem',
+                        fontWeight: '500'
+                      }}
+                    >
+                      編輯
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </main>
+  )
+}
