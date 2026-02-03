@@ -8,6 +8,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
+import { slugify } from '@33pearlatelier/shared'
 import type { Database } from '@33pearlatelier/shared/types'
 
 type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
@@ -39,18 +40,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const supabase = await createAdminClient()
 
-    // Helper function to generate slug from title
-    const generateSlug = (text: string): string => {
-      return text
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9-]/g, '')
-        .replace(/-+/g, '-')
-        .replace(/^-+|-+$/g, '')
-    }
-
     // Auto-generate slug if not provided
-    const slug = body.slug || generateSlug(body.title)
+    const slug = body.slug || slugify(body.title)
 
     // Use nullish coalescing (??) to preserve falsy values like 0 and ''
     const productData: ProductInsert = {

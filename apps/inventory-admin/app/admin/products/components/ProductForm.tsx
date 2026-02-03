@@ -2,20 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { slugify } from '@33pearlatelier/shared'
 import type { CatalogProduct, PearlType, AvailabilityKind, ProductImage } from '@33pearlatelier/shared/types'
 
 interface ProductFormProps {
   productId?: string
-}
-
-// Slugify function
-function slugify(text: string): string {
-  return text
-    .toLowerCase()                    // 全小寫
-    .replace(/\s+/g, '-')             // 空格 → -
-    .replace(/[^a-z0-9-]/g, '')       // 只保留 a-z 0-9 -
-    .replace(/-+/g, '-')              // 多個 - 合併
-    .replace(/^-+|-+$/g, '')          // 去頭尾 -
 }
 
 export default function ProductForm({ productId }: ProductFormProps) {
