@@ -18,8 +18,15 @@ export type AvailabilityKind =
 // Table: admin_users (access control)
 // ============================================
 export interface AdminUser {
+  id: string // uuid
   user_id: string // uuid, matches auth.uid()
+  email: string
+  name: string | null
+  role: 'admin' | 'super_admin'
+  is_active: boolean
   created_at: string // timestamptz
+  updated_at: string // timestamptz
+  last_login_at: string | null // timestamptz
 }
 
 // ============================================
@@ -44,8 +51,9 @@ export interface CatalogProduct {
   id: string // uuid
   inventory_item_id: string | null // uuid, FK -> inventory_items.id
   title: string
-  quality: string // UNIQUE - public identifier (replaces slug)
+  slug: string // UNIQUE - public identifier for URLs
   description: string | null
+  note: string | null // internal notes for admin
   pearl_type: PearlType
   size_mm: number | null // numeric(4,1)
   shape: string | null

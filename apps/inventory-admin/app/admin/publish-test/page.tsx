@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 export default function PublishTestPage() {
-  const [quality, setQuality] = useState('')
+  const [slug, setSlug] = useState('')
   const [action, setAction] = useState<'publish' | 'unpublish'>('publish')
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null)
   const [loading, setLoading] = useState(false)
@@ -17,14 +17,14 @@ export default function PublishTestPage() {
       const response = await fetch('/api/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quality, action })
+        body: JSON.stringify({ slug, action })
       })
 
       const data = await response.json()
 
       if (response.ok) {
         setResult({ success: true, message: data.message })
-        setQuality('') // Clear input on success
+        setSlug('') // Clear input on success
       } else {
         setResult({ success: false, message: data.error || 'Unknown error' })
       }
@@ -42,7 +42,7 @@ export default function PublishTestPage() {
     <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '600px' }}>
       <h1>Publish/Unpublish Test</h1>
       <p style={{ color: '#666', marginBottom: '1.5rem' }}>
-        Test publishing and unpublishing products by quality identifier
+        Test publishing and unpublishing products by slug identifier
       </p>
 
       <form onSubmit={handleSubmit} style={{ 
@@ -58,12 +58,12 @@ export default function PublishTestPage() {
             fontWeight: 'bold',
             fontSize: '0.875rem'
           }}>
-            Product Quality:
+            Product Slug:
           </label>
           <input
             type="text"
-            value={quality}
-            onChange={(e) => setQuality(e.target.value)}
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
             placeholder="e.g., premium-white-akoya-8mm"
             required
             style={{
@@ -76,7 +76,7 @@ export default function PublishTestPage() {
             }}
           />
           <p style={{ fontSize: '0.75rem', color: '#999', marginTop: '0.25rem' }}>
-            Enter the unique quality identifier of the product
+            Enter the unique slug identifier of the product
           </p>
         </div>
 
@@ -169,7 +169,7 @@ export default function PublishTestPage() {
         <ul style={{ marginLeft: '1.5rem', color: '#666' }}>
           <li><strong>Publish:</strong> Sets published=true, published_at=now()</li>
           <li><strong>Unpublish:</strong> Sets published=false, published_at=null</li>
-          <li>Uses the unique <code>quality</code> field to identify products</li>
+          <li>Uses the unique <code>slug</code> field to identify products</li>
           <li>Check results in /admin/products-test or public-web /products-test</li>
         </ul>
       </div>

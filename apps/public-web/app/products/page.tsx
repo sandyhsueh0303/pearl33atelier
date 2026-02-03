@@ -137,7 +137,7 @@ export default function ProductsPage() {
             {products.map((product) => (
               <Link
                 key={product.id}
-                href={`/products/${product.quality}`}
+                href={`/products/${product.slug}`}
                 style={{
                   textDecoration: 'none',
                   color: 'inherit',

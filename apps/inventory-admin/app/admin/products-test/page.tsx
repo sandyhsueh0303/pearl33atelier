@@ -100,7 +100,7 @@ export default async function AdminProductsTestPage() {
               <thead>
                 <tr style={{ backgroundColor: '#f0f0f0' }}>
                   <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Status</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Quality</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Slug</th>
                   <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Title</th>
                   <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Pearl Type</th>
                   <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Price</th>
@@ -127,7 +127,7 @@ export default async function AdminProductsTestPage() {
                       </span>
                     </td>
                     <td style={{ padding: '0.75rem', fontFamily: 'monospace', color: '#0066cc' }}>
-                      {product.quality}
+                      {product.slug}
                     </td>
                     <td style={{ padding: '0.75rem' }}>{product.title}</td>
                     <td style={{ padding: '0.75rem' }}>

@@ -3,8 +3,8 @@ import type { CatalogProduct, ProductImage } from '@33pearlatelier/shared/types'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-export default async function ProductDetailPage({ params }: { params: Promise<{ quality: string }> }) {
-  const { quality } = await params
+export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   
   let product: CatalogProduct | null = null
   let images: ProductImage[] = []
@@ -16,11 +16,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
 
-    // Get product by quality (RLS will filter to only published)
+    // Get product by slug (RLS will filter to only published)
     const { data: productData, error: productError } = await supabase
       .from('catalog_products')
       .select('*')
-      .eq('quality', quality)
+      .eq('slug', slug)
       .eq('published', true)
       .single()
 
@@ -349,7 +349,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                       fontFamily: 'monospace',
                       fontSize: '0.875rem'
                     }}>
-                      {product.quality}
+                      {product.slug}
                     </td>
                   </tr>
                 </tbody>

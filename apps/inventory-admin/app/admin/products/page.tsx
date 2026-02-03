@@ -1,26 +1,51 @@
-import { createSupabaseClient } from '@33pearlatelier/shared/supabase'
+'use client'
+
 import type { CatalogProduct } from '@33pearlatelier/shared/types'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
-export default async function ProductsPage() {
-  let products: CatalogProduct[] = []
-  let error: string | null = null
+export default function ProductsPage() {
+  const [products, setProducts] = useState<CatalogProduct[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  try {
-    const supabase = createSupabaseClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
+  useEffect(() => {
+    loadProducts()
+  }, [])
 
-    const { data, error: supabaseError } = await supabase
-      .from('catalog_products')
-      .select('*')
-      .order('created_at', { ascending: false })
+  const loadProducts = async () => {
+    try {
+      const response = await fetch('/api/products')
+      if (!response.ok) throw new Error('Failed to load products')
+      const data = await response.json()
+      setProducts(data.products || [])
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Unknown error')
+    } finally {
+      setLoading(false)
+    }
+  }
 
-    if (supabaseError) throw supabaseError
-    products = data || []
-  } catch (e) {
-    error = e instanceof Error ? e.message : 'Unknown error'
+  const handleDelete = async (productId: string, productTitle: string) => {
+    if (!confirm(`確定要刪除「${productTitle}」嗎？此操作無法復原。`)) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/products/${productId}`, {
+        method: 'DELETE'
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete product')
+      }
+
+      // Reload products list
+      loadProducts()
+      alert('產品已刪除')
+    } catch (e) {
+      alert('刪除失敗: ' + (e instanceof Error ? e.message : 'Unknown error'))
+    }
   }
 
   const publishedCount = products.filter(p => p.published).length
@@ -133,7 +158,7 @@ export default async function ProductsPage() {
             <thead>
               <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>狀態</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Quality</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Slug</th>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>標題</th>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>珍珠類型</th>
                 <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>售價</th>
@@ -156,7 +181,7 @@ export default async function ProductsPage() {
                     </span>
                   </td>
                   <td style={{ padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem', color: '#666' }}>
-                    {product.quality}
+                    {product.slug}
                   </td>
                   <td style={{ padding: '1rem', fontWeight: '500' }}>
                     {product.title}
@@ -175,20 +200,37 @@ export default async function ProductsPage() {
                     {product.sell_price ? `NT$ ${product.sell_price.toLocaleString()}` : '-'}
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'center' }}>
-                    <Link
-                      href={`/admin/products/${product.id}`}
-                      style={{
-                        padding: '0.5rem 1rem',
-                        backgroundColor: '#f5f5f5',
-                        color: '#333',
-                        borderRadius: '4px',
-                        textDecoration: 'none',
-                        fontSize: '0.875rem',
-                        fontWeight: '500'
-                      }}
-                    >
-                      編輯
-                    </Link>
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                      <Link
+                        href={`/admin/products/${product.id}`}
+                        style={{
+                          padding: '0.5rem 1rem',
+                          backgroundColor: '#1976d2',
+                          color: 'white',
+                          borderRadius: '4px',
+                          textDecoration: 'none',
+                          fontSize: '0.875rem',
+                          fontWeight: '500'
+                        }}
+                      >
+                        編輯
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(product.id, product.title)}
+                        style={{
+                          padding: '0.5rem 1rem',
+                          backgroundColor: '#d32f2f',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '0.875rem',
+                          fontWeight: '500'
+                        }}
+                      >
+                        刪除
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

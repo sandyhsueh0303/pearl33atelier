@@ -60,7 +60,7 @@ export default async function ProductsTestPage() {
             }}>
               <thead>
                 <tr style={{ backgroundColor: '#f0f0f0' }}>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Quality</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Slug</th>
                   <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Title</th>
                   <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Pearl Type</th>
                   <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Price</th>
@@ -71,7 +71,7 @@ export default async function ProductsTestPage() {
                 {products.map((product) => (
                   <tr key={product.id} style={{ borderBottom: '1px solid #eee' }}>
                     <td style={{ padding: '0.75rem', fontFamily: 'monospace', color: '#0066cc' }}>
-                      {product.quality}
+                      {product.slug}
                     </td>
                     <td style={{ padding: '0.75rem' }}>{product.title}</td>
                     <td style={{ padding: '0.75rem' }}>

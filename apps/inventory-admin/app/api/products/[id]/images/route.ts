@@ -9,7 +9,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createSupabaseClient } from '@33pearlatelier/shared/supabase'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
 // POST /api/products/[id]/images - Upload images
 export async function POST(
@@ -28,9 +29,23 @@ export async function POST(
       )
     }
 
-    const supabase = createSupabaseClient(
+    const cookieStore = await cookies()
+    
+    const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options)
+            })
+          },
+        },
+      }
     )
 
     // Get current max sort_order

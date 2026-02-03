@@ -18,8 +18,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
   
   // Form fields
   const [title, setTitle] = useState('')
-  const [quality, setQuality] = useState('')
+  const [slug, setSlug] = useState('')
   const [description, setDescription] = useState('')
+  const [note, setNote] = useState('')
   const [pearlType, setPearlType] = useState<PearlType>('WhiteAkoya')
   const [sizeMm, setSizeMm] = useState('')
   const [shape, setShape] = useState('')
@@ -53,8 +54,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
       const product: CatalogProduct = data.product
       
       setTitle(product.title)
-      setQuality(product.quality)
+      setSlug(product.slug)
       setDescription(product.description || '')
+      setNote(product.note || '')
       setPearlType(product.pearl_type)
       setSizeMm(product.size_mm?.toString() || '')
       setShape(product.shape || '')
@@ -83,8 +85,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
     try {
       const productData = {
         title,
-        quality,
+        slug,
         description: description || null,
+        note: note || null,
         pearl_type: pearlType,
         size_mm: sizeMm ? parseFloat(sizeMm) : null,
         shape: shape || null,
@@ -296,12 +299,12 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Quality (唯一識別碼) <span style={{ color: 'red' }}>*</span>
+              Slug (URL 識別碼) <span style={{ color: 'red' }}>*</span>
             </label>
             <input
               type="text"
-              value={quality}
-              onChange={(e) => setQuality(e.target.value)}
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
               required
               disabled={isEditMode}
               placeholder="例如: premium-white-akoya-8mm"
@@ -497,6 +500,28 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 fontSize: '1rem',
                 fontFamily: 'inherit',
                 resize: 'vertical'
+              }}
+            />
+          </div>
+
+          <div style={{ gridColumn: '1 / -1' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              內部備註 (僅供管理員查看)
+            </label>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              rows={3}
+              placeholder="內部備註，例如：庫存來源、注意事項等"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem',
+                fontFamily: 'inherit',
+                resize: 'vertical',
+                backgroundColor: '#fffef0'
               }}
             />
           </div>

@@ -1,5 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import { AuthProvider } from './components/AuthProvider'
+import ConditionalNavbar from './components/ConditionalNavbar'
 
 export const metadata: Metadata = {
   title: 'Inventory Admin - 33 Pearl Atelier',
@@ -13,7 +15,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AuthProvider>
+          <ConditionalNavbar />
+          {children}
+        </AuthProvider>
+      </body>
     </html>
   )
 }
