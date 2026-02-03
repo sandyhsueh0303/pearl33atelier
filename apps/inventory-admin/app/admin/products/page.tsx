@@ -1,6 +1,6 @@
 'use client'
 
-import type { CatalogProduct } from '@33pearlatelier/shared/types'
+import type { CatalogProduct } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 

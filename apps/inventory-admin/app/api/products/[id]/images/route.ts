@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
 import { logger } from '@/app/utils/logger'
-import { STORAGE_BUCKET, STORAGE_FOLDER } from '@33pearlatelier/shared'
+import { STORAGE_BUCKET, STORAGE_FOLDER } from '@pearl33atelier/shared'
 
 // POST /api/products/[id]/images - Upload images
 export async function POST(

@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import type { Database } from '@33pearlatelier/shared/types'
+import type { Database } from '@pearl33atelier/shared/types'
 
 /**
  * Create authenticated Supabase client for inventory-admin

@@ -9,7 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
 import { logger } from '@/app/utils/logger'
-import type { Database } from '@33pearlatelier/shared/types'
+import type { Database } from '@pearl33atelier/shared/types'
 
 type AdminUser = Database['public']['Tables']['admin_users']['Row']
 

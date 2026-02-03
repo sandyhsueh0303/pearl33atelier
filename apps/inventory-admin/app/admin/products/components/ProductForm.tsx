@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { slugify, getProductImageUrl } from '@33pearlatelier/shared'
-import type { CatalogProduct, PearlType, AvailabilityKind, ProductImage } from '@33pearlatelier/shared/types'
+import { slugify, getProductImageUrl } from '@pearl33atelier/shared'
+import type { CatalogProduct, PearlType, AvailabilityKind, ProductImage } from '@pearl33atelier/shared/types'
 
 interface ProductFormProps {
   productId?: string

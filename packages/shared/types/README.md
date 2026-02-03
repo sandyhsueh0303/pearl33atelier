@@ -42,7 +42,7 @@ npm run gen:types
 
 ```typescript
 import { createAdminClient } from '@/app/utils/supabase'
-import type { Database } from '@33pearlatelier/shared/types'
+import type { Database } from '@pearl33atelier/shared/types'
 
 const supabase = await createAdminClient()
 
@@ -98,7 +98,7 @@ const { data, error } = await supabase
 ### Using Row Type Helpers
 
 ```typescript
-import type { CatalogProductRow } from '@33pearlatelier/shared/types'
+import type { CatalogProductRow } from '@pearl33atelier/shared/types'
 
 function processProduct(product: CatalogProductRow) {
   // product is fully typed
@@ -140,7 +140,7 @@ export type CatalogProductRow = Tables['catalog_products']['Row']
 export type ProductImageRow = Tables['product_images']['Row']
 
 // Usage
-import type { CatalogProductRow } from '@33pearlatelier/shared/types'
+import type { CatalogProductRow } from '@pearl33atelier/shared/types'
 
 const products: CatalogProductRow[] = await fetchProducts()
 ```

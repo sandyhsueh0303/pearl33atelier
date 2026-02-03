@@ -8,8 +8,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
-import { slugify } from '@33pearlatelier/shared'
-import type { Database } from '@33pearlatelier/shared/types'
+import { slugify } from '@pearl33atelier/shared'
+import type { Database } from '@pearl33atelier/shared/types'
 
 type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
 

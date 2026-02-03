@@ -27,7 +27,7 @@
       "@/*": [
         "./*"
       ],
-      "@33pearlatelier/shared": [
+      "@pearl33atelier/shared": [
         "../../packages/shared"
       ]
     }

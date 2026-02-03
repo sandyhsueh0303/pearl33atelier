@@ -12,8 +12,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
 import { logger } from '@/app/utils/logger'
-import { STORAGE_BUCKET } from '@33pearlatelier/shared'
-import type { Database } from '@33pearlatelier/shared/types'
+import { STORAGE_BUCKET } from '@pearl33atelier/shared'
+import type { Database } from '@pearl33atelier/shared/types'
 
 // PATCH /api/products/[id]/images/[imageId] - Update image properties
 export async function PATCH(

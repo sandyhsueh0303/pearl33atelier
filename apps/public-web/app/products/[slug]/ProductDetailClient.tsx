@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { getProductImageUrl } from '@33pearlatelier/shared'
-import type { CatalogProduct, ProductImage } from '@33pearlatelier/shared/types'
+import { getProductImageUrl } from '@pearl33atelier/shared'
+import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 
 interface ProductDetailClientProps {

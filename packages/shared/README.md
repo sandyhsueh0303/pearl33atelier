@@ -1,4 +1,4 @@
-# @33pearlatelier/shared Package
+# @pearl33atelier/shared Package
 
 共享的 types 和 Supabase client 配置
 
@@ -45,8 +45,8 @@ inventory_items (1) ────< (many) catalog_products (1) ────< (man
 ### PUBLIC WEB（未驗證 - anon key）
 
 ```typescript
-import { createSupabaseClient } from '@33pearlatelier/shared/supabase'
-import type { CatalogProduct } from '@33pearlatelier/shared/types'
+import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
+import type { CatalogProduct } from '@pearl33atelier/shared/types'
 
 const supabase = createSupabaseClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

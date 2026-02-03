@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
-import type { SessionUser } from '@33pearlatelier/shared/types'
+import type { SessionUser } from '@pearl33atelier/shared/types'
 
 interface AuthContextType {
   user: SessionUser | null

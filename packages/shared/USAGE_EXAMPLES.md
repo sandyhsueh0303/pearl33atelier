@@ -1,4 +1,4 @@
-# Usage Examples for @33pearlatelier/shared
+# Usage Examples for @pearl33atelier/shared
 
 This file demonstrates how to use the shared types and Supabase client in both public-web and inventory-admin applications.
 
@@ -13,9 +13,9 @@ import type {
   PearlType,
   AvailabilityKind,
   Database 
-} from '@33pearlatelier/shared/types'
+} from '@pearl33atelier/shared/types'
 
-import { createSupabaseClient } from '@33pearlatelier/shared/supabase'
+import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
 ```
 
 ---

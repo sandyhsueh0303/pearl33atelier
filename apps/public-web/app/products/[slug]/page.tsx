@@ -1,5 +1,5 @@
-import { createSupabaseClient } from '@33pearlatelier/shared/supabase'
-import type { CatalogProduct, ProductImage } from '@33pearlatelier/shared/types'
+import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
+import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import { notFound } from 'next/navigation'
 import ProductDetailClient from './ProductDetailClient'
 
