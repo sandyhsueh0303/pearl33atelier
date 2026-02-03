@@ -17,10 +17,21 @@ export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json()
 
+    logger.info('Login attempt', { email })
+
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Email and password are required' },
         { status: 400 }
+      )
+    }
+
+    // Check environment variables
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      logger.error('Missing Supabase environment variables')
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
       )
     }
 
