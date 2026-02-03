@@ -44,12 +44,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
+      // Call logout API to clear server-side session
       await fetch('/api/auth/logout', { method: 'POST' })
+      
+      // Clear client-side state
       setUser(null)
+      
+      // Clear any client-side cookies (backup cleanup)
+      if (typeof document !== 'undefined') {
+        document.cookie.split(";").forEach((c) => {
+          document.cookie = c
+            .replace(/^ +/, "")
+            .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/")
+        })
+      }
+      
+      // Redirect to login and force refresh
       router.push('/admin/login')
       router.refresh()
     } catch (error) {
       console.error('Logout failed:', error)
+      // Even if API fails, still clear local state and redirect
+      setUser(null)
+      router.push('/admin/login')
     }
   }
 
