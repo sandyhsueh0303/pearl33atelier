@@ -10,6 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
 import { logger } from '@/app/utils/logger'
+import { STORAGE_BUCKET } from '@33pearlatelier/shared'
 import type { Database } from '@33pearlatelier/shared/types'
 
 type ProductUpdate = Database['public']['Tables']['catalog_products']['Update']
@@ -124,7 +125,7 @@ export async function DELETE(
       const paths = images.map(img => img.storage_path)
       const { error: storageError } = await supabase
         .storage
-        .from('product-images')
+        .from(STORAGE_BUCKET.PRODUCT_IMAGES)
         .remove(paths)
       
       if (storageError) {

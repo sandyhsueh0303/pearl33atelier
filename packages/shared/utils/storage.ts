@@ -1,4 +1,11 @@
 /**
+ * Storage configuration
+ */
+export const STORAGE_BUCKET = {
+  PRODUCT_IMAGES: 'product-images'
+} as const
+
+/**
  * Get the full public URL for a product image stored in Supabase Storage
  * 
  * @param storagePath - The storage path from product_images.storage_path
@@ -15,5 +22,5 @@ export function getProductImageUrl(storagePath: string): string {
     throw new Error('NEXT_PUBLIC_SUPABASE_URL is not defined')
   }
   
-  return `${supabaseUrl}/storage/v1/object/public/product-images/${storagePath}`
+  return `${supabaseUrl}/storage/v1/object/public/${STORAGE_BUCKET.PRODUCT_IMAGES}/${storagePath}`
 }
