@@ -74,10 +74,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       user: {
-        id: adminUser.user_id,
+        user_id: authData.user.id,
         email: authData.user.email,
-        name: authData.user.user_metadata?.name || authData.user.email,
-        role: 'admin'
+        name: authData.user.user_metadata?.name || null,
+        role: adminUser.role
       }
     })
   } catch (error) {

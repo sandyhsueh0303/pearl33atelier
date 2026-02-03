@@ -40,27 +40,24 @@ export async function POST(
     )
 
     // Update product to published
-    const { data: product, error: productError } = await (supabase as any)
-      .from('catalog_products')
-      .update({
-        published: true,
-        published_at: new Date().toISOString()
-      })
-      .eq('id', id)
-      .select()
+    // Use Supabase RPC to let DB set published_at with now()
+    const { data: product, error: productError } = await supabase.rpc(
+      'publish_product',
+      { product_id: id }
+    )
 
     if (productError) {
       console.error('Publish error:', productError)
       throw new Error(`Database error: ${productError.message || JSON.stringify(productError)}`)
     }
 
-    if (!product || product.length === 0) {
+    if (!product) {
       throw new Error('Product not found')
     }
 
     return NextResponse.json({ 
       success: true, 
-      product: product[0],
+      product: product,
       message: 'Product published successfully'
     })
   } catch (error) {
@@ -98,39 +95,25 @@ export async function DELETE(
       }
     )
 
-    // Check if product exists
-    const { data: existingProduct, error: checkError } = await (supabase as any)
-      .from('catalog_products')
-      .select('*')
-      .eq('id', id)
-      .single()
-
-    if (checkError || !existingProduct) {
-      throw new Error('Product not found')
-    }
-
     // Update product to unpublished
-    const { data: product, error: productError } = await (supabase as any)
-      .from('catalog_products')
-      .update({
-        published: false,
-        published_at: null
-      })
-      .eq('id', id)
-      .select()
+    // Use RPC to let DB handle published_at
+    const { data: product, error: productError } = await supabase.rpc(
+      'unpublish_product',
+      { product_id: id }
+    )
 
     if (productError) {
       console.error('Unpublish error:', productError)
       throw new Error(`Database error: ${productError.message || JSON.stringify(productError)}`)
     }
 
-    if (!product || product.length === 0) {
+    if (!product) {
       throw new Error('Product not found')
     }
 
     return NextResponse.json({ 
       success: true, 
-      product: product[0],
+      product: product,
       message: 'Product unpublished successfully'
     })
   } catch (error) {

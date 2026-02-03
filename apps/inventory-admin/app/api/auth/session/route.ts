@@ -56,11 +56,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       user: {
-        id: adminUser.id,
+        user_id: user.id,
         email: user.email,
         name: user.user_metadata?.name || null,
-        role: 'admin', // Default role since admin_users table only has user_id and created_at
-        user_id: user.id
+        role: adminUser.role
       }
     })
   } catch (error) {

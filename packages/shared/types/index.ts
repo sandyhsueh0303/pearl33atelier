@@ -18,15 +18,20 @@ export type AvailabilityKind =
 // Table: admin_users (access control)
 // ============================================
 export interface AdminUser {
-  id: string // uuid
-  user_id: string // uuid, matches auth.uid()
-  email: string
-  name: string | null
-  role: 'admin' | 'super_admin'
-  is_active: boolean
+  user_id: string // uuid, PK, matches auth.users.id
+  role: 'admin' | 'super_admin' // admin role type
   created_at: string // timestamptz
-  updated_at: string // timestamptz
-  last_login_at: string | null // timestamptz
+}
+
+// ============================================
+// API response: 登入後的 session 資訊
+// (從 auth.users + admin_users 拼接而來，不對應單一張表)
+// ============================================
+export interface SessionUser {
+  user_id: string // uuid, from auth.users.id
+  email: string // from auth.users.email
+  name: string | null // from auth.users.user_metadata.name
+  role: 'admin' | 'super_admin' // admin role type from admin_users.role
 }
 
 // ============================================
