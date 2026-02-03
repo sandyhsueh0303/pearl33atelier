@@ -26,7 +26,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       return notFound()
     }
 
-    product = productData as any
+    product = productData
 
     if (product) {
       const { data: imagesData, error: imagesError } = await supabase
@@ -37,7 +37,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         .order('sort_order', { ascending: true })
 
       if (!imagesError && imagesData) {
-        images = imagesData as any[]
+        images = imagesData
       }
     }
   } catch (e) {

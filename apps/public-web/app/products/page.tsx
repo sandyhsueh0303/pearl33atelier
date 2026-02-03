@@ -48,10 +48,10 @@ export default async function ProductsPage() {
   }
 
   // Get primary images for all products
-  const productsList = (productsData as any[]) || []
+  const productsList = productsData || []
   const productIds = productsList.map(p => p.id)
   
-  let imagesList: any[] = []
+  let imagesList: ProductImage[] = []
   if (productIds.length > 0) {
     const { data: imagesData } = await supabase
       .from('product_images')
@@ -60,7 +60,7 @@ export default async function ProductsPage() {
       .eq('published', true)
       .eq('is_primary', true)
 
-    imagesList = (imagesData as any[]) || []
+    imagesList = imagesData || []
   }
 
   // Combine products with their primary images

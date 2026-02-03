@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
 import { logger } from '@/app/utils/logger'
 import { STORAGE_BUCKET } from '@33pearlatelier/shared'
+import type { Database } from '@33pearlatelier/shared/types'
 
 // PATCH /api/products/[id]/images/[imageId] - Update image properties
 export async function PATCH(
@@ -25,22 +26,21 @@ export async function PATCH(
     const supabase = await createAdminClient()
 
     // If setting as primary, first unset all other images
-    // Note: (as any) needed due to Supabase type generation limitations with update()
     if (body.is_primary === true) {
-      await (supabase as any)
+      await supabase
         .from('product_images')
         .update({ is_primary: false })
         .eq('product_id', id)
     }
 
     // Build updates object
-    const updates: any = {}
+    type ImageUpdate = Database['public']['Tables']['product_images']['Update']
+    const updates: ImageUpdate = {}
     if ('published' in body) updates.published = body.published
     if ('is_primary' in body) updates.is_primary = body.is_primary
     if ('sort_order' in body) updates.sort_order = body.sort_order
 
-    // Note: (as any) needed due to Supabase type generation limitations with update().select()
-    const { data, error } = await (supabase as any)
+    const { data, error } = await supabase
       .from('product_images')
       .update(updates)
       .eq('id', imageId)
@@ -78,11 +78,10 @@ export async function DELETE(
       .single()
 
     // Step 1: Delete from storage first
-    const imageData = image as any
-    if (imageData?.storage_path) {
+    if (image?.storage_path) {
       const { error: storageError } = await supabase.storage
         .from(STORAGE_BUCKET)
-        .remove([imageData.storage_path])
+        .remove([image.storage_path])
       
       if (storageError) {
         logger.error('Failed to delete image from storage', storageError)
@@ -91,8 +90,7 @@ export async function DELETE(
     }
 
     // Step 2: Delete from database (only after storage deletion succeeds)
-    // Note: (as any) needed due to Supabase type generation limitations with delete()
-    const { error: dbError } = await (supabase as any)
+    const { error: dbError } = await supabase
       .from('product_images')
       .delete()
       .eq('id', imageId)

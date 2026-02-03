@@ -42,8 +42,7 @@ export async function POST(
 
     let nextSortOrder = 0
     if (existingImages && existingImages.length > 0) {
-      const lastImage = existingImages[0] as any
-      nextSortOrder = (lastImage.sort_order || 0) + 1
+      nextSortOrder = (existingImages[0].sort_order || 0) + 1
     }
 
     const uploadedImages = []
@@ -64,8 +63,7 @@ export async function POST(
       }
 
       // Create database record
-      // Note: (as any) needed due to Supabase type generation limitations with insert().select()
-      const { data: imageRecord, error: dbError } = await (supabase as any)
+      const { data: imageRecord, error: dbError } = await supabase
         .from('product_images')
         .insert({
           product_id: id,
