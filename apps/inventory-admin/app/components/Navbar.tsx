@@ -58,7 +58,7 @@ export default function Navbar() {
           borderRadius: '12px',
           fontSize: '0.75rem'
         }}>
-          {user.role === 'super_admin' ? 'Super Admin' : 'Admin'}
+          Admin
         </span>
         <button
           onClick={logout}
