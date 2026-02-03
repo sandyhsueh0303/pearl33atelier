@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { slugify } from '@33pearlatelier/shared'
+import { slugify, getProductImageUrl } from '@33pearlatelier/shared'
 import type { CatalogProduct, PearlType, AvailabilityKind, ProductImage } from '@33pearlatelier/shared/types'
 
 interface ProductFormProps {
@@ -653,7 +653,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                     overflow: 'hidden'
                   }}>
                     <img 
-                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${image.storage_path}`}
+                      src={getProductImageUrl(image.storage_path)}
                       alt={title}
                       style={{ 
                         width: '100%', 

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { getProductImageUrl } from '@33pearlatelier/shared'
 import type { CatalogProduct, ProductImage } from '@33pearlatelier/shared/types'
 
 interface ProductWithImages extends CatalogProduct {
@@ -90,7 +91,7 @@ export default function ProductList({ products }: ProductListProps) {
                   }}>
                     {product.primaryImage ? (
                       <img 
-                        src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${product.primaryImage.storage_path}`}
+                        src={getProductImageUrl(product.primaryImage.storage_path)}
                         alt={product.title}
                         style={{
                           position: 'absolute',
