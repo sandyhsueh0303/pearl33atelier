@@ -52,22 +52,23 @@ export async function POST(request: NextRequest) {
     // Auto-generate slug if not provided
     const slug = body.slug || generateSlug(body.title)
 
+    // Use nullish coalescing (??) to preserve falsy values like 0 and ''
     const productData: ProductInsert = {
       title: body.title,
       slug: slug,
-      note: body.note || null,
-      description: body.description || null,
+      note: body.note ?? null,
+      description: body.description ?? null,
       pearl_type: body.pearl_type,
-      size_mm: body.size_mm || null,
-      shape: body.shape || null,
-      material: body.material || null,
-      sell_price: body.sell_price || null,
-      original_price: body.original_price || null,
+      size_mm: body.size_mm ?? null,
+      shape: body.shape ?? null,
+      material: body.material ?? null,
+      sell_price: body.sell_price ?? null,
+      original_price: body.original_price ?? null,
       availability: body.availability,
-      preorder_note: body.preorder_note || null,
+      preorder_note: body.preorder_note ?? null,
       published: false,
       published_at: null,
-      inventory_item_id: body.inventory_item_id || null
+      inventory_item_id: body.inventory_item_id ?? null
     }
 
     const { data, error } = await (supabase as any)
