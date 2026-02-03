@@ -63,6 +63,7 @@ export async function POST(
       }
 
       // Create database record
+      // Note: (as any) needed due to Supabase type generation limitations with insert().select()
       const { data: imageRecord, error: dbError } = await (supabase as any)
         .from('product_images')
         .insert({

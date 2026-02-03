@@ -24,6 +24,7 @@ export async function PATCH(
     const supabase = await createAdminClient()
 
     // If setting as primary, first unset all other images
+    // Note: (as any) needed due to Supabase type generation limitations with update()
     if (body.is_primary === true) {
       await (supabase as any)
         .from('product_images')
@@ -37,6 +38,7 @@ export async function PATCH(
     if ('is_primary' in body) updates.is_primary = body.is_primary
     if ('sort_order' in body) updates.sort_order = body.sort_order
 
+    // Note: (as any) needed due to Supabase type generation limitations with update().select()
     const { data, error } = await (supabase as any)
       .from('product_images')
       .update(updates)
@@ -88,6 +90,7 @@ export async function DELETE(
     }
 
     // Step 2: Delete from database (only after storage deletion succeeds)
+    // Note: (as any) needed due to Supabase type generation limitations with delete()
     const { error: dbError } = await (supabase as any)
       .from('product_images')
       .delete()

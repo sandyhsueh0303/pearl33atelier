@@ -84,6 +84,7 @@ export async function PATCH(
     if ('preorder_note' in body) updates.preorder_note = body.preorder_note ?? null
     if ('inventory_item_id' in body) updates.inventory_item_id = body.inventory_item_id ?? null
 
+    // Note: (as any) needed due to Supabase type generation limitations with update().select()
     const { data, error } = await (supabase as any)
       .from('catalog_products')
       .update(updates)
@@ -144,6 +145,7 @@ export async function DELETE(
     }
 
     // Step 4: Delete product
+    // Note: (as any) needed due to Supabase type generation limitations with delete()
     const { error } = await (supabase as any)
       .from('catalog_products')
       .delete()
