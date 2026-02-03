@@ -81,7 +81,7 @@ export async function DELETE(
     const imageData = image as any
     if (imageData?.storage_path) {
       const { error: storageError } = await supabase.storage
-        .from(STORAGE_BUCKET.PRODUCT_IMAGES)
+        .from(STORAGE_BUCKET)
         .remove([imageData.storage_path])
       
       if (storageError) {
