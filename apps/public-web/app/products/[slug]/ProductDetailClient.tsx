@@ -67,7 +67,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
               }}>
                 {currentImage ? (
                   <img 
-                    src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product_image/${currentImage.storage_path}`}
+                    src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${currentImage.storage_path}`}
                     alt={product.title}
                     style={{
                       position: 'absolute',
@@ -213,7 +213,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                     }}
                   >
                     <img 
-                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product_image/${image.storage_path}`}
+                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${image.storage_path}`}
                       alt={`${product.title} - Image ${index + 1}`}
                       style={{
                         position: 'absolute',

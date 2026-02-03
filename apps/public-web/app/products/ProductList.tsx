@@ -90,7 +90,7 @@ export default function ProductList({ products }: ProductListProps) {
                   }}>
                     {product.primaryImage ? (
                       <img 
-                        src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product_image/${product.primaryImage.storage_path}`}
+                        src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${product.primaryImage.storage_path}`}
                         alt={product.title}
                         style={{
                           position: 'absolute',

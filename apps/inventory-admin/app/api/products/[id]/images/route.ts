@@ -4,7 +4,7 @@
  * Endpoint:
  * - POST /api/products/[id]/images - 上傳產品圖片
  *   支援多檔案上傳
- *   圖片儲存在 Supabase Storage (product_image bucket)
+ *   圖片儲存在 Supabase Storage (product-images bucket)
  *   預設 published=false（草稿狀態）
  */
 
@@ -53,7 +53,7 @@ export async function POST(
       const filePath = `product-images/${fileName}`
 
       const { error: uploadError } = await supabase.storage
-        .from('product_image')
+        .from('product-images')
         .upload(filePath, file)
 
       if (uploadError) {

@@ -662,7 +662,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                     overflow: 'hidden'
                   }}>
                     <img 
-                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product_image/${image.storage_path}`}
+                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${image.storage_path}`}
                       alt={title}
                       style={{ 
                         width: '100%', 
