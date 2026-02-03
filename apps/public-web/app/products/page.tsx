@@ -20,7 +20,10 @@ export default async function ProductsPage() {
     .order('published_at', { ascending: false })
 
   if (productsError) {
-    console.error('Error loading products:', productsError)
+    // Server-side error, safe to log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error loading products:', productsError)
+    }
     return (
       <main style={{ 
         minHeight: '100vh',

@@ -41,7 +41,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       }
     }
   } catch (e) {
-    console.error('Error loading product:', e)
+    // Server-side error, safe to log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error loading product:', e)
+    }
   }
 
   if (!product) {

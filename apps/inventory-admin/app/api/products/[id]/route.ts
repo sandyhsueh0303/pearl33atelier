@@ -9,6 +9,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
+import { logger } from '@/app/utils/logger'
 import type { Database } from '@33pearlatelier/shared/types'
 
 type ProductUpdate = Database['public']['Tables']['catalog_products']['Update']
@@ -126,7 +127,7 @@ export async function DELETE(
         .remove(paths)
       
       if (storageError) {
-        console.error('Failed to delete images from storage:', storageError)
+        logger.error('Failed to delete images from storage', storageError)
         // Continue anyway, we'll delete the DB records
       }
     }
@@ -138,7 +139,7 @@ export async function DELETE(
       .eq('product_id', id)
 
     if (imagesError) {
-      console.error('Failed to delete image records:', imagesError)
+      logger.error('Failed to delete image records', imagesError)
       // Continue anyway, we'll delete the product
     }
 

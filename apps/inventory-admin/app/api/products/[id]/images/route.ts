@@ -10,6 +10,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
+import { logger } from '@/app/utils/logger'
 
 // POST /api/products/[id]/images - Upload images
 export async function POST(
@@ -57,7 +58,7 @@ export async function POST(
         .upload(filePath, file)
 
       if (uploadError) {
-        console.error('Upload error:', uploadError)
+        logger.error('Image upload failed', uploadError)
         continue
       }
 
@@ -75,7 +76,7 @@ export async function POST(
         .single()
 
       if (dbError) {
-        console.error('DB error:', dbError)
+        logger.error('Failed to create image record', dbError)
         continue
       }
 
@@ -84,7 +85,7 @@ export async function POST(
 
     return NextResponse.json({ images: uploadedImages }, { status: 201 })
   } catch (error) {
-    console.error('Upload error:', error)
+    logger.error('Image upload failed', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to upload images' },
       { status: 500 }

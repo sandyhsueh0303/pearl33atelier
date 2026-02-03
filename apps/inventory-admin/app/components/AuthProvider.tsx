@@ -20,6 +20,16 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+// Simple logger for client-side (only in development)
+const isDevelopment = process.env.NODE_ENV === 'development'
+const clientLogger = {
+  error(message: string, error?: unknown) {
+    if (isDevelopment) {
+      console.error(`[AUTH ERROR] ${message}`, error)
+    }
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AdminUser | null>(null)
   const [loading, setLoading] = useState(true)
@@ -35,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await response.json()
       setUser(data.user)
     } catch (error) {
-      console.error('Session check failed:', error)
+      clientLogger.error('Session check failed', error)
       setUser(null)
     } finally {
       setLoading(false)
@@ -63,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       router.push('/admin/login')
       router.refresh()
     } catch (error) {
-      console.error('Logout failed:', error)
+      clientLogger.error('Logout failed', error)
       // Even if API fails, still clear local state and redirect
       setUser(null)
       router.push('/admin/login')

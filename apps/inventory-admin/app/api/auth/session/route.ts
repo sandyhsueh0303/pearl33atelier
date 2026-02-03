@@ -7,6 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
+import { logger } from '@/app/utils/logger'
 import type { Database } from '@33pearlatelier/shared/types'
 
 type AdminUser = Database['public']['Tables']['admin_users']['Row']
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
       }
     })
   } catch (error) {
-    console.error('Session check error:', error)
+    logger.error('Session check failed', error)
     return NextResponse.json({ user: null })
   }
 }

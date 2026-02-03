@@ -11,6 +11,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
+import { logger } from '@/app/utils/logger'
 
 // PATCH /api/products/[id]/images/[imageId] - Update image properties
 export async function PATCH(
@@ -81,7 +82,7 @@ export async function DELETE(
         .remove([imageData.storage_path])
       
       if (storageError) {
-        console.error('Failed to delete image from storage:', storageError)
+        logger.error('Failed to delete image from storage', storageError)
         throw new Error('Failed to delete image from storage')
       }
     }

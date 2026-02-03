@@ -7,6 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
+import { logger } from '@/app/utils/logger'
 import { cookies } from 'next/headers'
 
 export async function POST(request: NextRequest) {
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
       message: 'Successfully logged out'
     })
   } catch (error) {
-    console.error('Logout error:', error)
+    logger.error('Logout failed', error)
     return NextResponse.json(
       { error: 'An error occurred during logout' },
       { status: 500 }

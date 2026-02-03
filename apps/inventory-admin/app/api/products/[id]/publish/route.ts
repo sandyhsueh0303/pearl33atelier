@@ -11,6 +11,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
+import { logger } from '@/app/utils/logger'
 
 // POST /api/products/[id]/publish - Publish product
 export async function POST(
@@ -29,7 +30,7 @@ export async function POST(
     )
 
     if (productError) {
-      console.error('Publish error:', productError)
+      logger.error('Failed to publish product', productError)
       throw new Error(`Database error: ${productError.message || JSON.stringify(productError)}`)
     }
 
@@ -43,7 +44,7 @@ export async function POST(
       message: 'Product published successfully'
     })
   } catch (error) {
-    console.error('Publish product error:', error)
+    logger.error('Failed to publish product', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to publish product' },
       { status: 500 }
@@ -68,7 +69,7 @@ export async function DELETE(
     )
 
     if (productError) {
-      console.error('Unpublish error:', productError)
+      logger.error('Failed to unpublish product', productError)
       throw new Error(`Database error: ${productError.message || JSON.stringify(productError)}`)
     }
 
@@ -82,7 +83,7 @@ export async function DELETE(
       message: 'Product unpublished successfully'
     })
   } catch (error) {
-    console.error('Unpublish product error:', error)
+    logger.error('Failed to unpublish product', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to unpublish product' },
       { status: 500 }

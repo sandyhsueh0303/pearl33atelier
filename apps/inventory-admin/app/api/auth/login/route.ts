@@ -8,6 +8,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
+import { logger } from '@/app/utils/logger'
 import type { Database } from '@33pearlatelier/shared/types'
 
 type AdminUser = Database['public']['Tables']['admin_users']['Row']
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
       }
     })
   } catch (error) {
-    console.error('Login error:', error)
+    logger.error('Login failed', error)
     return NextResponse.json(
       { error: 'An error occurred during login' },
       { status: 500 }
