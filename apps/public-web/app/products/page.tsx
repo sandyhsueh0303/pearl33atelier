@@ -73,7 +73,7 @@ export default function ProductsPage() {
         justifyContent: 'center'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>載入中...</div>
+          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>Loading...</div>
         </div>
       </main>
     )
@@ -96,7 +96,7 @@ export default function ProductsPage() {
             33 Pearl Atelier
           </h1>
           <p style={{ fontSize: '1.125rem', color: '#666' }}>
-            精選珍珠珠寶系列
+            Curated Pearl Jewelry Collection
           </p>
         </header>
 
@@ -109,7 +109,7 @@ export default function ProductsPage() {
             marginBottom: '2rem',
             textAlign: 'center'
           }}>
-            <strong>錯誤:</strong> {error}
+            <strong>Error:</strong> {error}
           </div>
         )}
 
@@ -122,10 +122,10 @@ export default function ProductsPage() {
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
           }}>
             <p style={{ fontSize: '1.25rem', color: '#666' }}>
-              目前尚無商品
+              No products available
             </p>
             <p style={{ fontSize: '0.875rem', color: '#999', marginTop: '0.5rem' }}>
-              敬請期待我們即將推出的精選珠寶
+              Stay tuned for our upcoming curated jewelry collection
             </p>
           </div>
         ) : (
@@ -263,7 +263,7 @@ export default function ProductsPage() {
                             fontWeight: 'bold',
                             color: '#1976d2'
                           }}>
-                            NT$ {product.sell_price.toLocaleString()}
+                            US$ {product.sell_price.toLocaleString()}
                           </div>
                         )}
                         {product.original_price && product.original_price > (product.sell_price || 0) && (
@@ -272,7 +272,7 @@ export default function ProductsPage() {
                             color: '#999',
                             textDecoration: 'line-through'
                           }}>
-                            NT$ {product.original_price.toLocaleString()}
+                            US$ {product.original_price.toLocaleString()}
                           </div>
                         )}
                       </div>
@@ -285,7 +285,7 @@ export default function ProductsPage() {
                         fontSize: '0.75rem',
                         fontWeight: 'bold'
                       }}>
-                        {product.availability === 'IN_STOCK' ? '現貨' : '預購'}
+                        {product.availability === 'IN_STOCK' ? 'In Stock' : 'Pre-order'}
                       </span>
                     </div>
                   </div>
