@@ -3,6 +3,10 @@ import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import { notFound } from 'next/navigation'
 import ProductDetailClient from './ProductDetailClient'
 
+// Disable caching for this page to always show latest data
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   

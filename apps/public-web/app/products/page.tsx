@@ -6,6 +6,10 @@ interface ProductWithImages extends CatalogProduct {
   primaryImage?: ProductImage
 }
 
+// Disable caching for this page to always show latest data
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function ProductsPage() {
   const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
