@@ -12,6 +12,8 @@
     "dev:inventory-admin": "npm run dev --workspace=apps/inventory-admin",
     "build:public-web": "npm run build --workspace=apps/public-web",
     "build:inventory-admin": "npm run build --workspace=apps/inventory-admin",
+    "start:public-web": "npm run start --workspace=apps/public-web",
+    "start:inventory-admin": "npm run start --workspace=apps/inventory-admin",
     "gen:types": "npx supabase gen types typescript --project-id xjrnyynfzbrhmotepzyl --schema public > packages/shared/types/database.types.ts"
   }
 }

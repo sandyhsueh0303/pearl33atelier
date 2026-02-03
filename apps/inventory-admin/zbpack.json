@@ -1,5 +1,5 @@
 {
-  "build_command": "npm install && npm run build --workspace=apps/inventory-admin",
-  "start_command": "cd apps/inventory-admin && npm run start",
+  "build_command": "npm install && npm run build:inventory-admin",
+  "start_command": "npm run start:inventory-admin",
   "install_command": "npm install"
 }

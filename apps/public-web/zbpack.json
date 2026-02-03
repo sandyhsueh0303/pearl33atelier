@@ -1,5 +1,5 @@
 {
-  "build_command": "npm install && npm run build --workspace=apps/public-web",
-  "start_command": "cd apps/public-web && npm run start",
+  "build_command": "npm install && npm run build:public-web",
+  "start_command": "npm run start:public-web",
   "install_command": "npm install"
 }
