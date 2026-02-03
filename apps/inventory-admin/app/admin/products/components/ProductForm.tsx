@@ -107,9 +107,8 @@ export default function ProductForm({ productId }: ProductFormProps) {
     setError(null)
 
     try {
-      const productData = {
+      const productData: any = {
         title,
-        slug,
         description: description || null,
         note: note || null,
         pearl_type: pearlType,
@@ -122,6 +121,11 @@ export default function ProductForm({ productId }: ProductFormProps) {
         preorder_note: preorderNote || null,
         published: false, // Always save as draft initially
         inventory_item_id: null // Can be connected later
+      }
+
+      // Only include slug on creation, not on update
+      if (!isEditMode) {
+        productData.slug = slug
       }
 
       const url = isEditMode ? `/api/products/${productId}` : '/api/products'
