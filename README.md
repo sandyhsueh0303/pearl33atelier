@@ -1,170 +1,279 @@
 # 33 Pearl Atelier
 
-My jewelry shop monorepo, includes public web and inventory management systems.
+珠寶店完整系統，包含公開網站和後台庫存管理系統的 monorepo 專案。
 
-## Project Structure
+## 📁 專案結構
 
-This is a monorepo containing two Next.js applications:
+這是一個 monorepo，包含兩個 Next.js 應用程式和共享套件：
 
 ```
 pearl33atelier/
 ├── apps/
-│   ├── public-web/          # Public-facing jewelry shop website
-│   └── inventory-admin/     # Inventory management admin system
-├── package.json             # Root workspace configuration
+│   ├── public-web/          # 公開的珠寶商店網站
+│   └── inventory-admin/     # 後台庫存管理系統
+├── packages/
+│   └── shared/              # 共享的類型定義、工具函數和 Supabase 客戶端
+├── docs/                    # 文檔和 SQL 腳本
+├── supabase/                # Supabase 配置和遷移
+├── package.json             # Root workspace 配置
 └── README.md
 ```
 
-## Applications
+## 🌐 應用程式
 
 ### 1. Public Web (`apps/public-web`)
-- **URL**: http://localhost:3000
-- **Description**: Public-facing website for 33 Pearl Atelier jewelry shop
-- **Features**: Browse jewelry collection, product details, shopping cart, customer accounts
+- **開發 URL**: http://localhost:3000
+- **生產 URL**: https://pearl33admin.zeabur.app (部署在 Zeabur)
+- **描述**: 33 Pearl Atelier 珠寶店的公開網站
+- **功能**:
+  - 📱 響應式設計
+  - 🔍 瀏覽珠寶產品目錄
+  - 📦 產品詳情頁（含圖片輪播）
+  - 🏷️ 產品分類（珍珠類型、形狀、材質）
+  - 💰 價格顯示和優惠標示
 
 ### 2. Inventory Admin (`apps/inventory-admin`)
-- **URL**: http://localhost:3001
-- **Description**: Inventory management system for shop administrators
-- **Features**: Product management, stock tracking, order management, sales analytics
-- **Note**: Authentication and authorization will be implemented before production deployment
+- **開發 URL**: http://localhost:3001
+- **生產 URL**: https://pearl33admin.zeabur.app (部署在 Zeabur)
+- **描述**: 管理員專用的庫存管理系統
+- **功能**:
+  - 🔐 管理員登入認證
+  - ✏️ 產品 CRUD（新增、編輯、刪除）
+  - 🖼️ 多圖片上傳和管理
+  - ⭐ 設定主圖和圖片排序
+  - 📊 產品發布/草稿狀態管理
+  - 🔄 即時數據刷新
+  - 📝 自動生成 slug
 
-## Getting Started
+## 🚀 開始使用
 
-### Prerequisites
-- Node.js (v20 or higher)
-- npm (v9 or higher)
-- Supabase account (for database)
+### 環境需求
+- Node.js v20 或更高版本
+- npm v9 或更高版本
+- Supabase 帳號（用於數據庫和儲存）
 
-### Installation
+### 安裝步驟
 
-1. Clone the repository:
+1. **克隆專案**:
 ```bash
 git clone https://github.com/sandyhsueh0303/pearl33atelier.git
 cd pearl33atelier
 ```
 
-2. Install dependencies:
+2. **安裝依賴**:
 ```bash
 npm install
 ```
 
-3. Set up environment variables:
+3. **設定環境變數**:
 
-Create `.env.local` files in both apps with your Supabase credentials:
+在兩個應用程式中創建 `.env.local` 檔案：
 
-**For Public Web** (`apps/public-web/.env.local`):
+**Public Web** (`apps/public-web/.env.local`):
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_URL=https://xjrnyynfzbrhmotepzyl.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-**For Inventory Admin** (`apps/inventory-admin/.env.local`):
+**Inventory Admin** (`apps/inventory-admin/.env.local`):
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_URL=https://xjrnyynfzbrhmotepzyl.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-> Get these values from your Supabase Dashboard → Settings → API
+> 從 Supabase Dashboard → Settings → API 獲取這些值
 
-### Running the Applications
+### 運行應用程式
 
-#### Start Public Web (localhost:3000)
+#### 🌐 啟動 Public Web (port 3000)
 ```bash
 npm run dev:public-web
 ```
+然後在瀏覽器開啟 http://localhost:3000
 
-Then open http://localhost:3000 in your browser.
-
-#### Start Inventory Admin (localhost:3001)
+#### 🔧 啟動 Inventory Admin (port 3001)
 ```bash
 npm run dev:inventory-admin
 ```
+然後在瀏覽器開啟 http://localhost:3001
 
-Then open http://localhost:3001 in your browser.
+#### 📦 同時運行兩個應用程式
+開啟兩個終端視窗，分別執行：
+- 終端 1: `npm run dev:public-web`
+- 終端 2: `npm run dev:inventory-admin`
 
-#### Run Both Applications Simultaneously
-Open two terminal windows and run each command in a separate terminal:
-- Terminal 1: `npm run dev:public-web`
-- Terminal 2: `npm run dev:inventory-admin`
+### 生產環境建置
 
-### Building for Production
-
-#### Build Public Web
+#### 建置 Public Web
 ```bash
 npm run build:public-web
 ```
 
-#### Build Inventory Admin
+#### 建置 Inventory Admin
 ```bash
 npm run build:inventory-admin
 ```
 
-## Technology Stack
+#### 啟動生產環境
+```bash
+npm run start:public-web      # Port 3000
+npm run start:inventory-admin # Port 3001
+```
 
-- **Framework**: Next.js 16 (React 19)
-- **Language**: TypeScript
-- **Database**: Supabase (PostgreSQL)
-- **Package Manager**: npm workspaces (monorepo)
-- **Shared Package**: `@pearl33atelier/shared` (types + Supabase client)
-- **Styling**: CSS
-- **Node.js**: v20.19.6
-- **Security**: All dependencies patched and up-to-date
+### 生成 TypeScript 類型
 
-## Testing Routes
+當 Supabase 數據庫 schema 更新後，重新生成類型定義：
+```bash
+npm run gen:types
+```
 
-Test routes are available to verify Supabase connection, RLS policies, and product publishing functionality.
+## 🗄️ 數據庫設定
 
-### Public Web Testing Routes
+### Supabase 表結構
 
-- **`/health`** - Health check endpoint
-  - Returns: "OK" status
-  - URL: http://localhost:3000/health
+1. **catalog_products** - 產品目錄
+   - 產品資訊、價格、庫存狀態
+   - `published` 欄位控制是否顯示在公開網站
 
-- **`/products-test`** - List published products (RLS filtered)
-  - Shows: quality, title, pearl_type, price
-  - Only displays products with `published=true`
-  - URL: http://localhost:3000/products-test
+2. **product_images** - 產品圖片
+   - 關聯到 `catalog_products`
+   - `is_primary` 標記主圖
+   - `sort_order` 控制顯示順序
+   - 圖片存儲在 Supabase Storage
 
-### Inventory Admin Testing Routes
+3. **admin_users** - 管理員帳號
+   - 關聯到 `auth.users`
+   - 控制後台存取權限
 
-- **`/admin/health`** - Admin health check endpoint
-  - Returns: "OK" status
-  - URL: http://localhost:3001/admin/health
+### Storage 設定
 
-- **`/admin/products-test`** - List all products (including drafts)
-  - Shows: All products with published/draft status
-  - Statistics: Published count, Draft count, Total
-  - URL: http://localhost:3001/admin/products-test
+產品圖片存儲在 Supabase Storage：
+- **Bucket**: `product-images` (必須設為 public)
+- **Folder**: `uploads/`
+- **路徑格式**: `uploads/{product_id}/{timestamp}-{random}.{ext}`
 
-- **`/admin/publish-test`** - Publish/Unpublish products
-  - Quick toggle product publish status by quality ID
-  - Actions: Publish (set published=true) or Unpublish (set published=false)
-  - URL: http://localhost:3001/admin/publish-test
+**重要**: 請確保 `product-images` bucket 設為公開：
+```sql
+UPDATE storage.buckets 
+SET public = true 
+WHERE name = 'product-images';
+```
 
-### Regression Testing
+## 🔐 管理員設定
 
-After modifying database schema or RLS policies, test in this order:
+請參閱 [`apps/inventory-admin/ADMIN_SETUP.md`](./apps/inventory-admin/ADMIN_SETUP.md) 了解如何：
+1. 創建 `admin_users` 表
+2. 設定第一個管理員帳號
+3. 配置 RLS 政策
+4. 設定登入系統
 
-1. **Health Checks**
-   ```bash
-   curl http://localhost:3000/health
-   curl http://localhost:3001/admin/health
-   ```
+## 📦 共享套件
 
-2. **Verify RLS Policies**
-   - Public should only see published products
-   - Admin should see all products (published + draft)
+`packages/shared/` 包含：
 
-3. **Test Publish/Unpublish**
-   - Use `/admin/publish-test` to toggle product status
-   - Verify changes appear correctly in both public and admin views
+### Types (`@pearl33atelier/shared/types`)
+- `CatalogProduct` - 產品類型定義
+- `ProductImage` - 圖片類型定義
+- `Database` - Supabase 自動生成的類型
 
-For detailed testing documentation, see [TESTING_ROUTES.md](./TESTING_ROUTES.md).
+### Utils
+- `slugify()` - URL 友好的 slug 生成
+- `getProductImageUrl()` - 圖片 URL 生成
+- `createSupabaseClient()` - Supabase 客戶端工廠
 
-## Screenshots
+### Supabase
+- 統一的 Supabase 客戶端配置
+- 支援 SSR 的 cookie 處理
 
-### Public Web
-![Public Web](https://github.com/user-attachments/assets/b3099018-7cba-49c1-b375-e23307f2356c)
+## 🛠️ 技術棧
 
-### Inventory Admin
-![Inventory Admin](https://github.com/user-attachments/assets/899393b6-6e1a-4155-abd2-74ece73bb8e6)
+- **框架**: Next.js 16 (App Router)
+- **React**: v19
+- **語言**: TypeScript 5
+- **數據庫**: Supabase (PostgreSQL)
+- **儲存**: Supabase Storage
+- **認證**: Supabase Auth
+- **部署**: Zeabur
+- **包管理**: npm workspaces (monorepo)
+- **樣式**: Inline CSS (計劃遷移到 Tailwind CSS)
+
+## 🚢 部署到 Zeabur
+
+### 環境變數設定
+
+為每個服務設定：
+
+**Public Web 服務**:
+```
+NEXT_PUBLIC_SUPABASE_URL=https://xjrnyynfzbrhmotepzyl.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key_here
+```
+
+**Inventory Admin 服務**:
+```
+NEXT_PUBLIC_SUPABASE_URL=https://xjrnyynfzbrhmotepzyl.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key_here
+```
+
+### Zeabur 配置
+
+每個服務的設定：
+
+**Build Command**:
+- Public Web: `npm install && npm run build:public-web`
+- Inventory Admin: `npm install && npm run build:inventory-admin`
+
+**Start Command**:
+- Public Web: `npm run start:public-web`
+- Inventory Admin: `npm run start:inventory-admin`
+
+**Root Directory**: 留空（使用 monorepo root）
+
+### 注意事項
+
+1. ⚠️ 環境變數必須在**建置前**設定
+2. ⚠️ 設定後需要**重新部署**才會生效
+3. ⚠️ `NEXT_PUBLIC_` 變數在建置時被內嵌，無法在運行時更改
+
+## 🧪 測試
+
+## 🧪 測試
+
+詳細的測試路由文檔請參閱 [TESTING_ROUTES.md](./TESTING_ROUTES.md)
+
+## 📚 文檔
+
+- [`ADMIN_SETUP.md`](./apps/inventory-admin/ADMIN_SETUP.md) - 管理員系統設定指南
+- [`API_DOCUMENTATION.md`](./apps/inventory-admin/API_DOCUMENTATION.md) - API 端點文檔
+- [`TESTING_ROUTES.md`](./TESTING_ROUTES.md) - 測試路由說明
+- [`USAGE_EXAMPLES.md`](./packages/shared/USAGE_EXAMPLES.md) - 共享套件使用範例
+
+## 🐛 已知問題和解決方案
+
+### 圖片無法顯示
+- ✅ 確認 `product-images` bucket 已設為 public
+- ✅ 檢查 storage_path 格式正確（`uploads/...`）
+- ✅ 驗證環境變數已正確設定
+
+### 登入失敗 (500 錯誤)
+- ✅ 確認環境變數在建置前已設定
+- ✅ 檢查 `admin_users` 表已創建
+- ✅ 驗證管理員帳號已正確添加
+
+### 產品列表不刷新
+- ✅ 使用頁面上的 🔄 刷新按鈕
+- ✅ 返回列表頁時會自動重新載入
+
+## 🤝 貢獻
+
+歡迎提交 issues 和 pull requests！
+
+## 📝 授權
+
+Private - All rights reserved
+
+---
+
+**開發者**: Sandy Hsueh  
+**專案**: 33 Pearl Atelier  
+**更新日期**: 2026-02-03
