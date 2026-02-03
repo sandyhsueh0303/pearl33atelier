@@ -73,21 +73,26 @@ export async function DELETE(
       .eq('id', imageId)
       .single()
 
-    // Delete from database
+    // Step 1: Delete from storage first
+    const imageData = image as any
+    if (imageData?.storage_path) {
+      const { error: storageError } = await supabase.storage
+        .from('product-images')
+        .remove([imageData.storage_path])
+      
+      if (storageError) {
+        console.error('Failed to delete image from storage:', storageError)
+        throw new Error('Failed to delete image from storage')
+      }
+    }
+
+    // Step 2: Delete from database (only after storage deletion succeeds)
     const { error: dbError } = await (supabase as any)
       .from('product_images')
       .delete()
       .eq('id', imageId)
 
     if (dbError) throw dbError
-
-    // Delete from storage
-    const imageData = image as any
-    if (imageData?.storage_path) {
-      await supabase.storage
-        .from('product-images')
-        .remove([imageData.storage_path])
-    }
 
     return NextResponse.json({ success: true })
   } catch (error) {
