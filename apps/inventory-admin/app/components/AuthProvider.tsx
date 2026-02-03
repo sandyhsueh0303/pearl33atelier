@@ -2,18 +2,10 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
-
-// Local interface for frontend use
-// Matches SessionUser from shared/types but keeps id for backwards compatibility
-interface AdminUser {
-  user_id: string // From auth.users.id
-  email: string
-  name: string | null
-  role: 'admin' // Fixed value until role column is added to DB
-}
+import type { SessionUser } from '@33pearlatelier/shared/types'
 
 interface AuthContextType {
-  user: AdminUser | null
+  user: SessionUser | null
   loading: boolean
   logout: () => Promise<void>
 }
@@ -31,7 +23,7 @@ const clientLogger = {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AdminUser | null>(null)
+  const [user, setUser] = useState<SessionUser | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
