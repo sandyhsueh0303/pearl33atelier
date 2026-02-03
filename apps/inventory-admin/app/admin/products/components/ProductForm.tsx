@@ -8,6 +8,16 @@ interface ProductFormProps {
   productId?: string
 }
 
+// Slugify function
+function slugify(text: string): string {
+  return text
+    .toLowerCase()                    // 全小寫
+    .replace(/\s+/g, '-')             // 空格 → -
+    .replace(/[^a-z0-9-]/g, '')       // 只保留 a-z 0-9 -
+    .replace(/-+/g, '-')              // 多個 - 合併
+    .replace(/^-+|-+$/g, '')          // 去頭尾 -
+}
+
 export default function ProductForm({ productId }: ProductFormProps) {
   const router = useRouter()
   const isEditMode = !!productId
@@ -34,6 +44,12 @@ export default function ProductForm({ productId }: ProductFormProps) {
   // Images
   const [images, setImages] = useState<ProductImage[]>([])
   const [uploadingImages, setUploadingImages] = useState(false)
+
+  // Auto-slugify when slug field changes
+  const handleSlugChange = (value: string) => {
+    const slugified = slugify(value)
+    setSlug(slugified)
+  }
 
   // Load product data if editing
   useEffect(() => {
@@ -304,10 +320,10 @@ export default function ProductForm({ productId }: ProductFormProps) {
             <input
               type="text"
               value={slug}
-              onChange={(e) => setSlug(e.target.value)}
+              onChange={(e) => handleSlugChange(e.target.value)}
               required
               disabled={isEditMode}
-              placeholder="例如: premium-white-akoya-8mm"
+              placeholder="white-akoya-8mm"
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -318,6 +334,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 backgroundColor: isEditMode ? '#f5f5f5' : 'white'
               }}
             />
+            <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+              自動轉換：小寫、空格變 -, 只保留 a-z 0-9 -
+            </small>
             <small style={{ color: '#666' }}>建立後無法修改</small>
           </div>
 
