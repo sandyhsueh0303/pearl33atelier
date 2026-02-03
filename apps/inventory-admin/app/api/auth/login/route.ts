@@ -7,8 +7,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createAdminClient } from '@/app/utils/supabase'
+import type { Database } from '@33pearlatelier/shared/types'
+
+type AdminUser = Database['public']['Tables']['admin_users']['Row']
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,25 +23,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const cookieStore = await cookies()
-
-    // Create Supabase client with cookie support
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options)
-            })
-          },
-        },
-      }
-    )
+    const supabase = await createAdminClient()
 
     // Attempt to sign in with Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
@@ -59,7 +43,7 @@ export async function POST(request: NextRequest) {
       .from('admin_users')
       .select('*')
       .eq('user_id', authData.user.id)
-      .single()
+      .single<AdminUser>()
 
     if (adminError || !adminUser) {
       // User authenticated but not an admin

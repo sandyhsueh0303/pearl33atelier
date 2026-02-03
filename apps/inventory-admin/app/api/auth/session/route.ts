@@ -6,35 +6,14 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createAdminClient } from '@/app/utils/supabase'
+import type { Database } from '@33pearlatelier/shared/types'
+
+type AdminUser = Database['public']['Tables']['admin_users']['Row']
 
 export async function GET(request: NextRequest) {
   try {
-    const cookieStore = await cookies()
-
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
-          setAll(cookiesToSet) {
-            try {
-              cookiesToSet.forEach(({ name, value, options }) =>
-                cookieStore.set(name, value, options)
-              )
-            } catch {
-              // The `setAll` method was called from a Server Component.
-              // This can be ignored if you have middleware refreshing
-              // user sessions.
-            }
-          },
-        },
-      }
-    )
+    const supabase = await createAdminClient()
 
     // Get user from session
     const { data: { user }, error: userError } = await supabase.auth.getUser()
@@ -48,7 +27,7 @@ export async function GET(request: NextRequest) {
       .from('admin_users')
       .select('*')
       .eq('user_id', user.id)
-      .single()
+      .single<AdminUser>()
 
     if (adminError || !adminUser) {
       return NextResponse.json({ user: null })

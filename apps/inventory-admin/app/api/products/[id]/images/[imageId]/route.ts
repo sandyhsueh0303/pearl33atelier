@@ -10,8 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createAdminClient } from '@/app/utils/supabase'
 
 // PATCH /api/products/[id]/images/[imageId] - Update image properties
 export async function PATCH(
@@ -21,24 +20,7 @@ export async function PATCH(
   try {
     const { id, imageId } = await params
     const body = await request.json()
-    const cookieStore = await cookies()
-    
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options)
-            })
-          },
-        },
-      }
-    )
+    const supabase = await createAdminClient()
 
     // If setting as primary, first unset all other images
     if (body.is_primary === true) {
@@ -82,24 +64,7 @@ export async function DELETE(
 ) {
   try {
     const { imageId } = await params
-    const cookieStore = await cookies()
-    
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options)
-            })
-          },
-        },
-      }
-    )
+    const supabase = await createAdminClient()
 
     // Get image info for storage deletion
     const { data: image } = await supabase
