@@ -69,18 +69,19 @@ export async function PATCH(
     const updates: ProductUpdate = {}
     
     // Only include fields that are present in the request body
+    // Use nullish coalescing (??) to preserve falsy values like 0 and ''
     if ('title' in body) updates.title = body.title
     if ('pearl_type' in body) updates.pearl_type = body.pearl_type
-    if ('description' in body) updates.description = body.description || null
-    if ('note' in body) updates.note = body.note || null
-    if ('size_mm' in body) updates.size_mm = body.size_mm || null
-    if ('shape' in body) updates.shape = body.shape || null
-    if ('material' in body) updates.material = body.material || null
-    if ('sell_price' in body) updates.sell_price = body.sell_price || null
-    if ('original_price' in body) updates.original_price = body.original_price || null
+    if ('description' in body) updates.description = body.description ?? null
+    if ('note' in body) updates.note = body.note ?? null
+    if ('size_mm' in body) updates.size_mm = body.size_mm ?? null
+    if ('shape' in body) updates.shape = body.shape ?? null
+    if ('material' in body) updates.material = body.material ?? null
+    if ('sell_price' in body) updates.sell_price = body.sell_price ?? null
+    if ('original_price' in body) updates.original_price = body.original_price ?? null
     if ('availability' in body) updates.availability = body.availability
-    if ('preorder_note' in body) updates.preorder_note = body.preorder_note || null
-    if ('inventory_item_id' in body) updates.inventory_item_id = body.inventory_item_id || null
+    if ('preorder_note' in body) updates.preorder_note = body.preorder_note ?? null
+    if ('inventory_item_id' in body) updates.inventory_item_id = body.inventory_item_id ?? null
 
     const { data, error } = await (supabase as any)
       .from('catalog_products')
