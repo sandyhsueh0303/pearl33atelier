@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
 import { logger } from '@/app/utils/logger'
-import { STORAGE_BUCKET } from '@33pearlatelier/shared'
+import { STORAGE_BUCKET, STORAGE_FOLDER } from '@33pearlatelier/shared'
 
 // POST /api/products/[id]/images - Upload images
 export async function POST(
@@ -52,10 +52,10 @@ export async function POST(
       // Upload to Supabase Storage
       const fileExt = file.name.split('.').pop()
       const fileName = `${id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-      const filePath = `${STORAGE_BUCKET}/${fileName}`
+      const filePath = `${STORAGE_FOLDER}/${fileName}` // 'uploads/123/abc.jpg'
 
       const { error: uploadError } = await supabase.storage
-        .from(STORAGE_BUCKET)
+        .from(STORAGE_BUCKET) // 'product-images' bucket
         .upload(filePath, file)
 
       if (uploadError) {

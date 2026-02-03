@@ -2,6 +2,7 @@
  * Storage configuration
  */
 export const STORAGE_BUCKET = 'product-images' as const
+export const STORAGE_FOLDER = 'uploads' as const
 
 /**
  * Get Supabase URL from environment variable
