@@ -24,7 +24,8 @@ export async function POST(
 
     // Update product to published
     // Use Supabase RPC to let DB set published_at with now()
-    const { data: product, error: productError } = await supabase.rpc(
+    // Note: (as any) needed due to Supabase type generation limitations with rpc()
+    const { data: product, error: productError } = await (supabase as any).rpc(
       'publish_product',
       { product_id: id }
     )
@@ -66,7 +67,8 @@ export async function DELETE(
 
     // Update product to unpublished
     // Use RPC to let DB handle published_at
-    const { data: product, error: productError } = await supabase.rpc(
+    // Note: (as any) needed due to Supabase type generation limitations with rpc()
+    const { data: product, error: productError } = await (supabase as any).rpc(
       'unpublish_product',
       { product_id: id }
     )
