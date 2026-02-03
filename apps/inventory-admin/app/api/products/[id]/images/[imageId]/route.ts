@@ -85,7 +85,7 @@ export async function DELETE(
       
       if (storageError) {
         logger.error('Failed to delete image from storage', storageError)
-        throw new Error('Failed to delete image from storage')
+        throw storageError
       }
     }
 

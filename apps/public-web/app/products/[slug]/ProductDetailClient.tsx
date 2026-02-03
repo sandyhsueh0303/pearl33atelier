@@ -12,14 +12,19 @@ interface ProductDetailClientProps {
 
 export default function ProductDetailClient({ product, images }: ProductDetailClientProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const primaryImage = images.find(img => img.is_primary) || images[0]
-  const currentImage = images[currentImageIndex] || primaryImage
+  
+  // Handle case when there are no images
+  const hasImages = images.length > 0
+  const primaryImage = hasImages ? (images.find(img => img.is_primary) || images[0]) : null
+  const currentImage = hasImages ? (images[currentImageIndex] || primaryImage) : null
 
   const nextImage = () => {
+    if (!hasImages) return
     setCurrentImageIndex((prev) => (prev + 1) % images.length)
   }
 
   const prevImage = () => {
+    if (!hasImages) return
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
   }
 

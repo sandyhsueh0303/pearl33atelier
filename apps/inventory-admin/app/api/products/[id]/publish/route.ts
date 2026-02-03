@@ -31,11 +31,14 @@ export async function POST(
 
     if (productError) {
       logger.error('Failed to publish product', productError)
-      throw new Error(`Database error: ${productError.message || JSON.stringify(productError)}`)
+      throw productError
     }
 
     if (!product) {
-      throw new Error('Product not found')
+      return NextResponse.json(
+        { error: 'Product not found' },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json({ 
@@ -70,11 +73,14 @@ export async function DELETE(
 
     if (productError) {
       logger.error('Failed to unpublish product', productError)
-      throw new Error(`Database error: ${productError.message || JSON.stringify(productError)}`)
+      throw productError
     }
 
     if (!product) {
-      throw new Error('Product not found')
+      return NextResponse.json(
+        { error: 'Product not found' },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json({ 
