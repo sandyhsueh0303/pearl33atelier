@@ -626,9 +626,22 @@ export default function ProductForm({ productId }: ProductFormProps) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: '0.5rem'
+                    marginBottom: '0.5rem',
+                    overflow: 'hidden'
                   }}>
-                    <span style={{ color: '#999' }}>圖片預覽</span>
+                    <img 
+                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product_image/${image.storage_path}`}
+                      alt={title}
+                      style={{ 
+                        width: '100%', 
+                        height: '100%', 
+                        objectFit: 'cover' 
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                        e.currentTarget.parentElement!.innerHTML += '<span style="color: #999">圖片載入失敗</span>'
+                      }}
+                    />
                   </div>
                   
                   {image.is_primary && (

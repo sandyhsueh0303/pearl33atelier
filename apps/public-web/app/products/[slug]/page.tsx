@@ -109,22 +109,19 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               marginBottom: '1rem'
             }}>
               {primaryImage ? (
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#999'
-                }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '4rem', marginBottom: '0.5rem' }}>📷</div>
-                    <div style={{ fontSize: '0.875rem' }}>主要圖片</div>
-                  </div>
-                </div>
+                <img 
+                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product_image/${primaryImage.storage_path}`}
+                  alt={product.title}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '8px'
+                  }}
+                />
               ) : (
                 <div style={{
                   position: 'absolute',
@@ -158,23 +155,22 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                       backgroundColor: '#f5f5f5',
                       borderRadius: '4px',
                       border: image.is_primary ? '2px solid #1976d2' : '1px solid #ddd',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      overflow: 'hidden'
                     }}
                   >
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#999',
-                      fontSize: '0.75rem'
-                    }}>
-                      {index + 1}
-                    </div>
+                    <img 
+                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product_image/${image.storage_path}`}
+                      alt={`${product.title} - 圖片 ${index + 1}`}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                    />
                   </div>
                 ))}
               </div>
