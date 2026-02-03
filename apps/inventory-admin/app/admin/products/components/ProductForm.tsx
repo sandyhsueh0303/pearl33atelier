@@ -45,6 +45,14 @@ export default function ProductForm({ productId }: ProductFormProps) {
   const [images, setImages] = useState<ProductImage[]>([])
   const [uploadingImages, setUploadingImages] = useState(false)
 
+  // Auto-slugify when title changes (only in create mode)
+  const handleTitleChange = (value: string) => {
+    setTitle(value)
+    if (!isEditMode) {
+      setSlug(slugify(value))
+    }
+  }
+
   // Auto-slugify when slug field changes
   const handleSlugChange = (value: string) => {
     const slugified = slugify(value)
@@ -301,7 +309,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             <input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => handleTitleChange(e.target.value)}
               required
               style={{
                 width: '100%',
@@ -335,9 +343,10 @@ export default function ProductForm({ productId }: ProductFormProps) {
               }}
             />
             <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
-              自動轉換：小寫、空格變 -, 只保留 a-z 0-9 -
+              {isEditMode 
+                ? '建立後無法修改' 
+                : '輸入標題時會自動產生，也可手動修改'}
             </small>
-            <small style={{ color: '#666' }}>建立後無法修改</small>
           </div>
 
           <div>

@@ -58,6 +58,14 @@ export async function PATCH(
     const body = await request.json()
     const supabase = await createAdminClient()
 
+    // Reject slug modification
+    if ('slug' in body) {
+      return NextResponse.json(
+        { error: 'Cannot modify slug after product creation' },
+        { status: 400 }
+      )
+    }
+
     const updates: ProductUpdate = {}
     
     // Only include fields that are present in the request body

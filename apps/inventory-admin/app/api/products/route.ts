@@ -39,9 +39,22 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const supabase = await createAdminClient()
 
+    // Helper function to generate slug from title
+    const generateSlug = (text: string): string => {
+      return text
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+        .replace(/-+/g, '-')
+        .replace(/^-+|-+$/g, '')
+    }
+
+    // Auto-generate slug if not provided
+    const slug = body.slug || generateSlug(body.title)
+
     const productData: ProductInsert = {
       title: body.title,
-      slug: body.slug,
+      slug: slug,
       note: body.note || null,
       description: body.description || null,
       pearl_type: body.pearl_type,
