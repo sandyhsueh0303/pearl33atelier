@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         user_id: authData.user.id,
         email: authData.user.email,
         name: authData.user.user_metadata?.name || null,
-        role: adminUser.role
+        role: 'admin' // Hardcoded until role column is added to admin_users table
       }
     })
   } catch (error) {

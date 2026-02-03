@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
         user_id: user.id,
         email: user.email,
         name: user.user_metadata?.name || null,
-        role: adminUser.role
+        role: 'admin' // Hardcoded until role column is added to admin_users table
       }
     })
   } catch (error) {

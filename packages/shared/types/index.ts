@@ -16,22 +16,23 @@ export type AvailabilityKind =
 
 // ============================================
 // Table: admin_users (access control)
+// Note: Currently only has user_id + created_at in DB
 // ============================================
 export interface AdminUser {
   user_id: string // uuid, PK, matches auth.users.id
-  role: 'admin' | 'super_admin' // admin role type
   created_at: string // timestamptz
 }
 
 // ============================================
 // API response: 登入後的 session 資訊
 // (從 auth.users + admin_users 拼接而來，不對應單一張表)
+// Note: role is hardcoded to 'admin' until role column is added to DB
 // ============================================
 export interface SessionUser {
   user_id: string // uuid, from auth.users.id
   email: string // from auth.users.email
   name: string | null // from auth.users.user_metadata.name
-  role: 'admin' | 'super_admin' // admin role type from admin_users.role
+  role: 'admin' // fixed value, not from DB yet
 }
 
 // ============================================

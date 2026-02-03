@@ -3,12 +3,13 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 
+// Local interface for frontend use
+// Matches SessionUser from shared/types but keeps id for backwards compatibility
 interface AdminUser {
-  id: string
+  user_id: string // From auth.users.id
   email: string
   name: string | null
-  role: 'admin' | 'super_admin'
-  user_id: string
+  role: 'admin' // Fixed value until role column is added to DB
 }
 
 interface AuthContextType {
