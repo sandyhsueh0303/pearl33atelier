@@ -3,19 +3,37 @@
 import type { CatalogProduct } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function ProductsPage() {
+  const router = useRouter()
   const [products, setProducts] = useState<CatalogProduct[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     loadProducts()
+    
+    // Listen for focus event to reload when returning to this page
+    const handleFocus = () => {
+      loadProducts()
+    }
+    
+    window.addEventListener('focus', handleFocus)
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+    }
   }, [])
 
   const loadProducts = async () => {
     try {
-      const response = await fetch('/api/products')
+      const response = await fetch('/api/products', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      })
       if (!response.ok) throw new Error('Failed to load products')
       const data = await response.json()
       setProducts(data.products || [])
@@ -54,7 +72,27 @@ export default function ProductsPage() {
   return (
     <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1400px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ margin: 0 }}>產品管理</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <h1 style={{ margin: 0 }}>產品管理</h1>
+          <button
+            onClick={() => {
+              setLoading(true)
+              router.refresh()
+              loadProducts()
+            }}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: '#f5f5f5',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '0.875rem'
+            }}
+            title="重新載入產品列表"
+          >
+            🔄 刷新
+          </button>
+        </div>
         <Link
           href="/admin/products/new"
           style={{
