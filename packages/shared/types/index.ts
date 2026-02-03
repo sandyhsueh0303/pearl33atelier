@@ -1,4 +1,19 @@
 // ============================================
+// Supabase Generated Types
+// ============================================
+import type { Database as SupabaseDatabase } from './database.types'
+export type { Database, Json } from './database.types'
+
+// ============================================
+// Type Helpers: Extract Row types from generated Database type
+// ============================================
+type Tables = SupabaseDatabase['public']['Tables']
+export type AdminUserRow = Tables['admin_users']['Row']
+export type InventoryItemRow = Tables['inventory_items']['Row']
+export type CatalogProductRow = Tables['catalog_products']['Row']
+export type ProductImageRow = Tables['product_images']['Row']
+
+// ============================================
 // Enums
 // ============================================
 export type PearlType = 
@@ -87,36 +102,3 @@ export interface ProductImage {
   created_at: string // timestamptz
 }
 
-// ============================================
-// Database Schema
-// ============================================
-export interface Database {
-  public: {
-    Tables: {
-      admin_users: {
-        Row: AdminUser
-        Insert: Omit<AdminUser, 'created_at'>
-        Update: Partial<Omit<AdminUser, 'user_id' | 'created_at'>>
-      }
-      inventory_items: {
-        Row: InventoryItem
-        Insert: Omit<InventoryItem, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<InventoryItem, 'id' | 'created_at' | 'updated_at'>>
-      }
-      catalog_products: {
-        Row: CatalogProduct
-        Insert: Omit<CatalogProduct, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<CatalogProduct, 'id' | 'created_at' | 'updated_at'>>
-      }
-      product_images: {
-        Row: ProductImage
-        Insert: Omit<ProductImage, 'id' | 'created_at'>
-        Update: Partial<Omit<ProductImage, 'id' | 'created_at'>>
-      }
-    }
-    Enums: {
-      pearl_type: PearlType
-      availability_kind: AvailabilityKind
-    }
-  }
-}

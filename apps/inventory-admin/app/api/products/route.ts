@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
       inventory_item_id: body.inventory_item_id ?? null
     }
 
-    // Note: (as any) needed due to Supabase type generation limitations with insert().select()
-    const { data, error } = await (supabase as any)
+    // Insert product with full type safety
+    const { data, error } = await supabase
       .from('catalog_products')
       .insert(productData)
       .select()
