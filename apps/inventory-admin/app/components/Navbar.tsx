@@ -6,8 +6,6 @@ import Link from 'next/link'
 export default function Navbar() {
   const { user, logout } = useAuth()
 
-  console.log('Navbar render - user:', user)
-
   if (!user) return null
 
   return (

@@ -32,7 +32,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await fetch('/api/auth/session')
       const data = await response.json()
-      console.log('Session check result:', data)
       setUser(data.user)
     } catch (error) {
       console.error('Session check failed:', error)
