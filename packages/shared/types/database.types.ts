@@ -136,6 +136,60 @@ export type Database = {
         }
         Relationships: []
       }
+      product_costs: {
+        Row: {
+          cost_notes: string | null
+          created_at: string | null
+          id: string
+          inventory_item_id: string | null
+          labor_cost: number | null
+          material_cost: number | null
+          misc_cost: number | null
+          pearl_quantity: number | null
+          pearl_unit_cost: number | null
+          product_id: string | null
+        }
+        Insert: {
+          cost_notes?: string | null
+          created_at?: string | null
+          id: string
+          inventory_item_id?: string | null
+          labor_cost?: number | null
+          material_cost?: number | null
+          misc_cost?: number | null
+          pearl_quantity?: number | null
+          pearl_unit_cost?: number | null
+          product_id?: string | null
+        }
+        Update: {
+          cost_notes?: string | null
+          created_at?: string | null
+          id?: string
+          inventory_item_id?: string | null
+          labor_cost?: number | null
+          material_cost?: number | null
+          misc_cost?: number | null
+          pearl_quantity?: number | null
+          pearl_unit_cost?: number | null
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_costs_inventory_item_id_fkey"
+            columns: ["inventory_item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_costs_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "catalog_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_images: {
         Row: {
           created_at: string
