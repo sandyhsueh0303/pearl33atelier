@@ -42,7 +42,9 @@ pearl33atelier/
   - 🖼️ 多圖片上傳和管理
   - ⭐ 設定主圖和圖片排序
   - 📊 產品發布/草稿狀態管理
-  - 🔄 即時數據刷新
+  - � 庫存管理（追蹤珍珠和材料）
+  - 💰 成本分析（材料、人工、其他成本）
+  - �🔄 即時數據刷新
   - 📝 自動生成 slug
 
 ## 🚀 開始使用
@@ -134,6 +136,7 @@ npm run gen:types
 1. **catalog_products** - 產品目錄
    - 產品資訊、價格、庫存狀態
    - `published` 欄位控制是否顯示在公開網站
+   - 關聯到 `inventory_items`（庫存項目）
 
 2. **product_images** - 產品圖片
    - 關聯到 `catalog_products`
@@ -141,7 +144,24 @@ npm run gen:types
    - `sort_order` 控制顯示順序
    - 圖片存儲在 Supabase Storage
 
-3. **admin_users** - 管理員帳號
+3. **inventory_items** - 庫存管理
+   - 追蹤珍珠和材料的庫存
+   - `on_hand` - 庫存數量
+   - `reserved` - 已用於產品的數量
+   - `cost` - 單位成本
+   - `vendor` - 供應商
+   - `purchase_date` - 採購日期
+
+4. **product_costs** - 產品成本明細
+   - 關聯到 `catalog_products` 和 `inventory_items`
+   - `pearl_quantity` - 珍珠數量
+   - `pearl_unit_cost` - 珍珠單價
+   - `material_cost` - 材料成本
+   - `labor_cost` - 人工成本
+   - `misc_cost` - 其他成本
+   - 用於計算產品的總成本和利潤
+
+5. **admin_users** - 管理員帳號
    - 關聯到 `auth.users`
    - 控制後台存取權限
 
@@ -276,4 +296,4 @@ Private - All rights reserved
 
 **開發者**: Sandy Hsueh  
 **專案**: 33 Pearl Atelier  
-**更新日期**: 2026-02-03
+**更新日期**: 2026-02-04
