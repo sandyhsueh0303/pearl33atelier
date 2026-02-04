@@ -1,18 +1,34 @@
-export default function Home() {
+import HomeButton from './components/HomeButton'
+
+export default function HomePage() {
   return (
-    <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>33 Pearl Atelier</h1>
-      <h2>Welcome to Our Jewelry Shop</h2>
-      <p>This is the public-facing website for 33 Pearl Atelier jewelry shop.</p>
-      <div style={{ marginTop: '2rem' }}>
-        <h3>Features Coming Soon:</h3>
-        <ul>
-          <li>Browse our jewelry collection</li>
-          <li>View product details</li>
-          <li>Shopping cart</li>
-          <li>Customer accounts</li>
-        </ul>
-      </div>
-    </main>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: 'sans-serif',
+      padding: '2rem',
+      backgroundColor: '#fafafa'
+    }}>
+      <h1 style={{ 
+        fontSize: '3rem', 
+        marginBottom: '1rem',
+        color: '#333'
+      }}>
+        33 Pearl Atelier
+      </h1>
+      <p style={{ 
+        fontSize: '1.25rem', 
+        color: '#666', 
+        marginBottom: '2rem',
+        textAlign: 'center',
+        maxWidth: '600px'
+      }}>
+        Curated collection of exquisite pearl jewelry
+      </p>
+      <HomeButton />
+    </div>
   )
 }
