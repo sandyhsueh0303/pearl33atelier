@@ -233,6 +233,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      adjust_inventory_quantity: {
+        Args: { item_id: string; quantity_change: number }
+        Returns: undefined
+      }
+      get_product_profit: {
+        Args: { prod_id: string }
+        Returns: {
+          profit: number
+          profit_margin: number
+          total_cost: number
+        }[]
+      }
+      get_product_total_cost: { Args: { prod_id: string }; Returns: number }
       is_admin: { Args: never; Returns: boolean }
       publish_product: {
         Args: { product_id: string }
