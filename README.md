@@ -100,26 +100,58 @@ npm run dev:inventory-admin
 然後在瀏覽器開啟 http://localhost:3001
 
 #### 📦 同時運行兩個應用程式
-開啟兩個終端視窗，分別執行：
-- 終端 1: `npm run dev:public-web`
-- 終端 2: `npm run dev:inventory-admin`
+
+**方法 1: 使用兩個終端視窗**
+```bash
+# 終端 1
+npm run dev:public-web
+
+# 終端 2
+npm run dev:inventory-admin
+```
+
+**方法 2: 使用後台運行（推薦用於開發）**
+```bash
+# 同時啟動兩個服務
+npm run dev:public-web & npm run dev:inventory-admin &
+
+# 查看運行狀態
+jobs
+
+# 停止所有後台服務
+killall node
+```
 
 ### 生產環境建置
 
-#### 建置 Public Web
+#### 建置單個服務
 ```bash
+# 建置 Public Web
 npm run build:public-web
+
+# 建置 Inventory Admin
+npm run build:inventory-admin
 ```
 
-#### 建置 Inventory Admin
+#### 同時建置兩個服務
 ```bash
-npm run build:inventory-admin
+# 方法 1: 依序建置
+npm run build:public-web && npm run build:inventory-admin
+
+# 方法 2: 使用 npm workspaces（並行建置，更快）
+npm run build --workspaces
 ```
 
 #### 啟動生產環境
 ```bash
 npm run start:public-web      # Port 3000
 npm run start:inventory-admin # Port 3001
+```
+
+#### 同時啟動生產環境
+```bash
+# 使用後台運行
+npm run start:public-web & npm run start:inventory-admin &
 ```
 
 ### 生成 TypeScript 類型

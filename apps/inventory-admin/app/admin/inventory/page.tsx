@@ -266,8 +266,8 @@ export default function InventoryPage() {
                         href={`/admin/inventory/${item.id}`}
                         style={{
                           padding: '0.5rem 1rem',
-                          backgroundColor: '#f5f5f5',
-                          color: '#1976d2',
+                          backgroundColor: '#1976d2',
+                          color: 'white',
                           borderRadius: '4px',
                           textDecoration: 'none',
                           fontSize: '0.875rem',
