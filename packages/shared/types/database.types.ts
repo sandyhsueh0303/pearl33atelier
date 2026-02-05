@@ -102,87 +102,42 @@ export type Database = {
       }
       inventory_items: {
         Row: {
+          allocated_quantity: number
+          category: string | null
           cost: number | null
           created_at: string
           id: string
           internal_note: string | null
-          on_hand: number
           purchase_date: string | null
-          reserved: number
+          total_quantity: number
           updated_at: string
           vendor: string | null
         }
         Insert: {
+          allocated_quantity?: number
+          category?: string | null
           cost?: number | null
           created_at?: string
           id?: string
           internal_note?: string | null
-          on_hand?: number
           purchase_date?: string | null
-          reserved?: number
+          total_quantity?: number
           updated_at?: string
           vendor?: string | null
         }
         Update: {
+          allocated_quantity?: number
+          category?: string | null
           cost?: number | null
           created_at?: string
           id?: string
           internal_note?: string | null
-          on_hand?: number
           purchase_date?: string | null
-          reserved?: number
+          total_quantity?: number
           updated_at?: string
           vendor?: string | null
         }
         Relationships: []
-      }
-      product_costs: {
-        Row: {
-          cost_notes: string | null
-          created_at: string | null
-          id: string
-          labor_cost: number | null
-          material_cost: number | null
-          misc_cost: number | null
-          product_id: string
-          updated_at: string | null
-        }
-        Insert: {
-          cost_notes?: string | null
-          created_at?: string | null
-          id?: string
-          labor_cost?: number | null
-          material_cost?: number | null
-          misc_cost?: number | null
-          product_id: string
-          updated_at?: string | null
-        }
-        Update: {
-          cost_notes?: string | null
-          created_at?: string | null
-          id?: string
-          labor_cost?: number | null
-          material_cost?: number | null
-          misc_cost?: number | null
-          product_id?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "product_costs_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: true
-            referencedRelation: "catalog_products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "product_costs_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: true
-            referencedRelation: "products_full_info"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       product_images: {
         Row: {
@@ -218,13 +173,6 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "catalog_products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "product_images_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products_full_info"
             referencedColumns: ["id"]
           },
         ]
@@ -278,118 +226,11 @@ export type Database = {
             referencedRelation: "catalog_products"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "product_materials_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products_full_info"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      product_stock: {
-        Row: {
-          created_at: string | null
-          id: string
-          last_production_date: string | null
-          last_production_quantity: number | null
-          notes: string | null
-          product_id: string
-          quantity_available: number | null
-          quantity_produced: number | null
-          quantity_reserved: number | null
-          quantity_sold: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          last_production_date?: string | null
-          last_production_quantity?: number | null
-          notes?: string | null
-          product_id: string
-          quantity_available?: number | null
-          quantity_produced?: number | null
-          quantity_reserved?: number | null
-          quantity_sold?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          last_production_date?: string | null
-          last_production_quantity?: number | null
-          notes?: string | null
-          product_id?: string
-          quantity_available?: number | null
-          quantity_produced?: number | null
-          quantity_reserved?: number | null
-          quantity_sold?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "product_stock_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: true
-            referencedRelation: "catalog_products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "product_stock_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: true
-            referencedRelation: "products_full_info"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
     Views: {
-      products_full_info: {
-        Row: {
-          availability: Database["public"]["Enums"]["availability_kind"] | null
-          created_at: string | null
-          description: string | null
-          id: string | null
-          inventory_item_id: string | null
-          labor_cost: number | null
-          last_production_date: string | null
-          material: string | null
-          material_cost: number | null
-          materials: Json | null
-          misc_cost: number | null
-          note: string | null
-          original_price: number | null
-          pearl_cost: number | null
-          pearl_type: Database["public"]["Enums"]["pearl_type"] | null
-          preorder_note: string | null
-          profit: number | null
-          profit_margin: number | null
-          published: boolean | null
-          published_at: string | null
-          quantity_available: number | null
-          quantity_produced: number | null
-          quantity_reserved: number | null
-          quantity_sold: number | null
-          sell_price: number | null
-          shape: string | null
-          size_mm: number | null
-          slug: string | null
-          title: string | null
-          total_cost: number | null
-          updated_at: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "catalog_products_inventory_item_id_fkey"
-            columns: ["inventory_item_id"]
-            isOneToOne: false
-            referencedRelation: "inventory_items"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       adjust_inventory_quantity: {

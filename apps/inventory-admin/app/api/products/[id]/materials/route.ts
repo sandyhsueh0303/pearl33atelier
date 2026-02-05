@@ -22,7 +22,7 @@ export async function GET(
           id,
           vendor,
           cost,
-          on_hand,
+          total_quantity,
           internal_note
         )
       `)

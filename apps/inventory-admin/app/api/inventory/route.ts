@@ -20,17 +20,17 @@ export async function GET(request: NextRequest) {
     
     // Transform and calculate stats
     const transformed = items?.map(item => {
-      const quantity_total = (item.on_hand || 0) + (item.reserved || 0)
+      const quantity_total = (item.total_quantity || 0) + (item.allocated_quantity || 0)
       const unit_cost = item.cost || 0
       
       return {
         ...item,
         quantity_total,
-        quantity_available: item.on_hand || 0,
-        quantity_used: item.reserved || 0,
+        quantity_available: item.total_quantity || 0,
+        quantity_used: item.allocated_quantity || 0,
         unit_cost,
         total_value: quantity_total * unit_cost,
-        remaining_value: (item.on_hand || 0) * unit_cost
+        remaining_value: (item.total_quantity || 0) * unit_cost
       }
     }) || []
     
@@ -64,19 +64,20 @@ export async function POST(request: NextRequest) {
     const supabase = await createAdminClient()
     
     // Validate
-    if (!body.cost || !body.on_hand) {
+    if (!body.cost || !body.total_quantity) {
       return NextResponse.json(
-        { error: 'Missing required fields: cost, on_hand' },
+        { error: 'Missing required fields: cost, total_quantity' },
         { status: 400 }
       )
     }
     
     const data = {
       vendor: body.vendor || null,
+      category: body.category || 'pearl',
       purchase_date: body.purchase_date || null,
       cost: body.cost,
-      on_hand: body.on_hand,
-      reserved: 0,
+      total_quantity: body.total_quantity,
+      allocated_quantity: 0,
       internal_note: body.internal_note || null
     }
     

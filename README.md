@@ -54,13 +54,13 @@ pearl33atelier/
   - 🔍 按供應商或備註搜尋
   - 📈 按日期、價值、數量排序
   
-  **進階功能**:
+  **成本分析功能**:
   - 🧾 產品材料清單（BOM）管理
-  - 💵 產品成本分析（材料、人工、其他成本）
-  - 📊 利潤計算和分析
-  - � 產品庫存追蹤（生產、銷售數量）
-  - �🔄 即時數據刷新
-  - � 響應式設計
+  - 💵 產品成本分析和利潤計算
+  - 📊 即時成本計算（從材料自動累加）
+  - 💰 利潤率分析
+  - � 即時數據刷新
+  - 📱 響應式設計
 
 ## 🚀 開始使用
 
@@ -199,98 +199,120 @@ npm run gen:types
    - `published` - 是否發布該圖片
    - `storage_path` - Supabase Storage 路徑
 
-3. **inventory_items** - 庫存管理
-   - 追蹤所有珍珠和材料的庫存
+3. **inventory_items** - 庫存管理（統一成本管理）
+   - 追蹤**所有**材料的庫存和成本
+   - 包含：珍珠、配件、包裝材料、人工、運費等
    - `vendor` - 供應商名稱
    - `purchase_date` - 採購日期
    - `cost` - 單位成本
    - `on_hand` - 現有庫存數量
    - `reserved` - 已保留/已用於產品的數量
    - `internal_note` - 內部備註
-
-#### 進階表 (Advanced Tables)
+   - 💡 **設計理念**: 所有成本項目都以「材料」形式管理，統一追蹤
 
 4. **product_materials** - 產品材料清單（BOM - Bill of Materials）
    - 關聯 `catalog_products` 和 `inventory_items`（多對多）
    - `quantity_per_unit` - 每個產品需要的材料數量
-   - `unit_cost_snapshot` - 建立時的成本快照
+   - `unit_cost_snapshot` - 建立時的成本快照（保存歷史成本）
    - `sort_order` - 材料顯示順序
    - `notes` - 材料使用備註
-   - 📌 **用途**: 精確追蹤每個產品使用了哪些庫存材料
+   - 📌 **用途**: 定義產品「配方」，精確追蹤每個產品使用了哪些庫存材料
 
-5. **product_costs** - 產品成本明細
-   - 關聯到 `catalog_products`（一對一）
-   - `material_cost` - 材料總成本（從 product_materials 計算）
-   - `labor_cost` - 人工成本
-   - `misc_cost` - 其他雜項成本
-   - `cost_notes` - 成本備註
-   - 📊 **自動計算**: 總成本、利潤、利潤率
-
-6. **product_stock** - 產品庫存追蹤
-   - 關聯到 `catalog_products`（一對一）
-   - `quantity_produced` - 已生產數量
-   - `quantity_available` - 可販售數量
-   - `quantity_reserved` - 已預訂數量
-   - `quantity_sold` - 已售出數量
-   - `last_production_date` - 最後生產日期
-   - `last_production_quantity` - 最後生產數量
-   - 📦 **用途**: 追蹤成品庫存狀態
-
-7. **admin_users** - 管理員帳號
+5. **admin_users** - 管理員帳號
    - 關聯到 `auth.users`
    - 控制後台系統存取權限
 
-#### 視圖 (Views)
+### 成本計算邏輯
 
-8. **products_full_info** - 產品完整資訊視圖
-   - 整合所有產品相關資料
-   - 包含成本、利潤、庫存、材料清單等
-   - 📈 **自動計算欄位**:
-     - `total_cost` - 總成本
-     - `profit` - 利潤
-     - `profit_margin` - 利潤率
-     - `pearl_cost` - 珍珠成本
-     - `materials` - 材料清單 JSON
+系統採用**即時計算**方式，不儲存成本數據：
+
+```typescript
+// 在 ProductCostAnalysis 組件中即時計算
+total_cost = SUM(
+  product_materials.quantity_per_unit × 
+  product_materials.unit_cost_snapshot
+)
+
+profit = catalog_products.sell_price - total_cost
+profit_margin = (profit / sell_price) × 100
+```
+
+**優點**:
+- ✅ 數據永遠同步，無需維護冗餘欄位
+- ✅ 彈性高，可隨時調整材料和數量
+- ✅ 歷史成本保留在 `unit_cost_snapshot`
+- ✅ 架構簡潔，易於維護
 
 ### 資料庫關係架構
 
 ```
-catalog_products (產品)
-    ├── product_images (多張圖片)
-    ├── product_materials (使用多種材料) → inventory_items
-    ├── product_costs (成本明細)
-    ├── product_stock (庫存追蹤)
-    └── inventory_item_id (主要珍珠) → inventory_items
+catalog_products (產品主表)
+    ├── product_images (產品圖片，一對多)
+    ├── product_materials (產品材料清單 BOM，一對多)
+    │   └── → inventory_items (連結到庫存材料)
+    └── inventory_item_id (主要珍珠，可選)
+        └── → inventory_items (連結到主珍珠)
 
-inventory_items (庫存)
+inventory_items (庫存材料倉庫)
+    ├── 儲存所有材料：珍珠、配件、包裝、人工等
     ├── 被 product_materials 引用（多個產品可使用同一材料）
-    └── 被 catalog_products 引用（作為主要珍珠）
-
-products_full_info (視圖)
-    └── 整合所有產品相關資料，自動計算成本和利潤
+    └── 被 catalog_products.inventory_item_id 引用（作為主要珍珠）
 ```
+
+### 數據流程說明
+
+**1. 材料管理流程**:
+```
+採購材料 → inventory_items (記錄成本、數量、供應商)
+         ↓
+定義產品 → product_materials (配方：需要哪些材料、各多少數量)
+         ↓
+即時計算 → ProductCostAnalysis 組件（總成本、利潤、利潤率）
+```
+
+**2. 成本追蹤設計**:
+- 所有成本項目都在 `inventory_items` 統一管理
+- 人工成本 → 建立「人工費」材料項目
+- 包裝成本 → 建立「包裝盒」材料項目  
+- 運費成本 → 建立「運費」材料項目
+- 配件成本 → 建立「K金扣頭」等材料項目
+
+**3. 歷史成本保留**:
+- `inventory_items.cost` - 當前成本（可能隨時間變動）
+- `product_materials.unit_cost_snapshot` - 建立時的成本快照（歷史記錄）
+- 確保過去的產品成本分析保持正確
 
 ### 使用場景範例
 
 #### 場景 1: 建立新產品
-1. 在 `catalog_products` 建立產品基本資訊
+1. 在 `catalog_products` 建立產品基本資訊（標題、描述、售價）
 2. 在 `product_images` 上傳產品圖片
-3. 在 `product_materials` 關聯需要的庫存材料
-4. 系統自動在 `product_costs` 計算總成本
-5. 在 `product_stock` 記錄生產和庫存資訊
+3. 在 `product_materials` 關聯需要的庫存材料（定義配方）
+4. 在 ProductCostAnalysis 頁面即時查看：
+   - 總成本（自動從材料清單累加）
+   - 利潤和利潤率
+5. 發布產品到公開網站
 
 #### 場景 2: 庫存管理
-1. 在 `inventory_items` 新增原材料採購記錄
+1. 在 `inventory_items` 新增材料採購記錄：
+   - 珍珠：`vendor="日本供應商", cost=50, on_hand=100`
+   - 配件：`vendor="K金供應商", cost=150, on_hand=50`
+   - 人工：`vendor="內部", cost=200, on_hand=999`（虛擬庫存）
 2. 使用材料製作產品時，透過 `product_materials` 關聯
-3. 系統自動更新 `inventory_items` 的 `reserved` 數量
-4. 可追蹤每種材料的使用情況和剩餘數量
+3. 系統自動追蹤每種材料的使用情況
+4. 可隨時查看剩餘庫存和總價值
 
-#### 場景 3: 成本分析
-1. `products_full_info` 視圖自動計算每個產品的:
-   - 材料總成本（從 product_materials 累加）
-   - 人工和其他成本（從 product_costs）
-   - 總成本、利潤、利潤率
-2. 管理員可快速查看產品獲利能力
+#### 場景 3: 成本分析與定價
+1. 進入產品編輯頁面，查看 ProductCostAnalysis 區塊
+2. 查看材料清單：
+   - 淡水珍珠 × 1 顆 = $50
+   - K金扣頭 × 1 個 = $150
+   - 人工費 × 1 次 = $200
+3. 查看自動計算結果：
+   - 總成本 = $400
+   - 售價 = $800
+   - 利潤 = $400（利潤率 50%）
+4. 根據利潤率調整售價或優化材料成本
 
 ### Storage 設定
 

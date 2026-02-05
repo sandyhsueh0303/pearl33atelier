@@ -133,22 +133,32 @@ export default function ProductsPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <h1 style={{ margin: 0 }}>產品管理</h1>
           <button
-            onClick={() => {
+            onClick={async () => {
+              console.log('🔄 刷新按鈕被點擊')
               setLoading(true)
-              router.refresh()
-              loadProducts()
+              setError(null)
+              try {
+                await loadProducts()
+                console.log('✅ 產品列表已更新')
+              } catch (e) {
+                console.error('❌ 刷新失敗:', e)
+                setError('刷新失敗，請重試')
+              }
             }}
+            disabled={loading}
             style={{
               padding: '0.5rem 1rem',
-              backgroundColor: '#f5f5f5',
+              backgroundColor: loading ? '#e0e0e0' : '#f5f5f5',
               border: '1px solid #ddd',
               borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '0.875rem'
+              cursor: loading ? 'not-allowed' : 'pointer',
+              fontSize: '0.875rem',
+              opacity: loading ? 0.6 : 1,
+              transition: 'all 0.2s'
             }}
             title="重新載入產品列表"
           >
-            🔄 刷新
+            {loading ? '⏳ 載入中...' : '🔄 刷新'}
           </button>
         </div>
         <Link

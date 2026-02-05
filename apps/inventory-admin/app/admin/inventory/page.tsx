@@ -9,12 +9,23 @@ interface InventoryItem {
   vendor: string | null
   purchase_date: string | null
   cost: number | null
-  on_hand: number
-  reserved: number
+  total_quantity: number
+  allocated_quantity: number
   internal_note: string | null
+  category: string | null
   created_at: string
   updated_at: string
 }
+
+// Category options
+const CATEGORIES = [
+  { value: 'pearl', label: 'Pearl (珍珠)', color: '#e3f2fd', textColor: '#1565c0' },
+  { value: 'pt900', label: 'Pt900 (鉑金900)', color: '#f3e5f5', textColor: '#7b1fa2' },
+  { value: '925_silver', label: '925 Silver (925純銀)', color: '#e8f5e9', textColor: '#2e7d32' },
+  { value: '18k', label: '18K Gold (18K金)', color: '#fff3e0', textColor: '#e65100' },
+  { value: 'package', label: 'Package (包裝)', color: '#fce4ec', textColor: '#c2185b' },
+  { value: 'shipment', label: 'Shipment (運費)', color: '#fff9c4', textColor: '#f57f17' }
+] as const
 
 interface InventorySummary {
   total_items: number
@@ -39,6 +50,7 @@ export default function InventoryPage() {
   
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState('')
+  const [filterCategory, setFilterCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'date' | 'value' | 'quantity'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
@@ -79,11 +91,22 @@ export default function InventoryPage() {
   // Filter and sort items
   const filteredItems = items
     .filter(item => {
-      if (!searchQuery) return true
-      const query = searchQuery.toLowerCase()
-      const vendor = (item.vendor || '').toLowerCase()
-      const notes = (item.internal_note || '').toLowerCase()
-      return vendor.includes(query) || notes.includes(query)
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        const vendor = (item.vendor || '').toLowerCase()
+        const notes = (item.internal_note || '').toLowerCase()
+        if (!vendor.includes(query) && !notes.includes(query)) {
+          return false
+        }
+      }
+      
+      // Category filter
+      if (filterCategory !== 'all' && item.category !== filterCategory) {
+        return false
+      }
+      
+      return true
     })
     .sort((a, b) => {
       let comparison = 0
@@ -93,21 +116,22 @@ export default function InventoryPage() {
         const dateB = b.purchase_date ? new Date(b.purchase_date).getTime() : 0
         comparison = dateA - dateB
       } else if (sortBy === 'value') {
-        const valueA = (a.on_hand + a.reserved) * (a.cost || 0)
-        const valueB = (b.on_hand + b.reserved) * (b.cost || 0)
+        const valueA = (a.total_quantity + a.allocated_quantity) * (a.cost || 0)
+        const valueB = (b.total_quantity + b.allocated_quantity) * (b.cost || 0)
         comparison = valueA - valueB
       } else if (sortBy === 'quantity') {
-        const qtyA = a.on_hand + a.reserved
-        const qtyB = b.on_hand + b.reserved
+        const qtyA = a.total_quantity + a.allocated_quantity
+        const qtyB = b.total_quantity + b.allocated_quantity
         comparison = qtyA - qtyB
       }
       
       return sortOrder === 'asc' ? comparison : -comparison
     })
 
-  const hasFilters = searchQuery !== ''
+  const hasFilters = searchQuery !== '' || filterCategory !== 'all'
   const resetFilters = () => {
     setSearchQuery('')
+    setFilterCategory('all')
     setSortBy('date')
     setSortOrder('desc')
   }
@@ -118,22 +142,32 @@ export default function InventoryPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <h1 style={{ margin: 0 }}>庫存管理</h1>
           <button
-            onClick={() => {
+            onClick={async () => {
+              console.log('🔄 刷新按鈕被點擊')
               setLoading(true)
-              router.refresh()
-              loadInventory()
+              setError(null)
+              try {
+                await loadInventory()
+                console.log('✅ 庫存列表已更新')
+              } catch (e) {
+                console.error('❌ 刷新失敗:', e)
+                setError('刷新失敗，請重試')
+              }
             }}
+            disabled={loading}
             style={{
               padding: '0.5rem 1rem',
-              backgroundColor: '#f5f5f5',
+              backgroundColor: loading ? '#e0e0e0' : '#f5f5f5',
               border: '1px solid #ddd',
               borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '0.875rem'
+              cursor: loading ? 'not-allowed' : 'pointer',
+              fontSize: '0.875rem',
+              opacity: loading ? 0.6 : 1,
+              transition: 'all 0.2s'
             }}
             title="重新載入庫存列表"
           >
-            🔄 刷新
+            {loading ? '⏳ 載入中...' : '🔄 刷新'}
           </button>
         </div>
         <Link
@@ -190,6 +224,30 @@ export default function InventoryPage() {
                 fontSize: '0.875rem'
               }}
             />
+          </div>
+
+          {/* Category Filter */}
+          <div style={{ flex: '0 1 220px' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+              🏷️ Category
+            </label>
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '0.875rem',
+                backgroundColor: 'white'
+              }}
+            >
+              <option value="all">All Categories</option>
+              {CATEGORIES.map(cat => (
+                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              ))}
+            </select>
           </div>
 
           {/* Sort By */}
@@ -372,6 +430,7 @@ export default function InventoryPage() {
             <thead>
               <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>供應商</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Category</th>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>採購日期</th>
                 <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>單價</th>
                 <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>可用</th>
@@ -383,9 +442,10 @@ export default function InventoryPage() {
             </thead>
             <tbody>
               {filteredItems.map((item) => {
-                const quantityTotal = item.on_hand + item.reserved
+                const quantityTotal = item.total_quantity + item.allocated_quantity
                 const unitCost = item.cost || 0
-                const remainingValue = item.on_hand * unitCost
+                const remainingValue = item.total_quantity * unitCost
+                const categoryInfo = CATEGORIES.find(c => c.value === item.category) || CATEGORIES[0]
                 
                 return (
                   <tr key={item.id} style={{ borderBottom: '1px solid #eee' }}>
@@ -393,6 +453,19 @@ export default function InventoryPage() {
                       <div style={{ fontWeight: '500' }}>
                         {item.vendor || '-'}
                       </div>
+                    </td>
+                    <td style={{ padding: '1rem' }}>
+                      <span style={{
+                        padding: '0.375rem 0.75rem',
+                        backgroundColor: categoryInfo.color,
+                        color: categoryInfo.textColor,
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        display: 'inline-block'
+                      }}>
+                        {categoryInfo.label.split(' ')[0]}
+                      </span>
                     </td>
                     <td style={{ padding: '1rem', color: '#666' }}>
                       {item.purchase_date 
@@ -411,11 +484,11 @@ export default function InventoryPage() {
                         borderRadius: '4px',
                         fontWeight: '500'
                       }}>
-                        {item.on_hand}
+                        {item.total_quantity}
                       </span>
                     </td>
                     <td style={{ padding: '1rem', textAlign: 'right', color: '#666' }}>
-                      {item.reserved}
+                      {item.allocated_quantity}
                     </td>
                     <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>
                       {quantityTotal}

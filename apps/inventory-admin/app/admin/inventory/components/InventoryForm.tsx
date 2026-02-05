@@ -16,10 +16,22 @@ export default function InventoryForm({ inventoryId }: Props) {
   
   // Form state
   const [vendor, setVendor] = useState('')
+  const [category, setCategory] = useState('pearl')
   const [purchaseDate, setPurchaseDate] = useState(new Date().toISOString().split('T')[0])
   const [cost, setCost] = useState('')
-  const [onHand, setOnHand] = useState('')
+  const [totalQuantity, setTotalQuantity] = useState('')
+  const [allocatedQuantity, setAllocatedQuantity] = useState('')
   const [notes, setNotes] = useState('')
+  
+  // Category options
+  const CATEGORIES = [
+    { value: 'pearl', label: '珍珠 Pearl' },
+    { value: 'pt900', label: 'Pt900 鉑金' },
+    { value: '925_silver', label: '925 純銀' },
+    { value: '18k', label: '18K 金' },
+    { value: 'package', label: '包裝 Package' },
+    { value: 'shipment', label: '運費 Shipment' }
+  ]
   
   // Load existing inventory if editing
   useEffect(() => {
@@ -35,9 +47,11 @@ export default function InventoryForm({ inventoryId }: Props) {
       const data = await response.json()
       
       setVendor(data.vendor || '')
+      setCategory(data.category || 'pearl')
       setPurchaseDate(data.purchase_date || new Date().toISOString().split('T')[0])
       setCost(data.cost?.toString() || '')
-      setOnHand(data.on_hand?.toString() || '')
+      setTotalQuantity(data.total_quantity?.toString() || '')
+      setAllocatedQuantity(data.allocated_quantity?.toString() || '0')
       setNotes(data.internal_note || '')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load inventory')
@@ -47,7 +61,7 @@ export default function InventoryForm({ inventoryId }: Props) {
   }
   
   // Calculate total value
-  const totalValue = (parseFloat(cost) || 0) * (parseInt(onHand) || 0)
+  const totalValue = (parseFloat(cost) || 0) * (parseInt(totalQuantity) || 0)
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -66,9 +80,11 @@ export default function InventoryForm({ inventoryId }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           vendor: vendor || null,
+          category: category,
           purchase_date: purchaseDate || null,
           cost: cost ? parseFloat(cost) : null,
-          on_hand: onHand ? parseInt(onHand) : 0,
+          total_quantity: totalQuantity ? parseInt(totalQuantity) : 0,
+          allocated_quantity: allocatedQuantity ? parseInt(allocatedQuantity) : 0,
           internal_note: notes || null
         })
       })
@@ -165,6 +181,38 @@ export default function InventoryForm({ inventoryId }: Props) {
             />
           </div>
           
+          {/* Category */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{
+              display: 'block',
+              fontWeight: '500',
+              marginBottom: '0.5rem',
+              fontSize: '0.875rem'
+            }}>
+              分類 <span style={{ color: '#c00' }}>*</span>
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem',
+                boxSizing: 'border-box',
+                backgroundColor: 'white'
+              }}
+            >
+              {CATEGORIES.map(cat => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          
           {/* Purchase Date */}
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{
@@ -191,7 +239,7 @@ export default function InventoryForm({ inventoryId }: Props) {
           </div>
           
           {/* Grid for Cost and Quantity */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
             {/* Unit Cost */}
             <div>
               <label style={{
@@ -231,7 +279,7 @@ export default function InventoryForm({ inventoryId }: Props) {
               </div>
             </div>
             
-            {/* Quantity */}
+            {/* Quantity On Hand */}
             <div>
               <label style={{
                 display: 'block',
@@ -239,14 +287,40 @@ export default function InventoryForm({ inventoryId }: Props) {
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
-                數量 <span style={{ color: '#c00' }}>*</span>
+                庫存總數 <span style={{ color: '#c00' }}>*</span>
               </label>
               <input
                 type="number"
                 required
-                value={onHand}
-                onChange={(e) => setOnHand(e.target.value)}
-                placeholder="件數"
+                value={totalQuantity}
+                onChange={(e) => setTotalQuantity(e.target.value)}
+                placeholder="總件數"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '1rem',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            
+            {/* Allocated Quantity */}
+            <div>
+              <label style={{
+                display: 'block',
+                fontWeight: '500',
+                marginBottom: '0.5rem',
+                fontSize: '0.875rem'
+              }}>
+                已分配數量
+              </label>
+              <input
+                type="number"
+                value={allocatedQuantity}
+                onChange={(e) => setAllocatedQuantity(e.target.value)}
+                placeholder="0"
                 style={{
                   width: '100%',
                   padding: '0.75rem',
@@ -275,7 +349,7 @@ export default function InventoryForm({ inventoryId }: Props) {
                 ${totalValue.toFixed(2)}
               </div>
               <div style={{ fontSize: '0.875rem', color: '#1976d2', marginTop: '0.5rem' }}>
-                {onHand} 件 × ${cost} 每件
+                {totalQuantity} 件 × ${cost} 每件
               </div>
             </div>
           )}

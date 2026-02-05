@@ -21,13 +21,12 @@ export async function GET(
     
     if (error) throw error
     
-    // Get products using this inventory
-    const { data: costs } = await supabase
-      .from('product_costs')
+    // Get products using this inventory (through product_materials)
+    const { data: materials } = await supabase
+      .from('product_materials')
       .select(`
         product_id,
-        pearl_quantity,
-        pearl_unit_cost,
+        quantity_per_unit,
         catalog_products (
           id,
           title,
@@ -38,7 +37,7 @@ export async function GET(
     
     return NextResponse.json({
       ...item,
-      products_using: costs || []
+      products_using: materials || []
     })
     
   } catch (error) {
@@ -65,29 +64,37 @@ export async function PATCH(
     const updates: any = {}
     
     if ('vendor' in body) updates.vendor = body.vendor ?? null
+    if ('category' in body) updates.category = body.category ?? 'pearl'
     if ('purchase_date' in body) updates.purchase_date = body.purchase_date ?? null
     if ('cost' in body) updates.cost = body.cost ?? null
     if ('internal_note' in body) updates.internal_note = body.internal_note ?? null
     
     // Handle quantity updates carefully
-    if ('on_hand' in body) {
-      const { data: current } = await supabase
-        .from('inventory_items')
-        .select('reserved')
-        .eq('id', id)
-        .single()
+    if ('total_quantity' in body) {
+      const newTotalQuantity = body.total_quantity
       
-      const newOnHand = body.on_hand
-      const reserved = current?.reserved || 0
-      
-      if (newOnHand < 0) {
+      if (newTotalQuantity < 0) {
         return NextResponse.json(
-          { error: 'on_hand cannot be negative' },
+          { error: 'total_quantity cannot be negative' },
           { status: 400 }
         )
       }
       
-      updates.on_hand = newOnHand
+      updates.total_quantity = newTotalQuantity
+    }
+    
+    // Handle allocated quantity updates
+    if ('allocated_quantity' in body) {
+      const newAllocatedQuantity = body.allocated_quantity
+      
+      if (newAllocatedQuantity < 0) {
+        return NextResponse.json(
+          { error: 'allocated_quantity cannot be negative' },
+          { status: 400 }
+        )
+      }
+      
+      updates.allocated_quantity = newAllocatedQuantity
     }
     
     const { data, error } = await supabase
@@ -121,14 +128,14 @@ export async function DELETE(
     const { id } = await params
     const supabase = await createAdminClient()
     
-    // Check if used by products
-    const { data: costs } = await supabase
-      .from('product_costs')
+    // Check if used by products (through product_materials)
+    const { data: materials } = await supabase
+      .from('product_materials')
       .select('product_id')
       .eq('inventory_item_id', id)
       .limit(1)
     
-    if (costs && costs.length > 0) {
+    if (materials && materials.length > 0) {
       return NextResponse.json(
         { error: 'Cannot delete inventory used by products' },
         { status: 400 }
