@@ -13,19 +13,40 @@ import type { Database } from '@pearl33atelier/shared/types'
 
 type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
 
-// GET /api/products - List all products
+// GET /api/products - List all products with cost and profit calculations
 export async function GET() {
   try {
     const supabase = await createAdminClient()
 
-    const { data, error } = await supabase
+    const { data: products, error } = await supabase
       .from('catalog_products')
       .select('*')
       .order('created_at', { ascending: false })
 
     if (error) throw error
 
-    return NextResponse.json({ products: data })
+    // Fetch materials for all products to calculate costs
+    const { data: materials } = await supabase
+      .from('product_materials')
+      .select('product_id, quantity_per_unit, unit_cost_snapshot')
+
+    // Calculate cost and profit for each product
+    const productsWithStats = products?.map(product => {
+      const productMaterials = materials?.filter(m => m.product_id === product.id) || []
+      const totalCost = productMaterials.reduce((sum, m) => {
+        return sum + (m.quantity_per_unit * (m.unit_cost_snapshot || 0))
+      }, 0)
+      const sellPrice = product.sell_price || 0
+      const profit = sellPrice - totalCost
+      
+      return {
+        ...product,
+        total_cost: totalCost,
+        profit: profit
+      }
+    }) || []
+
+    return NextResponse.json({ products: productsWithStats })
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch products' },

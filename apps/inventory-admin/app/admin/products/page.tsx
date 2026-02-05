@@ -5,9 +5,15 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+// Extended product type with cost and profit
+interface ProductWithStats extends CatalogProduct {
+  total_cost?: number
+  profit?: number
+}
+
 export default function ProductsPage() {
   const router = useRouter()
-  const [products, setProducts] = useState<CatalogProduct[]>([])
+  const [products, setProducts] = useState<ProductWithStats[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   
@@ -126,6 +132,12 @@ export default function ProductsPage() {
 
   const publishedCount = filteredProducts.filter(p => p.published).length
   const draftCount = filteredProducts.filter(p => !p.published).length
+  
+  // Calculate totals
+  const totalCost = filteredProducts.reduce((sum, p) => sum + (p.total_cost || 0), 0)
+  const totalRevenue = filteredProducts.reduce((sum, p) => sum + (p.sell_price || 0), 0)
+  const totalProfit = filteredProducts.reduce((sum, p) => sum + (p.profit || 0), 0)
+  const totalProfitMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0
 
   return (
     <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1400px', margin: '0 auto' }}>
@@ -339,16 +351,71 @@ export default function ProductsPage() {
       </div>
 
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+        {/* Small Stats */}
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div style={{ 
+            padding: '1rem', 
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            minWidth: '100px'
+          }}>
+            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>總計</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1976d2', margin: 0 }}>
+              {filteredProducts.length}
+            </p>
+          </div>
+          <div style={{ 
+            padding: '1rem', 
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            minWidth: '100px'
+          }}>
+            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>已發布</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2e7d32', margin: 0 }}>
+              {publishedCount}
+            </p>
+          </div>
+          <div style={{ 
+            padding: '1rem', 
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            minWidth: '100px'
+          }}>
+            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>草稿</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ef6c00', margin: 0 }}>
+              {draftCount}
+            </p>
+          </div>
+        </div>
+        
+        {/* Large Financial Stats */}
         <div style={{ 
           flex: 1,
           padding: '1.5rem', 
           backgroundColor: 'white',
           borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          borderLeft: '4px solid #d32f2f'
         }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總計</p>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總成本</p>
+          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#d32f2f', margin: 0 }}>
+            NT$ {totalCost.toLocaleString()}
+          </p>
+        </div>
+        <div style={{ 
+          flex: 1,
+          padding: '1.5rem', 
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          borderLeft: '4px solid #1976d2'
+        }}>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總售價</p>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2', margin: 0 }}>
-            {filteredProducts.length}
+            NT$ {totalRevenue.toLocaleString()}
           </p>
         </div>
         <div style={{ 
@@ -356,23 +423,25 @@ export default function ProductsPage() {
           padding: '1.5rem', 
           backgroundColor: 'white',
           borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          borderLeft: '4px solid ' + (totalProfit >= 0 ? '#4caf50' : '#d32f2f')
         }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>已發布</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2e7d32', margin: 0 }}>
-            {publishedCount}
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總利潤</p>
+          <p style={{ 
+            fontSize: '2rem', 
+            fontWeight: 'bold', 
+            color: totalProfit >= 0 ? '#4caf50' : '#d32f2f', 
+            margin: 0 
+          }}>
+            {totalProfit >= 0 ? '+' : ''}NT$ {totalProfit.toLocaleString()}
           </p>
-        </div>
-        <div style={{ 
-          flex: 1,
-          padding: '1.5rem', 
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>草稿</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ef6c00', margin: 0 }}>
-            {draftCount}
+          <p style={{ 
+            fontSize: '0.875rem', 
+            fontWeight: '600',
+            color: totalProfit >= 0 ? '#2e7d32' : '#c62828', 
+            margin: '0.5rem 0 0 0'
+          }}>
+            {totalProfitMargin.toFixed(1)}% 利潤率
           </p>
         </div>
       </div>
@@ -434,7 +503,9 @@ export default function ProductsPage() {
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Slug</th>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>標題</th>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>珍珠類型</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>總成本</th>
                 <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>售價</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>利潤</th>
                 <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600' }}>操作</th>
               </tr>
             </thead>
@@ -469,8 +540,21 @@ export default function ProductsPage() {
                       {product.pearl_type}
                     </span>
                   </td>
+                  <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '500', color: '#d32f2f' }}>
+                    {product.total_cost !== undefined ? `NT$ ${product.total_cost.toLocaleString()}` : '-'}
+                  </td>
                   <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '500' }}>
                     {product.sell_price ? `NT$ ${product.sell_price.toLocaleString()}` : '-'}
+                  </td>
+                  <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>
+                    {product.profit !== undefined ? (
+                      <span style={{ 
+                        color: product.profit >= 0 ? '#2e7d32' : '#d32f2f',
+                        fontWeight: '700'
+                      }}>
+                        {product.profit >= 0 ? '+' : ''}NT$ {product.profit.toLocaleString()}
+                      </span>
+                    ) : '-'}
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'center' }}>
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
