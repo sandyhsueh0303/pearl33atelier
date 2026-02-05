@@ -10,6 +10,13 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<CatalogProduct[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  
+  // Search and filter states
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all')
+  const [filterPearlType, setFilterPearlType] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<'title' | 'price' | 'created'>('created')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   useEffect(() => {
     loadProducts()
@@ -66,8 +73,59 @@ export default function ProductsPage() {
     }
   }
 
-  const publishedCount = products.filter(p => p.published).length
-  const draftCount = products.filter(p => !p.published).length
+  // Get unique pearl types for filter
+  const pearlTypes = Array.from(new Set(products.map(p => p.pearl_type).filter(Boolean)))
+
+  // Filter and sort products
+  const filteredProducts = products
+    .filter(product => {
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        const title = (product.title || '').toLowerCase()
+        const slug = (product.slug || '').toLowerCase()
+        const description = (product.description || '').toLowerCase()
+        if (!title.includes(query) && !slug.includes(query) && !description.includes(query)) {
+          return false
+        }
+      }
+      
+      // Status filter
+      if (filterStatus === 'published' && !product.published) return false
+      if (filterStatus === 'draft' && product.published) return false
+      
+      // Pearl type filter
+      if (filterPearlType !== 'all' && product.pearl_type !== filterPearlType) return false
+      
+      return true
+    })
+    .sort((a, b) => {
+      let comparison = 0
+      
+      if (sortBy === 'title') {
+        comparison = (a.title || '').localeCompare(b.title || '')
+      } else if (sortBy === 'price') {
+        comparison = (a.sell_price || 0) - (b.sell_price || 0)
+      } else if (sortBy === 'created') {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0
+        comparison = dateA - dateB
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison
+    })
+
+  const hasFilters = searchQuery !== '' || filterStatus !== 'all' || filterPearlType !== 'all'
+  const resetFilters = () => {
+    setSearchQuery('')
+    setFilterStatus('all')
+    setFilterPearlType('all')
+    setSortBy('created')
+    setSortOrder('desc')
+  }
+
+  const publishedCount = filteredProducts.filter(p => p.published).length
+  const draftCount = filteredProducts.filter(p => !p.published).length
 
   return (
     <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1400px', margin: '0 auto' }}>
@@ -120,6 +178,156 @@ export default function ProductsPage() {
         </div>
       )}
 
+      {/* Search and Filter Controls */}
+      <div style={{ 
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        padding: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+          {/* Search Input */}
+          <div style={{ flex: '1 1 300px' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+              🔍 搜尋產品
+            </label>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜尋標題、Slug 或描述..."
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '0.875rem'
+              }}
+            />
+          </div>
+
+          {/* Status Filter */}
+          <div style={{ flex: '0 1 150px' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+              📌 狀態
+            </label>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft')}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '0.875rem',
+                backgroundColor: 'white'
+              }}
+            >
+              <option value="all">全部</option>
+              <option value="published">已發布</option>
+              <option value="draft">草稿</option>
+            </select>
+          </div>
+
+          {/* Pearl Type Filter */}
+          <div style={{ flex: '0 1 180px' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+              💎 珍珠類型
+            </label>
+            <select
+              value={filterPearlType}
+              onChange={(e) => setFilterPearlType(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '0.875rem',
+                backgroundColor: 'white'
+              }}
+            >
+              <option value="all">全部類型</option>
+              {pearlTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sort By */}
+          <div style={{ flex: '0 1 150px' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+              📊 排序方式
+            </label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'title' | 'price' | 'created')}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '0.875rem',
+                backgroundColor: 'white'
+              }}
+            >
+              <option value="created">建立時間</option>
+              <option value="title">標題</option>
+              <option value="price">價格</option>
+            </select>
+          </div>
+
+          {/* Sort Order */}
+          <div style={{ flex: '0 1 130px' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+              ↕️ 順序
+            </label>
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '0.875rem',
+                backgroundColor: 'white'
+              }}
+            >
+              <option value="desc">降冪 ↓</option>
+              <option value="asc">升冪 ↑</option>
+            </select>
+          </div>
+
+          {/* Reset Button */}
+          {hasFilters && (
+            <div style={{ flex: '0 0 auto' }}>
+              <button
+                onClick={resetFilters}
+                style={{
+                  padding: '0.75rem 1rem',
+                  backgroundColor: '#f5f5f5',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  fontWeight: '500'
+                }}
+              >
+                🔄 重置
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Results Count */}
+        <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
+          顯示 <strong>{filteredProducts.length}</strong> / {products.length} 個產品
+          {filterStatus !== 'all' && ` • ${filterStatus === 'published' ? '已發布' : '草稿'}`}
+          {filterPearlType !== 'all' && ` • ${filterPearlType}`}
+        </div>
+      </div>
+
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
         <div style={{ 
           flex: 1,
@@ -130,7 +338,7 @@ export default function ProductsPage() {
         }}>
           <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總計</p>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2', margin: 0 }}>
-            {products.length}
+            {filteredProducts.length}
           </p>
         </div>
         <div style={{ 
@@ -159,7 +367,7 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {products.length === 0 ? (
+      {filteredProducts.length === 0 ? (
         <div style={{ 
           padding: '3rem',
           textAlign: 'center',
@@ -168,22 +376,39 @@ export default function ProductsPage() {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           <p style={{ fontSize: '1.25rem', color: '#666', marginBottom: '1rem' }}>
-            尚無產品
+            {products.length === 0 ? '尚無產品' : '沒有符合條件的產品'}
           </p>
-          <Link
-            href="/admin/products/new"
-            style={{
-              display: 'inline-block',
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#1976d2',
-              color: 'white',
-              borderRadius: '4px',
-              textDecoration: 'none',
-              fontWeight: 'bold'
-            }}
-          >
-            建立第一個產品
-          </Link>
+          {products.length === 0 ? (
+            <Link
+              href="/admin/products/new"
+              style={{
+                display: 'inline-block',
+                padding: '0.75rem 1.5rem',
+                backgroundColor: '#1976d2',
+                color: 'white',
+                borderRadius: '4px',
+                textDecoration: 'none',
+                fontWeight: 'bold'
+              }}
+            >
+              建立第一個產品
+            </Link>
+          ) : (
+            <button
+              onClick={resetFilters}
+              style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: '#1976d2',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              清除篩選條件
+            </button>
+          )}
         </div>
       ) : (
         <div style={{ 
@@ -204,7 +429,7 @@ export default function ProductsPage() {
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <tr key={product.id} style={{ borderBottom: '1px solid #eee' }}>
                   <td style={{ padding: '1rem' }}>
                     <span style={{ 

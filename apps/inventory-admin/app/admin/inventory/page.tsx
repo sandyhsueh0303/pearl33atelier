@@ -36,6 +36,11 @@ export default function InventoryPage() {
   })
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  
+  // Search and filter states
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState<'date' | 'value' | 'quantity'>('date')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   useEffect(() => {
     loadInventory()
@@ -69,6 +74,42 @@ export default function InventoryPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Filter and sort items
+  const filteredItems = items
+    .filter(item => {
+      if (!searchQuery) return true
+      const query = searchQuery.toLowerCase()
+      const vendor = (item.vendor || '').toLowerCase()
+      const notes = (item.internal_note || '').toLowerCase()
+      return vendor.includes(query) || notes.includes(query)
+    })
+    .sort((a, b) => {
+      let comparison = 0
+      
+      if (sortBy === 'date') {
+        const dateA = a.purchase_date ? new Date(a.purchase_date).getTime() : 0
+        const dateB = b.purchase_date ? new Date(b.purchase_date).getTime() : 0
+        comparison = dateA - dateB
+      } else if (sortBy === 'value') {
+        const valueA = (a.on_hand + a.reserved) * (a.cost || 0)
+        const valueB = (b.on_hand + b.reserved) * (b.cost || 0)
+        comparison = valueA - valueB
+      } else if (sortBy === 'quantity') {
+        const qtyA = a.on_hand + a.reserved
+        const qtyB = b.on_hand + b.reserved
+        comparison = qtyA - qtyB
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison
+    })
+
+  const hasFilters = searchQuery !== ''
+  const resetFilters = () => {
+    setSearchQuery('')
+    setSortBy('date')
+    setSortOrder('desc')
   }
 
   return (
@@ -122,6 +163,110 @@ export default function InventoryPage() {
         </div>
       )}
 
+      {/* Search and Filter Controls */}
+      <div style={{ 
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        padding: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          {/* Search Input */}
+          <div style={{ flex: '1 1 300px' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+              🔍 搜尋供應商或備註
+            </label>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="輸入供應商名稱或備註..."
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '0.875rem'
+              }}
+            />
+          </div>
+
+          {/* Sort By */}
+          <div style={{ flex: '0 1 200px' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+              📊 排序方式
+            </label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'date' | 'value' | 'quantity')}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '0.875rem',
+                backgroundColor: 'white'
+              }}
+            >
+              <option value="date">採購日期</option>
+              <option value="value">總價值</option>
+              <option value="quantity">數量</option>
+            </select>
+          </div>
+
+          {/* Sort Order */}
+          <div style={{ flex: '0 1 150px' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+              ↕️ 順序
+            </label>
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '0.875rem',
+                backgroundColor: 'white'
+              }}
+            >
+              <option value="desc">降冪 ↓</option>
+              <option value="asc">升冪 ↑</option>
+            </select>
+          </div>
+
+          {/* Reset Button */}
+          {hasFilters && (
+            <div style={{ flex: '0 0 auto', marginTop: 'auto' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem', visibility: 'hidden' }}>
+                &nbsp;
+              </label>
+              <button
+                onClick={resetFilters}
+                style={{
+                  padding: '0.75rem 1rem',
+                  backgroundColor: '#f5f5f5',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  fontWeight: '500'
+                }}
+              >
+                🔄 重置
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Results Count */}
+        <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
+          顯示 <strong>{filteredItems.length}</strong> / {items.length} 項庫存
+        </div>
+      </div>
+
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
         <div style={{ 
           flex: 1,
@@ -173,7 +318,7 @@ export default function InventoryPage() {
         </div>
       </div>
 
-      {items.length === 0 ? (
+      {filteredItems.length === 0 ? (
         <div style={{ 
           padding: '3rem',
           textAlign: 'center',
@@ -182,22 +327,39 @@ export default function InventoryPage() {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           <p style={{ fontSize: '1.25rem', color: '#666', marginBottom: '1rem' }}>
-            尚無庫存項目
+            {items.length === 0 ? '尚無庫存項目' : '沒有符合條件的庫存項目'}
           </p>
-          <Link
-            href="/admin/inventory/new"
-            style={{
-              display: 'inline-block',
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#1976d2',
-              color: 'white',
-              borderRadius: '4px',
-              textDecoration: 'none',
-              fontWeight: 'bold'
-            }}
-          >
-            建立第一個庫存項目
-          </Link>
+          {items.length === 0 ? (
+            <Link
+              href="/admin/inventory/new"
+              style={{
+                display: 'inline-block',
+                padding: '0.75rem 1.5rem',
+                backgroundColor: '#1976d2',
+                color: 'white',
+                borderRadius: '4px',
+                textDecoration: 'none',
+                fontWeight: 'bold'
+              }}
+            >
+              建立第一個庫存項目
+            </Link>
+          ) : (
+            <button
+              onClick={resetFilters}
+              style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: '#1976d2',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              清除篩選條件
+            </button>
+          )}
         </div>
       ) : (
         <div style={{ 
@@ -220,7 +382,7 @@ export default function InventoryPage() {
               </tr>
             </thead>
             <tbody>
-              {items.map((item) => {
+              {filteredItems.map((item) => {
                 const quantityTotal = item.on_hand + item.reserved
                 const unitCost = item.cost || 0
                 const remainingValue = item.on_hand * unitCost
