@@ -429,7 +429,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              售價 (NT$)
+              售價 (US$)
             </label>
             <input
               type="number"
@@ -448,7 +448,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              原價 (NT$)
+              原價 (US$)
             </label>
             <input
               type="number"

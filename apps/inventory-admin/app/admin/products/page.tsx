@@ -402,7 +402,7 @@ export default function ProductsPage() {
         }}>
           <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總成本</p>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#d32f2f', margin: 0 }}>
-            NT$ {totalCost.toLocaleString()}
+            US$ {totalCost.toLocaleString()}
           </p>
         </div>
         <div style={{ 
@@ -415,7 +415,7 @@ export default function ProductsPage() {
         }}>
           <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總售價</p>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2', margin: 0 }}>
-            NT$ {totalRevenue.toLocaleString()}
+            US$ {totalRevenue.toLocaleString()}
           </p>
         </div>
         <div style={{ 
@@ -433,7 +433,7 @@ export default function ProductsPage() {
             color: totalProfit >= 0 ? '#4caf50' : '#d32f2f', 
             margin: 0 
           }}>
-            {totalProfit >= 0 ? '+' : ''}NT$ {totalProfit.toLocaleString()}
+            {totalProfit >= 0 ? '+' : ''}US$ {totalProfit.toLocaleString()}
           </p>
           <p style={{ 
             fontSize: '0.875rem', 
@@ -541,10 +541,10 @@ export default function ProductsPage() {
                     </span>
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '500', color: '#d32f2f' }}>
-                    {product.total_cost !== undefined ? `NT$ ${product.total_cost.toLocaleString()}` : '-'}
+                    {product.total_cost !== undefined ? `US$ ${product.total_cost.toLocaleString()}` : '-'}
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '500' }}>
-                    {product.sell_price ? `NT$ ${product.sell_price.toLocaleString()}` : '-'}
+                    {product.sell_price ? `US$ ${product.sell_price.toLocaleString()}` : '-'}
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>
                     {product.profit !== undefined ? (
@@ -552,7 +552,7 @@ export default function ProductsPage() {
                         color: product.profit >= 0 ? '#2e7d32' : '#d32f2f',
                         fontWeight: '700'
                       }}>
-                        {product.profit >= 0 ? '+' : ''}NT$ {product.profit.toLocaleString()}
+                        {product.profit >= 0 ? '+' : ''}US$ {product.profit.toLocaleString()}
                       </span>
                     ) : '-'}
                   </td>
