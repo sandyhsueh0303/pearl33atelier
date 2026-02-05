@@ -20,17 +20,18 @@ export async function GET(request: NextRequest) {
     
     // Transform and calculate stats
     const transformed = items?.map(item => {
-      const quantity_total = (item.total_quantity || 0) + (item.allocated_quantity || 0)
+      const quantity_total = item.total_quantity || 0  // 總數 = 庫存總數（採購總數）
+      const quantity_available = (item.total_quantity || 0) - (item.allocated_quantity || 0)  // 可用 = 總數 - 已分配
       const unit_cost = item.cost || 0
       
       return {
         ...item,
         quantity_total,
-        quantity_available: item.total_quantity || 0,
+        quantity_available,
         quantity_used: item.allocated_quantity || 0,
         unit_cost,
-        total_value: quantity_total * unit_cost,
-        remaining_value: (item.total_quantity || 0) * unit_cost
+        total_value: quantity_total * unit_cost,  // 總價值 = 總數 × 單價
+        remaining_value: quantity_available * unit_cost  // 剩餘價值 = 可用 × 單價
       }
     }) || []
     

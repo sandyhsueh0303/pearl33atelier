@@ -435,16 +435,16 @@ export default function InventoryPage() {
                 <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>單價</th>
                 <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>可用</th>
                 <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>已用</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>總計</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>剩餘</th>
                 <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>剩餘價值</th>
                 <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600' }}>操作</th>
               </tr>
             </thead>
             <tbody>
               {filteredItems.map((item) => {
-                const quantityTotal = item.total_quantity + item.allocated_quantity
+                const remainingQuantity = item.total_quantity - item.allocated_quantity
                 const unitCost = item.cost || 0
-                const remainingValue = item.total_quantity * unitCost
+                const remainingValue = remainingQuantity * unitCost
                 const categoryInfo = CATEGORIES.find(c => c.value === item.category) || CATEGORIES[0]
                 
                 return (
@@ -491,7 +491,7 @@ export default function InventoryPage() {
                       {item.allocated_quantity}
                     </td>
                     <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>
-                      {quantityTotal}
+                      {remainingQuantity}
                     </td>
                     <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '700', color: '#1976d2' }}>
                       ${remainingValue.toFixed(2)}
