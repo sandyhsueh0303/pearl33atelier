@@ -45,6 +45,20 @@ export default function Navbar() {
           >
             產品管理
           </Link>
+          <Link 
+            href="/admin/inventory" 
+            style={{ 
+              color: 'white', 
+              textDecoration: 'none',
+              padding: '0.5rem 1rem',
+              borderRadius: '4px',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+          >
+            庫存管理
+          </Link>
         </div>
       </div>
 
