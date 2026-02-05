@@ -38,14 +38,29 @@ pearl33atelier/
 - **描述**: 管理員專用的庫存管理系統
 - **功能**:
   - 🔐 管理員登入認證
+  
+  **產品管理**:
   - ✏️ 產品 CRUD（新增、編輯、刪除）
   - 🖼️ 多圖片上傳和管理
   - ⭐ 設定主圖和圖片排序
   - 📊 產品發布/草稿狀態管理
-  - � 庫存管理（追蹤珍珠和材料）
-  - 💰 成本分析（材料、人工、其他成本）
-  - �🔄 即時數據刷新
+  - 🔍 搜尋、篩選、排序功能
   - 📝 自動生成 slug
+  
+  **庫存管理**:
+  - 📦 庫存項目管理（珍珠、材料）
+  - 💰 成本追蹤（單位成本、供應商、採購日期）
+  - 📊 庫存統計（總項目、總數量、可用數量、總價值）
+  - 🔍 按供應商或備註搜尋
+  - 📈 按日期、價值、數量排序
+  
+  **進階功能**:
+  - 🧾 產品材料清單（BOM）管理
+  - 💵 產品成本分析（材料、人工、其他成本）
+  - 📊 利潤計算和分析
+  - � 產品庫存追蹤（生產、銷售數量）
+  - �🔄 即時數據刷新
+  - � 響應式設計
 
 ## 🚀 開始使用
 
@@ -165,37 +180,117 @@ npm run gen:types
 
 ### Supabase 表結構
 
+#### 核心表 (Core Tables)
+
 1. **catalog_products** - 產品目錄
-   - 產品資訊、價格、庫存狀態
-   - `published` 欄位控制是否顯示在公開網站
-   - 關聯到 `inventory_items`（庫存項目）
+   - 產品基本資訊（標題、描述、價格）
+   - `published` - 是否發布到公開網站
+   - `slug` - URL 友好的唯一識別碼
+   - `pearl_type` - 珍珠類型（淡水珍珠、南洋珍珠等）
+   - `shape` - 形狀、`size_mm` - 尺寸、`material` - 材質
+   - `availability` - 可用性狀態（in_stock/made_to_order/preorder）
+   - `sell_price` / `original_price` - 售價和原價
+   - 關聯到 `inventory_items`（主要珍珠庫存）
 
 2. **product_images** - 產品圖片
-   - 關聯到 `catalog_products`
-   - `is_primary` 標記主圖
-   - `sort_order` 控制顯示順序
-   - 圖片存儲在 Supabase Storage
+   - 關聯到 `catalog_products`（一對多）
+   - `is_primary` - 標記主圖
+   - `sort_order` - 控制圖片顯示順序
+   - `published` - 是否發布該圖片
+   - `storage_path` - Supabase Storage 路徑
 
 3. **inventory_items** - 庫存管理
-   - 追蹤珍珠和材料的庫存
-   - `on_hand` - 庫存數量
-   - `reserved` - 已用於產品的數量
-   - `cost` - 單位成本
-   - `vendor` - 供應商
+   - 追蹤所有珍珠和材料的庫存
+   - `vendor` - 供應商名稱
    - `purchase_date` - 採購日期
+   - `cost` - 單位成本
+   - `on_hand` - 現有庫存數量
+   - `reserved` - 已保留/已用於產品的數量
+   - `internal_note` - 內部備註
 
-4. **product_costs** - 產品成本明細
-   - 關聯到 `catalog_products` 和 `inventory_items`
-   - `pearl_quantity` - 珍珠數量
-   - `pearl_unit_cost` - 珍珠單價
-   - `material_cost` - 材料成本
+#### 進階表 (Advanced Tables)
+
+4. **product_materials** - 產品材料清單（BOM - Bill of Materials）
+   - 關聯 `catalog_products` 和 `inventory_items`（多對多）
+   - `quantity_per_unit` - 每個產品需要的材料數量
+   - `unit_cost_snapshot` - 建立時的成本快照
+   - `sort_order` - 材料顯示順序
+   - `notes` - 材料使用備註
+   - 📌 **用途**: 精確追蹤每個產品使用了哪些庫存材料
+
+5. **product_costs** - 產品成本明細
+   - 關聯到 `catalog_products`（一對一）
+   - `material_cost` - 材料總成本（從 product_materials 計算）
    - `labor_cost` - 人工成本
-   - `misc_cost` - 其他成本
-   - 用於計算產品的總成本和利潤
+   - `misc_cost` - 其他雜項成本
+   - `cost_notes` - 成本備註
+   - 📊 **自動計算**: 總成本、利潤、利潤率
 
-5. **admin_users** - 管理員帳號
+6. **product_stock** - 產品庫存追蹤
+   - 關聯到 `catalog_products`（一對一）
+   - `quantity_produced` - 已生產數量
+   - `quantity_available` - 可販售數量
+   - `quantity_reserved` - 已預訂數量
+   - `quantity_sold` - 已售出數量
+   - `last_production_date` - 最後生產日期
+   - `last_production_quantity` - 最後生產數量
+   - 📦 **用途**: 追蹤成品庫存狀態
+
+7. **admin_users** - 管理員帳號
    - 關聯到 `auth.users`
-   - 控制後台存取權限
+   - 控制後台系統存取權限
+
+#### 視圖 (Views)
+
+8. **products_full_info** - 產品完整資訊視圖
+   - 整合所有產品相關資料
+   - 包含成本、利潤、庫存、材料清單等
+   - 📈 **自動計算欄位**:
+     - `total_cost` - 總成本
+     - `profit` - 利潤
+     - `profit_margin` - 利潤率
+     - `pearl_cost` - 珍珠成本
+     - `materials` - 材料清單 JSON
+
+### 資料庫關係架構
+
+```
+catalog_products (產品)
+    ├── product_images (多張圖片)
+    ├── product_materials (使用多種材料) → inventory_items
+    ├── product_costs (成本明細)
+    ├── product_stock (庫存追蹤)
+    └── inventory_item_id (主要珍珠) → inventory_items
+
+inventory_items (庫存)
+    ├── 被 product_materials 引用（多個產品可使用同一材料）
+    └── 被 catalog_products 引用（作為主要珍珠）
+
+products_full_info (視圖)
+    └── 整合所有產品相關資料，自動計算成本和利潤
+```
+
+### 使用場景範例
+
+#### 場景 1: 建立新產品
+1. 在 `catalog_products` 建立產品基本資訊
+2. 在 `product_images` 上傳產品圖片
+3. 在 `product_materials` 關聯需要的庫存材料
+4. 系統自動在 `product_costs` 計算總成本
+5. 在 `product_stock` 記錄生產和庫存資訊
+
+#### 場景 2: 庫存管理
+1. 在 `inventory_items` 新增原材料採購記錄
+2. 使用材料製作產品時，透過 `product_materials` 關聯
+3. 系統自動更新 `inventory_items` 的 `reserved` 數量
+4. 可追蹤每種材料的使用情況和剩餘數量
+
+#### 場景 3: 成本分析
+1. `products_full_info` 視圖自動計算每個產品的:
+   - 材料總成本（從 product_materials 累加）
+   - 人工和其他成本（從 product_costs）
+   - 總成本、利潤、利潤率
+2. 管理員可快速查看產品獲利能力
 
 ### Storage 設定
 
@@ -299,6 +394,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key_here
 - [`API_DOCUMENTATION.md`](./apps/inventory-admin/API_DOCUMENTATION.md) - API 端點文檔
 - [`TESTING_ROUTES.md`](./TESTING_ROUTES.md) - 測試路由說明
 - [`USAGE_EXAMPLES.md`](./packages/shared/USAGE_EXAMPLES.md) - 共享套件使用範例
+- [`database.types.ts`](./packages/shared/types/database.types.ts) - 完整資料庫類型定義
+
+### 資料庫相關 SQL
+- [`slug_constraints.sql`](./docs/sql/slug_constraints.sql) - Slug 唯一性約束
 
 ## 🐛 已知問題和解決方案
 
@@ -328,4 +427,4 @@ Private - All rights reserved
 
 **開發者**: Sandy Hsueh  
 **專案**: 33 Pearl Atelier  
-**更新日期**: 2026-02-04
+**更新日期**: 2026-02-05

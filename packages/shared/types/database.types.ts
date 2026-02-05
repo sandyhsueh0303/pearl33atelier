@@ -141,51 +141,45 @@ export type Database = {
           cost_notes: string | null
           created_at: string | null
           id: string
-          inventory_item_id: string | null
           labor_cost: number | null
           material_cost: number | null
           misc_cost: number | null
-          pearl_quantity: number | null
-          pearl_unit_cost: number | null
-          product_id: string | null
+          product_id: string
+          updated_at: string | null
         }
         Insert: {
           cost_notes?: string | null
           created_at?: string | null
-          id: string
-          inventory_item_id?: string | null
+          id?: string
           labor_cost?: number | null
           material_cost?: number | null
           misc_cost?: number | null
-          pearl_quantity?: number | null
-          pearl_unit_cost?: number | null
-          product_id?: string | null
+          product_id: string
+          updated_at?: string | null
         }
         Update: {
           cost_notes?: string | null
           created_at?: string | null
           id?: string
-          inventory_item_id?: string | null
           labor_cost?: number | null
           material_cost?: number | null
           misc_cost?: number | null
-          pearl_quantity?: number | null
-          pearl_unit_cost?: number | null
-          product_id?: string | null
+          product_id?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "product_costs_inventory_item_id_fkey"
-            columns: ["inventory_item_id"]
-            isOneToOne: false
-            referencedRelation: "inventory_items"
+            foreignKeyName: "product_costs_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "catalog_products"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "product_costs_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: true
-            referencedRelation: "catalog_products"
+            referencedRelation: "products_full_info"
             referencedColumns: ["id"]
           },
         ]
@@ -226,17 +220,183 @@ export type Database = {
             referencedRelation: "catalog_products"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "product_images_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products_full_info"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_materials: {
+        Row: {
+          created_at: string | null
+          id: string
+          inventory_item_id: string
+          notes: string | null
+          product_id: string
+          quantity_per_unit: number
+          sort_order: number | null
+          unit_cost_snapshot: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          inventory_item_id: string
+          notes?: string | null
+          product_id: string
+          quantity_per_unit?: number
+          sort_order?: number | null
+          unit_cost_snapshot?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          inventory_item_id?: string
+          notes?: string | null
+          product_id?: string
+          quantity_per_unit?: number
+          sort_order?: number | null
+          unit_cost_snapshot?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_materials_inventory_item_id_fkey"
+            columns: ["inventory_item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_materials_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_materials_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products_full_info"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_stock: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_production_date: string | null
+          last_production_quantity: number | null
+          notes: string | null
+          product_id: string
+          quantity_available: number | null
+          quantity_produced: number | null
+          quantity_reserved: number | null
+          quantity_sold: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_production_date?: string | null
+          last_production_quantity?: number | null
+          notes?: string | null
+          product_id: string
+          quantity_available?: number | null
+          quantity_produced?: number | null
+          quantity_reserved?: number | null
+          quantity_sold?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_production_date?: string | null
+          last_production_quantity?: number | null
+          notes?: string | null
+          product_id?: string
+          quantity_available?: number | null
+          quantity_produced?: number | null
+          quantity_reserved?: number | null
+          quantity_sold?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_stock_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "catalog_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_stock_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "products_full_info"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      products_full_info: {
+        Row: {
+          availability: Database["public"]["Enums"]["availability_kind"] | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          inventory_item_id: string | null
+          labor_cost: number | null
+          last_production_date: string | null
+          material: string | null
+          material_cost: number | null
+          materials: Json | null
+          misc_cost: number | null
+          note: string | null
+          original_price: number | null
+          pearl_cost: number | null
+          pearl_type: Database["public"]["Enums"]["pearl_type"] | null
+          preorder_note: string | null
+          profit: number | null
+          profit_margin: number | null
+          published: boolean | null
+          published_at: string | null
+          quantity_available: number | null
+          quantity_produced: number | null
+          quantity_reserved: number | null
+          quantity_sold: number | null
+          sell_price: number | null
+          shape: string | null
+          size_mm: number | null
+          slug: string | null
+          title: string | null
+          total_cost: number | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_products_inventory_item_id_fkey"
+            columns: ["inventory_item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       adjust_inventory_quantity: {
         Args: { item_id: string; quantity_change: number }
         Returns: undefined
       }
+      get_product_pearl_cost: { Args: { prod_id: string }; Returns: number }
       get_product_profit: {
         Args: { prod_id: string }
         Returns: {
@@ -247,6 +407,10 @@ export type Database = {
       }
       get_product_total_cost: { Args: { prod_id: string }; Returns: number }
       is_admin: { Args: never; Returns: boolean }
+      produce_product: {
+        Args: { prod_id: string; produce_quantity: number }
+        Returns: Json
+      }
       publish_product: {
         Args: { product_id: string }
         Returns: {
@@ -275,6 +439,10 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      sell_product: {
+        Args: { prod_id: string; sell_quantity: number }
+        Returns: Json
       }
       unpublish_product: {
         Args: { product_id: string }
