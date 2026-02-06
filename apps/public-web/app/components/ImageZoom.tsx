@@ -4,10 +4,13 @@ interface ImageZoomProps {
   src: string;
   alt?: string;
   style?: React.CSSProperties;
+  zoomScale?: number;
 }
 
-const ImageZoom: React.FC<ImageZoomProps> = ({ src, alt = '', style }) => {
+const ImageZoom: React.FC<ImageZoomProps> = ({ src, alt = '', style, zoomScale = 2 }) => {
   const [isZoomed, setIsZoomed] = useState(false);
+  const boundedZoomScale = Math.max(1, zoomScale);
+  const popoutMaxViewport = Math.max(40, 90 / boundedZoomScale);
 
   const toggleZoom = () => setIsZoomed((prev) => !prev);
 
@@ -62,12 +65,13 @@ const ImageZoom: React.FC<ImageZoomProps> = ({ src, alt = '', style }) => {
             src={src}
             alt={alt}
             style={{
-              maxWidth: '90vw',
-              maxHeight: '90vh',
+              maxWidth: `${popoutMaxViewport}vw`,
+              maxHeight: `${popoutMaxViewport}vh`,
               objectFit: 'contain',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
               borderRadius: '4px',
               backgroundColor: '#fff',
+              transform: `scale(${boundedZoomScale})`,
               // 防止點擊圖片本身也關閉（可選）
               pointerEvents: 'auto',
             }}
