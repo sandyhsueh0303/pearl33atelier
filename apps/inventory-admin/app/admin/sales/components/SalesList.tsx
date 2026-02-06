@@ -27,7 +27,7 @@ interface SalesRecord {
 
 interface SalesListProps {
   onRefresh?: () => void;
-  onEdit?: (sale: SaleRecord) => void;
+  onEdit?: (sale: SalesRecord) => void;
 }
 
 export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
