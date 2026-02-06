@@ -59,8 +59,18 @@ pearl33atelier/
   - 💵 產品成本分析和利潤計算
   - 📊 即時成本計算（從材料自動累加）
   - 💰 利潤率分析
-  - � 即時數據刷新
+  - 🔄 即時數據刷新
   - 📱 響應式設計
+  
+  **銷售管理**:
+  - 💰 銷售記錄管理（新增、查看、刪除）
+  - 📊 即時統計（總訂單、營收、成本、利潤）
+  - 🎯 產品快速售出（從產品頁一鍵記錄）
+  - 💵 自動計算利潤和利潤率
+  - 📸 成本快照（保留歷史成本記錄）
+  - 🔍 搜尋、排序、篩選功能
+  - 🔒 RLS 安全保護（僅管理員可見）
+  - 📝 客戶資訊和銷售平台記錄
 
 ## 🚀 開始使用
 
@@ -222,6 +232,32 @@ npm run gen:types
    - 關聯到 `auth.users`
    - 控制後台系統存取權限
 
+6. **sales_records** - 銷售記錄
+   - 記錄每筆銷售交易
+   - `sale_date` - 銷售日期
+   - `product_id` - 關聯到 `catalog_products`
+   - `quantity` - 銷售數量
+   - `unit_price` / `total_price` - 實際售價
+   - `unit_cost` / `total_cost` - 成本快照（記錄當時的成本）
+   - `profit` / `profit_margin` - 利潤和利潤率
+   - `customer_name` - 客戶名稱（可選）
+   - `order_number` - 訂單編號（可選）
+   - `platform` - 銷售平台（website/instagram/line 等）
+   - `notes` - 備註
+   - � **安全保護**: 啟用 RLS，只有 `admin_users` 可以訪問
+   - �💡 **設計理念**: 快速記錄銷售，保存成本快照以追蹤歷史利潤
+
+#### 分析視圖 (Views)
+
+- **product_sales_summary** - 產品銷售摘要
+  - 顯示每個產品的銷售統計（訂單數、銷售數量、營收、利潤）
+  - 計算平均利潤率
+  - 顯示最近和首次銷售日期
+
+- **sales_overview** - 銷售總覽
+  - 按日/週/月統計銷售數據
+  - 提供時間維度的銷售分析
+
 ### 成本計算邏輯
 
 系統採用**即時計算**方式，不儲存成本數據：
@@ -250,6 +286,7 @@ catalog_products (產品主表)
     ├── product_images (產品圖片，一對多)
     ├── product_materials (產品材料清單 BOM，一對多)
     │   └── → inventory_items (連結到庫存材料)
+    ├── sales_records (銷售記錄，一對多)
     └── inventory_item_id (主要珍珠，可選)
         └── → inventory_items (連結到主珍珠)
 
@@ -257,6 +294,9 @@ inventory_items (庫存材料倉庫)
     ├── 儲存所有材料：珍珠、配件、包裝、人工等
     ├── 被 product_materials 引用（多個產品可使用同一材料）
     └── 被 catalog_products.inventory_item_id 引用（作為主要珍珠）
+
+sales_records (銷售記錄)
+    └── product_id → catalog_products (記錄哪個產品被銷售)
 ```
 
 ### 數據流程說明
@@ -313,6 +353,32 @@ inventory_items (庫存材料倉庫)
    - 售價 = $800
    - 利潤 = $400（利潤率 50%）
 4. 根據利潤率調整售價或優化材料成本
+
+#### 場景 4: 銷售記錄與追踪
+1. 顧客購買產品時，在 `sales_records` 記錄銷售：
+   - 產品、數量、實際售價
+   - 當時的成本快照（自動從 `product_materials` 計算）
+   - 自動計算利潤和利潤率
+   - 記錄客戶名稱、訂單編號、銷售平台（可選）
+2. 查看 `product_sales_summary` 視圖：
+   - 每個產品的總銷售數量
+   - 總營收和總利潤
+   - 平均利潤率
+3. 查看 `sales_overview` 視圖：
+   - 按日/週/月統計銷售數據
+   - 追蹤營收趨勢和利潤表現
+4. 💡 **成本快照的重要性**: 
+   - 即使未來材料成本變動，過去銷售的利潤記錄仍然準確
+   - 可以分析歷史定價策略的有效性
+
+**4. 銷售追蹤流程**:
+```
+產品銷售 → sales_records (記錄售價、成本快照、利潤)
+         ↓
+產品統計 → product_sales_summary (每個產品的銷售表現)
+         ↓
+時間分析 → sales_overview (日/週/月銷售趨勢)
+```
 
 ### Storage 設定
 
@@ -414,12 +480,18 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key_here
 
 - [`ADMIN_SETUP.md`](./apps/inventory-admin/ADMIN_SETUP.md) - 管理員系統設定指南
 - [`API_DOCUMENTATION.md`](./apps/inventory-admin/API_DOCUMENTATION.md) - API 端點文檔
+- [`SALES_MANAGEMENT.md`](./apps/inventory-admin/SALES_MANAGEMENT.md) - 銷售管理系統指南
 - [`TESTING_ROUTES.md`](./TESTING_ROUTES.md) - 測試路由說明
 - [`USAGE_EXAMPLES.md`](./packages/shared/USAGE_EXAMPLES.md) - 共享套件使用範例
 - [`database.types.ts`](./packages/shared/types/database.types.ts) - 完整資料庫類型定義
 
 ### 資料庫相關 SQL
 - [`slug_constraints.sql`](./docs/sql/slug_constraints.sql) - Slug 唯一性約束
+
+### Supabase Migrations
+- [`20260206_create_sales_tracking.sql`](./supabase/migrations/20260206_create_sales_tracking.sql) - 銷售追踪系統（sales_records 表及視圖）
+- [`20260206_sales_records_rls.sql`](./supabase/migrations/20260206_sales_records_rls.sql) - 銷售記錄安全政策（RLS）
+- [`test_rls.sql`](./supabase/test_rls.sql) - RLS 測試腳本
 
 ## 🐛 已知問題和解決方案
 

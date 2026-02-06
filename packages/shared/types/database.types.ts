@@ -175,6 +175,13 @@ export type Database = {
             referencedRelation: "catalog_products"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "product_images_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_sales_summary"
+            referencedColumns: ["product_id"]
+          },
         ]
       }
       product_materials: {
@@ -226,11 +233,122 @@ export type Database = {
             referencedRelation: "catalog_products"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "product_materials_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_sales_summary"
+            referencedColumns: ["product_id"]
+          },
+        ]
+      }
+      sales_records: {
+        Row: {
+          created_at: string | null
+          customer_name: string | null
+          id: string
+          notes: string | null
+          order_number: string | null
+          platform: string | null
+          product_id: string
+          profit: number
+          profit_margin: number | null
+          quantity: number
+          sale_date: string
+          total_cost: number
+          total_price: number
+          unit_cost: number
+          unit_price: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_name?: string | null
+          id?: string
+          notes?: string | null
+          order_number?: string | null
+          platform?: string | null
+          product_id: string
+          profit: number
+          profit_margin?: number | null
+          quantity?: number
+          sale_date?: string
+          total_cost: number
+          total_price: number
+          unit_cost: number
+          unit_price: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_name?: string | null
+          id?: string
+          notes?: string | null
+          order_number?: string | null
+          platform?: string | null
+          product_id?: string
+          profit?: number
+          profit_margin?: number | null
+          quantity?: number
+          sale_date?: string
+          total_cost?: number
+          total_price?: number
+          unit_cost?: number
+          unit_price?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_records_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_records_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_sales_summary"
+            referencedColumns: ["product_id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      product_sales_summary: {
+        Row: {
+          avg_profit_margin: number | null
+          current_cost: number | null
+          current_price: number | null
+          current_profit: number | null
+          first_sale_date: string | null
+          last_sale_date: string | null
+          product_id: string | null
+          slug: string | null
+          title: string | null
+          total_cost: number | null
+          total_orders: number | null
+          total_profit: number | null
+          total_revenue: number | null
+          total_units_sold: number | null
+        }
+        Relationships: []
+      }
+      sales_overview: {
+        Row: {
+          avg_margin: number | null
+          cost: number | null
+          day: string | null
+          month: string | null
+          profit: number | null
+          revenue: number | null
+          total_orders: number | null
+          total_units: number | null
+          week: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       adjust_inventory_quantity: {
