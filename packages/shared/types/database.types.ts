@@ -434,7 +434,7 @@ export type Database = {
       }
     }
     Enums: {
-      availability_kind: "IN_STOCK" | "PREORDER"
+      availability_kind: "IN_STOCK" | "PREORDER" | "OUT_OF_STOCK"
       pearl_type:
         | "WhiteAkoya"
         | "GreyAkoya"
@@ -570,7 +570,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      availability_kind: ["IN_STOCK", "PREORDER"],
+      availability_kind: ["IN_STOCK", "PREORDER", "OUT_OF_STOCK"],
       pearl_type: [
         "WhiteAkoya",
         "GreyAkoya",

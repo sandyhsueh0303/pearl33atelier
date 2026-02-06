@@ -205,14 +205,30 @@ export default function ProductList({ products }: ProductListProps) {
                         )}
                       </div>
 
-                      <span style={{
-                        padding: '6px 12px',
-                        backgroundColor: product.availability === 'IN_STOCK' ? '#e8f5e9' : colors.champagne,
-                        color: product.availability === 'IN_STOCK' ? '#2e7d32' : colors.gold,
-                        fontSize: typography.fontSize.xs,
-                        fontWeight: typography.fontWeight.medium,
-                      }}>
-                        {product.availability === 'IN_STOCK' ? 'In Stock' : 'Pre-order'}
+                      <span
+                        style={{
+                          padding: '6px 12px',
+                          backgroundColor:
+                            product.availability === 'IN_STOCK'
+                              ? '#e8f5e9'
+                              : product.availability === 'OUT_OF_STOCK'
+                              ? '#fbe9e7'
+                              : colors.champagne,
+                          color:
+                            product.availability === 'IN_STOCK'
+                              ? '#2e7d32'
+                              : product.availability === 'OUT_OF_STOCK'
+                              ? '#b71c1c'
+                              : colors.gold,
+                          fontSize: typography.fontSize.xs,
+                          fontWeight: typography.fontWeight.medium,
+                        }}
+                      >
+                        {product.availability === 'IN_STOCK'
+                          ? 'In Stock'
+                          : product.availability === 'OUT_OF_STOCK'
+                          ? 'Out of Stock'
+                          : 'Pre-order'}
                       </span>
                     </div>
                   </div>
