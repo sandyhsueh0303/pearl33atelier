@@ -11,6 +11,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/app/utils/supabase'
 import { logger } from '@/app/utils/logger'
+
+import sharp from 'sharp'
 import { STORAGE_BUCKET, STORAGE_FOLDER } from '@pearl33atelier/shared'
 
 // POST /api/products/[id]/images - Upload images
@@ -47,40 +49,55 @@ export async function POST(
 
     const uploadedImages = []
 
+    // Define sizes
+    const sizes = [
+      { name: 'thumb', width: 200 },
+      { name: 'medium', width: 600 },
+      { name: 'large', width: 1200 },
+    ]
+
     for (const file of files) {
-      // Upload to Supabase Storage
+      const arrayBuffer = await file.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
       const fileExt = file.name.split('.').pop()
-      const fileName = `${id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-      const filePath = `${STORAGE_FOLDER}/${fileName}` // 'uploads/123/abc.jpg'
+      const baseName = `${id}/${Date.now()}-${Math.random().toString(36).substring(7)}`
+      let mainImagePath = ''
+      let mainImageRecord = null
 
-      const { error: uploadError } = await supabase.storage
-        .from(STORAGE_BUCKET) // 'product-images' bucket
-        .upload(filePath, file)
-
-      if (uploadError) {
-        logger.error('Image upload failed', uploadError)
-        continue
+      for (const size of sizes) {
+        const resized = await sharp(buffer).resize({ width: size.width }).toBuffer()
+        const filePath = `${STORAGE_FOLDER}/${baseName}-${size.name}.${fileExt}`
+        const { error: uploadError } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(filePath, resized)
+        if (uploadError) {
+          logger.error(`Image upload failed (${size.name})`, uploadError)
+          continue
+        }
+        // Only create DB record for the largest (main) image
+        if (size.name === 'large') {
+          mainImagePath = filePath
+          const { data: imageRecord, error: dbError } = await supabase
+            .from('product_images')
+            .insert({
+              product_id: id,
+              storage_path: filePath,
+              published: false,
+              is_primary: false,
+              sort_order: nextSortOrder++
+            })
+            .select()
+            .single()
+          if (dbError) {
+            logger.error('Failed to create image record', dbError)
+            continue
+          }
+          mainImageRecord = imageRecord
+        }
       }
-
-      // Create database record
-      const { data: imageRecord, error: dbError } = await supabase
-        .from('product_images')
-        .insert({
-          product_id: id,
-          storage_path: filePath,
-          published: false,
-          is_primary: false,
-          sort_order: nextSortOrder++
-        })
-        .select()
-        .single()
-
-      if (dbError) {
-        logger.error('Failed to create image record', dbError)
-        continue
+      if (mainImageRecord) {
+        uploadedImages.push(mainImageRecord)
       }
-
-      uploadedImages.push(imageRecord)
     }
 
     return NextResponse.json({ images: uploadedImages }, { status: 201 })

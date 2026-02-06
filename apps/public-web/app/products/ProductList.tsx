@@ -166,20 +166,7 @@ export default function ProductList({ products }: ProductListProps) {
                       )}
                     </div>
 
-                    {product.description && (
-                      <p style={{ 
-                        color: colors.textSecondary,
-                        fontSize: typography.fontSize.sm,
-                        marginBottom: spacing.md,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        lineHeight: typography.lineHeight.relaxed,
-                      }}>
-                        {product.description}
-                      </p>
-                    )}
+                    {/* Description removed from card view; only shown on detail page */}
 
                     <div style={{ 
                       display: 'flex',
