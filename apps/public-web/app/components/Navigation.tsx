@@ -3,21 +3,19 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { colors, typography, transitions, spacing } from '../constants/design'
-import { useLanguage } from '../i18n'
 
 export default function Navigation() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
-  const { lang, setLang, t } = useLanguage()
 
   const navItems = [
-    { key: 'home', href: '/' },
-    { key: 'products', href: '/products' },
-    { key: 'about', href: '/about' },
-    { key: 'careGuide', href: '/care-guide' },
-    { key: 'customServices', href: '/custom-services' },
-    { key: 'faq', href: '/faq' },
-    { key: 'blog', href: '/blog' },
-    { key: 'contact', href: '/contact' },
+    { label: 'Home', href: '/' },
+    { label: 'Collection', href: '/products' },
+    { label: 'About', href: '/about' },
+    { label: 'Care Guide', href: '/care-guide' },
+    { label: 'Custom', href: '/custom-services' },
+    { label: 'FAQ', href: '/faq' },
+    { label: 'Journal', href: '/blog' },
+    { label: 'Contact', href: '/contact' },
   ]
 
   return (
@@ -78,50 +76,9 @@ export default function Navigation() {
                   : '2px solid transparent',
               }}
             >
-              {t('nav', item.key)}
+              {item.label}
             </Link>
           ))}
-
-          {/* Language Switcher */}
-          <div style={{
-            display: 'flex',
-            gap: '4px',
-            marginLeft: spacing.md,
-            paddingLeft: spacing.md,
-            borderLeft: `1px solid ${colors.lightGray}`,
-          }}>
-            <button
-              onClick={() => setLang('zh')}
-              style={{
-                padding: '4px 8px',
-                fontSize: typography.fontSize.xs,
-                fontWeight: lang === 'zh' ? typography.fontWeight.semibold : typography.fontWeight.normal,
-                color: lang === 'zh' ? colors.gold : colors.textLight,
-                backgroundColor: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                transition: transitions.fast,
-              }}
-            >
-              中
-            </button>
-            <span style={{ color: colors.lightGray }}>|</span>
-            <button
-              onClick={() => setLang('en')}
-              style={{
-                padding: '4px 8px',
-                fontSize: typography.fontSize.xs,
-                fontWeight: lang === 'en' ? typography.fontWeight.semibold : typography.fontWeight.normal,
-                color: lang === 'en' ? colors.gold : colors.textLight,
-                backgroundColor: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                transition: transitions.fast,
-              }}
-            >
-              EN
-            </button>
-          </div>
         </div>
       </div>
     </nav>

@@ -3,21 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions } from './constants/design'
-import { useLanguage } from './i18n'
 
 export default function HomePage() {
   const [hoveredCTA, setHoveredCTA] = useState(false)
-  const { t } = useLanguage()
-
-  // Helper to handle line breaks in translations
-  const renderWithBreaks = (text: string) => {
-    return text.split('\n').map((line, i, arr) => (
-      <span key={i}>
-        {line}
-        {i < arr.length - 1 && <br />}
-      </span>
-    ))
-  }
 
   return (
     <div style={{
@@ -45,7 +33,7 @@ export default function HomePage() {
           marginBottom: spacing.lg,
           textTransform: 'uppercase',
         }}>
-          {t('home', 'subtitle')}
+          Fine Pearl Jewelry
         </div>
 
         {/* Main Heading */}
@@ -58,7 +46,7 @@ export default function HomePage() {
           lineHeight: typography.lineHeight.tight,
           maxWidth: '900px',
         }}>
-          {t('home', 'title')}
+          33 Pearl Atelier
         </h1>
 
         {/* Description */}
@@ -71,7 +59,9 @@ export default function HomePage() {
           maxWidth: '600px',
           letterSpacing: '0.01em',
         }}>
-          {renderWithBreaks(t('home', 'description'))}
+          Handcrafted Pearl Jewelry Collection
+          <br />
+          Each piece is a unique work of art
         </p>
 
         {/* CTA Button */}
@@ -93,7 +83,7 @@ export default function HomePage() {
             cursor: 'pointer',
           }}
         >
-          {t('home', 'cta')}
+          Explore Collection
         </Link>
 
         {/* Scroll Indicator */}
@@ -105,7 +95,7 @@ export default function HomePage() {
           letterSpacing: '0.15em',
           textTransform: 'uppercase',
         }}>
-          {t('home', 'scroll')}
+          Scroll to Discover
         </div>
       </section>
 
@@ -122,7 +112,7 @@ export default function HomePage() {
           marginBottom: spacing.xl,
           letterSpacing: '0.02em',
         }}>
-          {t('home', 'featuresTitle')}
+          The Art of Pearls
         </h2>
 
         <div style={{
@@ -150,14 +140,16 @@ export default function HomePage() {
               color: colors.darkGray,
               marginBottom: spacing.md,
             }}>
-              {t('home', 'feature1Title')}
+              Selected Pearls
             </h3>
             <p style={{
               fontSize: typography.fontSize.base,
               color: colors.textSecondary,
               lineHeight: typography.lineHeight.relaxed,
             }}>
-              {renderWithBreaks(t('home', 'feature1Desc'))}
+              Carefully selected premium pearls from around the world
+              <br />
+              Each professionally certified
             </p>
           </div>
 
@@ -178,14 +170,16 @@ export default function HomePage() {
               color: colors.darkGray,
               marginBottom: spacing.md,
             }}>
-              {t('home', 'feature2Title')}
+              Handcrafted
             </h3>
             <p style={{
               fontSize: typography.fontSize.base,
               color: colors.textSecondary,
               lineHeight: typography.lineHeight.relaxed,
             }}>
-              {renderWithBreaks(t('home', 'feature2Desc'))}
+              Crafted by master artisans
+              <br />
+              Custom-made jewelry tailored for you
             </p>
           </div>
 
@@ -206,14 +200,16 @@ export default function HomePage() {
               color: colors.darkGray,
               marginBottom: spacing.md,
             }}>
-              {t('home', 'feature3Title')}
+              Timeless Quality
             </h3>
             <p style={{
               fontSize: typography.fontSize.base,
               color: colors.textSecondary,
               lineHeight: typography.lineHeight.relaxed,
             }}>
-              {renderWithBreaks(t('home', 'feature3Desc'))}
+              Premium materials and craftsmanship
+              <br />
+              Ensuring lasting beauty
             </p>
           </div>
         </div>
@@ -232,7 +228,7 @@ export default function HomePage() {
           marginBottom: spacing.lg,
           letterSpacing: '0.02em',
         }}>
-          {t('home', 'ctaSectionTitle')}
+          Begin Your Custom Journey
         </h2>
         <p style={{
           fontSize: typography.fontSize.lg,
@@ -242,7 +238,9 @@ export default function HomePage() {
           maxWidth: '600px',
           margin: `0 auto ${spacing['2xl']} auto`,
         }}>
-          {renderWithBreaks(t('home', 'ctaSectionDesc'))}
+          We offer complete customization services, from pearl selection to design,
+          <br />
+          every step is carefully crafted for you
         </p>
         <Link
           href="/custom-services"
@@ -259,7 +257,7 @@ export default function HomePage() {
             transition: transitions.normal,
           }}
         >
-          {t('home', 'ctaSectionButton')}
+          Learn About Custom Services
         </Link>
       </section>
     </div>

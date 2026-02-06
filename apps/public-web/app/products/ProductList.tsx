@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import { colors, typography, spacing, transitions, shadows } from '../constants/design'
-import { useLanguage } from '../i18n'
 
 interface ProductWithImages extends CatalogProduct {
   primaryImage?: ProductImage
@@ -15,8 +14,6 @@ interface ProductListProps {
 }
 
 export default function ProductList({ products }: ProductListProps) {
-  const { t } = useLanguage()
-
   return (
     <main style={{ 
       minHeight: '100vh',
@@ -32,13 +29,13 @@ export default function ProductList({ products }: ProductListProps) {
             color: colors.darkGray,
             letterSpacing: '0.02em',
           }}>
-            {t('products', 'title')}
+            Collection
           </h1>
           <p style={{ 
             fontSize: typography.fontSize.lg, 
             color: colors.textSecondary 
           }}>
-            {t('products', 'subtitle')}
+            Curated Pearl Jewelry Collection
           </p>
         </header>
 
@@ -52,14 +49,14 @@ export default function ProductList({ products }: ProductListProps) {
               fontSize: typography.fontSize.xl, 
               color: colors.textSecondary 
             }}>
-              {t('products', 'noProducts')}
+              No products available
             </p>
             <p style={{ 
               fontSize: typography.fontSize.base, 
               color: colors.textLight, 
               marginTop: spacing.sm 
             }}>
-              {t('products', 'noProductsDesc')}
+              Stay tuned for our upcoming curated jewelry collection
             </p>
           </div>
         ) : (
@@ -215,9 +212,7 @@ export default function ProductList({ products }: ProductListProps) {
                         fontSize: typography.fontSize.xs,
                         fontWeight: typography.fontWeight.medium,
                       }}>
-                        {product.availability === 'IN_STOCK' 
-                          ? t('products', 'inStock') 
-                          : t('products', 'preOrder')}
+                        {product.availability === 'IN_STOCK' ? 'In Stock' : 'Pre-order'}
                       </span>
                     </div>
                   </div>

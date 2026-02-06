@@ -5,7 +5,6 @@ import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions, shadows } from '../../constants/design'
-import { useLanguage } from '../../i18n'
 
 interface ProductDetailClientProps {
   product: CatalogProduct
@@ -14,7 +13,6 @@ interface ProductDetailClientProps {
 
 export default function ProductDetailClient({ product, images }: ProductDetailClientProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const { t } = useLanguage()
   
   // Handle case when there are no images
   const hasImages = images.length > 0
@@ -49,7 +47,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
               letterSpacing: '0.05em',
             }}
           >
-            {t('products', 'backToProducts')}
+            ← Back to Products
           </Link>
         </div>
 
@@ -259,9 +257,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                 fontSize: typography.fontSize.sm,
                 fontWeight: typography.fontWeight.medium,
               }}>
-                {product.availability === 'IN_STOCK' 
-                  ? t('products', 'inStock') 
-                  : t('products', 'preOrder')}
+                {product.availability === 'IN_STOCK' ? 'In Stock' : 'Pre-order'}
               </span>
             </div>
 
@@ -283,7 +279,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                   color: colors.textLight,
                   textDecoration: 'line-through'
                 }}>
-                  {t('products', 'originalPrice')} US$ {product.original_price.toLocaleString()}
+                  Original Price US$ {product.original_price.toLocaleString()}
                 </div>
               )}
             </div>
@@ -301,7 +297,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                   marginBottom: spacing.sm,
                   color: colors.darkGray
                 }}>
-                  {t('products', 'description')}
+                  Description
                 </h3>
                 <p style={{ 
                   color: colors.textSecondary,
@@ -325,7 +321,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                 marginBottom: spacing.md,
                 color: colors.darkGray
               }}>
-                {t('products', 'specifications')}
+                Specifications
               </h3>
               <table style={{ width: '100%' }}>
                 <tbody>
@@ -336,7 +332,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                         color: colors.textSecondary,
                         fontSize: typography.fontSize.sm
                       }}>
-                        {t('products', 'shape')}
+                        Shape
                       </td>
                       <td style={{ 
                         padding: `${spacing.sm} 0`,
@@ -355,7 +351,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                         color: colors.textSecondary,
                         fontSize: typography.fontSize.sm
                       }}>
-                        {t('products', 'material')}
+                        Material
                       </td>
                       <td style={{ 
                         padding: `${spacing.sm} 0`,
@@ -373,7 +369,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                       color: colors.textSecondary,
                       fontSize: typography.fontSize.sm
                     }}>
-                      {t('products', 'productCode')}
+                      Product Code
                     </td>
                     <td style={{ 
                       padding: `${spacing.sm} 0`,
@@ -396,7 +392,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                 border: `1px solid ${colors.gold}`,
                 marginBottom: spacing['2xl']
               }}>
-                <strong style={{ color: colors.gold }}>{t('products', 'preorderNote')}:</strong>
+                <strong style={{ color: colors.gold }}>Pre-order Note:</strong>
                 <span style={{ color: colors.textSecondary, marginLeft: spacing.xs }}>
                   {product.preorder_note}
                 </span>
@@ -415,13 +411,13 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                 fontWeight: typography.fontWeight.medium,
                 fontSize: typography.fontSize.lg,
               }}>
-                {t('products', 'interested')}
+                Interested in this item?
               </p>
               <p style={{ 
                 color: colors.textSecondary,
                 fontSize: typography.fontSize.sm
               }}>
-                {t('products', 'contactUs')}
+                Contact us to learn more
               </p>
             </div>
           </div>
@@ -444,7 +440,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
               transition: transitions.normal,
             }}
           >
-            {t('products', 'browseMore')}
+            Browse More Products
           </Link>
         </div>
       </div>
