@@ -8,6 +8,7 @@ interface FilterPanelProps {
 }
 
 export interface ProductFilters {
+  searchQuery?: string
   pearlType?: string
   category?: string
   priceRange?: { min: number; max: number }
@@ -17,17 +18,20 @@ export interface ProductFilters {
 export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
   const [filters, setFilters] = useState<ProductFilters>({})
 
-  const handlePearlTypeChange = (type: string) => {
+  const handleSearchChange = (searchQuery: string) => {
     const newFilters = {
       ...filters,
-      pearlType: filters.pearlType === type ? undefined : type,
+      searchQuery: searchQuery || undefined,
     }
     setFilters(newFilters)
     onFilterChange(newFilters)
   }
 
-  const handleSortChange = (sort: ProductFilters['sortBy']) => {
-    const newFilters = { ...filters, sortBy: sort }
+  const handlePearlTypeChange = (type: string) => {
+    const newFilters = {
+      ...filters,
+      pearlType: type || undefined,
+    }
     setFilters(newFilters)
     onFilterChange(newFilters)
   }
@@ -35,11 +39,24 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
   const handleCategoryChange = (category: string) => {
     const newFilters = {
       ...filters,
-      category: filters.category === category ? undefined : category,
+      category: category || undefined,
     }
     setFilters(newFilters)
     onFilterChange(newFilters)
   }
+
+  const handleSortChange = (sort: ProductFilters['sortBy']) => {
+    const newFilters = {
+      ...filters,
+      sortBy: sort === 'newest' ? undefined : sort,
+    }
+    setFilters(newFilters)
+    onFilterChange(newFilters)
+  }
+
+  const hasActiveFilters = Boolean(
+    filters.searchQuery || filters.pearlType || filters.category || filters.priceRange || filters.sortBy
+  )
 
   return (
     <div
@@ -68,29 +85,60 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               letterSpacing: '0.05em',
             }}
           >
+            Search
+          </h3>
+          <input
+            type="text"
+            value={filters.searchQuery || ''}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            placeholder="Search title, slug, description..."
+            style={{
+              width: '100%',
+              padding: spacing.sm,
+              backgroundColor: colors.white,
+              border: `1px solid ${colors.lightGray}`,
+              borderRadius: 4,
+              fontSize: typography.fontSize.sm,
+            }}
+          />
+        </div>
+
+        <div>
+          <h3
+            style={{
+              fontSize: typography.fontSize.sm,
+              fontWeight: typography.fontWeight.semibold,
+              marginBottom: spacing.sm,
+              color: colors.darkGray,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
             Category
           </h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.xs }}>
-            {['Bracelets', 'Necklaces', 'Earrings', 'Studs', 'Rings', 'Pendants', 'Loose Pearls', 'Brooches'].map((category) => (
-              <button
-                key={category}
-                onClick={() => handleCategoryChange(category)}
-                style={{
-                  padding: `${spacing.xs} ${spacing.md}`,
-                  backgroundColor: filters.category === category ? colors.gold : colors.white,
-                  color: filters.category === category ? colors.white : colors.darkGray,
-                  border: `1px solid ${filters.category === category ? colors.gold : colors.lightGray}`,
-                  borderRadius: 4,
-                  cursor: 'pointer',
-                  fontSize: typography.fontSize.sm,
-                  fontWeight: typography.fontWeight.medium,
-                  transition: 'all 0.2s',
-                }}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+          <select
+            value={filters.category || ''}
+            onChange={(e) => handleCategoryChange(e.target.value)}
+            style={{
+              width: '100%',
+              padding: spacing.sm,
+              backgroundColor: colors.white,
+              border: `1px solid ${colors.lightGray}`,
+              borderRadius: 4,
+              fontSize: typography.fontSize.sm,
+              cursor: 'pointer',
+            }}
+          >
+            <option value="">All Categories</option>
+            <option value="Bracelets">Bracelets</option>
+            <option value="Necklaces">Necklaces</option>
+            <option value="Earrings">Earrings</option>
+            <option value="Studs">Studs</option>
+            <option value="Rings">Rings</option>
+            <option value="Pendants">Pendants</option>
+            <option value="Loose Pearls">Loose Pearls</option>
+            <option value="Brooches">Brooches</option>
+          </select>
         </div>
 
         <div>
@@ -106,27 +154,25 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
           >
             Pearl Type
           </h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.xs }}>
-            {['Akoya', 'South Sea', 'Tahitian', 'Freshwater'].map((type) => (
-              <button
-                key={type}
-                onClick={() => handlePearlTypeChange(type)}
-                style={{
-                  padding: `${spacing.xs} ${spacing.md}`,
-                  backgroundColor: filters.pearlType === type ? colors.gold : colors.white,
-                  color: filters.pearlType === type ? colors.white : colors.darkGray,
-                  border: `1px solid ${filters.pearlType === type ? colors.gold : colors.lightGray}`,
-                  borderRadius: 4,
-                  cursor: 'pointer',
-                  fontSize: typography.fontSize.sm,
-                  fontWeight: typography.fontWeight.medium,
-                  transition: 'all 0.2s',
-                }}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
+          <select
+            value={filters.pearlType || ''}
+            onChange={(e) => handlePearlTypeChange(e.target.value)}
+            style={{
+              width: '100%',
+              padding: spacing.sm,
+              backgroundColor: colors.white,
+              border: `1px solid ${colors.lightGray}`,
+              borderRadius: 4,
+              fontSize: typography.fontSize.sm,
+              cursor: 'pointer',
+            }}
+          >
+            <option value="">All Pearl Types</option>
+            <option value="Akoya">Akoya</option>
+            <option value="South Sea">South Sea</option>
+            <option value="Tahitian">Tahitian</option>
+            <option value="Freshwater">Freshwater</option>
+          </select>
         </div>
 
         <div>
@@ -143,7 +189,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
             Sort By
           </h3>
           <select
-            value={filters.sortBy || 'newest'}
+            value={filters.sortBy || ''}
             onChange={(e) => handleSortChange(e.target.value as ProductFilters['sortBy'])}
             style={{
               width: '100%',
@@ -155,7 +201,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               cursor: 'pointer',
             }}
           >
-            <option value="newest">Newest First</option>
+            <option value="">Newest First</option>
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
             <option value="popular">Most Popular</option>
@@ -164,7 +210,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
 
       </div>
 
-      {Object.keys(filters).length > 0 && (
+      {hasActiveFilters && (
         <button
           onClick={() => {
             setFilters({})

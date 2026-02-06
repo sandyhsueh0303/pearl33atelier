@@ -39,6 +39,24 @@ export default function ProductList({ products }: ProductListProps) {
   const filteredProducts = useMemo(() => {
     let result = [...products]
 
+    if (filters.searchQuery) {
+      const query = normalize(filters.searchQuery)
+      result = result.filter((product) => {
+        const title = normalize(product.title || '')
+        const slug = normalize(product.slug || '')
+        const description = normalize(product.description || '')
+        const pearlType = normalize(String(product.pearl_type || ''))
+        const category = normalize(getCategoryLabel(product.category) || '')
+        return (
+          title.includes(query) ||
+          slug.includes(query) ||
+          description.includes(query) ||
+          pearlType.includes(query) ||
+          category.includes(query)
+        )
+      })
+    }
+
     if (filters.pearlType) {
       const selected = normalize(filters.pearlType)
       result = result.filter((product) => {
