@@ -21,8 +21,22 @@ export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all')
   const [filterPearlType, setFilterPearlType] = useState<string>('all')
+  const [filterCategory, setFilterCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'title' | 'price' | 'created'>('created')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const formatCategory = (category: string) => {
+    const labels: Record<string, string> = {
+      BRACELETS: 'Bracelets',
+      NECKLACES: 'Necklaces',
+      EARRINGS: 'Earrings',
+      STUDS: 'Studs',
+      RINGS: 'Rings',
+      PENDANTS: 'Pendants',
+      LOOSE_PEARLS: 'Loose Pearls',
+      BROOCHES: 'Brooches',
+    }
+    return labels[category] || category
+  }
 
   useEffect(() => {
     loadProducts()
@@ -81,6 +95,13 @@ export default function ProductsPage() {
 
   // Get unique pearl types for filter
   const pearlTypes = Array.from(new Set(products.map(p => p.pearl_type).filter(Boolean)))
+  const categories = Array.from(
+    new Set(
+      products
+        .map((p) => p.category)
+        .filter((category): category is Exclude<ProductWithStats['category'], null> => category !== null)
+    )
+  )
 
   // Filter and sort products
   const filteredProducts = products
@@ -102,6 +123,9 @@ export default function ProductsPage() {
       
       // Pearl type filter
       if (filterPearlType !== 'all' && product.pearl_type !== filterPearlType) return false
+
+      // Category filter
+      if (filterCategory !== 'all' && product.category !== filterCategory) return false
       
       return true
     })
@@ -121,11 +145,12 @@ export default function ProductsPage() {
       return sortOrder === 'asc' ? comparison : -comparison
     })
 
-  const hasFilters = searchQuery !== '' || filterStatus !== 'all' || filterPearlType !== 'all'
+  const hasFilters = searchQuery !== '' || filterStatus !== 'all' || filterPearlType !== 'all' || filterCategory !== 'all'
   const resetFilters = () => {
     setSearchQuery('')
     setFilterStatus('all')
     setFilterPearlType('all')
+    setFilterCategory('all')
     setSortBy('created')
     setSortOrder('desc')
   }
@@ -276,6 +301,29 @@ export default function ProductsPage() {
             </select>
           </div>
 
+          <div style={{ flex: '0 1 180px' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+              📂 分類
+            </label>
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '0.875rem',
+                backgroundColor: 'white'
+              }}
+            >
+              <option value="all">全部分類</option>
+              {categories.map(category => (
+                <option key={category} value={category}>{formatCategory(category)}</option>
+              ))}
+            </select>
+          </div>
+
           {/* Sort By */}
           <div style={{ flex: '0 1 150px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
@@ -347,6 +395,7 @@ export default function ProductsPage() {
           顯示 <strong>{filteredProducts.length}</strong> / {products.length} 個產品
           {filterStatus !== 'all' && ` • ${filterStatus === 'published' ? '已發布' : '草稿'}`}
           {filterPearlType !== 'all' && ` • ${filterPearlType}`}
+          {filterCategory !== 'all' && ` • ${formatCategory(filterCategory)}`}
         </div>
       </div>
 
@@ -502,6 +551,7 @@ export default function ProductsPage() {
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>狀態</th>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Slug</th>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>標題</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>分類</th>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>珍珠類型</th>
                 <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>總成本</th>
                 <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>售價</th>
@@ -529,6 +579,16 @@ export default function ProductsPage() {
                   </td>
                   <td style={{ padding: '1rem', fontWeight: '500' }}>
                     {product.title}
+                  </td>
+                  <td style={{ padding: '1rem' }}>
+                    <span style={{ 
+                      padding: '0.25rem 0.75rem',
+                      backgroundColor: '#f3e5f5',
+                      borderRadius: '12px',
+                      fontSize: '0.875rem'
+                    }}>
+                      {product.category ? formatCategory(product.category) : '-'}
+                    </span>
                   </td>
                   <td style={{ padding: '1rem' }}>
                     <span style={{ 

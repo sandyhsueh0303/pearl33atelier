@@ -32,6 +32,7 @@ export type Database = {
       catalog_products: {
         Row: {
           availability: Database["public"]["Enums"]["availability_kind"]
+          category: Database["public"]["Enums"]["product_category"] | null
           created_at: string
           description: string | null
           id: string
@@ -52,6 +53,7 @@ export type Database = {
         }
         Insert: {
           availability?: Database["public"]["Enums"]["availability_kind"]
+          category?: Database["public"]["Enums"]["product_category"] | null
           created_at?: string
           description?: string | null
           id?: string
@@ -72,6 +74,7 @@ export type Database = {
         }
         Update: {
           availability?: Database["public"]["Enums"]["availability_kind"]
+          category?: Database["public"]["Enums"]["product_category"] | null
           created_at?: string
           description?: string | null
           id?: string
@@ -374,6 +377,7 @@ export type Database = {
         Args: { product_id: string }
         Returns: {
           availability: Database["public"]["Enums"]["availability_kind"]
+          category: Database["public"]["Enums"]["product_category"] | null
           created_at: string
           description: string | null
           id: string
@@ -407,6 +411,7 @@ export type Database = {
         Args: { product_id: string }
         Returns: {
           availability: Database["public"]["Enums"]["availability_kind"]
+          category: Database["public"]["Enums"]["product_category"] | null
           created_at: string
           description: string | null
           id: string
@@ -443,6 +448,15 @@ export type Database = {
         | "Tahitian"
         | "Freshwater"
         | "Other"
+      product_category:
+        | "BRACELETS"
+        | "NECKLACES"
+        | "EARRINGS"
+        | "STUDS"
+        | "RINGS"
+        | "PENDANTS"
+        | "LOOSE_PEARLS"
+        | "BROOCHES"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -579,6 +593,16 @@ export const Constants = {
         "Tahitian",
         "Freshwater",
         "Other",
+      ],
+      product_category: [
+        "BRACELETS",
+        "NECKLACES",
+        "EARRINGS",
+        "STUDS",
+        "RINGS",
+        "PENDANTS",
+        "LOOSE_PEARLS",
+        "BROOCHES",
       ],
     },
   },

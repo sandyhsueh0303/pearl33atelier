@@ -74,6 +74,7 @@ export async function PATCH(
     // Use nullish coalescing (??) to preserve falsy values like 0 and ''
     if ('title' in body) updates.title = body.title
     if ('pearl_type' in body) updates.pearl_type = body.pearl_type
+    if ('category' in body) updates.category = body.category ?? null
     if ('description' in body) updates.description = body.description ?? null
     if ('note' in body) updates.note = body.note ?? null
     if ('size_mm' in body) updates.size_mm = body.size_mm ?? null

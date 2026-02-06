@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { slugify, getProductImageUrl } from '@pearl33atelier/shared'
-import type { CatalogProduct, PearlType, AvailabilityKind, ProductImage } from '@pearl33atelier/shared/types'
+import type { CatalogProduct, PearlType, AvailabilityKind, ProductCategory, ProductImage } from '@pearl33atelier/shared/types'
 
 interface ProductFormProps {
   productId?: string
@@ -23,6 +23,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
   const [description, setDescription] = useState('')
   const [note, setNote] = useState('')
   const [pearlType, setPearlType] = useState<PearlType>('WhiteAkoya')
+  const [category, setCategory] = useState<ProductCategory | ''>('')
   const [sizeMm, setSizeMm] = useState('')
   const [shape, setShape] = useState('')
   const [material, setMaterial] = useState('')
@@ -73,6 +74,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
       setDescription(product.description || '')
       setNote(product.note || '')
       setPearlType(product.pearl_type)
+      setCategory(product.category || '')
       setSizeMm(product.size_mm?.toString() || '')
       setShape(product.shape || '')
       setMaterial(product.material || '')
@@ -103,6 +105,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
         description: description || null,
         note: note || null,
         pearl_type: pearlType,
+        category: category || null,
         size_mm: sizeMm ? parseFloat(sizeMm) : null,
         shape: shape || null,
         material: material || null,
@@ -367,6 +370,33 @@ export default function ProductForm({ productId }: ProductFormProps) {
               <option value="Tahitian">Tahitian</option>
               <option value="Freshwater">Freshwater</option>
               <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              商品分類
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value as ProductCategory | '')}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem'
+              }}
+            >
+              <option value="">未分類</option>
+              <option value="BRACELETS">Bracelets</option>
+              <option value="NECKLACES">Necklaces</option>
+              <option value="EARRINGS">Earrings</option>
+              <option value="STUDS">Studs</option>
+              <option value="RINGS">Rings</option>
+              <option value="PENDANTS">Pendants</option>
+              <option value="LOOSE_PEARLS">Loose Pearls</option>
+              <option value="BROOCHES">Brooches</option>
             </select>
           </div>
 

@@ -29,6 +29,16 @@ export type AvailabilityKind =
   | 'IN_STOCK'
   | 'PREORDER'
 
+export type ProductCategory =
+  | 'BRACELETS'
+  | 'NECKLACES'
+  | 'EARRINGS'
+  | 'STUDS'
+  | 'RINGS'
+  | 'PENDANTS'
+  | 'LOOSE_PEARLS'
+  | 'BROOCHES'
+
 // ============================================
 // Table: admin_users (access control)
 // Note: Currently only has user_id + created_at in DB
@@ -81,6 +91,7 @@ export interface CatalogProduct {
   material: string | null
   sell_price: number | null // numeric(12,2), >= 0
   original_price: number | null // numeric(12,2), >= 0
+  category: ProductCategory | null
   availability: AvailabilityKind
   preorder_note: string | null
   published: boolean
@@ -101,4 +112,3 @@ export interface ProductImage {
   sort_order: number // >= 0
   created_at: string // timestamptz
 }
-

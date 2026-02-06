@@ -16,6 +16,16 @@ interface ProductDetailClientProps {
 export default function ProductDetailClient({ product, images }: ProductDetailClientProps) {
   const [inquiryOpen, setInquiryOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const categoryLabels: Record<string, string> = {
+    BRACELETS: 'Bracelets',
+    NECKLACES: 'Necklaces',
+    EARRINGS: 'Earrings',
+    STUDS: 'Studs',
+    RINGS: 'Rings',
+    PENDANTS: 'Pendants',
+    LOOSE_PEARLS: 'Loose Pearls',
+    BROOCHES: 'Brooches',
+  }
   
   // Handle case when there are no images
   const hasImages = images.length > 0
@@ -229,6 +239,17 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
               marginBottom: spacing.lg,
               flexWrap: 'wrap'
             }}>
+              {product.category && (
+                <span style={{
+                  padding: `${spacing.xs} ${spacing.md}`,
+                  backgroundColor: '#f3e5f5',
+                  color: colors.darkGray,
+                  fontSize: typography.fontSize.sm,
+                  fontWeight: typography.fontWeight.medium,
+                }}>
+                  {categoryLabels[product.category] || product.category}
+                </span>
+              )}
               <span style={{
                 padding: `${spacing.xs} ${spacing.md}`,
                 backgroundColor: colors.pearl,

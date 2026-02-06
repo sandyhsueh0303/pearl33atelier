@@ -20,6 +20,19 @@ export default function ProductList({ products }: ProductListProps) {
 
   // Helper to safely compare enum values (handles possible undefined/null)
   const getAvailability = (a: any) => (typeof a === 'string' ? a : '')
+  const getCategoryLabel = (category: string | null | undefined) => {
+    const labels: Record<string, string> = {
+      BRACELETS: 'Bracelets',
+      NECKLACES: 'Necklaces',
+      EARRINGS: 'Earrings',
+      STUDS: 'Studs',
+      RINGS: 'Rings',
+      PENDANTS: 'Pendants',
+      LOOSE_PEARLS: 'Loose Pearls',
+      BROOCHES: 'Brooches',
+    }
+    return category ? labels[category] || category : null
+  }
   const normalize = (value: string) => value.toLowerCase().replace(/\s+/g, '')
   const getTimestamp = (value?: string | null) => (value ? new Date(value).getTime() : 0)
 
@@ -34,6 +47,23 @@ export default function ProductList({ products }: ProductListProps) {
         if (selected === 'southsea') return productType.includes('southsea')
         return productType.includes(selected)
       })
+    }
+
+    if (filters.category) {
+      const categoryMap: Record<string, string> = {
+        Bracelets: 'BRACELETS',
+        Necklaces: 'NECKLACES',
+        Earrings: 'EARRINGS',
+        Studs: 'STUDS',
+        Rings: 'RINGS',
+        Pendants: 'PENDANTS',
+        'Loose Pearls': 'LOOSE_PEARLS',
+        Brooches: 'BROOCHES',
+      }
+      const targetCategory = categoryMap[filters.category]
+      if (targetCategory) {
+        result = result.filter((product) => product.category === targetCategory)
+      }
     }
 
     if (filters.priceRange) {
@@ -198,6 +228,17 @@ export default function ProductList({ products }: ProductListProps) {
                       gap: spacing.xs,
                       marginBottom: spacing.sm
                     }}>
+                      {product.category && (
+                        <span style={{
+                          padding: '4px 12px',
+                          backgroundColor: '#f3e5f5',
+                          color: colors.darkGray,
+                          fontSize: typography.fontSize.xs,
+                          fontWeight: typography.fontWeight.medium,
+                        }}>
+                          {getCategoryLabel(product.category)}
+                        </span>
+                      )}
                       <span style={{
                         padding: '4px 12px',
                         backgroundColor: colors.pearl,

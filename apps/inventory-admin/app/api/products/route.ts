@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
       note: body.note ?? null,
       description: body.description ?? null,
       pearl_type: body.pearl_type,
+      category: body.category ?? null,
       size_mm: body.size_mm ?? null,
       shape: body.shape ?? null,
       material: body.material ?? null,
