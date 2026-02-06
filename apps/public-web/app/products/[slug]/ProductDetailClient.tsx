@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
+import { colors, typography, spacing, transitions, shadows } from '../../constants/design'
+import { useLanguage } from '../../i18n'
 
 interface ProductDetailClientProps {
   product: CatalogProduct
@@ -12,6 +14,7 @@ interface ProductDetailClientProps {
 
 export default function ProductDetailClient({ product, images }: ProductDetailClientProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const { t } = useLanguage()
   
   // Handle case when there are no images
   const hasImages = images.length > 0
@@ -31,44 +34,40 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
   return (
     <main style={{ 
       minHeight: '100vh',
-      backgroundColor: '#fafafa',
-      padding: '2rem',
-      fontFamily: 'sans-serif'
+      backgroundColor: colors.white,
+      padding: spacing['3xl'],
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         {/* Breadcrumb */}
-        <div style={{ marginBottom: '2rem' }}>
+        <div style={{ marginBottom: spacing['2xl'] }}>
           <Link 
             href="/products"
             style={{
-              color: '#1976d2',
+              color: colors.gold,
               textDecoration: 'none',
-              fontSize: '0.875rem'
+              fontSize: typography.fontSize.sm,
+              letterSpacing: '0.05em',
             }}
           >
-            ← Back to Products
+            {t('products', 'backToProducts')}
           </Link>
         </div>
 
         <div style={{ 
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
-          gap: '3rem',
-          backgroundColor: 'white',
-          padding: '2rem',
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          gap: spacing['3xl'],
+          backgroundColor: colors.white,
         }}>
           {/* Images Section */}
           <div>
             {/* Main Image with Navigation */}
-            <div style={{ position: 'relative', marginBottom: '1rem' }}>
+            <div style={{ position: 'relative', marginBottom: spacing.md }}>
               <div style={{
                 width: '100%',
                 paddingBottom: '100%',
                 position: 'relative',
-                backgroundColor: '#f5f5f5',
-                borderRadius: '8px',
+                backgroundColor: colors.pearl,
                 overflow: 'hidden'
               }}>
                 {currentImage ? (
@@ -82,7 +81,6 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
-                      borderRadius: '8px'
                     }}
                   />
                 ) : (
@@ -95,9 +93,9 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#ccc'
+                    color: colors.textLight
                   }}>
-                    <span style={{ fontSize: '4rem' }}>📷</span>
+                    <span style={{ fontSize: '4rem' }}>✦</span>
                   </div>
                 )}
               </div>
@@ -109,29 +107,20 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                     onClick={prevImage}
                     style={{
                       position: 'absolute',
-                      left: '1rem',
+                      left: spacing.md,
                       top: '50%',
                       transform: 'translateY(-50%)',
                       backgroundColor: 'rgba(255, 255, 255, 0.9)',
                       border: 'none',
-                      borderRadius: '50%',
                       width: '40px',
                       height: '40px',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '1.5rem',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 1)'
-                      e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'
-                      e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
+                      fontSize: typography.fontSize['2xl'],
+                      boxShadow: shadows.soft,
+                      transition: transitions.fast
                     }}
                   >
                     ‹
@@ -140,29 +129,20 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                     onClick={nextImage}
                     style={{
                       position: 'absolute',
-                      right: '1rem',
+                      right: spacing.md,
                       top: '50%',
                       transform: 'translateY(-50%)',
                       backgroundColor: 'rgba(255, 255, 255, 0.9)',
                       border: 'none',
-                      borderRadius: '50%',
                       width: '40px',
                       height: '40px',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '1.5rem',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 1)'
-                      e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'
-                      e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
+                      fontSize: typography.fontSize['2xl'],
+                      boxShadow: shadows.soft,
+                      transition: transitions.fast
                     }}
                   >
                     ›
@@ -171,14 +151,13 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                   {/* Image Counter */}
                   <div style={{
                     position: 'absolute',
-                    bottom: '1rem',
-                    right: '1rem',
+                    bottom: spacing.md,
+                    right: spacing.md,
                     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    color: 'white',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '20px',
-                    fontSize: '0.875rem',
-                    fontWeight: '600'
+                    color: colors.white,
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    fontSize: typography.fontSize.sm,
+                    fontWeight: typography.fontWeight.medium
                   }}>
                     {currentImageIndex + 1} / {images.length}
                   </div>
@@ -191,7 +170,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
               <div style={{ 
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
-                gap: '0.5rem'
+                gap: spacing.xs
               }}>
                 {images.map((image, index) => (
                   <div
@@ -200,21 +179,20 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                     style={{
                       paddingBottom: '100%',
                       position: 'relative',
-                      backgroundColor: '#f5f5f5',
-                      borderRadius: '4px',
-                      border: index === currentImageIndex ? '3px solid #1976d2' : '1px solid #ddd',
+                      backgroundColor: colors.pearl,
+                      border: index === currentImageIndex ? `2px solid ${colors.gold}` : `1px solid ${colors.lightGray}`,
                       cursor: 'pointer',
                       overflow: 'hidden',
-                      transition: 'all 0.2s'
+                      transition: transitions.fast
                     }}
                     onMouseEnter={(e) => {
                       if (index !== currentImageIndex) {
-                        e.currentTarget.style.borderColor = '#1976d2'
+                        e.currentTarget.style.borderColor = colors.gold
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (index !== currentImageIndex) {
-                        e.currentTarget.style.borderColor = '#ddd'
+                        e.currentTarget.style.borderColor = colors.lightGray
                       }
                     }}
                   >
@@ -239,73 +217,73 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
           {/* Product Info Section */}
           <div>
             <h1 style={{ 
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              marginBottom: '1rem',
-              color: '#333'
+              fontSize: typography.fontSize['4xl'],
+              fontWeight: typography.fontWeight.light,
+              marginBottom: spacing.md,
+              color: colors.darkGray,
+              letterSpacing: '0.02em',
             }}>
               {product.title}
             </h1>
 
             <div style={{ 
               display: 'flex',
-              gap: '0.5rem',
-              marginBottom: '1.5rem',
+              gap: spacing.xs,
+              marginBottom: spacing.lg,
               flexWrap: 'wrap'
             }}>
               <span style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: '#e3f2fd',
-                color: '#1976d2',
-                borderRadius: '20px',
-                fontSize: '0.875rem',
-                fontWeight: '600'
+                padding: `${spacing.xs} ${spacing.md}`,
+                backgroundColor: colors.pearl,
+                color: colors.gold,
+                fontSize: typography.fontSize.sm,
+                fontWeight: typography.fontWeight.medium,
+                letterSpacing: '0.05em',
               }}>
                 {product.pearl_type}
               </span>
               {product.size_mm && (
                 <span style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#f5f5f5',
-                  color: '#666',
-                  borderRadius: '20px',
-                  fontSize: '0.875rem',
-                  fontWeight: '600'
+                  padding: `${spacing.xs} ${spacing.md}`,
+                  backgroundColor: colors.lightGray,
+                  color: colors.textSecondary,
+                  fontSize: typography.fontSize.sm,
                 }}>
                   {product.size_mm}mm
                 </span>
               )}
               <span style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: product.availability === 'IN_STOCK' ? '#e8f5e9' : '#fff3e0',
-                color: product.availability === 'IN_STOCK' ? '#2e7d32' : '#ef6c00',
-                borderRadius: '20px',
-                fontSize: '0.875rem',
-                fontWeight: 'bold'
+                padding: `${spacing.xs} ${spacing.md}`,
+                backgroundColor: product.availability === 'IN_STOCK' ? '#e8f5e9' : colors.champagne,
+                color: product.availability === 'IN_STOCK' ? '#2e7d32' : colors.gold,
+                fontSize: typography.fontSize.sm,
+                fontWeight: typography.fontWeight.medium,
               }}>
-                {product.availability === 'IN_STOCK' ? 'In Stock' : 'Pre-order'}
+                {product.availability === 'IN_STOCK' 
+                  ? t('products', 'inStock') 
+                  : t('products', 'preOrder')}
               </span>
             </div>
 
             {/* Price */}
-            <div style={{ marginBottom: '2rem' }}>
+            <div style={{ marginBottom: spacing['2xl'] }}>
               {product.sell_price && (
                 <div style={{ 
-                  fontSize: '2.5rem',
-                  fontWeight: 'bold',
-                  color: '#1976d2',
-                  marginBottom: '0.25rem'
+                  fontSize: typography.fontSize['5xl'],
+                  fontWeight: typography.fontWeight.light,
+                  color: colors.darkGray,
+                  marginBottom: spacing.xs
                 }}>
                   US$ {product.sell_price.toLocaleString()}
                 </div>
               )}
               {product.original_price && product.original_price > (product.sell_price || 0) && (
                 <div style={{ 
-                  fontSize: '1.125rem',
-                  color: '#999',
+                  fontSize: typography.fontSize.lg,
+                  color: colors.textLight,
                   textDecoration: 'line-through'
                 }}>
-                  Original Price US$ {product.original_price.toLocaleString()}
+                  {t('products', 'originalPrice')} US$ {product.original_price.toLocaleString()}
                 </div>
               )}
             </div>
@@ -313,22 +291,21 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
             {/* Description */}
             {product.description && (
               <div style={{ 
-                marginBottom: '2rem',
-                padding: '1.5rem',
-                backgroundColor: '#fafafa',
-                borderRadius: '8px'
+                marginBottom: spacing['2xl'],
+                padding: spacing.lg,
+                backgroundColor: colors.pearl,
               }}>
                 <h3 style={{ 
-                  fontSize: '1.125rem',
-                  fontWeight: '600',
-                  marginBottom: '0.75rem',
-                  color: '#333'
+                  fontSize: typography.fontSize.lg,
+                  fontWeight: typography.fontWeight.medium,
+                  marginBottom: spacing.sm,
+                  color: colors.darkGray
                 }}>
-                  Description
+                  {t('products', 'description')}
                 </h3>
                 <p style={{ 
-                  color: '#666',
-                  lineHeight: '1.6',
+                  color: colors.textSecondary,
+                  lineHeight: typography.lineHeight.relaxed,
                   whiteSpace: 'pre-wrap'
                 }}>
                   {product.description}
@@ -338,71 +315,71 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
 
             {/* Product Details */}
             <div style={{ 
-              borderTop: '1px solid #eee',
-              paddingTop: '1.5rem',
-              marginBottom: '2rem'
+              borderTop: `1px solid ${colors.lightGray}`,
+              paddingTop: spacing.lg,
+              marginBottom: spacing['2xl']
             }}>
               <h3 style={{ 
-                fontSize: '1.125rem',
-                fontWeight: '600',
-                marginBottom: '1rem',
-                color: '#333'
+                fontSize: typography.fontSize.lg,
+                fontWeight: typography.fontWeight.medium,
+                marginBottom: spacing.md,
+                color: colors.darkGray
               }}>
-                Specifications
+                {t('products', 'specifications')}
               </h3>
               <table style={{ width: '100%' }}>
                 <tbody>
                   {product.shape && (
-                    <tr style={{ borderBottom: '1px solid #f5f5f5' }}>
+                    <tr style={{ borderBottom: `1px solid ${colors.pearl}` }}>
                       <td style={{ 
-                        padding: '0.75rem 0',
-                        color: '#666',
-                        fontSize: '0.875rem'
+                        padding: `${spacing.sm} 0`,
+                        color: colors.textSecondary,
+                        fontSize: typography.fontSize.sm
                       }}>
-                        Shape
+                        {t('products', 'shape')}
                       </td>
                       <td style={{ 
-                        padding: '0.75rem 0',
-                        color: '#333',
-                        fontWeight: '500',
-                        fontSize: '0.875rem'
+                        padding: `${spacing.sm} 0`,
+                        color: colors.darkGray,
+                        fontWeight: typography.fontWeight.medium,
+                        fontSize: typography.fontSize.sm
                       }}>
                         {product.shape}
                       </td>
                     </tr>
                   )}
                   {product.material && (
-                    <tr style={{ borderBottom: '1px solid #f5f5f5' }}>
+                    <tr style={{ borderBottom: `1px solid ${colors.pearl}` }}>
                       <td style={{ 
-                        padding: '0.75rem 0',
-                        color: '#666',
-                        fontSize: '0.875rem'
+                        padding: `${spacing.sm} 0`,
+                        color: colors.textSecondary,
+                        fontSize: typography.fontSize.sm
                       }}>
-                        Material
+                        {t('products', 'material')}
                       </td>
                       <td style={{ 
-                        padding: '0.75rem 0',
-                        color: '#333',
-                        fontWeight: '500',
-                        fontSize: '0.875rem'
+                        padding: `${spacing.sm} 0`,
+                        color: colors.darkGray,
+                        fontWeight: typography.fontWeight.medium,
+                        fontSize: typography.fontSize.sm
                       }}>
                         {product.material}
                       </td>
                     </tr>
                   )}
-                  <tr style={{ borderBottom: '1px solid #f5f5f5' }}>
+                  <tr style={{ borderBottom: `1px solid ${colors.pearl}` }}>
                     <td style={{ 
-                      padding: '0.75rem 0',
-                      color: '#666',
-                      fontSize: '0.875rem'
+                      padding: `${spacing.sm} 0`,
+                      color: colors.textSecondary,
+                      fontSize: typography.fontSize.sm
                     }}>
-                      Product Code
+                      {t('products', 'productCode')}
                     </td>
                     <td style={{ 
-                      padding: '0.75rem 0',
-                      color: '#333',
+                      padding: `${spacing.sm} 0`,
+                      color: colors.darkGray,
                       fontFamily: 'monospace',
-                      fontSize: '0.875rem'
+                      fontSize: typography.fontSize.sm
                     }}>
                       {product.slug}
                     </td>
@@ -414,14 +391,13 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
             {/* Preorder Note */}
             {product.availability === 'PREORDER' && product.preorder_note && (
               <div style={{ 
-                padding: '1rem',
-                backgroundColor: '#fff3e0',
-                border: '1px solid #ff9800',
-                borderRadius: '8px',
-                marginBottom: '2rem'
+                padding: spacing.md,
+                backgroundColor: colors.champagne,
+                border: `1px solid ${colors.gold}`,
+                marginBottom: spacing['2xl']
               }}>
-                <strong style={{ color: '#ef6c00' }}>Pre-order Note:</strong>
-                <span style={{ color: '#666', marginLeft: '0.5rem' }}>
+                <strong style={{ color: colors.gold }}>{t('products', 'preorderNote')}:</strong>
+                <span style={{ color: colors.textSecondary, marginLeft: spacing.xs }}>
                   {product.preorder_note}
                 </span>
               </div>
@@ -429,44 +405,46 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
 
             {/* Contact CTA */}
             <div style={{ 
-              padding: '1.5rem',
-              backgroundColor: '#e3f2fd',
-              borderRadius: '8px',
+              padding: spacing.lg,
+              backgroundColor: colors.pearl,
               textAlign: 'center'
             }}>
               <p style={{ 
-                color: '#1976d2',
-                marginBottom: '0.5rem',
-                fontWeight: '600'
+                color: colors.darkGray,
+                marginBottom: spacing.xs,
+                fontWeight: typography.fontWeight.medium,
+                fontSize: typography.fontSize.lg,
               }}>
-                Interested in this item?
+                {t('products', 'interested')}
               </p>
               <p style={{ 
-                color: '#666',
-                fontSize: '0.875rem'
+                color: colors.textSecondary,
+                fontSize: typography.fontSize.sm
               }}>
-                Contact us to learn more
+                {t('products', 'contactUs')}
               </p>
             </div>
           </div>
         </div>
 
         {/* Back to list */}
-        <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+        <div style={{ marginTop: spacing['3xl'], textAlign: 'center' }}>
           <Link
             href="/products"
             style={{
               display: 'inline-block',
-              padding: '0.75rem 2rem',
-              backgroundColor: 'white',
-              color: '#1976d2',
-              border: '2px solid #1976d2',
-              borderRadius: '8px',
+              padding: `${spacing.md} ${spacing['2xl']}`,
+              backgroundColor: colors.white,
+              color: colors.darkGray,
+              border: `1px solid ${colors.darkGray}`,
               textDecoration: 'none',
-              fontWeight: '600'
+              fontWeight: typography.fontWeight.medium,
+              fontSize: typography.fontSize.base,
+              letterSpacing: '0.05em',
+              transition: transitions.normal,
             }}
           >
-            Browse More Products
+            {t('products', 'browseMore')}
           </Link>
         </div>
       </div>

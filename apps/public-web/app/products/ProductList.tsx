@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
+import { colors, typography, spacing, transitions, shadows } from '../constants/design'
+import { useLanguage } from '../i18n'
 
 interface ProductWithImages extends CatalogProduct {
   primaryImage?: ProductImage
@@ -13,47 +15,58 @@ interface ProductListProps {
 }
 
 export default function ProductList({ products }: ProductListProps) {
+  const { t } = useLanguage()
+
   return (
     <main style={{ 
       minHeight: '100vh',
-      backgroundColor: '#fafafa',
-      padding: '2rem',
-      fontFamily: 'sans-serif'
+      backgroundColor: colors.white,
+      padding: spacing['3xl'],
     }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        <header style={{ marginBottom: '3rem', textAlign: 'center' }}>
+        <header style={{ marginBottom: spacing['3xl'], textAlign: 'center' }}>
           <h1 style={{ 
-            fontSize: '2.5rem', 
-            marginBottom: '0.5rem',
-            color: '#333'
+            fontSize: typography.fontSize['5xl'], 
+            fontWeight: typography.fontWeight.light,
+            marginBottom: spacing.md,
+            color: colors.darkGray,
+            letterSpacing: '0.02em',
           }}>
-            33 Pearl Atelier
+            {t('products', 'title')}
           </h1>
-          <p style={{ fontSize: '1.125rem', color: '#666' }}>
-            Curated Pearl Jewelry Collection
+          <p style={{ 
+            fontSize: typography.fontSize.lg, 
+            color: colors.textSecondary 
+          }}>
+            {t('products', 'subtitle')}
           </p>
         </header>
 
         {products.length === 0 ? (
           <div style={{ 
-            padding: '4rem',
+            padding: spacing['4xl'],
             textAlign: 'center',
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            backgroundColor: colors.pearl,
           }}>
-            <p style={{ fontSize: '1.25rem', color: '#666' }}>
-              No products available
+            <p style={{ 
+              fontSize: typography.fontSize.xl, 
+              color: colors.textSecondary 
+            }}>
+              {t('products', 'noProducts')}
             </p>
-            <p style={{ fontSize: '0.875rem', color: '#999', marginTop: '0.5rem' }}>
-              Stay tuned for our upcoming curated jewelry collection
+            <p style={{ 
+              fontSize: typography.fontSize.base, 
+              color: colors.textLight, 
+              marginTop: spacing.sm 
+            }}>
+              {t('products', 'noProductsDesc')}
             </p>
           </div>
         ) : (
           <div style={{ 
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: '2rem'
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gap: spacing['2xl']
           }}>
             {products.map((product) => (
               <Link
@@ -66,20 +79,17 @@ export default function ProductList({ products }: ProductListProps) {
                 }}
               >
                 <div style={{
-                  backgroundColor: 'white',
-                  borderRadius: '12px',
+                  backgroundColor: colors.white,
                   overflow: 'hidden',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  boxShadow: shadows.subtle,
+                  transition: transitions.normal,
                   cursor: 'pointer'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)'
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)'
+                  e.currentTarget.style.boxShadow = shadows.medium
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'
+                  e.currentTarget.style.boxShadow = shadows.subtle
                 }}
                 >
                   {/* Image */}
@@ -87,7 +97,7 @@ export default function ProductList({ products }: ProductListProps) {
                     width: '100%',
                     paddingBottom: '100%',
                     position: 'relative',
-                    backgroundColor: '#f5f5f5'
+                    backgroundColor: colors.pearl
                   }}>
                     {product.primaryImage ? (
                       <img 
@@ -112,46 +122,45 @@ export default function ProductList({ products }: ProductListProps) {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: '#ccc'
+                        color: colors.textLight
                       }}>
-                        <span style={{ fontSize: '3rem' }}>📷</span>
+                        <span style={{ fontSize: '3rem' }}>✦</span>
                       </div>
                     )}
                   </div>
 
                   {/* Product Info */}
-                  <div style={{ padding: '1.5rem' }}>
+                  <div style={{ padding: spacing.lg }}>
                     <h2 style={{ 
-                      fontSize: '1.25rem',
-                      fontWeight: '600',
-                      marginBottom: '0.5rem',
-                      color: '#333'
+                      fontSize: typography.fontSize.lg,
+                      fontWeight: typography.fontWeight.medium,
+                      marginBottom: spacing.xs,
+                      color: colors.darkGray
                     }}>
                       {product.title}
                     </h2>
 
                     <div style={{ 
                       display: 'flex',
-                      gap: '0.5rem',
-                      marginBottom: '0.75rem'
+                      gap: spacing.xs,
+                      marginBottom: spacing.sm
                     }}>
                       <span style={{
-                        padding: '0.25rem 0.75rem',
-                        backgroundColor: '#e3f2fd',
-                        color: '#1976d2',
-                        borderRadius: '12px',
-                        fontSize: '0.75rem',
-                        fontWeight: '500'
+                        padding: '4px 12px',
+                        backgroundColor: colors.pearl,
+                        color: colors.gold,
+                        fontSize: typography.fontSize.xs,
+                        fontWeight: typography.fontWeight.medium,
+                        letterSpacing: '0.05em',
                       }}>
                         {product.pearl_type}
                       </span>
                       {product.size_mm && (
                         <span style={{
-                          padding: '0.25rem 0.75rem',
-                          backgroundColor: '#f5f5f5',
-                          color: '#666',
-                          borderRadius: '12px',
-                          fontSize: '0.75rem'
+                          padding: '4px 12px',
+                          backgroundColor: colors.lightGray,
+                          color: colors.textSecondary,
+                          fontSize: typography.fontSize.xs
                         }}>
                           {product.size_mm}mm
                         </span>
@@ -160,13 +169,14 @@ export default function ProductList({ products }: ProductListProps) {
 
                     {product.description && (
                       <p style={{ 
-                        color: '#666',
-                        fontSize: '0.875rem',
-                        marginBottom: '1rem',
+                        color: colors.textSecondary,
+                        fontSize: typography.fontSize.sm,
+                        marginBottom: spacing.md,
                         display: '-webkit-box',
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        lineHeight: typography.lineHeight.relaxed,
                       }}>
                         {product.description}
                       </p>
@@ -180,17 +190,17 @@ export default function ProductList({ products }: ProductListProps) {
                       <div>
                         {product.sell_price && (
                           <div style={{ 
-                            fontSize: '1.5rem',
-                            fontWeight: 'bold',
-                            color: '#1976d2'
+                            fontSize: typography.fontSize.xl,
+                            fontWeight: typography.fontWeight.semibold,
+                            color: colors.darkGray
                           }}>
                             US$ {product.sell_price.toLocaleString()}
                           </div>
                         )}
                         {product.original_price && product.original_price > (product.sell_price || 0) && (
                           <div style={{ 
-                            fontSize: '0.875rem',
-                            color: '#999',
+                            fontSize: typography.fontSize.sm,
+                            color: colors.textLight,
                             textDecoration: 'line-through'
                           }}>
                             US$ {product.original_price.toLocaleString()}
@@ -199,14 +209,15 @@ export default function ProductList({ products }: ProductListProps) {
                       </div>
 
                       <span style={{
-                        padding: '0.5rem 1rem',
-                        backgroundColor: product.availability === 'IN_STOCK' ? '#e8f5e9' : '#fff3e0',
-                        color: product.availability === 'IN_STOCK' ? '#2e7d32' : '#ef6c00',
-                        borderRadius: '20px',
-                        fontSize: '0.75rem',
-                        fontWeight: 'bold'
+                        padding: '6px 12px',
+                        backgroundColor: product.availability === 'IN_STOCK' ? '#e8f5e9' : colors.champagne,
+                        color: product.availability === 'IN_STOCK' ? '#2e7d32' : colors.gold,
+                        fontSize: typography.fontSize.xs,
+                        fontWeight: typography.fontWeight.medium,
                       }}>
-                        {product.availability === 'IN_STOCK' ? 'In Stock' : 'Pre-order'}
+                        {product.availability === 'IN_STOCK' 
+                          ? t('products', 'inStock') 
+                          : t('products', 'preOrder')}
                       </span>
                     </div>
                   </div>
@@ -215,16 +226,6 @@ export default function ProductList({ products }: ProductListProps) {
             ))}
           </div>
         )}
-
-        <footer style={{ 
-          marginTop: '4rem',
-          padding: '2rem',
-          textAlign: 'center',
-          color: '#999',
-          fontSize: '0.875rem'
-        }}>
-          <p>© 2026 33 Pearl Atelier. All rights reserved.</p>
-        </footer>
       </div>
     </main>
   )
