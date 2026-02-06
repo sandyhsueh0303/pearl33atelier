@@ -14,6 +14,8 @@ interface ProductListProps {
 }
 
 export default function ProductList({ products }: ProductListProps) {
+  // Helper to safely compare enum values (handles possible undefined/null)
+  const getAvailability = (a: any) => (typeof a === 'string' ? a : '')
   return (
     <main style={{ 
       minHeight: '100vh',
@@ -209,24 +211,24 @@ export default function ProductList({ products }: ProductListProps) {
                         style={{
                           padding: '6px 12px',
                           backgroundColor:
-                            product.availability === 'IN_STOCK'
+                            getAvailability(product.availability) === 'IN_STOCK'
                               ? '#e8f5e9'
-                              : product.availability === 'OUT_OF_STOCK'
+                              : getAvailability(product.availability) === 'OUT_OF_STOCK'
                               ? '#fbe9e7'
                               : colors.champagne,
                           color:
-                            product.availability === 'IN_STOCK'
+                            getAvailability(product.availability) === 'IN_STOCK'
                               ? '#2e7d32'
-                              : product.availability === 'OUT_OF_STOCK'
+                              : getAvailability(product.availability) === 'OUT_OF_STOCK'
                               ? '#b71c1c'
                               : colors.gold,
                           fontSize: typography.fontSize.xs,
                           fontWeight: typography.fontWeight.medium,
                         }}
                       >
-                        {product.availability === 'IN_STOCK'
+                        {getAvailability(product.availability) === 'IN_STOCK'
                           ? 'In Stock'
-                          : product.availability === 'OUT_OF_STOCK'
+                          : getAvailability(product.availability) === 'OUT_OF_STOCK'
                           ? 'Out of Stock'
                           : 'Pre-order'}
                       </span>

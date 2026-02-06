@@ -483,6 +483,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             >
               <option value="IN_STOCK">現貨</option>
               <option value="PREORDER">預購</option>
+              <option value="OUT_OF_STOCK">缺貨</option>
             </select>
           </div>
 
