@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import ImageZoom from '../../components/ImageZoom'
+import ProductInquiryModal from '../../components/ProductInquiryModal'
 import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
@@ -12,6 +14,7 @@ interface ProductDetailClientProps {
 }
 
 export default function ProductDetailClient({ product, images }: ProductDetailClientProps) {
+  const [inquiryOpen, setInquiryOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   
   // Handle case when there are no images
@@ -69,18 +72,14 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                 overflow: 'hidden'
               }}>
                 {currentImage ? (
-                  <img 
-                    src={getProductImageUrl(currentImage.storage_path)}
-                    alt={product.title}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
+                    <div style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}}>
+                      <ImageZoom
+                        src={getProductImageUrl(currentImage.storage_path)}
+                        alt={product.title}
+                        zoomScale={2.2}
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </div>
                 ) : (
                   <div style={{
                     position: 'absolute',
@@ -415,10 +414,34 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
               </p>
               <p style={{ 
                 color: colors.textSecondary,
-                fontSize: typography.fontSize.sm
+                fontSize: typography.fontSize.sm,
+                marginBottom: spacing.md
               }}>
-                Contact us to learn more
+                Contact us to learn more or ask about this product.
               </p>
+              <button
+                onClick={() => setInquiryOpen(true)}
+                style={{
+                  padding: `${spacing.md} ${spacing.xl}`,
+                  backgroundColor: colors.gold,
+                  color: colors.white,
+                  border: 'none',
+                  borderRadius: 6,
+                  fontWeight: typography.fontWeight.medium,
+                  fontSize: typography.fontSize.base,
+                  cursor: 'pointer',
+                  boxShadow: shadows.soft,
+                  transition: transitions.fast
+                }}
+              >
+                Inquire About This Product
+              </button>
+              <ProductInquiryModal
+                open={inquiryOpen}
+                onClose={() => setInquiryOpen(false)}
+                productTitle={product.title}
+                productSlug={product.slug}
+              />
             </div>
           </div>
         </div>
