@@ -1,9 +1,11 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import { colors, typography, spacing, transitions, shadows } from '../constants/design'
+import FilterPanel, { type ProductFilters } from '../components/FilterPanel'
 
 interface ProductWithImages extends CatalogProduct {
   primaryImage?: ProductImage
@@ -14,8 +16,58 @@ interface ProductListProps {
 }
 
 export default function ProductList({ products }: ProductListProps) {
+  const [filters, setFilters] = useState<ProductFilters>({})
+
   // Helper to safely compare enum values (handles possible undefined/null)
   const getAvailability = (a: any) => (typeof a === 'string' ? a : '')
+  const normalize = (value: string) => value.toLowerCase().replace(/\s+/g, '')
+  const getTimestamp = (value?: string | null) => (value ? new Date(value).getTime() : 0)
+
+  const filteredProducts = useMemo(() => {
+    let result = [...products]
+
+    if (filters.pearlType) {
+      const selected = normalize(filters.pearlType)
+      result = result.filter((product) => {
+        const productType = normalize(String(product.pearl_type))
+        if (selected === 'akoya') return productType.includes('akoya')
+        if (selected === 'southsea') return productType.includes('southsea')
+        return productType.includes(selected)
+      })
+    }
+
+    if (filters.priceRange) {
+      const { min, max } = filters.priceRange
+      result = result.filter((product) => {
+        if (typeof product.sell_price !== 'number') return false
+        return product.sell_price >= min && product.sell_price <= max
+      })
+    }
+
+    const sortBy = filters.sortBy || 'newest'
+    result.sort((a, b) => {
+      if (sortBy === 'price-low') {
+        const aPrice = typeof a.sell_price === 'number' ? a.sell_price : Number.POSITIVE_INFINITY
+        const bPrice = typeof b.sell_price === 'number' ? b.sell_price : Number.POSITIVE_INFINITY
+        return aPrice - bPrice
+      }
+
+      if (sortBy === 'price-high') {
+        const aPrice = typeof a.sell_price === 'number' ? a.sell_price : Number.NEGATIVE_INFINITY
+        const bPrice = typeof b.sell_price === 'number' ? b.sell_price : Number.NEGATIVE_INFINITY
+        return bPrice - aPrice
+      }
+
+      if (sortBy === 'popular') {
+        return getTimestamp(b.updated_at) - getTimestamp(a.updated_at)
+      }
+
+      return getTimestamp(b.published_at || b.created_at) - getTimestamp(a.published_at || a.created_at)
+    })
+
+    return result
+  }, [products, filters])
+
   return (
     <main style={{ 
       minHeight: '100vh',
@@ -41,7 +93,9 @@ export default function ProductList({ products }: ProductListProps) {
           </p>
         </header>
 
-        {products.length === 0 ? (
+        <FilterPanel onFilterChange={setFilters} />
+
+        {filteredProducts.length === 0 ? (
           <div style={{ 
             padding: spacing['4xl'],
             textAlign: 'center',
@@ -51,14 +105,14 @@ export default function ProductList({ products }: ProductListProps) {
               fontSize: typography.fontSize.xl, 
               color: colors.textSecondary 
             }}>
-              No products available
+              No products found
             </p>
             <p style={{ 
               fontSize: typography.fontSize.base, 
               color: colors.textLight, 
               marginTop: spacing.sm 
             }}>
-              Stay tuned for our upcoming curated jewelry collection
+              Try adjusting your filters to see more items
             </p>
           </div>
         ) : (
@@ -67,7 +121,7 @@ export default function ProductList({ products }: ProductListProps) {
             gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
             gap: spacing['2xl']
           }}>
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <Link
                 key={product.id}
                 href={`/products/${product.slug}`}
