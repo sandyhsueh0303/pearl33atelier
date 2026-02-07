@@ -166,7 +166,7 @@ export default function ProductList({ products }: ProductListProps) {
         ) : (
           <div style={{ 
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
             gap: spacing['2xl']
           }}>
             {filteredProducts.map((product) => (
