@@ -85,7 +85,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                     <div style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}}>
                       <ImageZoom
                         src={getProductImageUrl(currentImage.storage_path)}
-                        alt={product.title}
+                        alt={`${product.pearl_type || 'Pearl'} ${categoryLabels[product.category || ''] || 'Jewelry'} - ${product.title}`}
                         zoomScale={2.2}
                         style={{ width: '100%', height: '100%' }}
                       />
@@ -205,7 +205,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                   >
                     <img 
                       src={getProductImageUrl(image.storage_path)}
-                      alt={`${product.title} - Image ${index + 1}`}
+                      alt={`${product.pearl_type || 'Pearl'} ${categoryLabels[product.category || ''] || 'Jewelry'} detail view ${index + 1} - ${product.title}`}
                       style={{
                         position: 'absolute',
                         top: 0,

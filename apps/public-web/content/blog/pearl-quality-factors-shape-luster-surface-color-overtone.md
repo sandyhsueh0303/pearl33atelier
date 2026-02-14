@@ -4,7 +4,7 @@ excerpt: "A practical introduction to the five core pearl quality factors and ho
 seoDescription: "Learn the 5 key pearl quality factors: shape, luster, surface quality, body color, and overtone. Understand how to evaluate pearls before you buy."
 publishedAt: "2026-02-14"
 author: "33 Pearl Atelier"
-tags: ["Pearl Guide", "Pearl Quality", "Luster", "Overtone", "Pearl Buying Tips"]
+tags: ["Buying Guide", "Pearl Types", "Pearl Quality", "Luster", "Overtone"]
 readingMinutes: 7
 ---
 
@@ -70,3 +70,7 @@ If you are choosing between two pearls, prioritize luster and overall face-up be
 
 For custom projects, ask to compare a few options side by side. The right pearl usually becomes obvious when viewed in real lighting conditions.
 
+## Related Reading
+
+- [Pearl Types Guide: Akoya, South Sea and Tahitian](/blog/pearl-types-guide)
+- [How to Care for Pearl Jewelry in Daily Life](/blog/how-to-care-for-pearl-jewelry-daily)

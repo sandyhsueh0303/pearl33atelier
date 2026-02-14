@@ -260,7 +260,7 @@ export default function CareGuidePage() {
         </p>
         <div style={{ display: 'flex', gap: spacing.md, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link
-            href="/contact"
+            href="/products"
             style={{
               padding: `${spacing.sm} ${spacing.lg}`,
               backgroundColor: colors.darkGray,
@@ -271,23 +271,14 @@ export default function CareGuidePage() {
               transition: transitions.fast,
             }}
           >
-            Contact Us
-          </Link>
-          <Link
-            href="/products"
-            style={{
-              padding: `${spacing.sm} ${spacing.lg}`,
-              backgroundColor: 'transparent',
-              color: colors.darkGray,
-              textDecoration: 'none',
-              border: `1px solid ${colors.darkGray}`,
-              letterSpacing: '0.08em',
-              transition: transitions.fast,
-            }}
-          >
-            View Collection
+            Shop Collection
           </Link>
         </div>
+        <p style={{ marginTop: spacing.sm }}>
+          <Link href="/faq#daily-care" style={{ color: colors.textSecondary }}>
+            Need quick answers? Read care FAQ.
+          </Link>
+        </p>
       </section>
     </main>
   )

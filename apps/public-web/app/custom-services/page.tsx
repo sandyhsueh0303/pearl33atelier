@@ -266,23 +266,14 @@ export default function CustomServicesPage() {
               transition: transitions.fast,
             }}
           >
-            Contact Us
-          </Link>
-          <Link
-            href="/products"
-            style={{
-              padding: `${spacing.sm} ${spacing.lg}`,
-              backgroundColor: 'transparent',
-              color: colors.darkGray,
-              textDecoration: 'none',
-              border: `1px solid ${colors.darkGray}`,
-              letterSpacing: '0.08em',
-              transition: transitions.fast,
-            }}
-          >
-            View Collection
+            Start Custom Inquiry
           </Link>
         </div>
+        <p style={{ marginTop: spacing.sm }}>
+          <Link href="/products" style={{ color: colors.textSecondary }}>
+            Prefer ready-to-wear first? Shop collection.
+          </Link>
+        </p>
       </section>
     </main>
   )

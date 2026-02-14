@@ -195,7 +195,7 @@ export default function AboutPage() {
           >
             <img
               src="/images/founder.jpg"
-              alt="Founder of 33 Pearl Atelier"
+              alt="Sandy, founder of 33 Pearl Atelier and certified pearl appraiser"
               style={{
                 width: '100%',
                 height: 'auto',
@@ -393,23 +393,14 @@ export default function AboutPage() {
               letterSpacing: '0.08em',
             }}
           >
-            View Collection
-          </Link>
-          <Link
-            href="/custom-services"
-            style={{
-              padding: `${spacing.sm} ${spacing.lg}`,
-              backgroundColor: 'transparent',
-              color: colors.darkGray,
-              textDecoration: 'none',
-              border: `1px solid ${colors.darkGray}`,
-              transition: transitions.fast,
-              letterSpacing: '0.08em',
-            }}
-          >
-            Custom Inquiry
+            Shop Collection
           </Link>
         </div>
+        <p style={{ marginTop: spacing.sm }}>
+          <Link href="/custom-services" style={{ color: colors.textSecondary }}>
+            Looking for bespoke work? Start custom inquiry.
+          </Link>
+        </p>
       </section>
     </main>
   )

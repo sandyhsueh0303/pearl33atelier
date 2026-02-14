@@ -203,7 +203,7 @@ export default function ProductList({ products }: ProductListProps) {
                     {product.primaryImage ? (
                       <img 
                         src={getProductImageUrl(product.primaryImage.storage_path)}
-                        alt={product.title}
+                        alt={`${product.pearl_type || 'Pearl'} ${getCategoryLabel(product.category) || 'Jewelry'} - ${product.title}`}
                         style={{
                           position: 'absolute',
                           top: 0,

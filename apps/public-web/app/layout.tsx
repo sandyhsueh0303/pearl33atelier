@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Playfair_Display } from 'next/font/google'
 import Navigation from './components/Navigation'
+import Footer from './components/Footer'
 import './globals.css'
 
 const playfairDisplay = Playfair_Display({
@@ -17,6 +18,15 @@ export const metadata: Metadata = {
   },
   description:
     'Shop handcrafted pearl jewelry and custom pearl design services by 33 Pearl Atelier. Discover pearl guides, care tips, and bespoke pieces.',
+  keywords: [
+    'handcrafted pearl jewelry',
+    'custom pearl design',
+    'akoya pearls',
+    'south sea pearls',
+    'tahitian pearls',
+    'pearl care guide',
+    'pearl blog',
+  ],
 }
 
 export default function RootLayout({
@@ -43,6 +53,7 @@ export default function RootLayout({
         <main style={{ paddingTop: '80px' }}>
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   )

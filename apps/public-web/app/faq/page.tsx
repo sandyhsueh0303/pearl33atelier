@@ -11,38 +11,47 @@ export const metadata: Metadata = {
 export default function FAQPage() {
   const faqs = [
     {
+      id: 'pearl-types',
       q: 'What pearl types do you offer?',
       a: 'We work with Akoya, South Sea, Tahitian, and Freshwater pearls, depending on the design direction and your budget.',
     },
     {
+      id: 'timeline-faq',
       q: 'How long does a custom pearl piece take?',
       a: 'Most custom pieces are completed in 3-8 weeks, depending on pearl availability, matching requirements, and design complexity.',
     },
     {
+      id: 'pearl-size-color',
       q: 'Can I request a specific pearl size or color tone?',
       a: 'Yes. You can specify preferred size range, color family, and overtone. We will recommend the best available options.',
     },
     {
+      id: 'matching-sets',
       q: 'Do you offer matching sets?',
       a: 'Yes. We can create coordinated sets (for example necklace + earrings + bracelet) with matched pearl character and metal tone.',
     },
     {
+      id: 'repairs-restringing',
       q: 'Do you provide repairs or restringing?',
       a: 'Yes. We provide restringing and selected repair services. Please contact us with photos and a short description of the issue.',
     },
     {
+      id: 'daily-care',
       q: 'How should I care for pearl jewelry daily?',
       a: 'Wear pearls last, remove first, avoid chemical exposure, and wipe with a soft cloth after each wear. See our Care Guide for details.',
     },
     {
+      id: 'returns-policy',
       q: 'Can I return a custom-made item?',
       a: 'Custom pieces are generally final sale once production begins. If there is a craftsmanship issue, we will assist with appropriate aftercare.',
     },
     {
+      id: 'shipping-policy',
       q: 'Do you offer shipping, and how long does delivery take?',
       a: 'Yes. U.S. shipping is estimated at 3 business days (excluding weekends). International shipping is typically around 10-14 days, depending on destination and customs processing.',
     },
     {
+      id: 'start-custom',
       q: 'How do I start a custom inquiry?',
       a: 'Use our Contact page and include your style idea, preferred pearl type, budget range, and target timeline.',
     },
@@ -114,7 +123,9 @@ export default function FAQPage() {
           {faqs.map((item) => (
             <details
               key={item.q}
+              id={item.id}
               style={{
+                scrollMarginTop: '110px',
                 backgroundColor: colors.white,
                 border: `1px solid ${colors.lightGray}`,
                 borderRadius: '10px',
@@ -195,23 +206,14 @@ export default function FAQPage() {
               transition: transitions.fast,
             }}
           >
-            Contact Us
-          </Link>
-          <Link
-            href="/care-guide"
-            style={{
-              padding: `${spacing.sm} ${spacing.lg}`,
-              backgroundColor: 'transparent',
-              color: colors.darkGray,
-              textDecoration: 'none',
-              border: `1px solid ${colors.darkGray}`,
-              letterSpacing: '0.08em',
-              transition: transitions.fast,
-            }}
-          >
-            Care Guide
+            Start Custom Inquiry
           </Link>
         </div>
+        <p style={{ marginTop: spacing.sm }}>
+          <Link href="/care-guide" style={{ color: colors.textSecondary }}>
+            For daily handling steps, read the care guide.
+          </Link>
+        </p>
       </section>
     </main>
   )

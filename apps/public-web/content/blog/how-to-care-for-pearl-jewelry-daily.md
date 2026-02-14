@@ -4,7 +4,7 @@ excerpt: "Simple care habits that keep pearls luminous and protected for years."
 seoDescription: "Discover easy daily pearl care tips: wear pearls last, avoid chemicals, proper storage, and cleaning methods that protect luster."
 publishedAt: "2026-02-14"
 author: "33 Pearl Atelier"
-tags: ["Pearl Care", "Jewelry Maintenance"]
+tags: ["Pearl Care", "Buying Guide", "Jewelry Maintenance"]
 readingMinutes: 5
 ---
 
@@ -26,3 +26,7 @@ If a pearl strand feels loose or spacing between knots increases, consider restr
 
 For frequently worn strands, periodic inspection helps prevent breakage and loss.
 
+## Related Reading
+
+- [Pearl Types Guide: Akoya, South Sea and Tahitian](/blog/pearl-types-guide)
+- [Pearl Quality Factors: Shape, Luster, Surface, Body Color, and Overtone](/blog/pearl-quality-factors-shape-luster-surface-color-overtone)

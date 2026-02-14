@@ -103,7 +103,7 @@ export default function HomePage() {
               backdropFilter: 'blur(4px)',
             }}
           >
-            Explore Collection
+            Shop Collection
           </Link>
         </div>
 
@@ -170,8 +170,8 @@ export default function HomePage() {
               margin: `0 auto ${spacing.lg}`,
             }}
           >
-            Explore ready-to-wear pearl jewelry, request a custom pearl piece, and learn how to choose
-            and care for pearls through our educational guides.
+            Handcrafted pearl jewelry and custom pearl design services.
+            Explore ready-to-wear pieces, request custom work, and learn through our pearl guides.
           </p>
           <div style={{ display: 'flex', gap: spacing.md, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link
@@ -187,24 +187,14 @@ export default function HomePage() {
                 transition: transitions.fast,
               }}
             >
-              Shop Pearl Jewelry
-            </Link>
-            <Link
-              href="/custom-services"
-              style={{
-                display: 'inline-block',
-                padding: `${spacing.xs} ${spacing.lg}`,
-                backgroundColor: 'transparent',
-                color: colors.darkGray,
-                textDecoration: 'none',
-                border: `1px solid ${colors.darkGray}`,
-                letterSpacing: '0.08em',
-                transition: transitions.fast,
-              }}
-            >
-              Custom Pearl Service
+              Shop Collection
             </Link>
           </div>
+          <p style={{ marginTop: spacing.sm }}>
+            <Link href="/custom-services" style={{ color: colors.textSecondary }}>
+              Need a bespoke piece? Start custom inquiry.
+            </Link>
+          </p>
         </div>
       </section>
 
@@ -327,6 +317,44 @@ export default function HomePage() {
               <br />
               <span style={{ fontStyle: 'italic' }}>Ensuring lasting beauty</span>
             </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        style={{
+          padding: `${spacing['3xl']} ${spacing.xl}`,
+          borderTop: `1px solid ${colors.lightGray}`,
+          borderBottom: `1px solid ${colors.lightGray}`,
+          backgroundColor: '#fffdf9',
+        }}
+      >
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <h2 style={{ fontSize: typography.fontSize['3xl'], color: colors.darkGray, marginBottom: spacing.sm, textAlign: 'center' }}>
+            Trust & Policies
+          </h2>
+          <p style={{ color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.xl }}>
+            Clear information to help you decide with confidence.
+          </p>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: spacing.md,
+            }}
+          >
+            <Link href="/faq#shipping-policy" style={{ border: `1px solid ${colors.lightGray}`, padding: spacing.md, color: colors.darkGray, textDecoration: 'none' }}>
+              Shipping Policy
+            </Link>
+            <Link href="/faq#returns-policy" style={{ border: `1px solid ${colors.lightGray}`, padding: spacing.md, color: colors.darkGray, textDecoration: 'none' }}>
+              Returns Policy
+            </Link>
+            <Link href="/care-guide" style={{ border: `1px solid ${colors.lightGray}`, padding: spacing.md, color: colors.darkGray, textDecoration: 'none' }}>
+              Care Policy
+            </Link>
+            <Link href="/faq#timeline-faq" style={{ border: `1px solid ${colors.lightGray}`, padding: spacing.md, color: colors.darkGray, textDecoration: 'none' }}>
+              Timeline FAQ
+            </Link>
           </div>
         </div>
       </section>

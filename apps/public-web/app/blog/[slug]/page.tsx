@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { getPostBySlug, getAllPostSlugs } from '../../lib/blog'
 import { colors, typography, spacing } from '../../constants/design'
 
@@ -255,6 +256,29 @@ export default async function BlogPostPage({ params }: Props) {
               Last updated: <time dateTime={post.updatedAt}>{post.updatedAt}</time>
             </p>
           )}
+
+          <section style={{ marginTop: spacing['2xl'], textAlign: 'center' }}>
+            <Link
+              href="/contact"
+              style={{
+                display: 'inline-block',
+                padding: `${spacing.xs} ${spacing.md}`,
+                backgroundColor: colors.darkGray,
+                color: colors.white,
+                textDecoration: 'none',
+                border: `1px solid ${colors.darkGray}`,
+                letterSpacing: '0.08em',
+              }}
+            >
+              Start Custom Inquiry
+            </Link>
+          </section>
+
+          <p style={{ marginTop: spacing.lg, textAlign: 'center' }}>
+            <Link href="/blog" style={{ color: colors.textSecondary }}>
+              ← Back to Journal
+            </Link>
+          </p>
         </article>
 
       </main>

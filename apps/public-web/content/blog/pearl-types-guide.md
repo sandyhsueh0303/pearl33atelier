@@ -4,7 +4,7 @@ excerpt: "A practical guide to the main pearl varieties and how to choose the ri
 seoDescription: "Learn the differences between Akoya, South Sea, and Tahitian, including luster, color, size, and ideal jewelry styles."
 publishedAt: "2026-02-14"
 author: "33 Pearl Atelier"
-tags: ["Pearl Guide", "Akoya", "South Sea", "Tahitian"]
+tags: ["Pearl Types", "Buying Guide", "Akoya", "South Sea", "Tahitian"]
 readingMinutes: 6
 ---
 
@@ -31,3 +31,8 @@ No type is universally better. The right choice depends on style goals, budget, 
 Start with your use case: daily wear, gifting, bridal, or statement occasions. Then compare size comfort, color tone, and overall silhouette.
 
 For custom projects, we usually prepare options across quality levels so you can compare side by side before finalizing.
+
+## Related Reading
+
+- [Pearl Quality Factors: Shape, Luster, Surface, Body Color, and Overtone](/blog/pearl-quality-factors-shape-luster-surface-color-overtone)
+- [How to Care for Pearl Jewelry in Daily Life](/blog/how-to-care-for-pearl-jewelry-daily)

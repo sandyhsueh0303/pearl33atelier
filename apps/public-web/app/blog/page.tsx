@@ -1,16 +1,16 @@
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { colors, typography, spacing } from '../constants/design'
 import { getAllPosts } from '../lib/blog'
 import BlogSearch from './BlogSearch'
 
 export const metadata: Metadata = {
-  title: 'Journal | 33 Pearl Atelier',
+  title: 'Pearl Blog',
   description:
-    'Pearl education, styling tips, and care guides from 33 Pearl Atelier.',
+    'Pearl blog by 33 Pearl Atelier covering Pearl Types, Pearl Care, Buying Guide, and Custom Design insights.',
 }
 
 export default function JournalPage() {
-  // 從 Markdown 檔案讀取文章
   const posts = getAllPosts()
 
   return (
@@ -32,7 +32,7 @@ export default function JournalPage() {
               marginBottom: spacing.md,
             }}
           >
-            Journal
+            Journal / Blog
           </p>
           <h1
             style={{
@@ -55,13 +55,30 @@ export default function JournalPage() {
               margin: '0 auto',
             }}
           >
-            Educational blog content designed to help you understand pearls better.
+            Educational blog content organized into topic clusters to help visitors and search engines understand your expertise.
           </p>
         </div>
       </section>
 
       <section style={{ padding: `${spacing['3xl']} ${spacing.xl} ${spacing['4xl']}` }}>
         <BlogSearch posts={posts} />
+      </section>
+
+      <section style={{ textAlign: 'center', padding: `0 ${spacing.xl} ${spacing['3xl']}` }}>
+        <Link
+          href="/products"
+          style={{
+            display: 'inline-block',
+            padding: `${spacing.xs} ${spacing.md}`,
+            backgroundColor: colors.darkGray,
+            color: colors.white,
+            textDecoration: 'none',
+            border: `1px solid ${colors.darkGray}`,
+            letterSpacing: '0.08em',
+          }}
+        >
+          Shop Collection
+        </Link>
       </section>
     </main>
   )
