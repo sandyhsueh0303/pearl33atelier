@@ -159,7 +159,7 @@ export default function HomePage() {
               lineHeight: typography.lineHeight.tight,
             }}
           >
-            Handcrafted Pearl Jewelry & Custom Pearl Design
+            Pearls Chosen With Intention, Crafted for Everyday Elegance
           </h2>
           <p
             style={{
@@ -214,6 +214,17 @@ export default function HomePage() {
         }}>
           The Art of Pearls
         </h2>
+        <p
+          style={{
+            marginTop: spacing.sm,
+            textAlign: 'center',
+            color: colors.textSecondary,
+            letterSpacing: '0.06em',
+            fontSize: typography.fontSize.sm,
+          }}
+        >
+          GIA Certified Gemologist · Curated Pearl Selection · Custom Design Available
+        </p>
 
         <div style={{
           display: 'grid',
@@ -242,16 +253,16 @@ export default function HomePage() {
               marginBottom: spacing.md,
               letterSpacing: '0.05em',
             }}>
-              Selected Pearls
+              Selected with Intention
             </h3>
             <p style={{
               fontSize: typography.fontSize.base,
               color: colors.textSecondary,
               lineHeight: typography.lineHeight.relaxed,
             }}>
-              Carefully selected premium pearls from around the world
+              Each pearl is chosen for its individual glow, shape, and character -
               <br />
-              <span style={{ fontStyle: 'italic' }}>Each professionally certified</span>
+              not just by grade, but by how it feels when worn.
             </p>
           </div>
 
@@ -274,16 +285,16 @@ export default function HomePage() {
               marginBottom: spacing.md,
               letterSpacing: '0.05em',
             }}>
-              Handcrafted
+              Crafted for Everyday Elegance
             </h3>
             <p style={{
               fontSize: typography.fontSize.base,
               color: colors.textSecondary,
               lineHeight: typography.lineHeight.relaxed,
             }}>
-              Crafted by master artisans
+              Designed to be part of your daily rhythm,
               <br />
-              <span style={{ fontStyle: 'italic' }}>Custom-made jewelry tailored for you</span>
+              not only for special occasions but for quiet moments too.
             </p>
           </div>
 
@@ -306,16 +317,16 @@ export default function HomePage() {
               marginBottom: spacing.md,
               letterSpacing: '0.05em',
             }}>
-              Timeless Quality
+              Made to Age Beautifully
             </h3>
             <p style={{
               fontSize: typography.fontSize.base,
               color: colors.textSecondary,
               lineHeight: typography.lineHeight.relaxed,
             }}>
-              Premium materials and craftsmanship
+              Fine materials and thoughtful craftsmanship
               <br />
-              <span style={{ fontStyle: 'italic' }}>Ensuring lasting beauty</span>
+              allow each piece to evolve with you over time.
             </p>
           </div>
         </div>
@@ -331,29 +342,24 @@ export default function HomePage() {
       >
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <h2 style={{ fontSize: typography.fontSize['3xl'], color: colors.darkGray, marginBottom: spacing.sm, textAlign: 'center' }}>
-            Trust & Policies
+            Customer Care & FAQ
           </h2>
           <p style={{ color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.xl }}>
-            Clear information to help you decide with confidence.
+            Answers and guidance to help you choose with confidence.
           </p>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gap: spacing.md,
-            }}
-          >
-            <Link href="/faq#shipping-policy" style={{ border: `1px solid ${colors.lightGray}`, padding: spacing.md, color: colors.darkGray, textDecoration: 'none' }}>
-              Shipping Policy
-            </Link>
-            <Link href="/faq#returns-policy" style={{ border: `1px solid ${colors.lightGray}`, padding: spacing.md, color: colors.darkGray, textDecoration: 'none' }}>
-              Returns Policy
-            </Link>
-            <Link href="/care-guide" style={{ border: `1px solid ${colors.lightGray}`, padding: spacing.md, color: colors.darkGray, textDecoration: 'none' }}>
-              Care Policy
-            </Link>
-            <Link href="/faq#timeline-faq" style={{ border: `1px solid ${colors.lightGray}`, padding: spacing.md, color: colors.darkGray, textDecoration: 'none' }}>
-              Timeline FAQ
+          <div style={{ textAlign: 'center' }}>
+            <Link
+              href="/faq"
+              style={{
+                display: 'inline-block',
+                border: `1px solid ${colors.darkGray}`,
+                padding: `${spacing.xs} ${spacing.lg}`,
+                color: colors.darkGray,
+                textDecoration: 'none',
+                letterSpacing: '0.08em',
+              }}
+            >
+              View FAQ
             </Link>
           </div>
         </div>
@@ -373,7 +379,7 @@ export default function HomePage() {
           marginBottom: spacing.lg,
           letterSpacing: '0.03em',
         }}>
-          From Journal
+          From the Journal
         </h2>
         <p style={{
           fontSize: typography.fontSize.lg,
@@ -383,8 +389,8 @@ export default function HomePage() {
           maxWidth: '700px',
           margin: `0 auto ${spacing['2xl']} auto`,
         }}>
-          Explore pearl education, care tips, and practical buying insights.
-          This helps visitors discover relevant content and strengthens internal SEO signals.
+          Discover pearl stories, care tips, and thoughtful buying guides -
+          a space to explore and understand pearls beyond the surface.
         </p>
 
         <div
@@ -402,10 +408,10 @@ export default function HomePage() {
               Pearl Types Guide
             </h3>
             <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
-              Understand the key differences between Akoya, South Sea, Tahitian, and Freshwater pearls.
+              Understand the subtle differences between Akoya, South Sea, Tahitian, and Freshwater pearls.
             </p>
             <Link href="/blog/pearl-types-guide" style={{ color: colors.darkGray, textDecoration: 'underline' }}>
-              Read article
+              Read Article
             </Link>
           </article>
           <article style={{ backgroundColor: colors.white, padding: spacing.lg, border: `1px solid ${colors.lightGray}` }}>
@@ -413,10 +419,10 @@ export default function HomePage() {
               Daily Pearl Care
             </h3>
             <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
-              Learn simple daily habits that keep pearl jewelry luminous and protected.
+              Simple habits to keep your pearl jewelry luminous and beautifully maintained.
             </p>
             <Link href="/blog/how-to-care-for-pearl-jewelry-daily" style={{ color: colors.darkGray, textDecoration: 'underline' }}>
-              Read article
+              Read Article
             </Link>
           </article>
           <article style={{ backgroundColor: colors.white, padding: spacing.lg, border: `1px solid ${colors.lightGray}` }}>
@@ -424,10 +430,10 @@ export default function HomePage() {
               Pearl Quality Factors
             </h3>
             <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
-              Learn how shape, luster, surface, body color, and overtone affect pearl beauty and value.
+              Learn how luster, shape, surface, and overtone influence a pearl's beauty and character.
             </p>
             <Link href="/blog/pearl-quality-factors-shape-luster-surface-color-overtone" style={{ color: colors.darkGray, textDecoration: 'underline' }}>
-              Read article
+              Read Article
             </Link>
           </article>
         </div>
@@ -449,23 +455,6 @@ export default function HomePage() {
             }}
           >
             View All Journal Posts
-          </Link>
-          <Link
-            href="/faq"
-            style={{
-              display: 'inline-block',
-              padding: `${spacing.md} ${spacing['2xl']}`,
-              backgroundColor: 'transparent',
-              color: colors.darkGray,
-              fontSize: typography.fontSize.base,
-              fontWeight: typography.fontWeight.semibold,
-              letterSpacing: '0.1em',
-              textDecoration: 'none',
-              border: `1px solid ${colors.darkGray}`,
-              transition: transitions.normal,
-            }}
-          >
-            Read FAQ
           </Link>
         </div>
       </section>
