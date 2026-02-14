@@ -60,9 +60,16 @@ export default function ContactPage() {
             <li>Budget range and deadline</li>
             <li>Reference photos or inspiration</li>
           </ul>
-          <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.lg }}>
-            Email us at <a href="mailto:hello@33pearlatelier.com">hello@33pearlatelier.com</a> and we will follow up.
-          </p>
+          <div style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.lg }}>
+            <p style={{ marginBottom: spacing.xs }}>We offer 3 ways to connect:</p>
+            <p style={{ marginBottom: spacing.xs }}>
+              Instagram: <a href="https://instagram.com/33_pearl_atelier" target="_blank" rel="noreferrer">@33_pearl_atelier</a>
+            </p>
+            <p style={{ marginBottom: spacing.xs }}>WeChat: _33pearlatelier</p>
+            <p>
+              Email: <a href="mailto:33pearlatelier@gmail.com">33pearlatelier@gmail.com</a>
+            </p>
+          </div>
           <Link
             href="/custom-services"
             style={{
