@@ -43,7 +43,7 @@ export default function Navbar() {
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
-            產品管理
+            Products
           </Link>
           <Link 
             href="/admin/inventory" 
@@ -57,7 +57,7 @@ export default function Navbar() {
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
-            庫存管理
+            Inventory
           </Link>
           <Link 
             href="/admin/sales" 
@@ -71,7 +71,7 @@ export default function Navbar() {
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
-            銷售管理
+            Sales
           </Link>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function Navbar() {
           onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.3)'}
           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'}
         >
-          登出
+          Logout
         </button>
       </div>
     </nav>

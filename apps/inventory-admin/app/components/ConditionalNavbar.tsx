@@ -6,7 +6,7 @@ import Navbar from './Navbar'
 export default function ConditionalNavbar() {
   const pathname = usePathname()
   
-  // 不在登入頁面時才顯示 Navbar
+  // Only show Navbar when not on the login page
   if (pathname === '/admin/login') {
     return null
   }

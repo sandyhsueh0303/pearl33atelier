@@ -2,10 +2,10 @@
  * Product Images Upload API
  * 
  * Endpoint:
- * - POST /api/products/[id]/images - 上傳產品圖片
- *   支援多檔案上傳
- *   圖片儲存在 Supabase Storage (product-images bucket)
- *   預設 published=false（草稿狀態）
+ * - POST /api/products/[id]/images - Upload product images
+ *   Supports multi-file upload
+ *   Images stored in Supabase Storage (product-images bucket)
+ *   Default published=false (draft)
  */
 
 import { NextRequest, NextResponse } from 'next/server'

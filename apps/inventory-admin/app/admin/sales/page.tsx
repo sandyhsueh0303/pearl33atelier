@@ -59,7 +59,7 @@ export default function SalesPage() {
   return (
     <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1400px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ margin: 0 }}>銷售管理</h1>
+        <h1 style={{ margin: 0 }}>Sales</h1>
         <button
           onClick={() => {
             if (showForm && !editingSale) {
@@ -79,7 +79,7 @@ export default function SalesPage() {
             fontWeight: 'bold'
           }}
         >
-          {(showForm && !editingSale) ? '隱藏表單' : '+ 記錄新銷售'}
+          {(showForm && !editingSale) ? 'Hide Form' : '+ Record New Sale'}
         </button>
       </div>
 

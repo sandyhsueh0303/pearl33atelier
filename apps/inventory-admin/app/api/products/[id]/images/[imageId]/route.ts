@@ -2,11 +2,11 @@
  * Product Image Management API
  * 
  * Endpoints:
- * - PATCH  /api/products/[id]/images/[imageId] - 更新圖片屬性
- *   支援: published (true/false), is_primary (true/false), sort_order (number)
- *   設定 is_primary=true 時會自動取消其他圖片的主圖狀態
+ * - PATCH  /api/products/[id]/images/[imageId] - Update image attributes
+ *   Supports: published (true/false), is_primary (true/false), sort_order (number)
+ *   When is_primary=true, automatically unset other primary images
  * 
- * - DELETE /api/products/[id]/images/[imageId] - 刪除圖片（從 Storage 和 DB）
+ * - DELETE /api/products/[id]/images/[imageId] - Delete image (from Storage and DB)
  */
 
 import { NextRequest, NextResponse } from 'next/server'

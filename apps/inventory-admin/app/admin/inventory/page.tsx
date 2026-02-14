@@ -19,12 +19,12 @@ interface InventoryItem {
 
 // Category options
 const CATEGORIES = [
-  { value: 'pearl', label: 'Pearl (珍珠)', color: '#e3f2fd', textColor: '#1565c0' },
-  { value: 'pt900', label: 'Pt900 (鉑金900)', color: '#f3e5f5', textColor: '#7b1fa2' },
-  { value: '925_silver', label: '925 Silver (925純銀)', color: '#e8f5e9', textColor: '#2e7d32' },
-  { value: '18k', label: '18K Gold (18K金)', color: '#fff3e0', textColor: '#e65100' },
-  { value: 'package', label: 'Package (包裝)', color: '#fce4ec', textColor: '#c2185b' },
-  { value: 'shipment', label: 'Shipment (運費)', color: '#fff9c4', textColor: '#f57f17' }
+  { value: 'pearl', label: 'Pearl', color: '#e3f2fd', textColor: '#1565c0' },
+  { value: 'pt900', label: 'Pt900 Platinum 900', color: '#f3e5f5', textColor: '#7b1fa2' },
+  { value: '925_silver', label: '925 Silver', color: '#e8f5e9', textColor: '#2e7d32' },
+  { value: '18k', label: '18K Gold', color: '#fff3e0', textColor: '#e65100' },
+  { value: 'package', label: 'Packaging', color: '#fce4ec', textColor: '#c2185b' },
+  { value: 'shipment', label: 'Shipping', color: '#fff9c4', textColor: '#f57f17' }
 ] as const
 
 interface InventorySummary {
@@ -140,18 +140,18 @@ export default function InventoryPage() {
     <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1400px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <h1 style={{ margin: 0 }}>庫存管理</h1>
+          <h1 style={{ margin: 0 }}>Inventory</h1>
           <button
             onClick={async () => {
-              console.log('🔄 刷新按鈕被點擊')
+              console.log('🔄 Refresh button clicked')
               setLoading(true)
               setError(null)
               try {
                 await loadInventory()
-                console.log('✅ 庫存列表已更新')
+                console.log('✅ Inventory list updated')
               } catch (e) {
-                console.error('❌ 刷新失敗:', e)
-                setError('刷新失敗，請重試')
+                console.error('❌ Refresh failed:', e)
+                setError('Refresh failed, please try again')
               }
             }}
             disabled={loading}
@@ -165,9 +165,9 @@ export default function InventoryPage() {
               opacity: loading ? 0.6 : 1,
               transition: 'all 0.2s'
             }}
-            title="重新載入庫存列表"
+            title="Reload inventory list"
           >
-            {loading ? '⏳ 載入中...' : '🔄 刷新'}
+            {loading ? '⏳ Loading...' : '🔄 Refresh'}
           </button>
         </div>
         <Link
@@ -181,7 +181,7 @@ export default function InventoryPage() {
             fontWeight: 'bold'
           }}
         >
-          + 新增庫存
+          + Add Inventory
         </Link>
       </div>
 
@@ -193,7 +193,7 @@ export default function InventoryPage() {
           borderRadius: '4px',
           marginBottom: '1rem'
         }}>
-          <strong>錯誤:</strong> {error}
+          <strong>Error:</strong> {error}
         </div>
       )}
 
@@ -209,13 +209,13 @@ export default function InventoryPage() {
           {/* Search Input */}
           <div style={{ flex: '1 1 300px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              🔍 搜尋供應商或備註
+              🔍 Search vendor or notes
             </label>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="輸入供應商名稱或備註..."
+              placeholder="Enter vendor name or notes..."
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -253,7 +253,7 @@ export default function InventoryPage() {
           {/* Sort By */}
           <div style={{ flex: '0 1 200px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              📊 排序方式
+              📊 Sort By
             </label>
             <select
               value={sortBy}
@@ -267,16 +267,16 @@ export default function InventoryPage() {
                 backgroundColor: 'white'
               }}
             >
-              <option value="date">採購日期</option>
-              <option value="value">總價值</option>
-              <option value="quantity">數量</option>
+              <option value="date">Purchase Date</option>
+              <option value="value">Total Value</option>
+              <option value="quantity">Quantity</option>
             </select>
           </div>
 
           {/* Sort Order */}
           <div style={{ flex: '0 1 150px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              ↕️ 順序
+              ↕️ Order
             </label>
             <select
               value={sortOrder}
@@ -290,8 +290,8 @@ export default function InventoryPage() {
                 backgroundColor: 'white'
               }}
             >
-              <option value="desc">降冪 ↓</option>
-              <option value="asc">升冪 ↑</option>
+              <option value="desc">Descending ↓</option>
+              <option value="asc">Ascending ↑</option>
             </select>
           </div>
 
@@ -313,7 +313,7 @@ export default function InventoryPage() {
                   fontWeight: '500'
                 }}
               >
-                🔄 重置
+                🔄 Reset
               </button>
             </div>
           )}
@@ -321,7 +321,7 @@ export default function InventoryPage() {
 
         {/* Results Count */}
         <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
-          顯示 <strong>{filteredItems.length}</strong> / {items.length} 項庫存
+          Showing <strong>{filteredItems.length}</strong> / {items.length} inventory items
         </div>
       </div>
 
@@ -333,7 +333,7 @@ export default function InventoryPage() {
           borderRadius: '8px',
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總項目</p>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Items</p>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2', margin: 0 }}>
             {summary.total_items}
           </p>
@@ -345,7 +345,7 @@ export default function InventoryPage() {
           borderRadius: '8px',
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總數量</p>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Quantity</p>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2e7d32', margin: 0 }}>
             {summary.total_quantity}
           </p>
@@ -357,7 +357,7 @@ export default function InventoryPage() {
           borderRadius: '8px',
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>可用數量</p>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Available Quantity</p>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4caf50', margin: 0 }}>
             {summary.available_quantity}
           </p>
@@ -369,7 +369,7 @@ export default function InventoryPage() {
           borderRadius: '8px',
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總價值</p>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Value</p>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ef6c00', margin: 0 }}>
             ${summary.total_value.toFixed(2)}
           </p>
@@ -385,7 +385,7 @@ export default function InventoryPage() {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           <p style={{ fontSize: '1.25rem', color: '#666', marginBottom: '1rem' }}>
-            {items.length === 0 ? '尚無庫存項目' : '沒有符合條件的庫存項目'}
+            {items.length === 0 ? 'No inventory items yet' : 'No matching inventory items'}
           </p>
           {items.length === 0 ? (
             <Link
@@ -400,7 +400,7 @@ export default function InventoryPage() {
                 fontWeight: 'bold'
               }}
             >
-              建立第一個庫存項目
+              Create first inventory item
             </Link>
           ) : (
             <button
@@ -415,7 +415,7 @@ export default function InventoryPage() {
                 fontWeight: 'bold'
               }}
             >
-              清除篩選條件
+              Clear filters
             </button>
           )}
         </div>
@@ -429,15 +429,15 @@ export default function InventoryPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>供應商</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Vendor</th>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Category</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>採購日期</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>單價</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>可用</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>已用</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>剩餘</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>剩餘價值</th>
-                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600' }}>操作</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Purchase Date</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>Unit Cost</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>Available</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>Used</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>Remaining</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>Remaining Value</th>
+                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -509,7 +509,7 @@ export default function InventoryPage() {
                           fontWeight: '500'
                         }}
                       >
-                        查看
+                        View
                       </Link>
                     </td>
                   </tr>

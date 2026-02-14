@@ -2,7 +2,7 @@
  * Auth Logout API
  * 
  * Endpoint:
- * - POST /api/auth/logout - Admin 登出，完整清除 session
+ * - POST /api/auth/logout - Admin logout, fully clear session
  */
 
 import { NextRequest, NextResponse } from 'next/server'

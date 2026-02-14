@@ -170,7 +170,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         throw new Error(error.error || `Failed to ${editSale ? 'update' : 'create'} sale`);
       }
 
-      alert(editSale ? '銷售記錄已更新！✅' : '銷售記錄已建立！✅');
+      alert(editSale ? 'Sales record updated! ✅' : 'Sales record created! ✅');
       
       // Reset form or call cancel if editing
       if (editSale && onCancelEdit) {
@@ -207,7 +207,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
       boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 'bold' }}>{editSale ? '編輯銷售記錄' : '記錄新銷售'}</h2>
+        <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 'bold' }}>{editSale ? 'Edit Sales Record' : 'Record New Sale'}</h2>
         {editSale && onCancelEdit && (
           <button
             type="button"
@@ -223,7 +223,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
               fontWeight: '500',
             }}
           >
-            取消
+            Cancel
           </button>
         )}
       </div>
@@ -232,7 +232,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         {/* Product Selection */}
         <div>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-            產品 <span style={{ color: '#d32f2f' }}>*</span>
+            Product <span style={{ color: '#d32f2f' }}>*</span>
           </label>
           <select
             value={productId}
@@ -248,7 +248,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
               backgroundColor: 'white'
             }}
           >
-            <option value="">選擇產品...</option>
+            <option value="">Select product...</option>
             {products.map((product) => (
               <option key={product.id} value={product.id}>
                 {product.title} (${product.sell_price})
@@ -257,7 +257,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
           </select>
           {loadingCost && (
             <div style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#666' }}>
-              載入產品成本中...
+              Loading product cost...
             </div>
           )}
         </div>
@@ -266,7 +266,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              數量 <span style={{ color: '#d32f2f' }}>*</span>
+              Quantity <span style={{ color: '#d32f2f' }}>*</span>
             </label>
             <input
               type="number"
@@ -287,7 +287,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              單價 <span style={{ color: '#d32f2f' }}>*</span>
+              Unit Price <span style={{ color: '#d32f2f' }}>*</span>
             </label>
             <input
               type="number"
@@ -308,7 +308,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              單位成本 <span style={{ color: '#d32f2f' }}>*</span>
+              Unit Cost <span style={{ color: '#d32f2f' }}>*</span>
             </label>
             <input
               type="number"
@@ -338,19 +338,19 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
           }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
               <div>
-                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>總價</div>
+                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Total Price</div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1976d2' }}>
                   ${totalPrice.toFixed(2)}
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>總成本</div>
+                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Total Cost</div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#d32f2f' }}>
                   ${totalCost.toFixed(2)}
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>利潤</div>
+                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Profit</div>
                 <div style={{
                   fontSize: '1.5rem',
                   fontWeight: 'bold',
@@ -360,7 +360,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>利潤率</div>
+                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Profit Margin</div>
                 <div style={{
                   fontSize: '1.5rem',
                   fontWeight: 'bold',
@@ -376,7 +376,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         {/* Sale Date */}
         <div>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-            銷售日期
+            Sale Date
           </label>
           <input
             type="date"
@@ -396,13 +396,13 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              客戶名稱
+              Customer Name
             </label>
             <input
               type="text"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              placeholder="選填"
+              placeholder="Optional"
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -415,13 +415,13 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              訂單編號
+              Order Number
             </label>
             <input
               type="text"
               value={orderNumber}
               onChange={(e) => setOrderNumber(e.target.value)}
-              placeholder="選填"
+              placeholder="Optional"
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -436,7 +436,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         {/* Platform */}
         <div>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-            銷售平台
+            Sales Channel
           </label>
           <select
             value={platform}
@@ -450,25 +450,25 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
               backgroundColor: 'white'
             }}
           >
-            <option value="">選擇平台...</option>
+            <option value="">Select channel...</option>
             <option value="website">Website</option>
             <option value="instagram">Instagram</option>
             <option value="line">LINE</option>
             <option value="facebook">Facebook</option>
-            <option value="in-store">實體店面</option>
-            <option value="other">其他</option>
+            <option value="in-store">In-store</option>
+            <option value="other">Other</option>
           </select>
         </div>
 
         {/* Notes */}
         <div>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-            備註
+            Notes
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="選填備註..."
+            placeholder="OptionalNotes..."
             rows={3}
             style={{
               width: '100%',
@@ -499,7 +499,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
               cursor: loading ? 'not-allowed' : 'pointer',
             }}
           >
-            {loading ? (editSale ? '更新中...' : '記錄中...') : (editSale ? '💾 更新銷售' : '💰 記錄銷售')}
+            {loading ? (editSale ? 'Updating...' : 'Saving...') : (editSale ? '💾 Update Sale' : '💰 Record Sale')}
           </button>
           {editSale && onCancelEdit && (
             <button
@@ -516,7 +516,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
                 cursor: 'pointer',
               }}
             >
-              取消
+              Cancel
             </button>
           )}
         </div>

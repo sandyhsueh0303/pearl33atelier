@@ -293,7 +293,7 @@ export default function ProductList({ products }: ProductListProps) {
                             fontWeight: typography.fontWeight.semibold,
                             color: colors.darkGray
                           }}>
-                            US$ {product.sell_price.toLocaleString()}
+                            $ {product.sell_price.toLocaleString()}
                           </div>
                         )}
                         {product.original_price && product.original_price > (product.sell_price || 0) && (
@@ -302,7 +302,7 @@ export default function ProductList({ products }: ProductListProps) {
                             color: colors.textLight,
                             textDecoration: 'line-through'
                           }}>
-                            US$ {product.original_price.toLocaleString()}
+                            $ {product.original_price.toLocaleString()}
                           </div>
                         )}
                       </div>

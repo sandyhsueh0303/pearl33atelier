@@ -4,7 +4,7 @@ import { logger } from '@/app/utils/logger'
 
 /**
  * GET /api/products/[id]/materials
- * 取得產品的用料清單
+ * Get product materials list
  */
 export async function GET(
   request: NextRequest,
@@ -44,7 +44,7 @@ export async function GET(
 
 /**
  * POST /api/products/[id]/materials
- * 新增用料
+ * Add material
  */
 export async function POST(
   request: NextRequest,
@@ -85,7 +85,7 @@ export async function POST(
 
 /**
  * DELETE /api/products/[id]/materials/[materialId]
- * 刪除用料
+ * Delete material
  */
 export async function DELETE(
   request: NextRequest,

@@ -124,16 +124,16 @@ export default function ProductCostAnalysis({ productId }: Props) {
       setNotes('')
       
       await loadMaterials()
-      alert('材料已新增')
+      alert('Material added')
     } catch (error) {
-      alert('新增失敗: ' + (error instanceof Error ? error.message : ''))
+      alert('Add failed: ' + (error instanceof Error ? error.message : ''))
     } finally {
       setAdding(false)
     }
   }
 
   const handleDeleteMaterial = async (materialId: string) => {
-    if (!confirm('確定要刪除這個材料嗎？')) return
+    if (!confirm('Delete this material?')) return
 
     try {
       const res = await fetch(
@@ -144,9 +144,9 @@ export default function ProductCostAnalysis({ productId }: Props) {
       if (!res.ok) throw new Error('Failed to delete')
 
       await loadMaterials()
-      alert('材料已刪除')
+      alert('Material deleted')
     } catch (error) {
-      alert('刪除失敗')
+      alert('Delete failed')
     }
   }
 
@@ -160,7 +160,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
   const profitMargin = sellingPrice > 0 ? (profit / sellingPrice) * 100 : 0
 
   if (loading) {
-    return <div style={{ padding: '2rem', textAlign: 'center' }}>載入中...</div>
+    return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
   }
 
   return (
@@ -179,13 +179,13 @@ export default function ProductCostAnalysis({ productId }: Props) {
           borderLeft: '4px solid #f44336'
         }}>
           <div style={{ fontSize: '0.875rem', color: '#c62828', fontWeight: '500', marginBottom: '0.5rem' }}>
-            💰 總成本
+            💰 Total Cost
           </div>
           <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#f44336' }}>
             ${totalCost.toFixed(2)}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#c62828', marginTop: '0.5rem' }}>
-            包含所有材料、配件、包裝
+            Includes all materials, accessories, and packaging
           </div>
         </div>
 
@@ -196,13 +196,13 @@ export default function ProductCostAnalysis({ productId }: Props) {
           borderLeft: '4px solid #2196f3'
         }}>
           <div style={{ fontSize: '0.875rem', color: '#1565c0', fontWeight: '500', marginBottom: '0.5rem' }}>
-            💵 售價
+            💵 Sell Price
           </div>
           <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#2196f3' }}>
             ${sellingPrice.toFixed(2)}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#1565c0', marginTop: '0.5rem' }}>
-            產品定價
+            Product pricing
           </div>
         </div>
 
@@ -218,7 +218,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
             fontWeight: '500', 
             marginBottom: '0.5rem' 
           }}>
-            {profit >= 0 ? '💚 利潤' : '⚠️ 虧損'}
+            {profit >= 0 ? '💚 Profit' : '⚠️ Loss'}
           </div>
           <div style={{ 
             fontSize: '2.5rem', 
@@ -233,7 +233,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
             marginTop: '0.5rem',
             fontWeight: '600'
           }}>
-            {profitMargin.toFixed(1)}% 利潤率
+            {profitMargin.toFixed(1)}% Profit Margin
           </div>
         </div>
       </div>
@@ -247,7 +247,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
         marginBottom: '2rem'
       }}>
         <h2 style={{ marginTop: 0, marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: 'bold' }}>
-          🧾 產品材料清單 (BOM)
+          🧾 BOM Materials List (BOM)
         </h2>
 
         {materials.length > 0 ? (
@@ -255,13 +255,13 @@ export default function ProductCostAnalysis({ productId }: Props) {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #ddd', backgroundColor: '#f9f9f9' }}>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>供應商</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>數量/件</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>單價</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>小計</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>庫存</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>備註</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: '600' }}>操作</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Vendor</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Qty/Unit</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Unit Cost</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Subtotal</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Stock</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Notes</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: '600' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -308,7 +308,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
                           fontWeight: '500'
                         }}
                       >
-                        刪除
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -325,7 +325,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
             marginBottom: '2rem',
             color: '#666'
           }}>
-            尚未新增任何材料
+            No materials added yet
           </div>
         )}
 
@@ -336,13 +336,13 @@ export default function ProductCostAnalysis({ productId }: Props) {
           borderRadius: '8px'
         }}>
           <h3 style={{ marginTop: 0, marginBottom: '1rem', fontSize: '1.125rem' }}>
-            ➕ 新增材料
+            ➕ Add Material
           </h3>
           <form onSubmit={handleAddMaterial}>
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 2fr auto', gap: '1rem', alignItems: 'end' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
-                  選擇庫存材料
+                  Select inventory material
                 </label>
                 <select
                   value={selectedItemId}
@@ -357,10 +357,10 @@ export default function ProductCostAnalysis({ productId }: Props) {
                     backgroundColor: 'white'
                   }}
                 >
-                  <option value="">-- 選擇材料 --</option>
+                  <option value="">-- Select material --</option>
                   {inventoryItems.map(item => (
                     <option key={item.id} value={item.id}>
-                      {item.vendor || '未命名'} - 庫存: {item.total_quantity} - ${item.cost?.toFixed(2) || '0.00'}
+                      {item.vendor || 'Unnamed'} - Stock: {item.total_quantity} - ${item.cost?.toFixed(2) || '0.00'}
                     </option>
                   ))}
                 </select>
@@ -368,7 +368,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
-                  數量/件
+                  Qty/Unit
                 </label>
                 <input
                   type="number"
@@ -389,13 +389,13 @@ export default function ProductCostAnalysis({ productId }: Props) {
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
-                  備註 (選填)
+                  Notes (Optional)
                 </label>
                 <input
                   type="text"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="例：主珍珠"
+                  placeholder="e.g. Main pearl"
                   style={{
                     width: '100%',
                     padding: '0.75rem',
@@ -421,7 +421,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
                   whiteSpace: 'nowrap'
                 }}
               >
-                {adding ? '新增中...' : '新增材料'}
+                {adding ? 'Adding...' : 'Add Material'}
               </button>
             </div>
           </form>
@@ -438,7 +438,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
             fontSize: '0.875rem',
             color: '#2e7d32'
           }}>
-            <strong>💡 提示：</strong> 所有成本項目（珍珠、配件、包裝、運費、人工等）都可以加入庫存清單，然後在這裡選擇。這樣系統會自動計算總成本！
+            <strong>💡 Tip:</strong> Any cost item (pearls, accessories, packaging, shipping, labor, etc.) can be added to inventory and selected here so the system auto-calculates total cost!
           </div>
         )}
       </div>

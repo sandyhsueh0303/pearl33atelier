@@ -2,8 +2,8 @@
  * Products API
  * 
  * Endpoints:
- * - GET    /api/products          - 取得所有產品列表
- * - POST   /api/products          - 新增產品（草稿狀態）
+ * - GET    /api/products          - Get all products
+ * - POST   /api/products          - Create product (draft status)
  */
 
 import { NextRequest, NextResponse } from 'next/server'

@@ -25,12 +25,12 @@ export default function InventoryForm({ inventoryId }: Props) {
   
   // Category options
   const CATEGORIES = [
-    { value: 'pearl', label: '珍珠 Pearl' },
-    { value: 'pt900', label: 'Pt900 鉑金' },
-    { value: '925_silver', label: '925 純銀' },
-    { value: '18k', label: '18K 金' },
-    { value: 'package', label: '包裝 Package' },
-    { value: 'shipment', label: '運費 Shipment' }
+    { value: 'pearl', label: 'Pearl' },
+    { value: 'pt900', label: 'Pt900 Platinum' },
+    { value: '925_silver', label: '925 Silver' },
+    { value: '18k', label: '18K Gold' },
+    { value: 'package', label: 'Packaging' },
+    { value: 'shipment', label: 'Shipping' }
   ]
   
   // Load existing inventory if editing
@@ -108,7 +108,7 @@ export default function InventoryForm({ inventoryId }: Props) {
     return (
       <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
-          載入中...
+          Loading...
         </div>
       </main>
     )
@@ -128,10 +128,10 @@ export default function InventoryForm({ inventoryId }: Props) {
             display: 'inline-block'
           }}
         >
-          ← 返回庫存列表
+          ← Back to inventory list
         </Link>
         <h1 style={{ margin: 0, fontSize: '2rem', fontWeight: 'bold' }}>
-          {inventoryId ? '編輯庫存' : '新增庫存'}
+          {inventoryId ? 'Edit Inventory' : 'Add Inventory'}
         </h1>
       </div>
 
@@ -151,7 +151,7 @@ export default function InventoryForm({ inventoryId }: Props) {
               marginBottom: '1.5rem',
               color: '#c00'
             }}>
-              <strong>錯誤:</strong> {error}
+              <strong>Error:</strong> {error}
             </div>
           )}
           
@@ -163,13 +163,13 @@ export default function InventoryForm({ inventoryId }: Props) {
               marginBottom: '0.5rem',
               fontSize: '0.875rem'
             }}>
-              供應商
+              Vendor
             </label>
             <input
               type="text"
               value={vendor}
               onChange={(e) => setVendor(e.target.value)}
-              placeholder="例如：ABC 珍珠公司"
+              placeholder="e.g. ABC Pearl Co."
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -189,7 +189,7 @@ export default function InventoryForm({ inventoryId }: Props) {
               marginBottom: '0.5rem',
               fontSize: '0.875rem'
             }}>
-              分類 <span style={{ color: '#c00' }}>*</span>
+              Category <span style={{ color: '#c00' }}>*</span>
             </label>
             <select
               value={category}
@@ -221,7 +221,7 @@ export default function InventoryForm({ inventoryId }: Props) {
               marginBottom: '0.5rem',
               fontSize: '0.875rem'
             }}>
-              採購日期
+              Purchase Date
             </label>
             <input
               type="date"
@@ -248,7 +248,7 @@ export default function InventoryForm({ inventoryId }: Props) {
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
-                單價 <span style={{ color: '#c00' }}>*</span>
+                Unit Cost <span style={{ color: '#c00' }}>*</span>
               </label>
               <div style={{ position: 'relative' }}>
                 <span style={{
@@ -287,14 +287,14 @@ export default function InventoryForm({ inventoryId }: Props) {
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
-                庫存總數 <span style={{ color: '#c00' }}>*</span>
+                Total Quantity in Stock <span style={{ color: '#c00' }}>*</span>
               </label>
               <input
                 type="number"
                 required
                 value={totalQuantity}
                 onChange={(e) => setTotalQuantity(e.target.value)}
-                placeholder="總件數"
+                placeholder="Total units"
                 style={{
                   width: '100%',
                   padding: '0.75rem',
@@ -314,7 +314,7 @@ export default function InventoryForm({ inventoryId }: Props) {
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
-                已分配數量
+                Allocated Quantity
               </label>
               <input
                 type="number"
@@ -343,13 +343,13 @@ export default function InventoryForm({ inventoryId }: Props) {
               marginBottom: '1.5rem'
             }}>
               <div style={{ fontSize: '0.875rem', color: '#1565c0', marginBottom: '0.25rem' }}>
-                總價值
+                Total Value
               </div>
               <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#0d47a1' }}>
                 ${totalValue.toFixed(2)}
               </div>
               <div style={{ fontSize: '0.875rem', color: '#1976d2', marginTop: '0.5rem' }}>
-                {totalQuantity} 件 × ${cost} 每件
+                {totalQuantity} units x ${cost} per unit
               </div>
             </div>
           )}
@@ -362,13 +362,13 @@ export default function InventoryForm({ inventoryId }: Props) {
               marginBottom: '0.5rem',
               fontSize: '0.875rem'
             }}>
-              備註
+              Notes
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
-              placeholder="例如：白色 Akoya 珍珠、AA+ 等級、8mm"
+              placeholder="e.g. White Akoya pearl, AA+ grade, 8mm"
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -381,7 +381,7 @@ export default function InventoryForm({ inventoryId }: Props) {
               }}
             />
             <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '0.5rem' }}>
-              包含珍珠類型、尺寸、等級或其他詳細資訊
+              Include pearl type, size, grade, or other details
             </div>
           </div>
           
@@ -400,7 +400,7 @@ export default function InventoryForm({ inventoryId }: Props) {
                 fontWeight: '500'
               }}
             >
-              取消
+              Cancel
             </button>
             <button
               type="submit"
@@ -416,7 +416,7 @@ export default function InventoryForm({ inventoryId }: Props) {
                 fontWeight: '500'
               }}
             >
-              {saving ? '儲存中...' : inventoryId ? '更新庫存' : '新增庫存'}
+              {saving ? 'Saving...' : inventoryId ? 'Update Inventory' : 'Add Inventory'}
             </button>
           </div>
         </div>

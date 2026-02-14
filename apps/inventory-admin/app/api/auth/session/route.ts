@@ -2,7 +2,7 @@
  * Auth Session API
  * 
  * Endpoint:
- * - GET /api/auth/session - 取得當前登入狀態
+ * - GET /api/auth/session - Get current login status
  */
 
 import { NextRequest, NextResponse } from 'next/server'

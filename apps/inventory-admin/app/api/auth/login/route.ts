@@ -2,8 +2,8 @@
  * Auth Login API
  * 
  * Endpoint:
- * - POST /api/auth/login - Admin 登入
- *   驗證 Supabase Auth + admin_users 表
+ * - POST /api/auth/login - Admin login
+ *   Validate Supabase Auth + admin_users table
  */
 
 import { NextRequest, NextResponse } from 'next/server'

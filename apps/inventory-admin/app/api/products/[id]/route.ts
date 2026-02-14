@@ -2,9 +2,9 @@
  * Single Product API
  * 
  * Endpoints:
- * - GET    /api/products/[id]     - 取得單一產品（包含圖片）
- * - PATCH  /api/products/[id]     - 更新產品資料
- * - DELETE /api/products/[id]     - 刪除產品
+ * - GET    /api/products/[id]     - Get single product (including images)
+ * - PATCH  /api/products/[id]     - Update product data
+ * - DELETE /api/products/[id]     - Delete product
  */
 
 import { NextRequest, NextResponse } from 'next/server'

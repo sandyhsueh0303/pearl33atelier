@@ -127,7 +127,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           borderLeft: '4px solid #1976d2'
         }}>
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>總訂單</div>
+          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Orders</div>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2' }}>{summary.totalOrders}</div>
         </div>
         <div style={{
@@ -137,7 +137,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           borderLeft: '4px solid #1976d2'
         }}>
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>總件數</div>
+          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Units</div>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2' }}>{summary.totalUnits}</div>
         </div>
         <div style={{
@@ -147,7 +147,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           borderLeft: '4px solid #1976d2'
         }}>
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>總營收</div>
+          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Revenue</div>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2' }}>
             {formatCurrency(summary.totalRevenue)}
           </div>
@@ -159,7 +159,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           borderLeft: '4px solid #d32f2f'
         }}>
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>總成本</div>
+          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Cost</div>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#d32f2f' }}>
             {formatCurrency(summary.totalCost)}
           </div>
@@ -171,7 +171,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           borderLeft: '4px solid #4caf50'
         }}>
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>總利潤</div>
+          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Profit</div>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4caf50' }}>
             {formatCurrency(summary.totalProfit)}
           </div>
@@ -195,12 +195,12 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
         }}>
           <div style={{ flex: '1 1 300px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              🔍 搜尋
+              🔍 Search
             </label>
             <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem' }}>
               <input
                 type="text"
-                placeholder="搜尋客戶名稱、訂單編號或平台..."
+                placeholder="Search customer, order number, or channel..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 style={{
@@ -224,7 +224,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                   fontWeight: '500',
                 }}
               >
-                搜尋
+                Search
               </button>
               {search && (
                 <button
@@ -244,7 +244,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                     fontWeight: '500',
                   }}
                 >
-                  清除
+                  Clear
                 </button>
               )}
             </form>
@@ -252,7 +252,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
 
           <div style={{ flex: '0 1 150px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              排序依據
+              Sort Field
             </label>
             <select
               value={sortBy}
@@ -266,16 +266,16 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                 backgroundColor: 'white'
               }}
             >
-              <option value="sale_date">日期</option>
-              <option value="total_price">營收</option>
-              <option value="profit">利潤</option>
-              <option value="customer_name">客戶</option>
+              <option value="sale_date">Date</option>
+              <option value="total_price">Revenue</option>
+              <option value="profit">Profit</option>
+              <option value="customer_name">Customer</option>
             </select>
           </div>
 
           <div style={{ flex: '0 1 100px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              順序
+              Order
             </label>
             <select
               value={order}
@@ -289,8 +289,8 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                 backgroundColor: 'white'
               }}
             >
-              <option value="desc">降冪 ↓</option>
-              <option value="asc">升冪 ↑</option>
+              <option value="desc">Descending ↓</option>
+              <option value="asc">Ascending ↑</option>
             </select>
           </div>
 
@@ -307,13 +307,13 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                 fontWeight: '500',
               }}
             >
-              🔄 刷新
+              🔄 Refresh
             </button>
           </div>
         </div>
 
         <div style={{ fontSize: '0.875rem', color: '#666' }}>
-          顯示 <strong>{sales.length}</strong> 筆銷售記錄
+          Showing <strong>{sales.length}</strong> sales records
         </div>
       </div>
 
@@ -326,7 +326,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           borderRadius: '8px',
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         }}>
-          載入中...
+          Loading...
         </div>
       ) : sales.length === 0 ? (
         <div style={{
@@ -336,7 +336,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           borderRadius: '8px',
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         }}>
-          <p style={{ fontSize: '1rem', color: '#666', margin: 0 }}>尚無銷售記錄</p>
+          <p style={{ fontSize: '1rem', color: '#666', margin: 0 }}>No sales records yet</p>
         </div>
       ) : (
         <div style={{
@@ -352,16 +352,16 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
             }}>
               <thead>
                 <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>日期</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>訂單編號</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>產品</th>
-                  <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>數量</th>
-                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>售價</th>
-                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>成本</th>
-                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>利潤</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>客戶</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>平台</th>
-                  <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>操作</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Date</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Order Number</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Product</th>
+                  <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Quantity</th>
+                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Price</th>
+                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Cost</th>
+                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Profit</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Customer</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Channel</th>
+                  <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -382,7 +382,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                           {sale.catalog_products.title}
                         </Link>
                       ) : (
-                        '未知產品'
+                        'Unknown product'
                       )}
                     </td>
                     <td style={{ padding: '1rem', textAlign: 'center', fontSize: '0.875rem' }}>{sale.quantity}</td>
@@ -432,7 +432,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                             fontWeight: '500',
                           }}
                         >
-                          編輯
+                          Edit
                         </button>
                         <button
                           onClick={() => handleDelete(sale.id)}
@@ -447,7 +447,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                             fontWeight: '500',
                           }}
                         >
-                          刪除
+                          Delete
                         </button>
                       </div>
                     </td>

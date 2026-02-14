@@ -2,11 +2,11 @@
  * Product Publish Management API
  * 
  * Endpoints:
- * - POST   /api/products/[id]/publish - 發布產品
- *   設定 published=true, published_at=now()
+ * - POST   /api/products/[id]/publish - Publish product
+ *   Set published=true, published_at=now()
  * 
- * - DELETE /api/products/[id]/publish - 取消發布產品
- *   設定 published=false, published_at=null
+ * - DELETE /api/products/[id]/publish - Unpublish product
+ *   Set published=false, published_at=null
  */
 
 import { NextRequest, NextResponse } from 'next/server'

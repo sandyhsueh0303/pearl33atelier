@@ -215,7 +215,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
   }
 
   const handlePublish = async () => {
-    if (!confirm('確定要發布此產品嗎？發布後公開網站將可見此產品。')) return
+    if (!confirm('Publish this product? It will become visible on the public site.')) return
 
     setSaving(true)
     setError(null)
@@ -230,7 +230,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
         throw new Error(data.error || 'Failed to publish product')
       }
 
-      alert('產品已成功發布！')
+      alert('Product published successfully!')
       router.push('/admin/products')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to publish product')
@@ -240,7 +240,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
   }
 
   const handleUnpublish = async () => {
-    if (!confirm('確定要取消發布此產品嗎？公開網站將無法看到此產品。')) return
+    if (!confirm('Unpublish this product? It will be hidden from the public site.')) return
 
     setSaving(true)
     setError(null)
@@ -256,7 +256,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
       }
 
       setPublished(false)
-      alert('產品已取消發布')
+      alert('Product unpublished')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to unpublish product')
     } finally {
@@ -265,13 +265,13 @@ export default function ProductForm({ productId }: ProductFormProps) {
   }
 
   if (loading) {
-    return <div style={{ padding: '2rem', textAlign: 'center' }}>載入中...</div>
+    return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
   }
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' }}>
       <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>{isEditMode ? '編輯產品' : '新增產品'}</h1>
+        <h1>{isEditMode ? 'Edit Product' : 'Add Product'}</h1>
         <button
           onClick={() => router.push('/admin/products')}
           style={{
@@ -282,7 +282,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             cursor: 'pointer'
           }}
         >
-          返回列表
+          Back to list
         </button>
       </div>
 
@@ -294,7 +294,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
           borderRadius: '4px',
           marginBottom: '1rem'
         }}>
-          <strong>錯誤:</strong> {error}
+          <strong>Error:</strong> {error}
         </div>
       )}
 
@@ -302,7 +302,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              標題 <span style={{ color: 'red' }}>*</span>
+              Title <span style={{ color: 'red' }}>*</span>
             </label>
             <input
               type="text"
@@ -321,7 +321,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Slug (URL 識別碼) <span style={{ color: 'red' }}>*</span>
+              Slug (URL slug) <span style={{ color: 'red' }}>*</span>
             </label>
             <input
               type="text"
@@ -342,14 +342,14 @@ export default function ProductForm({ productId }: ProductFormProps) {
             />
             <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
               {isEditMode 
-                ? '建立後無法修改' 
-                : '輸入標題時會自動產生，也可手動修改'}
+                ? 'Cannot be changed after creation' 
+                : 'Auto-generated from title, but editable manually'}
             </small>
           </div>
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              珍珠類型 <span style={{ color: 'red' }}>*</span>
+              Pearl Type <span style={{ color: 'red' }}>*</span>
             </label>
             <select
               value={pearlType}
@@ -375,7 +375,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              商品分類
+              Product Category
             </label>
             <select
               value={category}
@@ -388,7 +388,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 fontSize: '1rem'
               }}
             >
-              <option value="">未分類</option>
+              <option value="">Uncategorized</option>
               <option value="BRACELETS">Bracelets</option>
               <option value="NECKLACES">Necklaces</option>
               <option value="EARRINGS">Earrings</option>
@@ -402,7 +402,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              尺寸 (mm)
+              Size (mm)
             </label>
             <input
               type="number"
@@ -421,13 +421,13 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              形狀
+              Shape
             </label>
             <input
               type="text"
               value={shape}
               onChange={(e) => setShape(e.target.value)}
-              placeholder="例如: 圓形、橢圓形"
+              placeholder="e.g.: round, oval"
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -440,13 +440,13 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              材質
+              Material
             </label>
             <input
               type="text"
               value={material}
               onChange={(e) => setMaterial(e.target.value)}
-              placeholder="例如: 18K金、925銀"
+              placeholder="e.g.: 18K gold, 925 silver"
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -459,7 +459,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              售價 (US$)
+              Sell Price ($)
             </label>
             <input
               type="number"
@@ -478,7 +478,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              原價 (US$)
+              Original Price ($)
             </label>
             <input
               type="number"
@@ -497,7 +497,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              供應狀態 <span style={{ color: 'red' }}>*</span>
+              Availability <span style={{ color: 'red' }}>*</span>
             </label>
             <select
               value={availability}
@@ -511,22 +511,22 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 fontSize: '1rem'
               }}
             >
-              <option value="IN_STOCK">現貨</option>
-              <option value="PREORDER">預購</option>
-              <option value="OUT_OF_STOCK">缺貨</option>
+              <option value="IN_STOCK">In Stock</option>
+              <option value="PREORDER">Preorder</option>
+              <option value="OUT_OF_STOCK">Out of Stock</option>
             </select>
           </div>
 
           {availability === 'PREORDER' && (
             <div style={{ gridColumn: '1 / -1' }}>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                預購說明
+                Preorder Note
               </label>
               <input
                 type="text"
                 value={preorderNote}
                 onChange={(e) => setPreorderNote(e.target.value)}
-                placeholder="例如: 預計2週到貨"
+                placeholder="e.g.: Expected in 2 weeks"
                 style={{
                   width: '100%',
                   padding: '0.75rem',
@@ -540,7 +540,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              商品描述
+              Product Description
             </label>
             <textarea
               value={description}
@@ -560,13 +560,13 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              內部備註 (僅供管理員查看)
+              Internal Notes (admin only)
             </label>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
               rows={3}
-              placeholder="內部備註，例如：庫存來源、注意事項等"
+              placeholder="Internal notes, e.g. inventory source or reminders"
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -596,7 +596,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
               cursor: saving ? 'not-allowed' : 'pointer'
             }}
           >
-            {saving ? '儲存中...' : (isEditMode ? '儲存變更' : '建立產品（草稿）')}
+            {saving ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Create Product (Draft)')}
           </button>
           
           <button
@@ -612,7 +612,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
               cursor: 'pointer'
             }}
           >
-            取消
+            Cancel
           </button>
         </div>
       </form>
@@ -626,7 +626,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
           borderRadius: '8px', 
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
         }}>
-          <h2 style={{ marginBottom: '1rem' }}>產品圖片</h2>
+          <h2 style={{ marginBottom: '1rem' }}>Product Images</h2>
           
           <div style={{ marginBottom: '1.5rem' }}>
             <input
@@ -650,15 +650,15 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 fontWeight: 'bold'
               }}
             >
-              {uploadingImages ? '上傳中...' : '+ 上傳圖片'}
+              {uploadingImages ? 'Uploading...' : '+ Upload Images'}
             </label>
             <small style={{ marginLeft: '1rem', color: '#666' }}>
-              可選擇多張圖片同時上傳
+              You can upload multiple images at once
             </small>
           </div>
 
           {images.length === 0 ? (
-            <p style={{ color: '#666', fontStyle: 'italic' }}>尚無圖片</p>
+            <p style={{ color: '#666', fontStyle: 'italic' }}>No images yet</p>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
               {images.map((image) => (
@@ -693,7 +693,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                       }}
                       onError={(e) => {
                         e.currentTarget.style.display = 'none'
-                        e.currentTarget.parentElement!.innerHTML += '<span style="color: #999">圖片載入失敗</span>'
+                        e.currentTarget.parentElement!.innerHTML += '<span style="color: #999">Image failed to load</span>'
                       }}
                     />
                   </div>
@@ -710,7 +710,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                       fontWeight: 'bold',
                       borderRadius: '4px'
                     }}>
-                      主圖
+                      Primary
                     </span>
                   )}
                   
@@ -729,7 +729,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                         fontWeight: 'bold'
                       }}
                     >
-                      {image.published ? '取消公開' : '設為公開'}
+                      {image.published ? 'Unpublish' : 'Publish'}
                     </button>
                     
                     {!image.is_primary && (
@@ -747,7 +747,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                           fontWeight: 'bold'
                         }}
                       >
-                        設為主圖
+                        Set as primary
                       </button>
                     )}
                   </div>
@@ -759,8 +759,8 @@ export default function ProductForm({ productId }: ProductFormProps) {
                     display: 'flex',
                     justifyContent: 'space-between'
                   }}>
-                    <span>排序: {image.sort_order}</span>
-                    <span>{image.published ? '已公開' : '草稿'}</span>
+                    <span>Sort: {image.sort_order}</span>
+                    <span>{image.published ? 'Published' : 'Draft'}</span>
                   </div>
                 </div>
               ))}
@@ -780,13 +780,13 @@ export default function ProductForm({ productId }: ProductFormProps) {
           border: `2px solid ${published ? '#4caf50' : '#ff9800'}`
         }}>
           <h2 style={{ marginBottom: '1rem' }}>
-            發布狀態: {published ? '已發布' : '草稿'}
+            Publish Status: {published ? 'Published' : 'Draft'}
           </h2>
           
           <p style={{ marginBottom: '1rem', color: '#666' }}>
             {published 
-              ? '此產品目前在公開網站上可見。'
-              : '此產品目前為草稿狀態，公開網站無法看到。發布後，所有標記為「公開」的圖片也會一併發布。'
+              ? 'This product is currently visible on the public site.'
+              : 'This product is currently a draft and hidden from the public site. After publishing, all images marked as published will also be published.'
             }
           </p>
 
@@ -805,7 +805,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 cursor: saving ? 'not-allowed' : 'pointer'
               }}
             >
-              {saving ? '發布中...' : '🚀 發布產品'}
+              {saving ? 'Publishing...' : '🚀 Publish product'}
             </button>
           ) : (
             <button
@@ -822,7 +822,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 cursor: saving ? 'not-allowed' : 'pointer'
               }}
             >
-              {saving ? '處理中...' : '取消發布'}
+              {saving ? 'Processing...' : 'Unpublish'}
             </button>
           )}
         </div>

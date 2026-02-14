@@ -72,7 +72,7 @@ export default function ProductsPage() {
   }
 
   const handleDelete = async (productId: string, productTitle: string) => {
-    if (!confirm(`確定要刪除「${productTitle}」嗎？此操作無法復原。`)) {
+    if (!confirm(`Delete "${productTitle}"? This action cannot be undone.`)) {
       return
     }
 
@@ -87,9 +87,9 @@ export default function ProductsPage() {
 
       // Reload products list
       loadProducts()
-      alert('產品已刪除')
+      alert('Product deleted')
     } catch (e) {
-      alert('刪除失敗: ' + (e instanceof Error ? e.message : 'Unknown error'))
+      alert('Delete failed: ' + (e instanceof Error ? e.message : 'Unknown error'))
     }
   }
 
@@ -168,18 +168,18 @@ export default function ProductsPage() {
     <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1400px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <h1 style={{ margin: 0 }}>產品管理</h1>
+          <h1 style={{ margin: 0 }}>Products</h1>
           <button
             onClick={async () => {
-              console.log('🔄 刷新按鈕被點擊')
+              console.log('🔄 Refresh button clicked')
               setLoading(true)
               setError(null)
               try {
                 await loadProducts()
-                console.log('✅ 產品列表已更新')
+                console.log('✅ Product list updated')
               } catch (e) {
-                console.error('❌ 刷新失敗:', e)
-                setError('刷新失敗，請重試')
+                console.error('❌ Refresh failed:', e)
+                setError('Refresh failed, please try again')
               }
             }}
             disabled={loading}
@@ -193,9 +193,9 @@ export default function ProductsPage() {
               opacity: loading ? 0.6 : 1,
               transition: 'all 0.2s'
             }}
-            title="重新載入產品列表"
+            title="Reload product list"
           >
-            {loading ? '⏳ 載入中...' : '🔄 刷新'}
+            {loading ? '⏳ Loading...' : '🔄 Refresh'}
           </button>
         </div>
         <Link
@@ -209,7 +209,7 @@ export default function ProductsPage() {
             fontWeight: 'bold'
           }}
         >
-          + 新增產品
+          + Add Product
         </Link>
       </div>
 
@@ -221,7 +221,7 @@ export default function ProductsPage() {
           borderRadius: '4px',
           marginBottom: '1rem'
         }}>
-          <strong>錯誤:</strong> {error}
+          <strong>Error:</strong> {error}
         </div>
       )}
 
@@ -237,13 +237,13 @@ export default function ProductsPage() {
           {/* Search Input */}
           <div style={{ flex: '1 1 300px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              🔍 搜尋產品
+              🔍 Search products
             </label>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="搜尋標題、Slug 或描述..."
+              placeholder="Search title, slug, or description..."
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -257,7 +257,7 @@ export default function ProductsPage() {
           {/* Status Filter */}
           <div style={{ flex: '0 1 150px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              📌 狀態
+              📌 Status
             </label>
             <select
               value={filterStatus}
@@ -271,16 +271,16 @@ export default function ProductsPage() {
                 backgroundColor: 'white'
               }}
             >
-              <option value="all">全部</option>
-              <option value="published">已發布</option>
-              <option value="draft">草稿</option>
+              <option value="all">All</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
             </select>
           </div>
 
           {/* Pearl Type Filter */}
           <div style={{ flex: '0 1 180px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              💎 珍珠類型
+              💎 Pearl Type
             </label>
             <select
               value={filterPearlType}
@@ -294,7 +294,7 @@ export default function ProductsPage() {
                 backgroundColor: 'white'
               }}
             >
-              <option value="all">全部類型</option>
+              <option value="all">All Types</option>
               {pearlTypes.map(type => (
                 <option key={type} value={type}>{type}</option>
               ))}
@@ -303,7 +303,7 @@ export default function ProductsPage() {
 
           <div style={{ flex: '0 1 180px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              📂 分類
+              📂 Category
             </label>
             <select
               value={filterCategory}
@@ -317,7 +317,7 @@ export default function ProductsPage() {
                 backgroundColor: 'white'
               }}
             >
-              <option value="all">全部分類</option>
+              <option value="all">All Categories</option>
               {categories.map(category => (
                 <option key={category} value={category}>{formatCategory(category)}</option>
               ))}
@@ -327,7 +327,7 @@ export default function ProductsPage() {
           {/* Sort By */}
           <div style={{ flex: '0 1 150px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              📊 排序方式
+              📊 Sort By
             </label>
             <select
               value={sortBy}
@@ -341,16 +341,16 @@ export default function ProductsPage() {
                 backgroundColor: 'white'
               }}
             >
-              <option value="created">建立時間</option>
-              <option value="title">標題</option>
-              <option value="price">價格</option>
+              <option value="created">Created Time</option>
+              <option value="title">Title</option>
+              <option value="price">Price</option>
             </select>
           </div>
 
           {/* Sort Order */}
           <div style={{ flex: '0 1 130px' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
-              ↕️ 順序
+              ↕️ Order
             </label>
             <select
               value={sortOrder}
@@ -364,8 +364,8 @@ export default function ProductsPage() {
                 backgroundColor: 'white'
               }}
             >
-              <option value="desc">降冪 ↓</option>
-              <option value="asc">升冪 ↑</option>
+              <option value="desc">Descending ↓</option>
+              <option value="asc">Ascending ↑</option>
             </select>
           </div>
 
@@ -384,7 +384,7 @@ export default function ProductsPage() {
                   fontWeight: '500'
                 }}
               >
-                🔄 重置
+                🔄 Reset
               </button>
             </div>
           )}
@@ -392,8 +392,8 @@ export default function ProductsPage() {
 
         {/* Results Count */}
         <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
-          顯示 <strong>{filteredProducts.length}</strong> / {products.length} 個產品
-          {filterStatus !== 'all' && ` • ${filterStatus === 'published' ? '已發布' : '草稿'}`}
+          Showing <strong>{filteredProducts.length}</strong> / {products.length} products
+          {filterStatus !== 'all' && ` • ${filterStatus === 'published' ? 'Published' : 'Draft'}`}
           {filterPearlType !== 'all' && ` • ${filterPearlType}`}
           {filterCategory !== 'all' && ` • ${formatCategory(filterCategory)}`}
         </div>
@@ -409,7 +409,7 @@ export default function ProductsPage() {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
             minWidth: '100px'
           }}>
-            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>總計</p>
+            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Total</p>
             <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1976d2', margin: 0 }}>
               {filteredProducts.length}
             </p>
@@ -421,7 +421,7 @@ export default function ProductsPage() {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
             minWidth: '100px'
           }}>
-            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>已發布</p>
+            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Published</p>
             <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2e7d32', margin: 0 }}>
               {publishedCount}
             </p>
@@ -433,7 +433,7 @@ export default function ProductsPage() {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
             minWidth: '100px'
           }}>
-            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>草稿</p>
+            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Draft</p>
             <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ef6c00', margin: 0 }}>
               {draftCount}
             </p>
@@ -449,9 +449,9 @@ export default function ProductsPage() {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           borderLeft: '4px solid #d32f2f'
         }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總成本</p>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Cost</p>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#d32f2f', margin: 0 }}>
-            US$ {totalCost.toLocaleString()}
+            $ {totalCost.toLocaleString()}
           </p>
         </div>
         <div style={{ 
@@ -462,9 +462,9 @@ export default function ProductsPage() {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           borderLeft: '4px solid #1976d2'
         }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總售價</p>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Selling Price</p>
           <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2', margin: 0 }}>
-            US$ {totalRevenue.toLocaleString()}
+            $ {totalRevenue.toLocaleString()}
           </p>
         </div>
         <div style={{ 
@@ -475,14 +475,14 @@ export default function ProductsPage() {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           borderLeft: '4px solid ' + (totalProfit >= 0 ? '#4caf50' : '#d32f2f')
         }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>總利潤</p>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Profit</p>
           <p style={{ 
             fontSize: '2rem', 
             fontWeight: 'bold', 
             color: totalProfit >= 0 ? '#4caf50' : '#d32f2f', 
             margin: 0 
           }}>
-            {totalProfit >= 0 ? '+' : ''}US$ {totalProfit.toLocaleString()}
+            {totalProfit >= 0 ? '+' : ''}$ {totalProfit.toLocaleString()}
           </p>
           <p style={{ 
             fontSize: '0.875rem', 
@@ -490,7 +490,7 @@ export default function ProductsPage() {
             color: totalProfit >= 0 ? '#2e7d32' : '#c62828', 
             margin: '0.5rem 0 0 0'
           }}>
-            {totalProfitMargin.toFixed(1)}% 利潤率
+            {totalProfitMargin.toFixed(1)}% Profit Margin
           </p>
         </div>
       </div>
@@ -504,7 +504,7 @@ export default function ProductsPage() {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           <p style={{ fontSize: '1.25rem', color: '#666', marginBottom: '1rem' }}>
-            {products.length === 0 ? '尚無產品' : '沒有符合條件的產品'}
+            {products.length === 0 ? 'No products yet' : 'No matching products'}
           </p>
           {products.length === 0 ? (
             <Link
@@ -519,7 +519,7 @@ export default function ProductsPage() {
                 fontWeight: 'bold'
               }}
             >
-              建立第一個產品
+              Create first product
             </Link>
           ) : (
             <button
@@ -534,7 +534,7 @@ export default function ProductsPage() {
                 fontWeight: 'bold'
               }}
             >
-              清除篩選條件
+              Clear filters
             </button>
           )}
         </div>
@@ -548,15 +548,15 @@ export default function ProductsPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>狀態</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Status</th>
                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Slug</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>標題</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>分類</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>珍珠類型</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>總成本</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>售價</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>利潤</th>
-                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600' }}>操作</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Title</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Category</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Pearl Type</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>Total Cost</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>Sell Price</th>
+                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', minWidth: '140px' }}>Profit</th>
+                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -571,7 +571,7 @@ export default function ProductsPage() {
                       backgroundColor: product.published ? '#e8f5e9' : '#fff3e0',
                       color: product.published ? '#2e7d32' : '#ef6c00'
                     }}>
-                      {product.published ? '已發布' : '草稿'}
+                      {product.published ? 'Published' : 'Draft'}
                     </span>
                   </td>
                   <td style={{ padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem', color: '#666' }}>
@@ -601,18 +601,18 @@ export default function ProductsPage() {
                     </span>
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '500', color: '#d32f2f' }}>
-                    {product.total_cost !== undefined ? `US$ ${product.total_cost.toLocaleString()}` : '-'}
+                    {product.total_cost !== undefined ? `$ ${product.total_cost.toLocaleString()}` : '-'}
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '500' }}>
-                    {product.sell_price ? `US$ ${product.sell_price.toLocaleString()}` : '-'}
+                    {product.sell_price ? `$ ${product.sell_price.toLocaleString()}` : '-'}
                   </td>
-                  <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>
+                  <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', minWidth: '140px' }}>
                     {product.profit !== undefined ? (
                       <span style={{ 
                         color: product.profit >= 0 ? '#2e7d32' : '#d32f2f',
                         fontWeight: '700'
                       }}>
-                        {product.profit >= 0 ? '+' : ''}US$ {product.profit.toLocaleString()}
+                        $ {product.profit.toLocaleString()}
                       </span>
                     ) : '-'}
                   </td>
@@ -630,7 +630,7 @@ export default function ProductsPage() {
                           fontWeight: '500'
                         }}
                       >
-                        編輯
+                        Edit
                       </Link>
                       <button
                         onClick={() => handleDelete(product.id, product.title)}
@@ -645,7 +645,7 @@ export default function ProductsPage() {
                           fontWeight: '500'
                         }}
                       >
-                        刪除
+                        Delete
                       </button>
                     </div>
                   </td>

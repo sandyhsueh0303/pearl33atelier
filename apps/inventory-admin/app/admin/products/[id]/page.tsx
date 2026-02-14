@@ -45,7 +45,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
           color: '#666',
           fontWeight: '600'
         }}>
-          成本分析與利潤計算
+          Cost Analysis and Profit Calculation
         </span>
       </div>
 

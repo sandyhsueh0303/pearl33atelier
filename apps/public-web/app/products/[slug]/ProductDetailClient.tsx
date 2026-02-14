@@ -290,7 +290,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                   color: colors.darkGray,
                   marginBottom: spacing.xs
                 }}>
-                  US$ {product.sell_price.toLocaleString()}
+                  $ {product.sell_price.toLocaleString()}
                 </div>
               )}
               {product.original_price && product.original_price > (product.sell_price || 0) && (
@@ -299,7 +299,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                   color: colors.textLight,
                   textDecoration: 'line-through'
                 }}>
-                  Original Price US$ {product.original_price.toLocaleString()}
+                  Original Price $ {product.original_price.toLocaleString()}
                 </div>
               )}
             </div>
