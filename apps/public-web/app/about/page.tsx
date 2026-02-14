@@ -1,5 +1,12 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions } from '../constants/design'
+
+export const metadata: Metadata = {
+  title: 'About Us',
+  description:
+    'Learn about 33 Pearl Atelier, our pearl sourcing standards, craftsmanship approach, and custom pearl jewelry philosophy.',
+}
 
 export default function AboutPage() {
   const values = [

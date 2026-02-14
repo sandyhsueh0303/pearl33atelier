@@ -1,5 +1,12 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions } from '../constants/design'
+
+export const metadata: Metadata = {
+  title: 'Pearl Care Guide',
+  description:
+    'Learn how to care for pearl jewelry with daily wear, storage, cleaning, and maintenance tips from 33 Pearl Atelier.',
+}
 
 export default function CareGuidePage() {
   const essentials = [

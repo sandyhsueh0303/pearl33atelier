@@ -1,5 +1,12 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions } from '../constants/design'
+
+export const metadata: Metadata = {
+  title: 'Pearl Jewelry FAQ',
+  description:
+    'Answers to common questions about pearl jewelry, custom services, shipping, care, and returns from 33 Pearl Atelier.',
+}
 
 export default function FAQPage() {
   const faqs = [
@@ -41,8 +48,22 @@ export default function FAQPage() {
     },
   ]
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  }
+
   return (
     <main style={{ backgroundColor: colors.white }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <section
         style={{
           padding: `${spacing['4xl']} ${spacing.xl} ${spacing['3xl']}`,

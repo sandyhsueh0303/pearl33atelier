@@ -1,5 +1,12 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions } from '../constants/design'
+
+export const metadata: Metadata = {
+  title: 'Custom Pearl Jewelry Service',
+  description:
+    'Design custom pearl jewelry with 33 Pearl Atelier. Choose pearl type, size, tone, and setting for a bespoke handcrafted piece.',
+}
 
 export default function CustomServicesPage() {
   const processSteps = [

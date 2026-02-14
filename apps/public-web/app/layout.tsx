@@ -11,8 +11,12 @@ const playfairDisplay = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: '33 Pearl Atelier - Fine Pearl Jewelry',
-  description: '33 Pearl Atelier specializes in handcrafted pearl jewelry. Each piece is a unique work of art.',
+  title: {
+    default: '33 Pearl Atelier | Pearl Jewelry & Custom Pearl Design',
+    template: '%s | 33 Pearl Atelier',
+  },
+  description:
+    'Shop handcrafted pearl jewelry and custom pearl design services by 33 Pearl Atelier. Discover pearl guides, care tips, and bespoke pieces.',
 }
 
 export default function RootLayout({
@@ -20,9 +24,21 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: '33 Pearl Atelier',
+    description:
+      'Handcrafted pearl jewelry and custom pearl design services.',
+  }
+
   return (
     <html lang="en">
       <body className={playfairDisplay.variable}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <Navigation />
         <main style={{ paddingTop: '80px' }}>
           {children}

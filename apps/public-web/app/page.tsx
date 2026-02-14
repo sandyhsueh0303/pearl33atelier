@@ -140,6 +140,74 @@ export default function HomePage() {
         `}</style>
       </section>
 
+      {/* Intent Section */}
+      <section
+        style={{
+          padding: `${spacing['2xl']} ${spacing.xl}`,
+          backgroundColor: '#f8f6f1',
+          borderTop: `1px solid ${colors.lightGray}`,
+          borderBottom: `1px solid ${colors.lightGray}`,
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '980px', margin: '0 auto' }}>
+          <h2
+            style={{
+              fontSize: typography.fontSize['3xl'],
+              color: colors.darkGray,
+              marginBottom: spacing.md,
+              lineHeight: typography.lineHeight.tight,
+            }}
+          >
+            Handcrafted Pearl Jewelry & Custom Pearl Design
+          </h2>
+          <p
+            style={{
+              fontSize: typography.fontSize.base,
+              color: colors.textSecondary,
+              lineHeight: typography.lineHeight.relaxed,
+              maxWidth: '760px',
+              margin: `0 auto ${spacing.lg}`,
+            }}
+          >
+            Explore ready-to-wear pearl jewelry, request a custom pearl piece, and learn how to choose
+            and care for pearls through our educational guides.
+          </p>
+          <div style={{ display: 'flex', gap: spacing.md, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link
+              href="/products"
+              style={{
+                display: 'inline-block',
+                padding: `${spacing.xs} ${spacing.lg}`,
+                backgroundColor: colors.darkGray,
+                color: colors.white,
+                textDecoration: 'none',
+                border: `1px solid ${colors.darkGray}`,
+                letterSpacing: '0.08em',
+                transition: transitions.fast,
+              }}
+            >
+              Shop Pearl Jewelry
+            </Link>
+            <Link
+              href="/custom-services"
+              style={{
+                display: 'inline-block',
+                padding: `${spacing.xs} ${spacing.lg}`,
+                backgroundColor: 'transparent',
+                color: colors.darkGray,
+                textDecoration: 'none',
+                border: `1px solid ${colors.darkGray}`,
+                letterSpacing: '0.08em',
+                transition: transitions.fast,
+              }}
+            >
+              Custom Pearl Service
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Section */}
       <section style={{
         padding: `${spacing['4xl']} ${spacing.xl}`,
@@ -263,7 +331,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Journal Section */}
       <section style={{
         padding: `${spacing['4xl']} ${spacing.xl}`,
         backgroundColor: colors.pearl,
@@ -277,7 +345,7 @@ export default function HomePage() {
           marginBottom: spacing.lg,
           letterSpacing: '0.03em',
         }}>
-          Begin Your Custom Journey
+          From Journal
         </h2>
         <p style={{
           fontSize: typography.fontSize.lg,
@@ -287,35 +355,91 @@ export default function HomePage() {
           maxWidth: '700px',
           margin: `0 auto ${spacing['2xl']} auto`,
         }}>
-          We offer complete customization services, from pearl selection to design
-          <br />
-          <span style={{ fontStyle: 'italic' }}>Every step is carefully crafted for you</span>
+          Explore pearl education, care tips, and practical buying insights.
+          This helps visitors discover relevant content and strengthens internal SEO signals.
         </p>
-        <Link
-          href="/custom-services"
+
+        <div
           style={{
-            display: 'inline-block',
-            padding: `${spacing.md} ${spacing['2xl']}`,
-            backgroundColor: 'transparent',
-            color: colors.darkGray,
-            fontSize: typography.fontSize.base,
-            fontWeight: typography.fontWeight.semibold,
-            letterSpacing: '0.15em',
-            textDecoration: 'none',
-            border: `2px solid ${colors.darkGray}`,
-            transition: transitions.normal,
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = colors.darkGray
-            e.currentTarget.style.color = colors.white
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent'
-            e.currentTarget.style.color = colors.darkGray
+            maxWidth: '1100px',
+            margin: `0 auto ${spacing['2xl']}`,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: spacing.lg,
+            textAlign: 'left',
           }}
         >
-          Learn About Custom Services
-        </Link>
+          <article style={{ backgroundColor: colors.white, padding: spacing.lg, border: `1px solid ${colors.lightGray}` }}>
+            <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
+              Pearl Types Guide
+            </h3>
+            <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
+              Understand the key differences between Akoya, South Sea, Tahitian, and Freshwater pearls.
+            </p>
+            <Link href="/blog/pearl-types-akoya-south-sea-tahitian-freshwater" style={{ color: colors.darkGray, textDecoration: 'underline' }}>
+              Read article
+            </Link>
+          </article>
+          <article style={{ backgroundColor: colors.white, padding: spacing.lg, border: `1px solid ${colors.lightGray}` }}>
+            <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
+              Daily Pearl Care
+            </h3>
+            <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
+              Learn simple daily habits that keep pearl jewelry luminous and protected.
+            </p>
+            <Link href="/blog/how-to-care-for-pearl-jewelry-daily" style={{ color: colors.darkGray, textDecoration: 'underline' }}>
+              Read article
+            </Link>
+          </article>
+          <article style={{ backgroundColor: colors.white, padding: spacing.lg, border: `1px solid ${colors.lightGray}` }}>
+            <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
+              Custom Pearl Insights
+            </h3>
+            <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
+              See how to plan a custom pearl piece with the right style, timeline, and material choices.
+            </p>
+            <Link href="/custom-services" style={{ color: colors.darkGray, textDecoration: 'underline' }}>
+              Learn more
+            </Link>
+          </article>
+        </div>
+
+        <div style={{ display: 'flex', gap: spacing.md, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link
+            href="/blog"
+            style={{
+              display: 'inline-block',
+              padding: `${spacing.md} ${spacing['2xl']}`,
+              backgroundColor: colors.darkGray,
+              color: colors.white,
+              fontSize: typography.fontSize.base,
+              fontWeight: typography.fontWeight.semibold,
+              letterSpacing: '0.1em',
+              textDecoration: 'none',
+              border: `1px solid ${colors.darkGray}`,
+              transition: transitions.normal,
+            }}
+          >
+            View All Journal Posts
+          </Link>
+          <Link
+            href="/faq"
+            style={{
+              display: 'inline-block',
+              padding: `${spacing.md} ${spacing['2xl']}`,
+              backgroundColor: 'transparent',
+              color: colors.darkGray,
+              fontSize: typography.fontSize.base,
+              fontWeight: typography.fontWeight.semibold,
+              letterSpacing: '0.1em',
+              textDecoration: 'none',
+              border: `1px solid ${colors.darkGray}`,
+              transition: transitions.normal,
+            }}
+          >
+            Read FAQ
+          </Link>
+        </div>
       </section>
     </div>
   )

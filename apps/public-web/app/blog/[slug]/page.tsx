@@ -118,6 +118,62 @@ export default async function BlogPostPage({ params }: Props) {
           </section>
         ))}
 
+        <section
+          style={{
+            marginTop: spacing['2xl'],
+            marginBottom: spacing['2xl'],
+            padding: spacing.lg,
+            border: `1px solid ${colors.lightGray}`,
+            borderRadius: '10px',
+            backgroundColor: '#fcfcfc',
+          }}
+        >
+          <h2 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.sm }}>
+            Related Resources
+          </h2>
+          <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
+            <Link
+              href="/products"
+              style={{
+                display: 'inline-block',
+                padding: `${spacing.xs} ${spacing.md}`,
+                border: `1px solid ${colors.darkGray}`,
+                color: colors.darkGray,
+                textDecoration: 'none',
+                letterSpacing: '0.05em',
+              }}
+            >
+              Shop Pearl Jewelry
+            </Link>
+            <Link
+              href="/custom-services"
+              style={{
+                display: 'inline-block',
+                padding: `${spacing.xs} ${spacing.md}`,
+                border: `1px solid ${colors.darkGray}`,
+                color: colors.darkGray,
+                textDecoration: 'none',
+                letterSpacing: '0.05em',
+              }}
+            >
+              Custom Pearl Service
+            </Link>
+            <Link
+              href="/care-guide"
+              style={{
+                display: 'inline-block',
+                padding: `${spacing.xs} ${spacing.md}`,
+                border: `1px solid ${colors.darkGray}`,
+                color: colors.darkGray,
+                textDecoration: 'none',
+                letterSpacing: '0.05em',
+              }}
+            >
+              Pearl Care Guide
+            </Link>
+          </div>
+        </section>
+
         <Link
           href="/blog"
           style={{
@@ -135,4 +191,3 @@ export default async function BlogPostPage({ params }: Props) {
     </main>
   )
 }
-
