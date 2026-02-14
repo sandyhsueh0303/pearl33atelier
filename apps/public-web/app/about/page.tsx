@@ -175,6 +175,120 @@ export default function AboutPage() {
           backgroundColor: '#fcfbf8',
         }}
       >
+        <div
+          style={{
+            maxWidth: '1100px',
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: 'minmax(260px, 360px) 1fr',
+            gap: spacing['2xl'],
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: colors.white,
+              border: `1px solid ${colors.lightGray}`,
+              borderRadius: '10px',
+              padding: spacing.sm,
+            }}
+          >
+            <img
+              src="/images/founder.jpg"
+              alt="Founder of 33 Pearl Atelier"
+              style={{
+                width: '100%',
+                height: 'auto',
+                borderRadius: '8px',
+                display: 'block',
+              }}
+            />
+          </div>
+
+          <article>
+            <p
+              style={{
+                fontSize: typography.fontSize.sm,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: colors.gold,
+                marginBottom: spacing.xs,
+              }}
+            >
+              Founder
+            </p>
+            <h2
+              style={{
+                fontSize: typography.fontSize['3xl'],
+                color: colors.darkGray,
+                marginBottom: spacing.md,
+              }}
+            >
+              From the Founder
+            </h2>
+            <p
+              style={{
+                fontSize: typography.fontSize.base,
+                color: colors.textSecondary,
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.sm,
+              }}
+            >
+              I&apos;m Sandy, the founder of 33 Pearl Atelier and a certified pearl appraiser.
+            </p>
+            <p
+              style={{
+                fontSize: typography.fontSize.base,
+                color: colors.textSecondary,
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.sm,
+              }}
+            >
+              My journey with pearls began with a simple fascination - their soft glow, quiet elegance,
+              and the fact that no two are ever the same.
+            </p>
+            <p
+              style={{
+                fontSize: typography.fontSize.base,
+                color: colors.textSecondary,
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.sm,
+              }}
+            >
+              Before founding 33 Pearl Atelier, I studied gemology and pearl grading, which shaped my approach to selecting pearls meant to be worn and loved.
+            </p>
+            <p
+              style={{
+                fontSize: typography.fontSize.base,
+                color: colors.textSecondary,
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.sm,
+              }}
+            >
+              <strong>Every pearl you see at 33 Pearl Atelier is hand-selected by me.</strong> I look beyond measurements and
+              grades - I pay attention to how it reflects light, how it sits against the skin, and how it feels
+              as part of everyday life.
+            </p>
+            <p
+              style={{
+                fontSize: typography.fontSize.base,
+                color: colors.textSecondary,
+                lineHeight: typography.lineHeight.relaxed,
+              }}
+            >
+              My hope is to offer more than fine jewelry - to share a sense of confidence and refined beauty
+              you can carry every day.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        style={{
+          padding: `${spacing['2xl']} ${spacing.xl} ${spacing['4xl']}`,
+          backgroundColor: '#fcfbf8',
+        }}
+      >
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <h2
             style={{

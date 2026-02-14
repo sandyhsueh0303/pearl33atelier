@@ -393,13 +393,13 @@ export default function HomePage() {
           </article>
           <article style={{ backgroundColor: colors.white, padding: spacing.lg, border: `1px solid ${colors.lightGray}` }}>
             <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
-              Custom Pearl Insights
+              Pearl Quality Factors
             </h3>
             <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
-              See how to plan a custom pearl piece with the right style, timeline, and material choices.
+              Learn how shape, luster, surface, body color, and overtone affect pearl beauty and value.
             </p>
-            <Link href="/custom-services" style={{ color: colors.darkGray, textDecoration: 'underline' }}>
-              Learn more
+            <Link href="/blog/pearl-quality-factors-shape-luster-surface-color-overtone" style={{ color: colors.darkGray, textDecoration: 'underline' }}>
+              Read article
             </Link>
           </article>
         </div>
