@@ -15,7 +15,7 @@ export default function Navigation() {
     { label: 'Custom', href: '/custom-services' },
     { label: 'FAQ', href: '/faq' },
     { label: 'Blog', href: '/blog' },
-    { label: 'Contact', href: '/contact' },
+    { label: 'Contact Us', href: '/contact' },
   ]
 
   return (
@@ -79,20 +79,6 @@ export default function Navigation() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/products"
-            style={{
-              fontSize: typography.fontSize.sm,
-              color: colors.white,
-              textDecoration: 'none',
-              backgroundColor: colors.darkGray,
-              border: `1px solid ${colors.darkGray}`,
-              padding: '6px 12px',
-              letterSpacing: '0.05em',
-            }}
-          >
-            Shop Collection
-          </Link>
         </div>
       </div>
     </nav>
