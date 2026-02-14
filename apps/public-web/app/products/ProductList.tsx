@@ -139,7 +139,7 @@ export default function ProductList({ products }: ProductListProps) {
     <main style={{ 
       minHeight: '100vh',
       backgroundColor: colors.white,
-      padding: spacing['3xl'],
+      padding: `clamp(1rem, 3vw, ${spacing['3xl']})`,
     }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <header style={{ marginBottom: spacing['3xl'], textAlign: 'center' }}>

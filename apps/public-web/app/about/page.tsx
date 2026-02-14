@@ -78,17 +78,19 @@ export default function AboutPage() {
       </section>
 
       <section
+        className="founder-section"
         style={{
-          padding: spacing['4xl'],
+          padding: `clamp(1rem, 4vw, ${spacing['4xl']})`,
           backgroundColor: '#fcfbf8',
         }}
       >
         <div
+          className="founder-grid"
           style={{
             maxWidth: '1200px',
             margin: '0 auto',
             display: 'grid',
-            gridTemplateColumns: '1fr 1.5fr',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
             gap: spacing['4xl'],
           }}
         >
@@ -112,6 +114,7 @@ export default function AboutPage() {
           </div>
 
           <article
+            className="founder-copy"
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -185,7 +188,6 @@ export default function AboutPage() {
           </article>
         </div>
       </section>
-
       <section
         style={{
           textAlign: 'center',

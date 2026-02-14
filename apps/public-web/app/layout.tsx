@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Playfair_Display } from 'next/font/google'
 import Navigation from './components/Navigation'
 import Footer from './components/Footer'
@@ -27,6 +27,11 @@ export const metadata: Metadata = {
     'pearl care guide',
     'pearl blog',
   ],
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({

@@ -94,7 +94,7 @@ export default function CustomServicesPage() {
             maxWidth: '1100px',
             margin: '0 auto',
             display: 'grid',
-            gridTemplateColumns: '1.3fr 1fr',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
             gap: spacing['2xl'],
           }}
         >

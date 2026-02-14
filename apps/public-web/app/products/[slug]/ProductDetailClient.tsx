@@ -46,7 +46,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
     <main style={{ 
       minHeight: '100vh',
       backgroundColor: colors.white,
-      padding: spacing['3xl'],
+      padding: `clamp(1rem, 3vw, ${spacing['3xl']})`,
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         {/* Breadcrumb */}
@@ -66,7 +66,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
 
         <div style={{ 
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: spacing['3xl'],
           backgroundColor: colors.white,
         }}>

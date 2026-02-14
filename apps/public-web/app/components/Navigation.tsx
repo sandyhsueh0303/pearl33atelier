@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { colors, typography, transitions, spacing } from '../constants/design'
 
 export default function Navigation() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const navItems = [
     { label: 'Home', href: '/' },
@@ -17,6 +19,20 @@ export default function Navigation() {
     { label: 'Blog', href: '/blog' },
     { label: 'Contact Us', href: '/contact' },
   ]
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 900
+      setIsMobile(mobile)
+      if (!mobile) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
     <nav style={{
@@ -32,7 +48,7 @@ export default function Navigation() {
       <div style={{
         maxWidth: '1280px',
         margin: '0 auto',
-        padding: `${spacing.md} ${spacing.lg}`,
+        padding: `${spacing.md} ${isMobile ? spacing.md : spacing.lg}`,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -41,7 +57,7 @@ export default function Navigation() {
         <Link 
           href="/"
           style={{
-            fontSize: typography.fontSize.xl,
+            fontSize: isMobile ? typography.fontSize.base : typography.fontSize.xl,
             fontWeight: typography.fontWeight.semibold,
             color: colors.darkGray,
             letterSpacing: '0.05em',
@@ -51,36 +67,81 @@ export default function Navigation() {
           33 PEARL ATELIER
         </Link>
 
-        {/* Navigation Links */}
-        <div style={{
-          display: 'flex',
-          gap: spacing.lg,
-          alignItems: 'center',
-        }}>
+        {isMobile ? (
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            aria-label="Toggle navigation menu"
+            style={{
+              border: `1px solid ${colors.lightGray}`,
+              backgroundColor: colors.white,
+              color: colors.darkGray,
+              padding: `${spacing.xs} ${spacing.sm}`,
+              cursor: 'pointer',
+              fontSize: typography.fontSize.base,
+            }}
+          >
+            {isMenuOpen ? 'Close' : 'Menu'}
+          </button>
+        ) : (
+          <div style={{
+            display: 'flex',
+            gap: spacing.lg,
+            alignItems: 'center',
+          }}>
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onMouseEnter={() => setHoveredItem(item.href)}
+                onMouseLeave={() => setHoveredItem(null)}
+                style={{
+                  fontSize: typography.fontSize.sm,
+                  fontWeight: typography.fontWeight.normal,
+                  color: colors.textSecondary,
+                  textDecoration: 'none',
+                  transition: transitions.fast,
+                  position: 'relative',
+                  paddingBottom: '4px',
+                  borderBottom: hoveredItem === item.href
+                    ? `2px solid ${colors.gold}`
+                    : '2px solid transparent',
+                }}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {isMobile && isMenuOpen && (
+        <div
+          style={{
+            borderTop: `1px solid ${colors.lightGray}`,
+            backgroundColor: colors.white,
+            padding: `${spacing.sm} ${spacing.md}`,
+            display: 'grid',
+            gap: spacing.xs,
+          }}
+        >
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              onMouseEnter={() => setHoveredItem(item.href)}
-              onMouseLeave={() => setHoveredItem(null)}
+              onClick={() => setIsMenuOpen(false)}
               style={{
-                fontSize: typography.fontSize.sm,
-                fontWeight: typography.fontWeight.normal,
                 color: colors.textSecondary,
-                textDecoration: 'none',
-                transition: transitions.fast,
-                position: 'relative',
-                paddingBottom: '4px',
-                borderBottom: hoveredItem === item.href 
-                  ? `2px solid ${colors.gold}` 
-                  : '2px solid transparent',
+                padding: `${spacing.xs} 0`,
+                borderBottom: `1px solid ${colors.lightGray}`,
+                fontSize: typography.fontSize.base,
               }}
             >
               {item.label}
             </Link>
           ))}
         </div>
-      </div>
+      )}
     </nav>
   )
 }
