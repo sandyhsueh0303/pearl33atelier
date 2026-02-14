@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
@@ -17,6 +17,8 @@ interface ProductListProps {
 
 export default function ProductList({ products }: ProductListProps) {
   const [filters, setFilters] = useState<ProductFilters>({})
+  const [currentPage, setCurrentPage] = useState(1)
+  const ITEMS_PER_PAGE = 20
 
   // Helper to safely compare enum values (handles possible undefined/null)
   const getAvailability = (a: any) => (typeof a === 'string' ? a : '')
@@ -116,6 +118,23 @@ export default function ProductList({ products }: ProductListProps) {
     return result
   }, [products, filters])
 
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE))
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE
+    return filteredProducts.slice(start, start + ITEMS_PER_PAGE)
+  }, [filteredProducts, currentPage])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [filters])
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
+
   return (
     <main style={{ 
       minHeight: '100vh',
@@ -166,10 +185,10 @@ export default function ProductList({ products }: ProductListProps) {
         ) : (
           <div style={{ 
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
             gap: spacing['2xl']
           }}>
-            {filteredProducts.map((product) => (
+            {paginatedProducts.map((product) => (
               <Link
                 key={product.id}
                 href={`/products/${product.slug}`}
@@ -337,6 +356,62 @@ export default function ProductList({ products }: ProductListProps) {
                 </div>
               </Link>
             ))}
+          </div>
+        )}
+
+        {filteredProducts.length > 0 && totalPages > 1 && (
+          <div style={{ marginTop: spacing['2xl'], textAlign: 'center' }}>
+            <p style={{ color: colors.textSecondary, marginBottom: spacing.md }}>
+              Page {currentPage} of {totalPages}
+            </p>
+            <div style={{ display: 'flex', gap: spacing.xs, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                style={{
+                  padding: `${spacing.xs} ${spacing.md}`,
+                  border: `1px solid ${colors.lightGray}`,
+                  backgroundColor: currentPage === 1 ? colors.pearl : colors.white,
+                  color: colors.darkGray,
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                }}
+              >
+                Previous
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  type="button"
+                  onClick={() => setCurrentPage(page)}
+                  style={{
+                    padding: `${spacing.xs} ${spacing.md}`,
+                    border: `1px solid ${colors.lightGray}`,
+                    backgroundColor: currentPage === page ? colors.darkGray : colors.white,
+                    color: currentPage === page ? colors.white : colors.darkGray,
+                    cursor: 'pointer',
+                  }}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: `${spacing.xs} ${spacing.md}`,
+                  border: `1px solid ${colors.lightGray}`,
+                  backgroundColor: currentPage === totalPages ? colors.pearl : colors.white,
+                  color: colors.darkGray,
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                }}
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>
