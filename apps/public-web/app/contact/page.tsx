@@ -156,16 +156,17 @@ I have reference photos to share!`
 
       {/* Form Section */}
       <section style={{
-        maxWidth: '800px',
+        maxWidth: '860px',
         margin: '0 auto',
         padding: `${spacing['3xl']} ${spacing.xl}`,
       }}>
         
         {/* What to Include */}
         <div style={{
-          background: '#F8F6F0',
+          background: 'linear-gradient(180deg, #FCFAF6 0%, #F8F6F0 100%)',
           padding: spacing.xl,
-          borderRadius: '12px',
+          borderRadius: '14px',
+          border: '1px solid #E7E0D3',
           marginBottom: spacing['2xl'],
         }}>
           <h2 style={{
@@ -191,10 +192,11 @@ I have reference photos to share!`
 
         {/* Form */}
         <div style={{
-          background: 'white',
+          background: 'linear-gradient(180deg, #FFFFFF 0%, #FCFBF8 100%)',
           padding: spacing['2xl'],
-          borderRadius: '12px',
-          border: '2px solid #F0F0F0',
+          borderRadius: '16px',
+          border: '1px solid #E7E0D3',
+          boxShadow: '0 10px 24px rgba(36, 28, 16, 0.06)',
         }}>
           
           {/* Name */}
@@ -216,8 +218,9 @@ I have reference photos to share!`
               style={{
                 width: '100%',
                 padding: spacing.sm,
-                border: '1px solid #E0E0E0',
-                borderRadius: '6px',
+                border: '1px solid #DDD4C5',
+                borderRadius: '10px',
+                background: '#FFFEFC',
                 fontSize: typography.fontSize.base,
                 fontFamily: 'inherit',
               }}
@@ -243,8 +246,9 @@ I have reference photos to share!`
               style={{
                 width: '100%',
                 padding: spacing.sm,
-                border: '1px solid #E0E0E0',
-                borderRadius: '6px',
+                border: '1px solid #DDD4C5',
+                borderRadius: '10px',
+                background: '#FFFEFC',
                 fontSize: typography.fontSize.base,
                 fontFamily: 'inherit',
               }}
@@ -269,8 +273,9 @@ I have reference photos to share!`
               style={{
                 width: '100%',
                 padding: spacing.sm,
-                border: '1px solid #E0E0E0',
-                borderRadius: '6px',
+                border: '1px solid #DDD4C5',
+                borderRadius: '10px',
+                background: '#FFFEFC',
                 fontSize: typography.fontSize.base,
                 fontFamily: 'inherit',
               }}
@@ -302,6 +307,10 @@ I have reference photos to share!`
                     gap: spacing.xs,
                     cursor: 'pointer',
                     fontSize: typography.fontSize.base,
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    border: '1px solid #E6DDCF',
+                    borderRadius: '10px',
+                    background: '#FFFEFC',
                   }}
                 >
                   <input
@@ -345,6 +354,10 @@ I have reference photos to share!`
                     gap: spacing.xs,
                     cursor: 'pointer',
                     fontSize: typography.fontSize.base,
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    border: '1px solid #E6DDCF',
+                    borderRadius: '10px',
+                    background: '#FFFEFC',
                   }}
                 >
                   <input
@@ -395,6 +408,10 @@ I have reference photos to share!`
                     gap: spacing.xs,
                     cursor: 'pointer',
                     fontSize: typography.fontSize.base,
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    border: '1px solid #E6DDCF',
+                    borderRadius: '10px',
+                    background: '#FFFEFC',
                   }}
                 >
                   <input
@@ -445,6 +462,10 @@ I have reference photos to share!`
                     gap: spacing.xs,
                     cursor: 'pointer',
                     fontSize: typography.fontSize.base,
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    border: '1px solid #E6DDCF',
+                    borderRadius: '10px',
+                    background: '#FFFEFC',
                   }}
                 >
                   <input
@@ -474,8 +495,9 @@ I have reference photos to share!`
                     width: '100%',
                     marginTop: spacing.sm,
                     padding: spacing.sm,
-                    border: '1px solid #E0E0E0',
-                    borderRadius: '6px',
+                    border: '1px solid #DDD4C5',
+                    borderRadius: '10px',
+                    background: '#FFFEFC',
                     fontSize: typography.fontSize.base,
                     fontFamily: 'inherit',
                   }}
@@ -545,6 +567,10 @@ I have reference photos to share!`
                     gap: spacing.xs,
                     cursor: 'pointer',
                     fontSize: typography.fontSize.base,
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    border: '1px solid #E6DDCF',
+                    borderRadius: '10px',
+                    background: '#FFFEFC',
                   }}
                 >
                   <input
@@ -585,8 +611,9 @@ I have reference photos to share!`
               style={{
                 width: '100%',
                 padding: spacing.sm,
-                border: '1px solid #E0E0E0',
-                borderRadius: '6px',
+                border: '1px solid #DDD4C5',
+                borderRadius: '10px',
+                background: '#FFFEFC',
                 fontSize: typography.fontSize.base,
                 fontFamily: 'inherit',
                 resize: 'vertical',
@@ -642,7 +669,7 @@ I have reference photos to share!`
             background: 'white',
             padding: spacing['2xl'],
             borderRadius: '12px',
-            border: '2px solid #4CAF50',
+            border: `2px solid ${colors.gold}`,
             marginTop: spacing.xl,
             animation: 'fadeIn 0.3s ease-in',
           }}>
@@ -659,9 +686,9 @@ I have reference photos to share!`
                 ✓
               </div>
               <h3 style={{
-                fontSize: typography.fontSize.xl,
+                fontSize: typography.fontSize['3xl'],
                 fontWeight: typography.fontWeight.semibold,
-                color: '#4CAF50',
+                color: colors.gold,
                 marginBottom: spacing.sm,
               }}>
                 Message copied to clipboard!
