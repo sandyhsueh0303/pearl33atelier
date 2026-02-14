@@ -12,7 +12,7 @@ export default function Footer() {
     }
     window.location.href = 'weixin://'
     window.setTimeout(() => {
-      window.alert('WeChat ID copied: _33pearlatelier. Please paste it in WeChat search.')
+      window.alert('Open WeChat and search "_33pearlatelier" to start chatting.')
     }, 250)
   }
 

@@ -102,7 +102,7 @@ I have reference photos to share!`
 
   const openWeChat = () => {
     // WeChat 網頁版或顯示 QR code
-    alert('Please open WeChat and search: _33pearlatelier')
+    alert('Open WeChat and search "_33pearlatelier" to start chatting.')
   }
 
   const openEmail = () => {
