@@ -79,6 +79,216 @@ export default function AboutPage() {
 
       <section
         style={{
+          padding: spacing['4xl'],
+          backgroundColor: '#fcfbf8',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1.5fr',
+            gap: spacing['4xl'],
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <img
+              src="/images/founder.jpg"
+              alt="Sandy, Founder"
+              style={{
+                width: '100%',
+                maxWidth: '400px',
+                borderRadius: '8px',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+              }}
+            />
+          </div>
+
+          <article
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}
+          >
+            <p
+              style={{
+                fontSize: typography.fontSize.sm,
+                letterSpacing: '0.22em',
+                textTransform: 'uppercase',
+                color: colors.gold,
+                marginBottom: spacing.md,
+              }}
+            >
+              FOUNDER
+            </p>
+            <h2
+              style={{
+                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                fontWeight: typography.fontWeight.normal,
+                color: colors.darkGray,
+                marginBottom: spacing.xl,
+              }}
+            >
+              From the Founder
+            </h2>
+            <p
+              style={{
+                fontSize: typography.fontSize.lg,
+                color: colors.textPrimary,
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.sm,
+              }}
+            >
+              I&apos;m Sandy — founder of 33 Pearl Atelier and certified pearl appraiser.
+            </p>
+            <p
+              style={{
+                fontSize: typography.fontSize.lg,
+                color: colors.textPrimary,
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.sm,
+              }}
+            >
+              My fascination with pearls began with their quiet elegance and the simple truth that no two are ever alike.
+              After studying gemology and pearl grading, I founded 33 Pearl Atelier to share pearls that feel personal,
+              wearable, and timeless.
+            </p>
+            <p
+              style={{
+                fontSize: typography.fontSize.lg,
+                color: colors.textPrimary,
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.sm,
+              }}
+            >
+              Every pearl here is hand-selected by me. Beyond measurements and grades, I focus on how each pearl catches light,
+              sits against skin, and becomes part of daily life.
+            </p>
+            <p
+              style={{
+                fontSize: typography.fontSize.lg,
+                color: colors.textPrimary,
+                lineHeight: typography.lineHeight.relaxed,
+              }}
+            >
+              My goal isn&apos;t just to create fine jewelry — it&apos;s to offer pieces that bring confidence and refined
+              beauty to your everyday.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        style={{
+          textAlign: 'center',
+          padding: `${spacing['3xl']} ${spacing.xl}`,
+          background: '#FAFAF8',
+        }}
+      >
+        <h2
+          style={{
+            fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)',
+            marginBottom: spacing['2xl'],
+          }}
+        >
+          Certifications & Expertise
+        </h2>
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: spacing.md,
+            maxWidth: '600px',
+            margin: '0 auto',
+            fontSize: typography.fontSize.lg,
+          }}
+        >
+          <div>✓ GIA Certified Gemologist</div>
+          <div>✓ Pearl Grading Specialist</div>
+          <div>✓ Curated Pearl Styling & Design</div>
+        </div>
+      </section>
+
+      <section
+        style={{
+          background: 'linear-gradient(180deg, #FAFAF8 0%, #FFFFFF 100%)',
+          padding: `${spacing['4xl']} ${spacing.xl}`,
+        }}
+      >
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <h2
+            style={{
+              textAlign: 'center',
+              fontSize: 'clamp(2rem, 4vw, 3rem)',
+              fontWeight: typography.fontWeight.normal,
+              color: colors.darkGray,
+              marginBottom: spacing['3xl'],
+            }}
+          >
+            What We Value
+          </h2>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: spacing['2xl'],
+            }}
+          >
+            {values.map((value) => (
+              <article
+                key={value.title}
+                style={{
+                  background: '#F8F6F0',
+                  padding: spacing.xl,
+                  borderRadius: '12px',
+                  textAlign: 'center',
+                  transition: 'transform 0.3s ease',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '3rem',
+                    marginBottom: spacing.lg,
+                  }}
+                >
+                  ✦
+                </div>
+                <h3
+                  style={{
+                    fontSize: typography.fontSize.xl,
+                    fontWeight: typography.fontWeight.semibold,
+                    color: colors.darkGray,
+                    marginBottom: spacing.md,
+                  }}
+                >
+                  {value.title}
+                </h3>
+                <p
+                  style={{
+                    fontSize: typography.fontSize.base,
+                    color: colors.textSecondary,
+                    lineHeight: typography.lineHeight.relaxed,
+                  }}
+                >
+                  {value.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        style={{
           padding: `${spacing['3xl']} ${spacing.xl}`,
         }}
       >
@@ -112,8 +322,18 @@ export default function AboutPage() {
                 marginBottom: spacing.md,
               }}
             >
-              What started as a passion for exceptional pearls became a studio focused on thoughtful,
-              wearable pieces with character.
+              What started as a passion for exceptional pearls in 2025 became a studio dedicated to creating jewelry that tells a story.
+            </p>
+            <p
+              style={{
+                fontSize: typography.fontSize.base,
+                color: colors.textSecondary,
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.md,
+              }}
+            >
+              Every piece begins with careful pearl selection from trusted sources worldwide. From sourcing to final polish,
+              we treat each design as a small work of art — created to celebrate your personal style and life&apos;s meaningful moments.
             </p>
             <p
               style={{
@@ -122,8 +342,7 @@ export default function AboutPage() {
                 lineHeight: typography.lineHeight.relaxed,
               }}
             >
-              From sourcing to final polish, each design is treated as a small work of art,
-              created to celebrate personal style and meaningful moments.
+              We believe pearls aren&apos;t just for special occasions. They&apos;re for every day, every moment, every you.
             </p>
           </div>
 
@@ -171,175 +390,117 @@ export default function AboutPage() {
 
       <section
         style={{
-          padding: `${spacing['2xl']} ${spacing.xl} ${spacing['4xl']}`,
-          backgroundColor: '#fcfbf8',
+          padding: `${spacing['4xl']} ${spacing.xl}`,
+          background: 'linear-gradient(180deg, #FFFFFF 0%, #F7F4EE 100%)',
         }}
       >
+        <h2
+          style={{
+            textAlign: 'center',
+            fontSize: 'clamp(2rem, 4vw, 3rem)',
+            marginBottom: spacing['3xl'],
+          }}
+        >
+          What Clients Say
+        </h2>
+
         <div
           style={{
-            maxWidth: '1100px',
-            margin: '0 auto',
             display: 'grid',
-            gridTemplateColumns: 'minmax(260px, 360px) 1fr',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: spacing['2xl'],
-            alignItems: 'center',
+            maxWidth: '1200px',
+            margin: '0 auto',
           }}
         >
           <div
             style={{
-              backgroundColor: colors.white,
-              border: `1px solid ${colors.lightGray}`,
-              borderRadius: '10px',
-              padding: spacing.sm,
+              padding: spacing.xl,
+              background: 'white',
+              borderRadius: '12px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
             }}
           >
-            <img
-              src="/images/founder.jpg"
-              alt="Sandy, founder of 33 Pearl Atelier and certified pearl appraiser"
+            <p
               style={{
-                width: '100%',
-                height: 'auto',
-                borderRadius: '8px',
-                display: 'block',
+                fontSize: typography.fontSize.base,
+                fontStyle: 'italic',
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.lg,
+                color: colors.textPrimary,
               }}
-            />
-          </div>
-
-          <article>
+            >
+              &quot;The attention to detail and quality is exceptional. My pearl necklace has become my everyday piece.&quot;
+            </p>
             <p
               style={{
                 fontSize: typography.fontSize.sm,
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
                 color: colors.gold,
-                marginBottom: spacing.xs,
+                fontWeight: typography.fontWeight.semibold,
               }}
             >
-              Founder
+              — Emma L.
             </p>
-            <h2
-              style={{
-                fontSize: typography.fontSize['3xl'],
-                color: colors.darkGray,
-                marginBottom: spacing.md,
-              }}
-            >
-              From the Founder
-            </h2>
-            <p
-              style={{
-                fontSize: typography.fontSize.base,
-                color: colors.textSecondary,
-                lineHeight: typography.lineHeight.relaxed,
-                marginBottom: spacing.sm,
-              }}
-            >
-              I&apos;m Sandy, the founder of 33 Pearl Atelier and a certified pearl appraiser.
-            </p>
-            <p
-              style={{
-                fontSize: typography.fontSize.base,
-                color: colors.textSecondary,
-                lineHeight: typography.lineHeight.relaxed,
-                marginBottom: spacing.sm,
-              }}
-            >
-              My journey with pearls began with a simple fascination - their soft glow, quiet elegance,
-              and the fact that no two are ever the same.
-            </p>
-            <p
-              style={{
-                fontSize: typography.fontSize.base,
-                color: colors.textSecondary,
-                lineHeight: typography.lineHeight.relaxed,
-                marginBottom: spacing.sm,
-              }}
-            >
-              Before founding 33 Pearl Atelier, I studied gemology and pearl grading, which shaped my approach to selecting pearls meant to be worn and loved.
-            </p>
-            <p
-              style={{
-                fontSize: typography.fontSize.base,
-                color: colors.textSecondary,
-                lineHeight: typography.lineHeight.relaxed,
-                marginBottom: spacing.sm,
-              }}
-            >
-              <strong>Every pearl you see at 33 Pearl Atelier is hand-selected by me.</strong> I look beyond measurements and
-              grades - I pay attention to how it reflects light, how it sits against the skin, and how it feels
-              as part of everyday life.
-            </p>
-            <p
-              style={{
-                fontSize: typography.fontSize.base,
-                color: colors.textSecondary,
-                lineHeight: typography.lineHeight.relaxed,
-              }}
-            >
-              My hope is to offer more than fine jewelry - to share a sense of confidence and refined beauty
-              you can carry every day.
-            </p>
-          </article>
-        </div>
-      </section>
+          </div>
 
-      <section
-        style={{
-          padding: `${spacing['2xl']} ${spacing.xl} ${spacing['4xl']}`,
-          backgroundColor: '#fcfbf8',
-        }}
-      >
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <h2
-            style={{
-              fontSize: typography.fontSize['3xl'],
-              fontWeight: typography.fontWeight.normal,
-              color: colors.darkGray,
-              textAlign: 'center',
-              marginBottom: spacing['2xl'],
-            }}
-          >
-            What We Value
-          </h2>
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-              gap: spacing.lg,
+              padding: spacing.xl,
+              background: 'white',
+              borderRadius: '12px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
             }}
           >
-            {values.map((value) => (
-              <article
-                key={value.title}
-                style={{
-                  backgroundColor: colors.white,
-                  border: `1px solid ${colors.lightGray}`,
-                  borderRadius: '10px',
-                  padding: spacing.lg,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: typography.fontSize.xl,
-                    fontWeight: typography.fontWeight.medium,
-                    color: colors.darkGray,
-                    marginBottom: spacing.sm,
-                  }}
-                >
-                  {value.title}
-                </h3>
-                <p
-                  style={{
-                    fontSize: typography.fontSize.base,
-                    color: colors.textSecondary,
-                    lineHeight: typography.lineHeight.relaxed,
-                  }}
-                >
-                  {value.description}
-                </p>
-              </article>
-            ))}
+            <p
+              style={{
+                fontSize: typography.fontSize.base,
+                fontStyle: 'italic',
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.lg,
+                color: colors.textPrimary,
+              }}
+            >
+              &quot;Sandy guided me through every step of the custom process. The final earrings are elegant and timeless.&quot;
+            </p>
+            <p
+              style={{
+                fontSize: typography.fontSize.sm,
+                color: colors.gold,
+                fontWeight: typography.fontWeight.semibold,
+              }}
+            >
+              — Grace W.
+            </p>
+          </div>
+
+          <div
+            style={{
+              padding: spacing.xl,
+              background: 'white',
+              borderRadius: '12px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+            }}
+          >
+            <p
+              style={{
+                fontSize: typography.fontSize.base,
+                fontStyle: 'italic',
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing.lg,
+                color: colors.textPrimary,
+              }}
+            >
+              &quot;I love that each pearl is personally selected. You can really see the difference in luster and harmony.&quot;
+            </p>
+            <p
+              style={{
+                fontSize: typography.fontSize.sm,
+                color: colors.gold,
+                fontWeight: typography.fontWeight.semibold,
+              }}
+            >
+              — Chloe T.
+            </p>
           </div>
         </div>
       </section>
