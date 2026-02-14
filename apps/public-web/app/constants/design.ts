@@ -24,8 +24,8 @@ export const colors = {
 
 export const typography = {
   fontFamily: {
-    primary: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-    serif: 'Georgia, "Times New Roman", serif',
+    primary: 'var(--font-playfair-display), serif',
+    serif: 'var(--font-playfair-display), serif',
   },
   fontSize: {
     xs: '0.75rem',      // 12px

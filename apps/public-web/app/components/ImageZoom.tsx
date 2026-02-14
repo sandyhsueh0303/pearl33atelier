@@ -85,7 +85,7 @@ const ImageZoom: React.FC<ImageZoomProps> = ({ src, alt = '', style, zoomScale =
             color: '#fff',
             fontSize: '24px',
             fontWeight: 'bold',
-            fontFamily: 'sans-serif'
+            
           }}>✕</div>
         </div>
       )}

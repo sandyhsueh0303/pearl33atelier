@@ -33,8 +33,7 @@ export default async function ProductsPage() {
         minHeight: '100vh',
         backgroundColor: '#fafafa',
         padding: '2rem',
-        fontFamily: 'sans-serif',
-        display: 'flex',
+                display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
