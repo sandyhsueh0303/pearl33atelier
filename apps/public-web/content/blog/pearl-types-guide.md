@@ -1,10 +1,10 @@
 ---
-title: "Pearl Types Guide: Akoya, South Sea, Tahitian, and Freshwater"
+title: "Pearl Types Guide:\nAkoya, South Sea and Tahitian"
 excerpt: "A practical guide to the main pearl varieties and how to choose the right one for your style and budget."
-seoDescription: "Learn the differences between Akoya, South Sea, Tahitian, and Freshwater pearls, including luster, color, size, and ideal jewelry styles."
+seoDescription: "Learn the differences between Akoya, South Sea, and Tahitian, including luster, color, size, and ideal jewelry styles."
 publishedAt: "2026-02-14"
 author: "33 Pearl Atelier"
-tags: ["Pearl Guide", "Akoya", "South Sea", "Tahitian", "Freshwater"]
+tags: ["Pearl Guide", "Akoya", "South Sea", "Tahitian"]
 readingMinutes: 6
 ---
 
@@ -14,9 +14,15 @@ Different pearl types vary in luster, overtone, size range, and overall mood. Ch
 
 When selecting pearls, focus on how they look in natural light, how they pair with your preferred metal tone, and how often you plan to wear the piece.
 
-## Quick Overview of the Four Main Types
+## Meet the Three Main Types
 
-Akoya pearls are known for sharp luster and classic elegance. South Sea pearls are larger and often have a soft satin glow. Tahitian pearls offer darker tones and unique overtones, while Freshwater pearls provide flexible shapes and excellent value.
+Before comparing details, it helps to understand the personality of each type:
+
+**Akoya** is often considered the classic pearl look. It is known for bright, mirror-like luster and clean, elegant styling. Akoya is a strong choice for timeless necklaces, studs, and formal pieces.
+
+**South Sea** pearls are typically larger and feel more luxurious in presence. Their glow is often softer and satin-like rather than sharply reflective. South Sea pearls are ideal when you want a statement piece with refined volume.
+
+**Tahitian** pearls are loved for their naturally dark body colors and rich overtones. They can show green, peacock, silver, aubergine, or smoky tonal shifts depending on light. Tahitian pearls work well for modern, expressive designs.
 
 No type is universally better. The right choice depends on style goals, budget, and design context.
 

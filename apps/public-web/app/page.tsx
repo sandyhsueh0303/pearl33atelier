@@ -376,7 +376,7 @@ export default function HomePage() {
             <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
               Understand the key differences between Akoya, South Sea, Tahitian, and Freshwater pearls.
             </p>
-            <Link href="/blog/pearl-types-akoya-south-sea-tahitian-freshwater" style={{ color: colors.darkGray, textDecoration: 'underline' }}>
+            <Link href="/blog/pearl-types-guide" style={{ color: colors.darkGray, textDecoration: 'underline' }}>
               Read article
             </Link>
           </article>
