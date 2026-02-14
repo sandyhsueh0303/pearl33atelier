@@ -15,5 +15,10 @@
     "start:public-web": "npm run start --workspace=apps/public-web",
     "start:inventory-admin": "npm run start --workspace=apps/inventory-admin",
     "gen:types": "npx supabase gen types typescript --project-id xjrnyynfzbrhmotepzyl --schema public > packages/shared/types/database.types.ts"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1"
   }
 }

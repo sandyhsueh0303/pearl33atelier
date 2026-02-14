@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions } from '../constants/design'
-import type { BlogPost } from './posts'
+import type { BlogPost } from '../lib/blog'
 
 type BlogSearchProps = {
   posts: BlogPost[]
@@ -22,7 +22,7 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
         post.excerpt,
         post.seoDescription,
         post.tags.join(' '),
-        post.sections.map((section) => `${section.heading} ${section.paragraphs.join(' ')}`).join(' '),
+        post.content,
       ]
         .join(' ')
         .toLowerCase()
@@ -161,4 +161,3 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
     </>
   )
 }
-
