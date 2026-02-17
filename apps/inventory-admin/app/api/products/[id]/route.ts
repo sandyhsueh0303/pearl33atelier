@@ -8,7 +8,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/app/utils/supabase'
+import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
 import { STORAGE_BUCKET } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
@@ -23,7 +23,8 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
 
     const { data: product, error: productError } = await supabase
       .from('catalog_products')
@@ -58,7 +59,8 @@ export async function PATCH(
   try {
     const { id } = await params
     const body = await request.json()
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
 
     // Reject slug modification
     if ('slug' in body) {
@@ -111,7 +113,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
 
     // Step 1: Get all product images to delete from storage
     const { data: images } = await supabase

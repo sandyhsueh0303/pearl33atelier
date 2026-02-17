@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminClient } from '@/app/utils/supabase';
+import { requireAdmin } from '@/app/utils/adminAuth';
 
 // GET /api/sales/[id] - Get a single sale record
 export async function GET(
@@ -7,23 +7,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const supabase = await createAdminClient();
-
-  // Check if user is admin
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const { data: adminUser } = await supabase
-    .from('admin_users')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
-
-  if (!adminUser) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  const { supabase, errorResponse } = await requireAdmin();
+  if (errorResponse || !supabase) return errorResponse;
 
   const { data: sale, error } = await supabase
     .from('sales_records')
@@ -56,23 +41,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const supabase = await createAdminClient();
-
-  // Check if user is admin
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const { data: adminUser } = await supabase
-    .from('admin_users')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
-
-  if (!adminUser) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  const { supabase, errorResponse } = await requireAdmin();
+  if (errorResponse || !supabase) return errorResponse;
 
   const body = await request.json();
   const {
@@ -140,23 +110,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const supabase = await createAdminClient();
-
-  // Check if user is admin
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const { data: adminUser } = await supabase
-    .from('admin_users')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
-
-  if (!adminUser) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  const { supabase, errorResponse } = await requireAdmin();
+  if (errorResponse || !supabase) return errorResponse;
 
   const { error } = await supabase
     .from('sales_records')

@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/app/utils/supabase'
+import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
+import type { Database } from '@pearl33atelier/shared/types'
+
+type InventoryUpdate = Database['public']['Tables']['inventory_items']['Update']
 
 /**
  * GET /api/inventory/[id]
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
     
     const { data: item, error } = await supabase
       .from('inventory_items')
@@ -53,15 +57,29 @@ export async function GET(
  * PATCH /api/inventory/[id]
  */
 export async function PATCH(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
-    const body = await request.json()
-    const supabase = await createAdminClient()
+    const body = await _request.json()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
     
-    const updates: any = {}
+    const updates: InventoryUpdate = {}
+
+    const { data: currentItem, error: currentItemError } = await supabase
+      .from('inventory_items')
+      .select('total_quantity, allocated_quantity')
+      .eq('id', id)
+      .single()
+
+    if (currentItemError || !currentItem) {
+      return NextResponse.json(
+        { error: 'Inventory item not found' },
+        { status: 404 }
+      )
+    }
     
     if ('vendor' in body) updates.vendor = body.vendor ?? null
     if ('category' in body) updates.category = body.category ?? 'pearl'
@@ -96,6 +114,15 @@ export async function PATCH(
       
       updates.allocated_quantity = newAllocatedQuantity
     }
+
+    const nextTotalQuantity = updates.total_quantity ?? currentItem.total_quantity ?? 0
+    const nextAllocatedQuantity = updates.allocated_quantity ?? currentItem.allocated_quantity ?? 0
+    if (nextAllocatedQuantity > nextTotalQuantity) {
+      return NextResponse.json(
+        { error: 'allocated_quantity cannot be greater than total_quantity' },
+        { status: 400 }
+      )
+    }
     
     const { data, error } = await supabase
       .from('inventory_items')
@@ -121,12 +148,13 @@ export async function PATCH(
  * DELETE /api/inventory/[id]
  */
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
     
     // Check if used by products (through product_materials)
     const { data: materials } = await supabase

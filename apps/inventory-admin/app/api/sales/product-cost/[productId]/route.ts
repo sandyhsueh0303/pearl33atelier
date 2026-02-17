@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminClient } from '@/app/utils/supabase';
+import { requireAdmin } from '@/app/utils/adminAuth';
+
+interface ProductMaterialCostRow {
+  quantity_per_unit: number | null
+  unit_cost_snapshot: number | null
+}
 
 // GET /api/sales/product-cost/[productId] - Get current cost for a product
 export async function GET(
@@ -7,23 +12,8 @@ export async function GET(
   { params }: { params: Promise<{ productId: string }> }
 ) {
   const { productId } = await params;
-  const supabase = await createAdminClient();
-
-  // Check if user is admin
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const { data: adminUser } = await supabase
-    .from('admin_users')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
-
-  if (!adminUser) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  const { supabase, errorResponse } = await requireAdmin();
+  if (errorResponse || !supabase) return errorResponse;
 
   // Get product with its materials to calculate cost
   const { data: product, error: productError } = await supabase
@@ -47,8 +37,10 @@ export async function GET(
   // Calculate total cost from materials
   let totalCost = 0;
   if (product.product_materials && Array.isArray(product.product_materials)) {
-    totalCost = product.product_materials.reduce((sum: number, material: any) => {
-      return sum + (material.quantity_per_unit * material.unit_cost_snapshot);
+    totalCost = product.product_materials.reduce((sum: number, material: ProductMaterialCostRow) => {
+      const quantity = material.quantity_per_unit ?? 0
+      const unitCost = material.unit_cost_snapshot ?? 0
+      return sum + (quantity * unitCost);
     }, 0);
   }
 

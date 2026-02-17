@@ -1,25 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminClient } from '@/app/utils/supabase';
+import { requireAdmin } from '@/app/utils/adminAuth';
 
 // GET /api/sales - List all sales records
 export async function GET(request: NextRequest) {
-  const supabase = await createAdminClient();
-
-  // Check if user is admin
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const { data: adminUser } = await supabase
-    .from('admin_users')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
-
-  if (!adminUser) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  const { supabase, errorResponse } = await requireAdmin();
+  if (errorResponse || !supabase) return errorResponse;
 
   // Get query parameters
   const searchParams = request.nextUrl.searchParams;
@@ -58,23 +43,8 @@ export async function GET(request: NextRequest) {
 
 // POST /api/sales - Create a new sale record
 export async function POST(request: NextRequest) {
-  const supabase = await createAdminClient();
-
-  // Check if user is admin
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const { data: adminUser } = await supabase
-    .from('admin_users')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
-
-  if (!adminUser) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
+  const { supabase, errorResponse } = await requireAdmin();
+  if (errorResponse || !supabase) return errorResponse;
 
   const body = await request.json();
   const {

@@ -7,7 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/app/utils/supabase'
+import { requireAdmin } from '@/app/utils/adminAuth'
 import { slugify } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
 
@@ -16,7 +16,8 @@ type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
 // GET /api/products - List all products with cost and profit calculations
 export async function GET() {
   try {
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
 
     const { data: products, error } = await supabase
       .from('catalog_products')
@@ -59,7 +60,8 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
 
     // Auto-generate slug if not provided
     const slug = body.slug || slugify(body.title)

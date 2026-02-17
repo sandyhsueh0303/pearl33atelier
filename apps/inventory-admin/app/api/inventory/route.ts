@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/app/utils/supabase'
+import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
 
 /**
  * GET /api/inventory
  * List all inventory items with summary
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
     
     const { data: items, error } = await supabase
       .from('inventory_items')
@@ -62,10 +63,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
     
     // Validate
-    if (!body.cost || !body.total_quantity) {
+    if (body.cost == null || body.total_quantity == null) {
       return NextResponse.json(
         { error: 'Missing required fields: cost, total_quantity' },
         { status: 400 }
