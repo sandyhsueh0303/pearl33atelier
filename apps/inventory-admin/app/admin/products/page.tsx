@@ -171,14 +171,11 @@ export default function ProductsPage() {
           <h1 style={{ margin: 0 }}>Products</h1>
           <button
             onClick={async () => {
-              console.log('🔄 Refresh button clicked')
               setLoading(true)
               setError(null)
               try {
                 await loadProducts()
-                console.log('✅ Product list updated')
               } catch (e) {
-                console.error('❌ Refresh failed:', e)
                 setError('Refresh failed, please try again')
               }
             }}

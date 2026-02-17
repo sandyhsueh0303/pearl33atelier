@@ -143,14 +143,11 @@ export default function InventoryPage() {
           <h1 style={{ margin: 0 }}>Inventory</h1>
           <button
             onClick={async () => {
-              console.log('🔄 Refresh button clicked')
               setLoading(true)
               setError(null)
               try {
                 await loadInventory()
-                console.log('✅ Inventory list updated')
               } catch (e) {
-                console.error('❌ Refresh failed:', e)
                 setError('Refresh failed, please try again')
               }
             }}

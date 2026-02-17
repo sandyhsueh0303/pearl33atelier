@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import SalesForm from './components/SalesForm';
 import SalesList from './components/SalesList';
@@ -18,7 +18,7 @@ interface SaleRecord {
   notes: string | null;
 }
 
-export default function SalesPage() {
+function SalesPageContent() {
   const searchParams = useSearchParams();
   const preselectedProductId = searchParams.get('productId');
   
@@ -103,4 +103,12 @@ export default function SalesPage() {
       </div>
     </main>
   );
+}
+
+export default function SalesPage() {
+  return (
+    <Suspense fallback={<main style={{ padding: '2rem' }}>Loading...</main>}>
+      <SalesPageContent />
+    </Suspense>
+  )
 }

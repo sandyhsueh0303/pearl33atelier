@@ -191,9 +191,10 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
       }
 
       if (onSuccess) onSuccess();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
       console.error('Error creating sale:', error);
-      alert(`Error: ${error.message}`);
+      alert(`Error: ${message}`);
     } finally {
       setLoading(false);
     }
