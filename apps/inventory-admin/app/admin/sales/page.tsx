@@ -23,6 +23,7 @@ function SalesPageContent() {
   const preselectedProductId = searchParams.get('productId');
   
   const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingSale, setEditingSale] = useState<SaleRecord | null>(null);
 
@@ -56,10 +57,27 @@ function SalesPageContent() {
     setShowForm(true);
   };
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    setRefreshKey(prev => prev + 1);
+    setTimeout(() => setRefreshing(false), 300);
+  };
+
   return (
-    <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1400px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ margin: 0 }}>Sales</h1>
+    <main className="admin-page">
+      <div className="admin-page-header">
+        <div className="admin-page-title-row">
+          <h1 className="admin-page-title">Sales</h1>
+          <button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="admin-btn admin-btn-secondary"
+            style={{ backgroundColor: refreshing ? '#e0e0e0' : '#f5f5f5', cursor: refreshing ? 'not-allowed' : 'pointer', opacity: refreshing ? 0.6 : 1 }}
+            title="Reload sales list"
+          >
+            {refreshing ? '⏳ Loading...' : '🔄 Refresh'}
+          </button>
+        </div>
         <button
           onClick={() => {
             if (showForm && !editingSale) {
@@ -68,16 +86,7 @@ function SalesPageContent() {
               handleNewSale();
             }
           }}
-          style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: (showForm && !editingSale) ? '#f5f5f5' : '#1976d2',
-            color: (showForm && !editingSale) ? '#333' : 'white',
-            border: (showForm && !editingSale) ? '1px solid #ddd' : 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '1rem',
-            fontWeight: 'bold'
-          }}
+          className={(showForm && !editingSale) ? 'admin-btn admin-btn-secondary' : 'admin-btn admin-btn-primary'}
         >
           {(showForm && !editingSale) ? 'Hide Form' : '+ Record New Sale'}
         </button>
@@ -107,7 +116,7 @@ function SalesPageContent() {
 
 export default function SalesPage() {
   return (
-    <Suspense fallback={<main style={{ padding: '2rem' }}>Loading...</main>}>
+    <Suspense fallback={<main className="admin-page">Loading...</main>}>
       <SalesPageContent />
     </Suspense>
   )

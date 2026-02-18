@@ -643,7 +643,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
               style={{
                 display: 'inline-block',
                 padding: '0.75rem 1.5rem',
-                backgroundColor: uploadingImages ? '#ccc' : '#4caf50',
+                backgroundColor: uploadingImages ? '#ccc' : '#10B981',
                 color: 'white',
                 borderRadius: '4px',
                 cursor: uploadingImages ? 'not-allowed' : 'pointer',
@@ -721,7 +721,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                         flex: 1,
                         padding: '0.5rem',
                         backgroundColor: image.published ? '#fff3e0' : '#e8f5e9',
-                        color: image.published ? '#ef6c00' : '#2e7d32',
+                        color: image.published ? '#F59E0B' : '#10B981',
                         border: 'none',
                         borderRadius: '4px',
                         fontSize: '0.75rem',
@@ -777,7 +777,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
           padding: '2rem', 
           borderRadius: '8px', 
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          border: `2px solid ${published ? '#4caf50' : '#ff9800'}`
+          border: `2px solid ${published ? '#10B981' : '#F59E0B'}`
         }}>
           <h2 style={{ marginBottom: '1rem' }}>
             Publish Status: {published ? 'Published' : 'Draft'}
@@ -796,7 +796,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
               disabled={saving}
               style={{
                 padding: '0.75rem 2rem',
-                backgroundColor: saving ? '#ccc' : '#4caf50',
+                backgroundColor: saving ? '#ccc' : '#10B981',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
@@ -813,7 +813,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
               disabled={saving}
               style={{
                 padding: '0.75rem 2rem',
-                backgroundColor: saving ? '#ccc' : '#ff9800',
+                backgroundColor: saving ? '#ccc' : '#F59E0B',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',

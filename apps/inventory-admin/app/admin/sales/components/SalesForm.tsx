@@ -233,7 +233,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         {/* Product Selection */}
         <div>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-            Product <span style={{ color: '#d32f2f' }}>*</span>
+            Product <span style={{ color: '#EF4444' }}>*</span>
           </label>
           <select
             value={productId}
@@ -267,7 +267,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              Quantity <span style={{ color: '#d32f2f' }}>*</span>
+              Quantity <span style={{ color: '#EF4444' }}>*</span>
             </label>
             <input
               type="number"
@@ -288,7 +288,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              Unit Price <span style={{ color: '#d32f2f' }}>*</span>
+              Unit Price <span style={{ color: '#EF4444' }}>*</span>
             </label>
             <input
               type="number"
@@ -309,7 +309,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              Unit Cost <span style={{ color: '#d32f2f' }}>*</span>
+              Unit Cost <span style={{ color: '#EF4444' }}>*</span>
             </label>
             <input
               type="number"
@@ -340,13 +340,13 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
               <div>
                 <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Total Price</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1976d2' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#C9A961' }}>
                   ${totalPrice.toFixed(2)}
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Total Cost</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#d32f2f' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#EF4444' }}>
                   ${totalCost.toFixed(2)}
                 </div>
               </div>
@@ -355,7 +355,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
                 <div style={{
                   fontSize: '1.5rem',
                   fontWeight: 'bold',
-                  color: profit >= 0 ? '#4caf50' : '#d32f2f'
+                  color: profit >= 0 ? '#10B981' : '#EF4444'
                 }}>
                   ${profit.toFixed(2)}
                 </div>
@@ -365,7 +365,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
                 <div style={{
                   fontSize: '1.5rem',
                   fontWeight: 'bold',
-                  color: profitMargin >= 0 ? '#4caf50' : '#d32f2f'
+                  color: profitMargin >= 0 ? '#10B981' : '#EF4444'
                 }}>
                   {profitMargin.toFixed(1)}%
                 </div>
@@ -454,6 +454,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             <option value="">Select channel...</option>
             <option value="website">Website</option>
             <option value="instagram">Instagram</option>
+            <option value="wechat">WeChat</option>
             <option value="line">LINE</option>
             <option value="facebook">Facebook</option>
             <option value="in-store">In-store</option>
@@ -491,7 +492,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             style={{
               flex: 1,
               padding: '1rem',
-              backgroundColor: loading ? '#e0e0e0' : '#1976d2',
+              backgroundColor: loading ? '#e0e0e0' : '#C9A961',
               color: 'white',
               border: 'none',
               borderRadius: '4px',

@@ -175,7 +175,7 @@ export default function ProductMaterials({ productId }: Props) {
                     <span style={{
                       padding: '0.25rem 0.5rem',
                       backgroundColor: material.inventory_items.total_quantity > 0 ? '#e8f5e9' : '#ffebee',
-                      color: material.inventory_items.total_quantity > 0 ? '#2e7d32' : '#c62828',
+                      color: material.inventory_items.total_quantity > 0 ? '#10B981' : '#EF4444',
                       borderRadius: '4px',
                       fontSize: '0.875rem',
                       fontWeight: '500'
@@ -189,13 +189,9 @@ export default function ProductMaterials({ productId }: Props) {
                   <td style={{ padding: '0.75rem', textAlign: 'center' }}>
                     <button
                       onClick={() => handleDeleteMaterial(material.id)}
+                      className="admin-btn admin-btn-delete"
                       style={{
                         padding: '0.5rem 0.75rem',
-                        backgroundColor: '#d32f2f',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
                         fontSize: '0.875rem',
                         fontWeight: '500'
                       }}

@@ -175,16 +175,15 @@ export default function ProductCostAnalysis({ productId }: Props) {
         <div style={{
           padding: '2rem',
           backgroundColor: '#ffebee',
-          borderRadius: '8px',
-          borderLeft: '4px solid #f44336'
+          borderRadius: '8px'
         }}>
-          <div style={{ fontSize: '0.875rem', color: '#c62828', fontWeight: '500', marginBottom: '0.5rem' }}>
+          <div style={{ fontSize: '0.875rem', color: '#EF4444', fontWeight: '500', marginBottom: '0.5rem' }}>
             💰 Total Cost
           </div>
-          <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#f44336' }}>
+          <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#EF4444' }}>
             ${totalCost.toFixed(2)}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#c62828', marginTop: '0.5rem' }}>
+          <div style={{ fontSize: '0.75rem', color: '#EF4444', marginTop: '0.5rem' }}>
             Includes all materials, accessories, and packaging
           </div>
         </div>
@@ -192,8 +191,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
         <div style={{
           padding: '2rem',
           backgroundColor: '#e3f2fd',
-          borderRadius: '8px',
-          borderLeft: '4px solid #2196f3'
+          borderRadius: '8px'
         }}>
           <div style={{ fontSize: '0.875rem', color: '#1565c0', fontWeight: '500', marginBottom: '0.5rem' }}>
             💵 Sell Price
@@ -209,12 +207,11 @@ export default function ProductCostAnalysis({ productId }: Props) {
         <div style={{
           padding: '2rem',
           backgroundColor: profit >= 0 ? '#e8f5e9' : '#ffebee',
-          borderRadius: '8px',
-          borderLeft: '4px solid ' + (profit >= 0 ? '#4caf50' : '#f44336')
+          borderRadius: '8px'
         }}>
           <div style={{ 
             fontSize: '0.875rem', 
-            color: profit >= 0 ? '#2e7d32' : '#c62828', 
+            color: profit >= 0 ? '#10B981' : '#EF4444', 
             fontWeight: '500', 
             marginBottom: '0.5rem' 
           }}>
@@ -223,13 +220,13 @@ export default function ProductCostAnalysis({ productId }: Props) {
           <div style={{ 
             fontSize: '2.5rem', 
             fontWeight: 'bold', 
-            color: profit >= 0 ? '#4caf50' : '#f44336'
+            color: profit >= 0 ? '#10B981' : '#EF4444'
           }}>
             ${profit.toFixed(2)}
           </div>
           <div style={{ 
             fontSize: '0.875rem', 
-            color: profit >= 0 ? '#2e7d32' : '#c62828', 
+            color: profit >= 0 ? '#10B981' : '#EF4444', 
             marginTop: '0.5rem',
             fontWeight: '600'
           }}>
@@ -276,14 +273,14 @@ export default function ProductCostAnalysis({ productId }: Props) {
                     <td style={{ padding: '0.75rem', textAlign: 'right' }}>
                       ${(material.unit_cost_snapshot || 0).toFixed(2)}
                     </td>
-                    <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600', color: '#f44336' }}>
+                    <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600', color: '#EF4444' }}>
                       ${(material.quantity_per_unit * (material.unit_cost_snapshot || 0)).toFixed(2)}
                     </td>
                     <td style={{ padding: '0.75rem', textAlign: 'right' }}>
                       <span style={{
                         padding: '0.25rem 0.5rem',
                         backgroundColor: material.inventory_items.total_quantity > 0 ? '#e8f5e9' : '#ffebee',
-                        color: material.inventory_items.total_quantity > 0 ? '#2e7d32' : '#c62828',
+                        color: material.inventory_items.total_quantity > 0 ? '#10B981' : '#EF4444',
                         borderRadius: '4px',
                         fontSize: '0.875rem',
                         fontWeight: '500'
@@ -297,13 +294,9 @@ export default function ProductCostAnalysis({ productId }: Props) {
                     <td style={{ padding: '0.75rem', textAlign: 'center' }}>
                       <button
                         onClick={() => handleDeleteMaterial(material.id)}
+                        className="admin-btn admin-btn-delete"
                         style={{
                           padding: '0.5rem 0.75rem',
-                          backgroundColor: '#d32f2f',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
                           fontSize: '0.875rem',
                           fontWeight: '500'
                         }}
@@ -434,9 +427,9 @@ export default function ProductCostAnalysis({ productId }: Props) {
             padding: '1rem',
             backgroundColor: '#e8f5e9',
             borderRadius: '4px',
-            border: '1px solid #4caf50',
+            border: '1px solid #10B981',
             fontSize: '0.875rem',
-            color: '#2e7d32'
+            color: '#10B981'
           }}>
             <strong>💡 Tip:</strong> Any cost item (pearls, accessories, packaging, shipping, labor, etc.) can be added to inventory and selected here so the system auto-calculates total cost!
           </div>

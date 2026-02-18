@@ -3,7 +3,6 @@
 import type { CatalogProduct } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 // Extended product type with cost and profit
 interface ProductWithStats extends CatalogProduct {
@@ -12,7 +11,6 @@ interface ProductWithStats extends CatalogProduct {
 }
 
 export default function ProductsPage() {
-  const router = useRouter()
   const [products, setProducts] = useState<ProductWithStats[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -165,10 +163,10 @@ export default function ProductsPage() {
   const totalProfitMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0
 
   return (
-    <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1400px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <h1 style={{ margin: 0 }}>Products</h1>
+    <main className="admin-page">
+      <div className="admin-page-header">
+        <div className="admin-page-title-row">
+          <h1 className="admin-page-title">Products</h1>
           <button
             onClick={async () => {
               setLoading(true)
@@ -180,16 +178,8 @@ export default function ProductsPage() {
               }
             }}
             disabled={loading}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: loading ? '#e0e0e0' : '#f5f5f5',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              fontSize: '0.875rem',
-              opacity: loading ? 0.6 : 1,
-              transition: 'all 0.2s'
-            }}
+            className="admin-btn admin-btn-secondary"
+            style={{ backgroundColor: loading ? '#e0e0e0' : '#f5f5f5', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}
             title="Reload product list"
           >
             {loading ? '⏳ Loading...' : '🔄 Refresh'}
@@ -197,43 +187,24 @@ export default function ProductsPage() {
         </div>
         <Link
           href="/admin/products/new"
-          style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: '#1976d2',
-            color: 'white',
-            borderRadius: '4px',
-            textDecoration: 'none',
-            fontWeight: 'bold'
-          }}
+          className="admin-link-btn admin-link-btn-primary"
         >
           + Add Product
         </Link>
       </div>
 
       {error && (
-        <div style={{ 
-          padding: '1rem', 
-          backgroundColor: '#fee', 
-          border: '1px solid #c00',
-          borderRadius: '4px',
-          marginBottom: '1rem'
-        }}>
+        <div className="admin-error-banner">
           <strong>Error:</strong> {error}
         </div>
       )}
 
       {/* Search and Filter Controls */}
-      <div style={{ 
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        padding: '1.5rem',
-        marginBottom: '2rem'
-      }}>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+      <div className="admin-card admin-filter-panel">
+        <div className="admin-filter-row">
           {/* Search Input */}
-          <div style={{ flex: '1 1 300px' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+          <div className="admin-filter-item-wide">
+            <label className="admin-filter-label">
               🔍 Search products
             </label>
             <input
@@ -241,32 +212,19 @@ export default function ProductsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search title, slug, or description..."
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem'
-              }}
+              className="admin-control"
             />
           </div>
 
           {/* Status Filter */}
           <div style={{ flex: '0 1 150px' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+            <label className="admin-filter-label">
               📌 Status
             </label>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft')}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-                backgroundColor: 'white'
-              }}
+              className="admin-control"
             >
               <option value="all">All</option>
               <option value="published">Published</option>
@@ -276,20 +234,13 @@ export default function ProductsPage() {
 
           {/* Pearl Type Filter */}
           <div style={{ flex: '0 1 180px' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+            <label className="admin-filter-label">
               💎 Pearl Type
             </label>
             <select
               value={filterPearlType}
               onChange={(e) => setFilterPearlType(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-                backgroundColor: 'white'
-              }}
+              className="admin-control"
             >
               <option value="all">All Types</option>
               {pearlTypes.map(type => (
@@ -299,20 +250,13 @@ export default function ProductsPage() {
           </div>
 
           <div style={{ flex: '0 1 180px' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+            <label className="admin-filter-label">
               📂 Category
             </label>
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-                backgroundColor: 'white'
-              }}
+              className="admin-control"
             >
               <option value="all">All Categories</option>
               {categories.map(category => (
@@ -323,20 +267,13 @@ export default function ProductsPage() {
 
           {/* Sort By */}
           <div style={{ flex: '0 1 150px' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+            <label className="admin-filter-label">
               📊 Sort By
             </label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'title' | 'price' | 'created')}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-                backgroundColor: 'white'
-              }}
+              className="admin-control"
             >
               <option value="created">Created Time</option>
               <option value="title">Title</option>
@@ -346,20 +283,13 @@ export default function ProductsPage() {
 
           {/* Sort Order */}
           <div style={{ flex: '0 1 130px' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+            <label className="admin-filter-label">
               ↕️ Order
             </label>
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-                backgroundColor: 'white'
-              }}
+              className="admin-control"
             >
               <option value="desc">Descending ↓</option>
               <option value="asc">Ascending ↑</option>
@@ -371,15 +301,8 @@ export default function ProductsPage() {
             <div style={{ flex: '0 0 auto' }}>
               <button
                 onClick={resetFilters}
-                style={{
-                  padding: '0.75rem 1rem',
-                  backgroundColor: '#f5f5f5',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500'
-                }}
+                className="admin-btn admin-btn-secondary"
+                style={{ padding: '0.75rem 1rem' }}
               >
                 🔄 Reset
               </button>
@@ -388,7 +311,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Results Count */}
-        <div style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#666' }}>
+        <div className="admin-filter-results">
           Showing <strong>{filteredProducts.length}</strong> / {products.length} products
           {filterStatus !== 'all' && ` • ${filterStatus === 'published' ? 'Published' : 'Draft'}`}
           {filterPearlType !== 'all' && ` • ${filterPearlType}`}
@@ -396,87 +319,66 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+      <div className="admin-stats-row">
         {/* Small Stats */}
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <div style={{ 
+          <div className="admin-stat-card" style={{ 
             padding: '1rem', 
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
             minWidth: '100px'
           }}>
             <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Total</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1976d2', margin: 0 }}>
+            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#C9A961', margin: 0 }}>
               {filteredProducts.length}
             </p>
           </div>
-          <div style={{ 
+          <div className="admin-stat-card" style={{ 
             padding: '1rem', 
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
             minWidth: '100px'
           }}>
             <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Published</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2e7d32', margin: 0 }}>
+            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#10B981', margin: 0 }}>
               {publishedCount}
             </p>
           </div>
-          <div style={{ 
+          <div className="admin-stat-card" style={{ 
             padding: '1rem', 
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
             minWidth: '100px'
           }}>
             <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Draft</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ef6c00', margin: 0 }}>
+            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#F59E0B', margin: 0 }}>
               {draftCount}
             </p>
           </div>
         </div>
         
         {/* Large Financial Stats */}
-        <div style={{ 
+        <div className="admin-stat-card" style={{ 
           flex: 1,
           padding: '1.5rem', 
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          borderLeft: '4px solid #d32f2f'
         }}>
           <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Cost</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#d32f2f', margin: 0 }}>
+          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#EF4444', margin: 0 }}>
             $ {totalCost.toLocaleString()}
           </p>
         </div>
-        <div style={{ 
+        <div className="admin-stat-card" style={{ 
           flex: 1,
           padding: '1.5rem', 
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          borderLeft: '4px solid #1976d2'
         }}>
           <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Selling Price</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2', margin: 0 }}>
+          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961', margin: 0 }}>
             $ {totalRevenue.toLocaleString()}
           </p>
         </div>
-        <div style={{ 
+        <div className="admin-stat-card" style={{ 
           flex: 1,
           padding: '1.5rem', 
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          borderLeft: '4px solid ' + (totalProfit >= 0 ? '#4caf50' : '#d32f2f')
         }}>
           <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Profit</p>
           <p style={{ 
             fontSize: '2rem', 
             fontWeight: 'bold', 
-            color: totalProfit >= 0 ? '#4caf50' : '#d32f2f', 
+            color: totalProfit >= 0 ? '#10B981' : '#EF4444', 
             margin: 0 
           }}>
             {totalProfit >= 0 ? '+' : ''}$ {totalProfit.toLocaleString()}
@@ -484,7 +386,7 @@ export default function ProductsPage() {
           <p style={{ 
             fontSize: '0.875rem', 
             fontWeight: '600',
-            color: totalProfit >= 0 ? '#2e7d32' : '#c62828', 
+            color: totalProfit >= 0 ? '#10B981' : '#EF4444', 
             margin: '0.5rem 0 0 0'
           }}>
             {totalProfitMargin.toFixed(1)}% Profit Margin
@@ -493,14 +395,8 @@ export default function ProductsPage() {
       </div>
 
       {filteredProducts.length === 0 ? (
-        <div style={{ 
-          padding: '3rem',
-          textAlign: 'center',
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <p style={{ fontSize: '1.25rem', color: '#666', marginBottom: '1rem' }}>
+        <div className="admin-card admin-empty-state">
+          <p className="admin-empty-title">
             {products.length === 0 ? 'No products yet' : 'No matching products'}
           </p>
           {products.length === 0 ? (
@@ -509,7 +405,7 @@ export default function ProductsPage() {
               style={{
                 display: 'inline-block',
                 padding: '0.75rem 1.5rem',
-                backgroundColor: '#1976d2',
+                backgroundColor: '#C9A961',
                 color: 'white',
                 borderRadius: '4px',
                 textDecoration: 'none',
@@ -523,7 +419,7 @@ export default function ProductsPage() {
               onClick={resetFilters}
               style={{
                 padding: '0.75rem 1.5rem',
-                backgroundColor: '#1976d2',
+                backgroundColor: '#C9A961',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
@@ -536,111 +432,71 @@ export default function ProductsPage() {
           )}
         </div>
       ) : (
-        <div style={{ 
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          overflow: 'hidden'
-        }}>
+        <div className="admin-card admin-table-card">
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Status</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Slug</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Title</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Category</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Pearl Type</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>Total Cost</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>Sell Price</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', minWidth: '140px' }}>Profit</th>
-                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600' }}>Actions</th>
+              <tr className="admin-table-head-row">
+                <th>Status</th>
+                <th>Slug</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Pearl Type</th>
+                <th className="admin-th-right">Total Cost</th>
+                <th className="admin-th-right">Sell Price</th>
+                <th className="admin-th-right" style={{ minWidth: '140px' }}>Profit</th>
+                <th className="admin-th-center">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredProducts.map((product) => (
-                <tr key={product.id} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '1rem' }}>
-                    <span style={{ 
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '12px',
-                      fontSize: '0.75rem',
-                      fontWeight: 'bold',
-                      backgroundColor: product.published ? '#e8f5e9' : '#fff3e0',
-                      color: product.published ? '#2e7d32' : '#ef6c00'
-                    }}>
+                <tr key={product.id} className="admin-row-divider">
+                  <td>
+                    <span className={`admin-pill ${product.published ? 'admin-pill-success' : 'admin-pill-warning'}`}>
                       {product.published ? 'Published' : 'Draft'}
                     </span>
                   </td>
-                  <td style={{ padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem', color: '#666' }}>
+                  <td className="admin-cell-mono">
                     {product.slug}
                   </td>
-                  <td style={{ padding: '1rem', fontWeight: '500' }}>
+                  <td style={{ fontWeight: '500' }}>
                     {product.title}
                   </td>
-                  <td style={{ padding: '1rem' }}>
-                    <span style={{ 
-                      padding: '0.25rem 0.75rem',
-                      backgroundColor: '#f3e5f5',
-                      borderRadius: '12px',
-                      fontSize: '0.875rem'
-                    }}>
+                  <td>
+                    <span className="admin-pill admin-pill-lilac" style={{ fontSize: '0.875rem' }}>
                       {product.category ? formatCategory(product.category) : '-'}
                     </span>
                   </td>
-                  <td style={{ padding: '1rem' }}>
-                    <span style={{ 
-                      padding: '0.25rem 0.75rem',
-                      backgroundColor: '#e3f2fd',
-                      borderRadius: '12px',
-                      fontSize: '0.875rem'
-                    }}>
+                  <td>
+                    <span className="admin-pill admin-pill-sky" style={{ fontSize: '0.875rem' }}>
                       {product.pearl_type}
                     </span>
                   </td>
-                  <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '500', color: '#d32f2f' }}>
+                  <td className="admin-cell-right admin-money admin-money-danger">
                     {product.total_cost !== undefined ? `$ ${product.total_cost.toLocaleString()}` : '-'}
                   </td>
-                  <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '500' }}>
+                  <td className="admin-cell-right admin-money">
                     {product.sell_price ? `$ ${product.sell_price.toLocaleString()}` : '-'}
                   </td>
-                  <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', minWidth: '140px' }}>
+                  <td style={{ minWidth: '140px' }} className="admin-cell-right admin-money">
                     {product.profit !== undefined ? (
                       <span style={{ 
-                        color: product.profit >= 0 ? '#2e7d32' : '#d32f2f',
-                        fontWeight: '700'
+                        color: product.profit >= 0 ? '#10B981' : '#EF4444',
                       }}>
                         $ {product.profit.toLocaleString()}
                       </span>
                     ) : '-'}
                   </td>
-                  <td style={{ padding: '1rem', textAlign: 'center' }}>
-                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                  <td className="admin-cell-center">
+                    <div className="admin-action-group">
                       <Link
                         href={`/admin/products/${product.id}`}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          backgroundColor: '#1976d2',
-                          color: 'white',
-                          borderRadius: '4px',
-                          textDecoration: 'none',
-                          fontSize: '0.875rem',
-                          fontWeight: '500'
-                        }}
+                        className="admin-btn admin-btn-edit admin-link-btn admin-btn-md"
                       >
                         Edit
                       </Link>
                       <button
                         onClick={() => handleDelete(product.id, product.title)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          backgroundColor: '#d32f2f',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          fontSize: '0.875rem',
-                          fontWeight: '500'
-                        }}
+                        className="admin-btn admin-btn-delete admin-btn-md"
                       >
                         Delete
                       </button>

@@ -124,31 +124,28 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           padding: '1.5rem',
           backgroundColor: 'white',
           borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          borderLeft: '4px solid #1976d2'
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Orders</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2' }}>{summary.totalOrders}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961' }}>{summary.totalOrders}</div>
         </div>
         <div style={{
           padding: '1.5rem',
           backgroundColor: 'white',
           borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          borderLeft: '4px solid #1976d2'
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Units</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2' }}>{summary.totalUnits}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10B981' }}>{summary.totalUnits}</div>
         </div>
         <div style={{
           padding: '1.5rem',
           backgroundColor: 'white',
           borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          borderLeft: '4px solid #1976d2'
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Revenue</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1976d2' }}>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961' }}>
             {formatCurrency(summary.totalRevenue)}
           </div>
         </div>
@@ -156,11 +153,10 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           padding: '1.5rem',
           backgroundColor: 'white',
           borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          borderLeft: '4px solid #d32f2f'
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Cost</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#d32f2f' }}>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#EF4444' }}>
             {formatCurrency(summary.totalCost)}
           </div>
         </div>
@@ -168,24 +164,17 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           padding: '1.5rem',
           backgroundColor: 'white',
           borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          borderLeft: '4px solid #4caf50'
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Profit</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4caf50' }}>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10B981' }}>
             {formatCurrency(summary.totalProfit)}
           </div>
         </div>
       </div>
 
       {/* Search and Sort Controls */}
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        padding: '1.5rem',
-        marginBottom: '2rem'
-      }}>
+      <div className="admin-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
         <div style={{
           display: 'flex',
           gap: '1rem',
@@ -213,13 +202,9 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
               />
               <button
                 type="submit"
+                className="admin-btn admin-btn-secondary"
                 style={{
                   padding: '0.75rem 1rem',
-                  backgroundColor: '#1976d2',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
                   fontSize: '0.875rem',
                   fontWeight: '500',
                 }}
@@ -319,65 +304,48 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
 
       {/* Sales Table */}
       {loading ? (
-        <div style={{
-          textAlign: 'center',
-          padding: '3rem',
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        }}>
+        <div className="admin-card" style={{ textAlign: 'center', padding: '3rem' }}>
           Loading...
         </div>
       ) : sales.length === 0 ? (
-        <div style={{
-          textAlign: 'center',
-          padding: '3rem',
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        }}>
+        <div className="admin-card" style={{ textAlign: 'center', padding: '3rem' }}>
           <p style={{ fontSize: '1rem', color: '#666', margin: 0 }}>No sales records yet</p>
         </div>
       ) : (
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          overflow: 'hidden'
-        }}>
+        <div className="admin-card" style={{ overflow: 'hidden' }}>
           <div style={{ overflowX: 'auto' }}>
             <table style={{
               width: '100%',
               borderCollapse: 'collapse',
             }}>
               <thead>
-                <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '2px solid #ddd' }}>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Date</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Order Number</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Product</th>
-                  <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Quantity</th>
-                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Price</th>
-                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Cost</th>
-                  <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Profit</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Customer</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Channel</th>
-                  <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.875rem', fontWeight: 'bold', color: '#333' }}>Actions</th>
+                <tr className="admin-table-head-row">
+                  <th>Date</th>
+                  <th>Order Number</th>
+                  <th>Product</th>
+                  <th className="admin-th-center">Quantity</th>
+                  <th className="admin-th-right">Price</th>
+                  <th className="admin-th-right">Cost</th>
+                  <th className="admin-th-right">Profit</th>
+                  <th>Customer</th>
+                  <th>Channel</th>
+                  <th className="admin-th-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {sales.map((sale) => (
-                  <tr key={sale.id} style={{ borderBottom: '1px solid #e0e0e0' }}>
-                    <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{formatDate(sale.sale_date)}</td>
-                    <td style={{ padding: '1rem', fontSize: '0.875rem' }}>
+                  <tr key={sale.id} className="admin-row-divider">
+                    <td className="admin-cell-sm">{formatDate(sale.sale_date)}</td>
+                    <td className="admin-cell-sm">
                       {sale.order_number ? (
-                        <span style={{ fontFamily: 'monospace', color: '#666' }}>{sale.order_number}</span>
+                        <span className="admin-cell-mono">{sale.order_number}</span>
                       ) : '-'}
                     </td>
-                    <td style={{ padding: '1rem', fontSize: '0.875rem' }}>
+                    <td className="admin-cell-sm">
                       {sale.catalog_products ? (
                         <Link
                           href={`/admin/products/${sale.product_id}`}
-                          style={{ color: '#1976d2', textDecoration: 'none', fontWeight: '500' }}
+                          className="admin-link-accent"
                         >
                           {sale.catalog_products.title}
                         </Link>
@@ -385,16 +353,12 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                         'Unknown product'
                       )}
                     </td>
-                    <td style={{ padding: '1rem', textAlign: 'center', fontSize: '0.875rem' }}>{sale.quantity}</td>
-                    <td style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem' }}>{formatCurrency(sale.total_price)}</td>
-                    <td style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', color: '#d32f2f' }}>{formatCurrency(sale.total_cost)}</td>
+                    <td className="admin-cell-center admin-cell-sm">{sale.quantity}</td>
+                    <td className="admin-cell-right admin-money admin-cell-sm">{formatCurrency(sale.total_price)}</td>
+                    <td className="admin-cell-right admin-money admin-money-danger admin-cell-sm">{formatCurrency(sale.total_cost)}</td>
                     <td style={{
-                      padding: '1rem',
-                      textAlign: 'right',
-                      fontSize: '0.875rem',
-                      color: sale.profit >= 0 ? '#4caf50' : '#d32f2f',
-                      fontWeight: 'bold',
-                    }}>
+                      color: sale.profit >= 0 ? '#10B981' : '#EF4444',
+                    }} className="admin-cell-right admin-money admin-cell-sm">
                       {formatCurrency(sale.profit)}
                       {sale.profit_margin !== null && (
                         <span style={{ fontSize: '0.75rem', marginLeft: '0.25rem', fontWeight: 'normal' }}>
@@ -402,50 +366,25 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                         </span>
                       )}
                     </td>
-                    <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{sale.customer_name || '-'}</td>
-                    <td style={{ padding: '1rem', fontSize: '0.875rem' }}>
+                    <td className="admin-cell-sm">{sale.customer_name || '-'}</td>
+                    <td className="admin-cell-sm">
                       {sale.platform ? (
-                        <span style={{
-                          padding: '0.25rem 0.5rem',
-                          backgroundColor: '#e3f2fd',
-                          color: '#1976d2',
-                          borderRadius: '4px',
-                          fontSize: '0.75rem',
-                          fontWeight: '500',
-                        }}>
+                        <span className="admin-pill-soft admin-pill-gold">
                           {sale.platform}
                         </span>
                       ) : '-'}
                     </td>
-                    <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                    <td className="admin-cell-center">
+                      <div className="admin-action-group">
                         <button
                           onClick={() => onEdit?.(sale)}
-                          style={{
-                            padding: '0.375rem 0.75rem',
-                            backgroundColor: '#1976d2',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '0.75rem',
-                            fontWeight: '500',
-                          }}
+                          className="admin-btn admin-btn-edit admin-btn-sm"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(sale.id)}
-                          style={{
-                            padding: '0.375rem 0.75rem',
-                            backgroundColor: '#d32f2f',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '0.75rem',
-                            fontWeight: '500',
-                          }}
+                          className="admin-btn admin-btn-delete admin-btn-sm"
                         >
                           Delete
                         </button>
