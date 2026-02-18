@@ -13,7 +13,7 @@ export default function HomePage() {
       display: 'flex',
       flexDirection: 'column',
     }}>
-      {/* Hero Section with Ocean Background */}
+      {/* Hero Section */}
       <section style={{
         minHeight: '100vh',
         display: 'flex',
@@ -24,11 +24,39 @@ export default function HomePage() {
         textAlign: 'center',
         position: 'relative',
         overflow: 'hidden',
-        backgroundImage: "linear-gradient(180deg, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 50%), url('/images/ocean-background.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+        background: 'linear-gradient(180deg, #FAF8F5 0%, #FFFFFF 100%)',
       }}>
+        {/* Organic Blob Animations */}
+        <div style={{
+          position: 'absolute',
+          top: '-20%',
+          right: '-10%',
+          width: '1000px',
+          height: '1000px',
+          background: 'radial-gradient(circle, rgba(201, 169, 97, 0.5), rgba(201, 169, 97, 0.15))',
+          filter: 'blur(80px)',
+          opacity: 0.7,
+          borderRadius: '70% 30% 20% 80% / 70% 20% 80% 30%',
+          animation: 'morph-1 20s ease-in-out infinite',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }} />
+        
+        <div style={{
+          position: 'absolute',
+          bottom: '-20%',
+          left: '-10%',
+          width: '1000px',
+          height: '1000px',
+          background: 'radial-gradient(circle, rgba(250, 210, 190, 0.6), rgba(250, 225, 210, 0.25))',
+          filter: 'blur(80px)',
+          opacity: 0.7,
+          borderRadius: '30% 70% 70% 30% / 70% 20% 80% 30%',
+          animation: 'morph-2 25s ease-in-out infinite',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }} />
+
         {/* Content */}
         <div style={{
           position: 'relative',
@@ -135,6 +163,40 @@ export default function HomePage() {
             }
             50% {
               transform: translateY(-10px);
+            }
+          }
+
+          @keyframes morph-1 {
+            0%, 100% {
+              border-radius: 70% 30% 20% 80% / 70% 20% 80% 30%;
+              transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+            25% {
+              border-radius: 20% 80% 80% 20% / 30% 70% 20% 80%;
+              transform: translate(50px, -60px) rotate(90deg) scale(1.2);
+            }
+            50% {
+              border-radius: 80% 20% 30% 70% / 20% 80% 20% 80%;
+              transform: translate(30px, -90px) rotate(180deg) scale(0.8);
+            }
+            75% {
+              border-radius: 30% 70% 70% 30% / 80% 20% 60% 40%;
+              transform: translate(-30px, -60px) rotate(270deg) scale(1.15);
+            }
+          }
+
+          @keyframes morph-2 {
+            0%, 100% {
+              border-radius: 30% 70% 70% 30% / 70% 20% 80% 30%;
+              transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+            33% {
+              border-radius: 70% 30% 20% 80% / 30% 70% 20% 80%;
+              transform: translate(-50px, 50px) rotate(120deg) scale(1.18);
+            }
+            66% {
+              border-radius: 20% 80% 60% 40% / 60% 40% 80% 20%;
+              transform: translate(-60px, 30px) rotate(240deg) scale(0.85);
             }
           }
         `}</style>
@@ -398,7 +460,7 @@ export default function HomePage() {
             maxWidth: '1100px',
             margin: `0 auto ${spacing['2xl']}`,
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmin(220px, 1fr))',
             gap: spacing.lg,
             textAlign: 'left',
           }}
