@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 interface InventoryItem {
@@ -36,7 +35,6 @@ interface InventorySummary {
 }
 
 export default function InventoryPage() {
-  const router = useRouter()
   const [items, setItems] = useState<InventoryItem[]>([])
   const [summary, setSummary] = useState<InventorySummary>({
     total_items: 0,
@@ -134,6 +132,29 @@ export default function InventoryPage() {
     setFilterCategory('all')
     setSortBy('date')
     setSortOrder('desc')
+  }
+
+  const handleDelete = async (item: InventoryItem) => {
+    const label = item.vendor ? `${item.vendor}` : `inventory item`
+    if (!confirm(`Delete ${label}? This action cannot be undone.`)) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/inventory/${item.id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload?.error || 'Failed to delete inventory item')
+      }
+
+      await loadInventory()
+      alert('Inventory item deleted')
+    } catch (e) {
+      alert(`Delete failed: ${e instanceof Error ? e.message : 'Unknown error'}`)
+    }
   }
 
   return (
@@ -494,20 +515,38 @@ export default function InventoryPage() {
                       ${remainingValue.toFixed(2)}
                     </td>
                     <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      <Link
-                        href={`/admin/inventory/${item.id}`}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          backgroundColor: '#1976d2',
-                          color: 'white',
-                          borderRadius: '4px',
-                          textDecoration: 'none',
-                          fontSize: '0.875rem',
-                          fontWeight: '500'
-                        }}
-                      >
-                        View
-                      </Link>
+                      <div style={{ display: 'inline-flex', gap: '0.5rem' }}>
+                        <Link
+                          href={`/admin/inventory/${item.id}`}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            backgroundColor: '#1976d2',
+                            color: 'white',
+                            borderRadius: '4px',
+                            textDecoration: 'none',
+                            fontSize: '0.875rem',
+                            fontWeight: '500'
+                          }}
+                        >
+                          View
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(item)}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            backgroundColor: '#d32f2f',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 )

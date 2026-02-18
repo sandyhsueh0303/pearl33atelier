@@ -299,8 +299,8 @@ export default function ProductCostAnalysis({ productId }: Props) {
                         onClick={() => handleDeleteMaterial(material.id)}
                         style={{
                           padding: '0.5rem 0.75rem',
-                          backgroundColor: '#ffebee',
-                          color: '#c62828',
+                          backgroundColor: '#d32f2f',
+                          color: 'white',
                           border: 'none',
                           borderRadius: '4px',
                           cursor: 'pointer',
