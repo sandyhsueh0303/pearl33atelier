@@ -9,7 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/app/utils/supabase'
+import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
 
 import sharp from 'sharp'
@@ -22,6 +22,9 @@ export async function POST(
 ) {
   try {
     const { id } = await params
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
+
     const formData = await request.formData()
     const files = formData.getAll('images') as File[]
 
@@ -31,8 +34,6 @@ export async function POST(
         { status: 400 }
       )
     }
-
-    const supabase = await createAdminClient()
 
     // Get current max sort_order
     const { data: existingImages } = await supabase

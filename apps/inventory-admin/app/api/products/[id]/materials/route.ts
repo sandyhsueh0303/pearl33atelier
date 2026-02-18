@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/app/utils/supabase'
+import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
 
 /**
@@ -7,12 +7,13 @@ import { logger } from '@/app/utils/logger'
  * Get product materials list
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
     
     const { data, error } = await supabase
       .from('product_materials')
@@ -53,7 +54,8 @@ export async function POST(
   try {
     const { id: productId } = await params
     const body = await request.json()
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
     
     const data = {
       product_id: productId,
@@ -103,7 +105,8 @@ export async function DELETE(
       )
     }
     
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
     
     const { error } = await supabase
       .from('product_materials')

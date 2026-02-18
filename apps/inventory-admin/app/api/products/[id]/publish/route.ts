@@ -10,7 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/app/utils/supabase'
+import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
 
 // POST /api/products/[id]/publish - Publish product
@@ -20,7 +20,8 @@ export async function POST(
 ) {
   try {
     const { id } = await params
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
 
     // Update product to published
     // Use Supabase RPC to let DB set published_at with now()
@@ -62,7 +63,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
 
     // Update product to unpublished
     // Use RPC to let DB handle published_at

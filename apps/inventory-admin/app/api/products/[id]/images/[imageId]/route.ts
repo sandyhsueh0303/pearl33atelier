@@ -10,7 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/app/utils/supabase'
+import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
 import { STORAGE_BUCKET } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
@@ -23,7 +23,8 @@ export async function PATCH(
   try {
     const { id, imageId } = await params
     const body = await request.json()
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
 
     // If setting as primary, first unset all other images
     if (body.is_primary === true) {
@@ -63,12 +64,13 @@ export async function PATCH(
 
 // DELETE /api/products/[id]/images/[imageId] - Delete image
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string; imageId: string }> }
 ) {
   try {
     const { imageId } = await params
-    const supabase = await createAdminClient()
+    const { supabase, errorResponse } = await requireAdmin()
+    if (errorResponse || !supabase) return errorResponse
 
     // Get image info for storage deletion
     const { data: image } = await supabase
