@@ -39,6 +39,7 @@ export const typography = {
     '5xl': '3rem',      // 48px
     '6xl': '3.75rem',   // 60px
     '7xl': '4.5rem',    // 72px
+    '8xl': '5.25rem',   // 84px
   },
   fontWeight: {
     light: 300,

@@ -33,9 +33,9 @@ export default function HomePage() {
           right: '-10%',
           width: '1000px',
           height: '1000px',
-          background: 'radial-gradient(circle, rgba(201, 169, 97, 0.5), rgba(201, 169, 97, 0.15))',
+          background: 'radial-gradient(circle, rgba(201, 169, 97, 0.7), rgba(201, 169, 97, 0.2))',
           filter: 'blur(80px)',
-          opacity: 0.7,
+          opacity: 0.9,
           borderRadius: '70% 30% 20% 80% / 70% 20% 80% 30%',
           animation: 'morph-1 20s ease-in-out infinite',
           pointerEvents: 'none',
@@ -57,6 +57,21 @@ export default function HomePage() {
           zIndex: 0,
         }} />
 
+        <div style={{
+          position: 'absolute',
+          top: '40%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '400px',
+          height: '400px',
+          opacity: 0.4,
+          background: 'radial-gradient(circle, rgba(201, 169, 97, 0.35), rgba(201, 169, 97, 0.08))',
+          filter: 'blur(40px)',
+          borderRadius: '50%',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }} />
+
         {/* Content */}
         <div style={{
           position: 'relative',
@@ -64,10 +79,10 @@ export default function HomePage() {
         }}>
           {/* Subtitle */}
           <div style={{
-            fontSize: typography.fontSize.base,
+            fontSize: typography.fontSize.sm,
             fontWeight: typography.fontWeight.medium,
             color: colors.gold,
-            letterSpacing: '0.25em',
+            letterSpacing: '0.3em',
             marginBottom: spacing.xl,
             textTransform: 'uppercase',
           }}>
@@ -76,7 +91,7 @@ export default function HomePage() {
 
           {/* Main Heading - Elegant Serif Font */}
           <h1 style={{
-            fontSize: typography.fontSize['7xl'],
+            fontSize: typography.fontSize['8xl'],
             fontFamily: typography.fontFamily.serif,
             fontWeight: typography.fontWeight.light,
             color: colors.darkGray,
@@ -118,16 +133,16 @@ export default function HomePage() {
             style={{
               display: 'inline-block',
               padding: `${spacing.md} ${spacing['2xl']}`,
-              backgroundColor: hoveredCTA ? 'rgba(212, 175, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+              backgroundColor: hoveredCTA ? '#C9A961' : 'rgba(201, 169, 97, 0.15)',
               color: hoveredCTA ? colors.white : colors.darkGray,
               fontSize: typography.fontSize.base,
               fontWeight: typography.fontWeight.semibold,
               letterSpacing: '0.15em',
               textDecoration: 'none',
               transition: transitions.normal,
-              border: hoveredCTA ? 'none' : `2px solid ${colors.white}`,
+              border: '2px solid #C9A961',
               cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
               backdropFilter: 'blur(4px)',
             }}
           >
@@ -140,7 +155,7 @@ export default function HomePage() {
           position: 'absolute',
           bottom: spacing['2xl'],
           fontSize: typography.fontSize.xs,
-          color: colors.textLight,
+          color: '#C9A961',
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
           zIndex: 1,
@@ -206,7 +221,7 @@ export default function HomePage() {
       <section
         style={{
           padding: `${spacing['2xl']} ${spacing.xl}`,
-          backgroundColor: '#f8f6f1',
+          backgroundColor: '#FFFFFF',
           borderTop: `1px solid ${colors.lightGray}`,
           borderBottom: `1px solid ${colors.lightGray}`,
           textAlign: 'center',
@@ -302,7 +317,7 @@ export default function HomePage() {
             transition: transitions.normal,
           }}>
             <div style={{
-              fontSize: typography.fontSize['4xl'],
+              fontSize: typography.fontSize['5xl'],
               color: colors.gold,
               marginBottom: spacing.lg,
             }}>
@@ -334,7 +349,7 @@ export default function HomePage() {
             transition: transitions.normal,
           }}>
             <div style={{
-              fontSize: typography.fontSize['4xl'],
+              fontSize: typography.fontSize['5xl'],
               color: colors.gold,
               marginBottom: spacing.lg,
             }}>
@@ -366,7 +381,7 @@ export default function HomePage() {
             transition: transitions.normal,
           }}>
             <div style={{
-              fontSize: typography.fontSize['4xl'],
+              fontSize: typography.fontSize['5xl'],
               color: colors.gold,
               marginBottom: spacing.lg,
             }}>
@@ -465,7 +480,24 @@ export default function HomePage() {
             textAlign: 'left',
           }}
         >
-          <article style={{ backgroundColor: colors.white, padding: spacing.lg, border: `1px solid ${colors.lightGray}` }}>
+          <article
+            style={{
+              backgroundColor: colors.white,
+              padding: spacing.lg,
+              border: `1px solid ${colors.lightGray}`,
+              transition: transitions.normal,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-4px)'
+              e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)'
+              e.currentTarget.style.borderColor = colors.gold
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = 'none'
+              e.currentTarget.style.borderColor = colors.lightGray
+            }}
+          >
             <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
               Pearl Types Guide
             </h3>
@@ -476,7 +508,24 @@ export default function HomePage() {
               Read Article
             </Link>
           </article>
-          <article style={{ backgroundColor: colors.white, padding: spacing.lg, border: `1px solid ${colors.lightGray}` }}>
+          <article
+            style={{
+              backgroundColor: colors.white,
+              padding: spacing.lg,
+              border: `1px solid ${colors.lightGray}`,
+              transition: transitions.normal,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-4px)'
+              e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)'
+              e.currentTarget.style.borderColor = colors.gold
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = 'none'
+              e.currentTarget.style.borderColor = colors.lightGray
+            }}
+          >
             <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
               Daily Pearl Care
             </h3>
@@ -487,7 +536,24 @@ export default function HomePage() {
               Read Article
             </Link>
           </article>
-          <article style={{ backgroundColor: colors.white, padding: spacing.lg, border: `1px solid ${colors.lightGray}` }}>
+          <article
+            style={{
+              backgroundColor: colors.white,
+              padding: spacing.lg,
+              border: `1px solid ${colors.lightGray}`,
+              transition: transitions.normal,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-4px)'
+              e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)'
+              e.currentTarget.style.borderColor = colors.gold
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = 'none'
+              e.currentTarget.style.borderColor = colors.lightGray
+            }}
+          >
             <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
               Pearl Quality Factors
             </h3>
@@ -520,6 +586,7 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
     </div>
   )
 }
