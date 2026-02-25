@@ -18,12 +18,12 @@ interface InventoryItem {
 
 // Category options
 const CATEGORIES = [
-  { value: 'pearl', label: 'Pearl', color: '#DBEAFE', textColor: '#1E40AF' },
+  { value: 'pearl', label: 'Pearl', color: '#FCE7F3', textColor: '#BE185D'},
   { value: 'pt900', label: 'Pt900 Platinum 900', color: '#F3E5F5', textColor: '#7B1FA2' },
   { value: '925_silver', label: '925 Silver', color: '#E0F2FE', textColor: '#0369A1' },
   { value: '18k', label: '18K Gold', color: '#FEF3C7', textColor: '#92400E' },
-  { value: 'package', label: 'Packaging', color: '#FCE7F3', textColor: '#BE185D' },
-  { value: 'shipment', label: 'Shipping', color: '#FEF3C7', textColor: '#92400E' }
+  { value: 'package', label: 'Packaging', color: '#F3F4F6', textColor: '#111827' },
+  { value: 'shipment', label: 'Shipping', color: '#F3F4F6', textColor: '#111827' }
 ] as const
 
 interface InventorySummary {
@@ -403,7 +403,6 @@ export default function InventoryPage() {
                 <th className="admin-th-right">Available</th>
                 <th className="admin-th-right">Used</th>
                 <th className="admin-th-right">Remaining</th>
-                <th className="admin-th-right">Total Value</th>
                 <th className="admin-th-right">Remaining Value</th>
                 <th className="admin-th-center">Actions</th>
               </tr>
@@ -412,7 +411,6 @@ export default function InventoryPage() {
               {filteredItems.map((item) => {
                 const remainingQuantity = item.total_quantity - item.allocated_quantity
                 const unitCost = item.cost || 0
-                const totalValue = item.total_quantity * unitCost
                 const remainingValue = remainingQuantity * unitCost
                 const categoryInfo = CATEGORIES.find(c => c.value === item.category) || CATEGORIES[0]
                 
@@ -454,9 +452,6 @@ export default function InventoryPage() {
                     </td>
                     <td style={{ fontWeight: '600' }} className="admin-cell-right">
                       {remainingQuantity}
-                    </td>
-                    <td className="admin-cell-right admin-money" style={{ color: '#F59E0B', fontWeight: 600 }}>
-                      ${totalValue.toFixed(2)}
                     </td>
                     <td className="admin-cell-right admin-money admin-money-accent">
                       ${remainingValue.toFixed(2)}
