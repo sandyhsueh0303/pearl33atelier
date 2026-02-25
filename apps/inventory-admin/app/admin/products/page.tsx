@@ -13,6 +13,7 @@ interface ProductWithStats extends CatalogProduct {
 export default function ProductsPage() {
   const [products, setProducts] = useState<ProductWithStats[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   
   // Search and filter states
@@ -51,6 +52,12 @@ export default function ProductsPage() {
     }
   }, [])
 
+  useEffect(() => {
+    if (!notice) return
+    const timer = window.setTimeout(() => setNotice(null), 2500)
+    return () => window.clearTimeout(timer)
+  }, [notice])
+
   const loadProducts = async () => {
     try {
       const response = await fetch('/api/products', {
@@ -75,6 +82,7 @@ export default function ProductsPage() {
     }
 
     try {
+      setError(null)
       const response = await fetch(`/api/products/${productId}`, {
         method: 'DELETE'
       })
@@ -84,10 +92,10 @@ export default function ProductsPage() {
       }
 
       // Reload products list
-      loadProducts()
-      alert('Product deleted')
+      await loadProducts()
+      setNotice('Product deleted')
     } catch (e) {
-      alert('Delete failed: ' + (e instanceof Error ? e.message : 'Unknown error'))
+      setError('Delete failed: ' + (e instanceof Error ? e.message : 'Unknown error'))
     }
   }
 
@@ -196,6 +204,22 @@ export default function ProductsPage() {
       {error && (
         <div className="admin-error-banner">
           <strong>Error:</strong> {error}
+        </div>
+      )}
+
+      {notice && (
+        <div
+          style={{
+            marginBottom: '1rem',
+            padding: '0.75rem 1rem',
+            borderRadius: '8px',
+            border: '1px solid #A7F3D0',
+            backgroundColor: '#ECFDF5',
+            color: '#065F46',
+            fontWeight: 600,
+          }}
+        >
+          {notice}
         </div>
       )}
 

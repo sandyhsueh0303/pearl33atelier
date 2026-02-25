@@ -33,6 +33,8 @@ interface SalesListProps {
 export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
   const [sales, setSales] = useState<SalesRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('sale_date');
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
@@ -40,6 +42,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
   const fetchSales = async () => {
     setLoading(true);
     try {
+      setError(null);
       const params = new URLSearchParams({
         sortBy,
         order,
@@ -53,11 +56,17 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
       setSales(data);
     } catch (error) {
       console.error('Error fetching sales:', error);
-      alert('Failed to load sales records');
+      setError('Failed to load sales records');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => setNotice(null), 2500);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
 
   useEffect(() => {
     fetchSales();
@@ -78,12 +87,12 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
 
       if (!response.ok) throw new Error('Failed to delete sale');
       
-      alert('Sale record deleted successfully');
+      setNotice('Sale record deleted successfully');
       fetchSales();
       if (onRefresh) onRefresh();
     } catch (error) {
       console.error('Error deleting sale:', error);
-      alert('Failed to delete sale record');
+      setError('Failed to delete sale record');
     }
   };
 
@@ -113,6 +122,28 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
 
   return (
     <div>
+      {error && (
+        <div className="admin-error-banner" style={{ marginBottom: '1rem' }}>
+          <strong>Error:</strong> {error}
+        </div>
+      )}
+
+      {notice && (
+        <div
+          style={{
+            marginBottom: '1rem',
+            padding: '0.75rem 1rem',
+            borderRadius: '8px',
+            border: '1px solid #A7F3D0',
+            backgroundColor: '#ECFDF5',
+            color: '#065F46',
+            fontWeight: 600,
+          }}
+        >
+          {notice}
+        </div>
+      )}
+
       {/* Summary Cards */}
       <div style={{
         display: 'grid',

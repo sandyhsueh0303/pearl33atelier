@@ -33,6 +33,8 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingCost, setLoadingCost] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formNotice, setFormNotice] = useState<string | null>(null);
 
   // Form data
   const [productId, setProductId] = useState(preselectedProductId || '');
@@ -94,6 +96,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
     setLoadingCost(true);
     try {
+      setFormError(null);
       const response = await fetch(`/api/sales/product-cost/${prodId}`);
       if (!response.ok) throw new Error('Failed to fetch product cost');
       
@@ -102,11 +105,17 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
       setUnitCost(data.unit_cost.toString());
     } catch (error) {
       console.error('Error fetching product cost:', error);
-      alert('Failed to load product cost. Please enter manually.');
+      setFormError('Failed to load product cost. Please enter manually.');
     } finally {
       setLoadingCost(false);
     }
   };
+
+  useEffect(() => {
+    if (!formNotice) return;
+    const timer = window.setTimeout(() => setFormNotice(null), 2500);
+    return () => window.clearTimeout(timer);
+  }, [formNotice]);
 
   // Auto-calculate when quantity, price, or cost changes
   useEffect(() => {
@@ -140,12 +149,13 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
     e.preventDefault();
     
     if (!productId || !quantity || !unitPrice || unitCost === '') {
-      alert('Please fill in all required fields');
+      setFormError('Please fill in all required fields');
       return;
     }
 
     setLoading(true);
     try {
+      setFormError(null);
       const url = editSale ? `/api/sales/${editSale.id}` : '/api/sales';
       const method = editSale ? 'PUT' : 'POST';
       
@@ -170,7 +180,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         throw new Error(error.error || `Failed to ${editSale ? 'update' : 'create'} sale`);
       }
 
-      alert(editSale ? 'Sales record updated! ✅' : 'Sales record created! ✅');
+      setFormNotice(editSale ? 'Sales record updated! ✅' : 'Sales record created! ✅');
       
       // Reset form or call cancel if editing
       if (editSale && onCancelEdit) {
@@ -194,7 +204,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
       console.error('Error creating sale:', error);
-      alert(`Error: ${message}`);
+      setFormError(message);
     } finally {
       setLoading(false);
     }
@@ -207,6 +217,26 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
       borderRadius: '8px',
       boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     }}>
+      {formError && (
+        <div className="admin-error-banner" style={{ marginBottom: '1rem' }}>
+          <strong>Error:</strong> {formError}
+        </div>
+      )}
+      {formNotice && (
+        <div
+          style={{
+            marginBottom: '1rem',
+            padding: '0.75rem 1rem',
+            borderRadius: '8px',
+            border: '1px solid #A7F3D0',
+            backgroundColor: '#ECFDF5',
+            color: '#065F46',
+            fontWeight: 600,
+          }}
+        >
+          {formNotice}
+        </div>
+      )}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 'bold' }}>{editSale ? 'Edit Sales Record' : 'Record New Sale'}</h2>
         {editSale && onCancelEdit && (
