@@ -94,21 +94,21 @@ export default function AboutPage() {
             gap: spacing['4xl'],
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div style={{
+            display: 'inline-block',
+            justifySelf: 'center',
+            padding: '2px',
+            background: 'rgba(201, 169, 97, 0.06)',
+            borderRadius: '12px',
+          }}>
             <img
-              src="/images/founder.jpg"
+              src="/images/sandy.png"
               alt="Sandy, Founder"
               style={{
                 width: '100%',
                 maxWidth: '400px',
-                borderRadius: '8px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                borderRadius: '12px',
+                display: 'block',
               }}
             />
           </div>

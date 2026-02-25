@@ -28,6 +28,7 @@ export type PearlType =
 export type AvailabilityKind = 
   | 'IN_STOCK'
   | 'PREORDER'
+  | 'OUT_OF_STOCK'
 
 export type ProductCategory =
   | 'BRACELETS'

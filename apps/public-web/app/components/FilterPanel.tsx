@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { colors, typography, spacing } from '../constants/design'
 
 interface FilterPanelProps {
@@ -17,41 +17,50 @@ export interface ProductFilters {
 
 export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
   const [filters, setFilters] = useState<ProductFilters>({})
+  const [searchInput, setSearchInput] = useState('')
 
-  const handleSearchChange = (searchQuery: string) => {
-    const newFilters = {
-      ...filters,
-      searchQuery: searchQuery || undefined,
-    }
-    setFilters(newFilters)
-    onFilterChange(newFilters)
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setFilters((prev) => {
+        const nextFilters = {
+          ...prev,
+          searchQuery: searchInput || undefined,
+        }
+        onFilterChange(nextFilters)
+        return nextFilters
+      })
+    }, 200)
+
+    return () => window.clearTimeout(timer)
+  }, [searchInput, onFilterChange])
+
+  const updateFilters = (updater: (prev: ProductFilters) => ProductFilters) => {
+    setFilters((prev) => {
+      const newFilters = updater(prev)
+      onFilterChange(newFilters)
+      return newFilters
+    })
   }
 
   const handlePearlTypeChange = (type: string) => {
-    const newFilters = {
-      ...filters,
+    updateFilters((prev) => ({
+      ...prev,
       pearlType: type || undefined,
-    }
-    setFilters(newFilters)
-    onFilterChange(newFilters)
+    }))
   }
 
   const handleCategoryChange = (category: string) => {
-    const newFilters = {
-      ...filters,
+    updateFilters((prev) => ({
+      ...prev,
       category: category || undefined,
-    }
-    setFilters(newFilters)
-    onFilterChange(newFilters)
+    }))
   }
 
   const handleSortChange = (sort: ProductFilters['sortBy']) => {
-    const newFilters = {
-      ...filters,
+    updateFilters((prev) => ({
+      ...prev,
       sortBy: sort === 'newest' ? undefined : sort,
-    }
-    setFilters(newFilters)
-    onFilterChange(newFilters)
+    }))
   }
 
   const hasActiveFilters = Boolean(
@@ -89,8 +98,8 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
           </h3>
           <input
             type="text"
-            value={filters.searchQuery || ''}
-            onChange={(e) => handleSearchChange(e.target.value)}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search title, slug, description..."
             style={{
               width: '100%',
@@ -214,6 +223,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
         <button
           onClick={() => {
             setFilters({})
+            setSearchInput('')
             onFilterChange({})
           }}
           style={{

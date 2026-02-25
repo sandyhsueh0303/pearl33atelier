@@ -1,12 +1,9 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions } from './constants/design'
 
 export default function HomePage() {
-  const [hoveredCTA, setHoveredCTA] = useState(false)
-
   return (
     <div style={{
       minHeight: '100vh',
@@ -31,8 +28,8 @@ export default function HomePage() {
           position: 'absolute',
           top: '-20%',
           right: '-10%',
-          width: '1000px',
-          height: '1000px',
+          width: '800px',
+          height: '800px',
           background: 'radial-gradient(circle, rgba(201, 169, 97, 0.7), rgba(201, 169, 97, 0.2))',
           filter: 'blur(80px)',
           opacity: 0.9,
@@ -128,13 +125,13 @@ export default function HomePage() {
           {/* CTA Button */}
           <Link
             href="/products"
-            onMouseEnter={() => setHoveredCTA(true)}
-            onMouseLeave={() => setHoveredCTA(false)}
+            prefetch
+            className="heroCta"
             style={{
               display: 'inline-block',
               padding: `${spacing.md} ${spacing['2xl']}`,
-              backgroundColor: hoveredCTA ? '#C9A961' : 'rgba(201, 169, 97, 0.15)',
-              color: hoveredCTA ? colors.white : colors.darkGray,
+              backgroundColor: 'rgba(201, 169, 97, 0.15)',
+              color: colors.darkGray,
               fontSize: typography.fontSize.base,
               fontWeight: typography.fontWeight.semibold,
               letterSpacing: '0.15em',
@@ -214,6 +211,17 @@ export default function HomePage() {
               transform: translate(-60px, 30px) rotate(240deg) scale(0.85);
             }
           }
+
+          .heroCta:hover {
+            background-color: #c9a961 !important;
+            color: #ffffff !important;
+          }
+
+          .journalCard:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: ${colors.gold};
+          }
         `}</style>
       </section>
 
@@ -253,6 +261,7 @@ export default function HomePage() {
           <div style={{ display: 'flex', gap: spacing.md, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link
               href="/products"
+              prefetch
               style={{
                 display: 'inline-block',
                 padding: `${spacing.xs} ${spacing.lg}`,
@@ -475,27 +484,18 @@ export default function HomePage() {
             maxWidth: '1100px',
             margin: `0 auto ${spacing['2xl']}`,
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmin(220px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             gap: spacing.lg,
             textAlign: 'left',
           }}
         >
           <article
+            className="journalCard"
             style={{
               backgroundColor: colors.white,
               padding: spacing.lg,
               border: `1px solid ${colors.lightGray}`,
               transition: transitions.normal,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)'
-              e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)'
-              e.currentTarget.style.borderColor = colors.gold
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = 'none'
-              e.currentTarget.style.borderColor = colors.lightGray
             }}
           >
             <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
@@ -509,21 +509,12 @@ export default function HomePage() {
             </Link>
           </article>
           <article
+            className="journalCard"
             style={{
               backgroundColor: colors.white,
               padding: spacing.lg,
               border: `1px solid ${colors.lightGray}`,
               transition: transitions.normal,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)'
-              e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)'
-              e.currentTarget.style.borderColor = colors.gold
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = 'none'
-              e.currentTarget.style.borderColor = colors.lightGray
             }}
           >
             <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
@@ -537,21 +528,12 @@ export default function HomePage() {
             </Link>
           </article>
           <article
+            className="journalCard"
             style={{
               backgroundColor: colors.white,
               padding: spacing.lg,
               border: `1px solid ${colors.lightGray}`,
               transition: transitions.normal,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)'
-              e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.1)'
-              e.currentTarget.style.borderColor = colors.gold
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = 'none'
-              e.currentTarget.style.borderColor = colors.lightGray
             }}
           >
             <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>

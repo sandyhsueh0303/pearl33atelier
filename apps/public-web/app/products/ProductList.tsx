@@ -1,27 +1,45 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useDeferredValue, useMemo, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getProductImageUrl } from '@pearl33atelier/shared'
-import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
+import type { AvailabilityKind, ProductCategory } from '@pearl33atelier/shared/types'
 import { colors, typography, spacing, transitions, shadows } from '../constants/design'
 import FilterPanel, { type ProductFilters } from '../components/FilterPanel'
 
-interface ProductWithImages extends CatalogProduct {
-  primaryImage?: ProductImage
+export interface ProductListItem {
+  id: string
+  title: string
+  slug: string
+  pearl_type: string
+  size_mm: number | null
+  sell_price: number | null
+  original_price: number | null
+  category: ProductCategory | null
+  availability: AvailabilityKind
+  published_at: string | null
+}
+
+export interface ProductListImage {
+  product_id: string
+  storage_path: string
+}
+
+interface ProductWithImages extends ProductListItem {
+  primaryImage?: ProductListImage
 }
 
 interface ProductListProps {
   products: ProductWithImages[]
+  currentPage: number
+  hasNextPage: boolean
 }
 
-export default function ProductList({ products }: ProductListProps) {
+export default function ProductList({ products, currentPage, hasNextPage }: ProductListProps) {
   const [filters, setFilters] = useState<ProductFilters>({})
-  const [currentPage, setCurrentPage] = useState(1)
-  const ITEMS_PER_PAGE = 20
+  const deferredFilters = useDeferredValue(filters)
 
-  // Helper to safely compare enum values (handles possible undefined/null)
-  const getAvailability = (a: any) => (typeof a === 'string' ? a : '')
   const getCategoryLabel = (category: string | null | undefined) => {
     const labels: Record<string, string> = {
       BRACELETS: 'Bracelets',
@@ -41,26 +59,24 @@ export default function ProductList({ products }: ProductListProps) {
   const filteredProducts = useMemo(() => {
     let result = [...products]
 
-    if (filters.searchQuery) {
-      const query = normalize(filters.searchQuery)
+    if (deferredFilters.searchQuery) {
+      const query = normalize(deferredFilters.searchQuery)
       result = result.filter((product) => {
         const title = normalize(product.title || '')
         const slug = normalize(product.slug || '')
-        const description = normalize(product.description || '')
         const pearlType = normalize(String(product.pearl_type || ''))
         const category = normalize(getCategoryLabel(product.category) || '')
         return (
           title.includes(query) ||
           slug.includes(query) ||
-          description.includes(query) ||
           pearlType.includes(query) ||
           category.includes(query)
         )
       })
     }
 
-    if (filters.pearlType) {
-      const selected = normalize(filters.pearlType)
+    if (deferredFilters.pearlType) {
+      const selected = normalize(deferredFilters.pearlType)
       result = result.filter((product) => {
         const productType = normalize(String(product.pearl_type))
         if (selected === 'akoya') return productType.includes('akoya')
@@ -69,7 +85,7 @@ export default function ProductList({ products }: ProductListProps) {
       })
     }
 
-    if (filters.category) {
+    if (deferredFilters.category) {
       const categoryMap: Record<string, string> = {
         Bracelets: 'BRACELETS',
         Necklaces: 'NECKLACES',
@@ -80,21 +96,21 @@ export default function ProductList({ products }: ProductListProps) {
         'Loose Pearls': 'LOOSE_PEARLS',
         Brooches: 'BROOCHES',
       }
-      const targetCategory = categoryMap[filters.category]
+      const targetCategory = categoryMap[deferredFilters.category]
       if (targetCategory) {
         result = result.filter((product) => product.category === targetCategory)
       }
     }
 
-    if (filters.priceRange) {
-      const { min, max } = filters.priceRange
+    if (deferredFilters.priceRange) {
+      const { min, max } = deferredFilters.priceRange
       result = result.filter((product) => {
         if (typeof product.sell_price !== 'number') return false
         return product.sell_price >= min && product.sell_price <= max
       })
     }
 
-    const sortBy = filters.sortBy || 'newest'
+    const sortBy = deferredFilters.sortBy || 'newest'
     result.sort((a, b) => {
       if (sortBy === 'price-low') {
         const aPrice = typeof a.sell_price === 'number' ? a.sell_price : Number.POSITIVE_INFINITY
@@ -109,31 +125,23 @@ export default function ProductList({ products }: ProductListProps) {
       }
 
       if (sortBy === 'popular') {
-        return getTimestamp(b.updated_at) - getTimestamp(a.updated_at)
+        return getTimestamp(b.published_at) - getTimestamp(a.published_at)
       }
 
-      return getTimestamp(b.published_at || b.created_at) - getTimestamp(a.published_at || a.created_at)
+      return getTimestamp(b.published_at) - getTimestamp(a.published_at)
     })
 
     return result
-  }, [products, filters])
-
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE))
-
-  const paginatedProducts = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE
-    return filteredProducts.slice(start, start + ITEMS_PER_PAGE)
-  }, [filteredProducts, currentPage])
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [filters])
-
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages)
-    }
-  }, [currentPage, totalPages])
+  }, [products, deferredFilters])
+  const hasActiveFilters = Boolean(
+    deferredFilters.searchQuery ||
+      deferredFilters.pearlType ||
+      deferredFilters.category ||
+      deferredFilters.priceRange ||
+      deferredFilters.sortBy
+  )
+  const previousPageHref = currentPage <= 2 ? '/products' : `/products?page=${currentPage - 1}`
+  const nextPageHref = `/products?page=${currentPage + 1}`
 
   return (
     <main style={{ 
@@ -188,7 +196,7 @@ export default function ProductList({ products }: ProductListProps) {
             gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
             gap: spacing['2xl']
           }}>
-            {paginatedProducts.map((product) => (
+            {filteredProducts.map((product, index) => (
               <Link
                 key={product.id}
                 href={`/products/${product.slug}`}
@@ -205,12 +213,7 @@ export default function ProductList({ products }: ProductListProps) {
                   transition: transitions.normal,
                   cursor: 'pointer'
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = shadows.medium
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = shadows.subtle
-                }}
+                className="productCard"
                 >
                   {/* Image */}
                   <div style={{
@@ -220,15 +223,13 @@ export default function ProductList({ products }: ProductListProps) {
                     backgroundColor: colors.pearl
                   }}>
                     {product.primaryImage ? (
-                      <img 
+                      <Image
                         src={getProductImageUrl(product.primaryImage.storage_path)}
                         alt={`${product.pearl_type || 'Pearl'} ${getCategoryLabel(product.category) || 'Jewelry'} - ${product.title}`}
+                        fill
+                        priority={index < 2}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 25vw"
                         style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '100%',
                           objectFit: 'cover'
                         }}
                       />
@@ -330,24 +331,24 @@ export default function ProductList({ products }: ProductListProps) {
                         style={{
                           padding: '6px 12px',
                           backgroundColor:
-                            getAvailability(product.availability) === 'IN_STOCK'
+                            product.availability === 'IN_STOCK'
                               ? '#e8f5e9'
-                              : getAvailability(product.availability) === 'OUT_OF_STOCK'
+                              : product.availability === 'OUT_OF_STOCK'
                               ? '#fbe9e7'
                               : colors.champagne,
                           color:
-                            getAvailability(product.availability) === 'IN_STOCK'
+                            product.availability === 'IN_STOCK'
                               ? '#2e7d32'
-                              : getAvailability(product.availability) === 'OUT_OF_STOCK'
+                              : product.availability === 'OUT_OF_STOCK'
                               ? '#b71c1c'
                               : colors.gold,
                           fontSize: typography.fontSize.xs,
                           fontWeight: typography.fontWeight.medium,
                         }}
                       >
-                        {getAvailability(product.availability) === 'IN_STOCK'
+                        {product.availability === 'IN_STOCK'
                           ? 'In Stock'
-                          : getAvailability(product.availability) === 'OUT_OF_STOCK'
+                          : product.availability === 'OUT_OF_STOCK'
                           ? 'Out of Stock'
                           : 'Pre-order'}
                       </span>
@@ -359,17 +360,15 @@ export default function ProductList({ products }: ProductListProps) {
           </div>
         )}
 
-        {filteredProducts.length > 0 && totalPages > 1 && (
+        {!hasActiveFilters && filteredProducts.length > 0 && (currentPage > 1 || hasNextPage) && (
           <div style={{ marginTop: spacing['2xl'], textAlign: 'center' }}>
-            <p style={{ color: colors.textSecondary, marginBottom: spacing.md }}>
-              Page {currentPage} of {totalPages}
-            </p>
             <div style={{ display: 'flex', gap: spacing.xs, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button
-                type="button"
-                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
+              <Link
+                href={previousPageHref}
+                prefetch
                 style={{
+                  pointerEvents: currentPage === 1 ? 'none' : 'auto',
+                  textDecoration: 'none',
                   padding: `${spacing.xs} ${spacing.md}`,
                   border: `1px solid ${colors.lightGray}`,
                   backgroundColor: currentPage === 1 ? colors.pearl : colors.white,
@@ -378,43 +377,32 @@ export default function ProductList({ products }: ProductListProps) {
                 }}
               >
                 Previous
-              </button>
+              </Link>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  type="button"
-                  onClick={() => setCurrentPage(page)}
-                  style={{
-                    padding: `${spacing.xs} ${spacing.md}`,
-                    border: `1px solid ${colors.lightGray}`,
-                    backgroundColor: currentPage === page ? colors.darkGray : colors.white,
-                    color: currentPage === page ? colors.white : colors.darkGray,
-                    cursor: 'pointer',
-                  }}
-                >
-                  {page}
-                </button>
-              ))}
-
-              <button
-                type="button"
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
+              <Link
+                href={nextPageHref}
+                prefetch
                 style={{
+                  pointerEvents: hasNextPage ? 'auto' : 'none',
+                  textDecoration: 'none',
                   padding: `${spacing.xs} ${spacing.md}`,
                   border: `1px solid ${colors.lightGray}`,
-                  backgroundColor: currentPage === totalPages ? colors.pearl : colors.white,
+                  backgroundColor: hasNextPage ? colors.white : colors.pearl,
                   color: colors.darkGray,
-                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                  cursor: hasNextPage ? 'pointer' : 'not-allowed',
                 }}
               >
                 Next
-              </button>
+              </Link>
             </div>
           </div>
         )}
       </div>
+      <style jsx>{`
+        .productCard:hover {
+          box-shadow: ${shadows.medium};
+        }
+      `}</style>
     </main>
   )
 }
