@@ -74,13 +74,37 @@ export async function POST(request: NextRequest) {
       )
     }
     
+    const totalQuantity = Number(body.total_quantity ?? 0)
+    const allocatedQuantity = Number(body.allocated_quantity ?? 0)
+
+    if (totalQuantity < 0 || !Number.isFinite(totalQuantity)) {
+      return NextResponse.json(
+        { error: 'total_quantity must be a non-negative number' },
+        { status: 400 }
+      )
+    }
+
+    if (allocatedQuantity < 0 || !Number.isFinite(allocatedQuantity)) {
+      return NextResponse.json(
+        { error: 'allocated_quantity must be a non-negative number' },
+        { status: 400 }
+      )
+    }
+
+    if (allocatedQuantity > totalQuantity) {
+      return NextResponse.json(
+        { error: 'allocated_quantity cannot be greater than total_quantity' },
+        { status: 400 }
+      )
+    }
+
     const data = {
       vendor: body.vendor || null,
       category: body.category || 'pearl',
       purchase_date: body.purchase_date || null,
       cost: body.cost,
-      total_quantity: body.total_quantity,
-      allocated_quantity: 0,
+      total_quantity: totalQuantity,
+      allocated_quantity: allocatedQuantity,
       internal_note: body.internal_note || null
     }
     

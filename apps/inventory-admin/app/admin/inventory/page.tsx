@@ -343,6 +343,15 @@ export default function InventoryPage() {
             ${summary.total_value.toFixed(2)}
           </p>
         </div>
+        <div className="admin-stat-card" style={{ 
+          flex: 1,
+          padding: '1.5rem', 
+        }}>
+          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Remaining Value</p>
+          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961', margin: 0 }}>
+            ${summary.remaining_value.toFixed(2)}
+          </p>
+        </div>
       </div>
 
       {filteredItems.length === 0 ? (
@@ -394,6 +403,7 @@ export default function InventoryPage() {
                 <th className="admin-th-right">Available</th>
                 <th className="admin-th-right">Used</th>
                 <th className="admin-th-right">Remaining</th>
+                <th className="admin-th-right">Total Value</th>
                 <th className="admin-th-right">Remaining Value</th>
                 <th className="admin-th-center">Actions</th>
               </tr>
@@ -402,6 +412,7 @@ export default function InventoryPage() {
               {filteredItems.map((item) => {
                 const remainingQuantity = item.total_quantity - item.allocated_quantity
                 const unitCost = item.cost || 0
+                const totalValue = item.total_quantity * unitCost
                 const remainingValue = remainingQuantity * unitCost
                 const categoryInfo = CATEGORIES.find(c => c.value === item.category) || CATEGORIES[0]
                 
@@ -443,6 +454,9 @@ export default function InventoryPage() {
                     </td>
                     <td style={{ fontWeight: '600' }} className="admin-cell-right">
                       {remainingQuantity}
+                    </td>
+                    <td className="admin-cell-right admin-money" style={{ color: '#F59E0B', fontWeight: 600 }}>
+                      ${totalValue.toFixed(2)}
                     </td>
                     <td className="admin-cell-right admin-money admin-money-accent">
                       ${remainingValue.toFixed(2)}
