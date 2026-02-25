@@ -240,12 +240,17 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
                         left: 0,
                         right: 0,
                         bottom: 0,
+                        background: 'linear-gradient(135deg, #FAF8F5, #E7DDC9)',
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: colors.textLight
+                        color: '#C9A961'
                       }}>
                         <span style={{ fontSize: '3rem' }}>✦</span>
+                        <div style={{ fontSize: '0.875rem', marginTop: '1rem' }}>
+                          Photo Coming Soon
+                        </div>
                       </div>
                     )}
                   </div>

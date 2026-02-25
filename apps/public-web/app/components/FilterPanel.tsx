@@ -20,14 +20,16 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
   const [searchInput, setSearchInput] = useState('')
 
   useEffect(() => {
+    onFilterChange(filters)
+  }, [filters, onFilterChange])
+
+  useEffect(() => {
     const timer = window.setTimeout(() => {
       setFilters((prev) => {
-        const nextFilters = {
+        return {
           ...prev,
           searchQuery: searchInput || undefined,
         }
-        onFilterChange(nextFilters)
-        return nextFilters
       })
     }, 200)
 
@@ -35,11 +37,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
   }, [searchInput, onFilterChange])
 
   const updateFilters = (updater: (prev: ProductFilters) => ProductFilters) => {
-    setFilters((prev) => {
-      const newFilters = updater(prev)
-      onFilterChange(newFilters)
-      return newFilters
-    })
+    setFilters((prev) => updater(prev))
   }
 
   const handlePearlTypeChange = (type: string) => {
@@ -224,7 +222,6 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
           onClick={() => {
             setFilters({})
             setSearchInput('')
-            onFilterChange({})
           }}
           style={{
             marginTop: spacing.md,
