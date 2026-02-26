@@ -191,11 +191,13 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
             </p>
           </div>
         ) : (
-          <div style={{ 
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: spacing['2xl']
-          }}>
+          <div
+            className="productGrid"
+            style={{
+              display: 'grid',
+              gap: spacing['2xl'],
+            }}
+          >
             {filteredProducts.map((product, index) => (
               <Link
                 key={product.id}
@@ -404,6 +406,28 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
         )}
       </div>
       <style jsx>{`
+        .productGrid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        @media (max-width: 1200px) {
+          .productGrid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+        }
+
+        @media (max-width: 900px) {
+          .productGrid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @media (max-width: 640px) {
+          .productGrid {
+            grid-template-columns: 1fr;
+          }
+        }
+
         .productCard:hover {
           box-shadow: ${shadows.medium};
         }
