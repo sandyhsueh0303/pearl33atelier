@@ -5,14 +5,17 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start -p ${PORT:-3000} -H 0.0.0.0"
+    "start": "next start"
   },
   "dependencies": {
     "@pearl33atelier/shared": "*",
     "@supabase/supabase-js": "^2.93.2",
+    "gray-matter": "^4.0.3",
     "next": "^16.1.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
