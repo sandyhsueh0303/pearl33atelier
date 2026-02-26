@@ -61,9 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })
       }
       
-      // Redirect to login and force refresh
+      // Redirect to login
       router.push('/admin/login')
-      router.refresh()
     } catch (error) {
       clientLogger.error('Logout failed', error)
       // Even if API fails, still clear local state and redirect

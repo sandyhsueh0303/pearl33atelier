@@ -30,7 +30,6 @@ export default function LoginPage() {
 
       // Redirect to products page
       router.push('/admin/products')
-      router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     } finally {

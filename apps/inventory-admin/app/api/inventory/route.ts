@@ -23,13 +23,14 @@ export async function GET(_request: NextRequest) {
     const from = (page - 1) * pageSize
     const to = from + pageSize - 1
 
+    const escapedSearch = search ? search.replace(/[%_]/g, '\\$&') : ''
+
     let query = supabase
       .from('inventory_items')
       .select('*', { count: 'exact' })
 
-    if (search) {
-      const escaped = search.replace(/[%_]/g, '\\$&')
-      query = query.or(`name.ilike.%${escaped}%,internal_note.ilike.%${escaped}%`)
+    if (escapedSearch) {
+      query = query.or(`name.ilike.%${escapedSearch}%,internal_note.ilike.%${escapedSearch}%`)
     }
 
     if (category !== 'all') {
@@ -46,24 +47,27 @@ export async function GET(_request: NextRequest) {
         .order('created_at', { ascending: false })
     }
 
-    const { data: items, error, count } = await query.range(from, to)
-
-    if (error) throw error
-
     // Build filtered summary with lightweight columns only.
     let summaryQuery = supabase
       .from('inventory_items')
       .select('total_quantity,allocated_quantity,cost')
 
-    if (search) {
-      const escaped = search.replace(/[%_]/g, '\\$&')
-      summaryQuery = summaryQuery.or(`name.ilike.%${escaped}%,internal_note.ilike.%${escaped}%`)
+    if (escapedSearch) {
+      summaryQuery = summaryQuery.or(`name.ilike.%${escapedSearch}%,internal_note.ilike.%${escapedSearch}%`)
     }
     if (category !== 'all') {
       summaryQuery = summaryQuery.eq('category', category)
     }
 
-    const { data: summaryRows, error: summaryError } = await summaryQuery
+    const [itemsResult, summaryResult] = await Promise.all([
+      query.range(from, to),
+      summaryQuery,
+    ])
+
+    const { data: items, error, count } = itemsResult
+    const { data: summaryRows, error: summaryError } = summaryResult
+
+    if (error) throw error
     if (summaryError) throw summaryError
 
     // Transform and calculate stats

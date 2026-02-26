@@ -95,7 +95,6 @@ export default function InventoryForm({ inventoryId }: Props) {
       }
       
       router.push('/admin/inventory')
-      router.refresh()
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')

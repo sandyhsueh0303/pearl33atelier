@@ -66,7 +66,10 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from('catalog_products')
-      .select('*', { count: 'exact' })
+      .select(
+        'id, inventory_item_id, title, slug, description, note, pearl_type, size_mm, shape, material, sell_price, original_price, category, availability, preorder_note, published, published_at, created_at, updated_at',
+        { count: 'exact' }
+      )
 
     if (search) {
       const escaped = search.replace(/[%_]/g, '\\$&')
@@ -86,13 +89,14 @@ export async function GET(request: NextRequest) {
       query = query.order('created_at', { ascending })
     }
 
-    const { data: products, error, count } = await query.range(from, to)
+    const [productsResult, filterRowsResult] = await Promise.all([
+      query.range(from, to),
+      supabase.from('catalog_products').select('pearl_type,category'),
+    ])
 
+    const { data: products, error, count } = productsResult
+    const { data: filterRows, error: filterError } = filterRowsResult
     if (error) throw error
-
-    const { data: filterRows, error: filterError } = await supabase
-      .from('catalog_products')
-      .select('pearl_type,category')
     if (filterError) throw filterError
 
     // Fetch materials for all products to calculate costs
