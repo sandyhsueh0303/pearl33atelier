@@ -111,10 +111,10 @@ export type Database = {
           created_at: string
           id: string
           internal_note: string | null
+          name: string | null
           purchase_date: string | null
           total_quantity: number
           updated_at: string
-          vendor: string | null
         }
         Insert: {
           allocated_quantity?: number
@@ -123,10 +123,10 @@ export type Database = {
           created_at?: string
           id?: string
           internal_note?: string | null
+          name?: string | null
           purchase_date?: string | null
           total_quantity?: number
           updated_at?: string
-          vendor?: string | null
         }
         Update: {
           allocated_quantity?: number
@@ -135,10 +135,10 @@ export type Database = {
           created_at?: string
           id?: string
           internal_note?: string | null
+          name?: string | null
           purchase_date?: string | null
           total_quantity?: number
           updated_at?: string
-          vendor?: string | null
         }
         Relationships: []
       }

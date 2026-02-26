@@ -15,7 +15,7 @@ export default function InventoryForm({ inventoryId }: Props) {
   const [error, setError] = useState<string | null>(null)
   
   // Form state
-  const [vendor, setVendor] = useState('')
+  const [name, setName] = useState('')
   const [category, setCategory] = useState('pearl')
   const [purchaseDate, setPurchaseDate] = useState(new Date().toISOString().split('T')[0])
   const [cost, setCost] = useState('')
@@ -46,7 +46,7 @@ export default function InventoryForm({ inventoryId }: Props) {
       if (!response.ok) throw new Error('Failed to load inventory')
       const data = await response.json()
       
-      setVendor(data.vendor || '')
+      setName(data.name || '')
       setCategory(data.category || 'pearl')
       setPurchaseDate(data.purchase_date || new Date().toISOString().split('T')[0])
       setCost(data.cost?.toString() || '')
@@ -79,7 +79,7 @@ export default function InventoryForm({ inventoryId }: Props) {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          vendor: vendor || null,
+          name: name || null,
           category: category,
           purchase_date: purchaseDate || null,
           cost: cost ? parseFloat(cost) : null,
@@ -155,7 +155,7 @@ export default function InventoryForm({ inventoryId }: Props) {
             </div>
           )}
           
-          {/* Vendor */}
+          {/* Name */}
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{
               display: 'block',
@@ -163,13 +163,13 @@ export default function InventoryForm({ inventoryId }: Props) {
               marginBottom: '0.5rem',
               fontSize: '0.875rem'
             }}>
-              Vendor
+              Name
             </label>
             <input
               type="text"
-              value={vendor}
-              onChange={(e) => setVendor(e.target.value)}
-              placeholder="e.g. ABC Pearl Co."
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. Akoya 7.5mm Lot A"
               style={{
                 width: '100%',
                 padding: '0.75rem',

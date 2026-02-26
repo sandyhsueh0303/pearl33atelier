@@ -504,16 +504,16 @@ export async function getLowInventoryProducts(threshold: number = 5) {
 }
 
 /**
- * Get products by vendor (admin only)
+ * Get products by inventory name (admin only)
  */
-export async function getProductsByVendor(vendor: string) {
+export async function getProductsByInventoryName(name: string) {
   const { data, error } = await adminSupabase
     .from('catalog_products')
     .select(`
       *,
       inventory_item:inventory_items!inner(*)
     `)
-    .eq('inventory_item.vendor', vendor)
+    .eq('inventory_item.name', name)
   
   if (error) throw error
   return data

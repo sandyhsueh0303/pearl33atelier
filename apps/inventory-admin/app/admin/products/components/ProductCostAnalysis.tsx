@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 
 interface InventoryItem {
   id: string
-  vendor: string | null
+  name: string | null
   cost: number | null
   total_quantity: number
   internal_note: string | null
@@ -252,7 +252,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #ddd', backgroundColor: '#f9f9f9' }}>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Vendor</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Name</th>
                   <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Qty/Unit</th>
                   <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Unit Cost</th>
                   <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Subtotal</th>
@@ -265,7 +265,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
                 {materials.map((material) => (
                   <tr key={material.id} style={{ borderBottom: '1px solid #eee' }}>
                     <td style={{ padding: '0.75rem' }}>
-                      {material.inventory_items.vendor || '-'}
+                      {material.inventory_items.name || '-'}
                     </td>
                     <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '500' }}>
                       {material.quantity_per_unit}
@@ -353,7 +353,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
                   <option value="">-- Select material --</option>
                   {inventoryItems.map(item => (
                     <option key={item.id} value={item.id}>
-                      {item.vendor || 'Unnamed'} - Stock: {item.total_quantity} - ${item.cost?.toFixed(2) || '0.00'}
+                      {item.name || 'Unnamed'} - Stock: {item.total_quantity} - ${item.cost?.toFixed(2) || '0.00'}
                     </option>
                   ))}
                 </select>

@@ -10,15 +10,62 @@ export async function GET(_request: NextRequest) {
   try {
     const { supabase, errorResponse } = await requireAdmin()
     if (errorResponse || !supabase) return errorResponse
-    
-    const { data: items, error } = await supabase
+
+    const searchParams = _request.nextUrl.searchParams
+    const page = Math.max(1, Number(searchParams.get('page') || '1'))
+    const pageSize = Math.max(1, Math.min(100, Number(searchParams.get('pageSize') || '30')))
+    const search = searchParams.get('search')?.trim() || ''
+    const category = searchParams.get('category') || 'all'
+    const sortBy = searchParams.get('sortBy') || 'date'
+    const sortOrder = searchParams.get('sortOrder') === 'asc' ? 'asc' : 'desc'
+    const ascending = sortOrder === 'asc'
+
+    const from = (page - 1) * pageSize
+    const to = from + pageSize - 1
+
+    let query = supabase
       .from('inventory_items')
-      .select('*')
-      .order('purchase_date', { ascending: false, nullsFirst: false })
-      .order('created_at', { ascending: false })
-    
+      .select('*', { count: 'exact' })
+
+    if (search) {
+      const escaped = search.replace(/[%_]/g, '\\$&')
+      query = query.or(`name.ilike.%${escaped}%,internal_note.ilike.%${escaped}%`)
+    }
+
+    if (category !== 'all') {
+      query = query.eq('category', category)
+    }
+
+    if (sortBy === 'quantity') {
+      query = query.order('total_quantity', { ascending })
+    } else if (sortBy === 'value') {
+      query = query.order('cost', { ascending })
+    } else {
+      query = query
+        .order('purchase_date', { ascending, nullsFirst: false })
+        .order('created_at', { ascending: false })
+    }
+
+    const { data: items, error, count } = await query.range(from, to)
+
     if (error) throw error
-    
+
+    // Build filtered summary with lightweight columns only.
+    let summaryQuery = supabase
+      .from('inventory_items')
+      .select('total_quantity,allocated_quantity,cost')
+
+    if (search) {
+      const escaped = search.replace(/[%_]/g, '\\$&')
+      summaryQuery = summaryQuery.or(`name.ilike.%${escaped}%,internal_note.ilike.%${escaped}%`)
+    }
+    if (category !== 'all') {
+      summaryQuery = summaryQuery.eq('category', category)
+    }
+
+    const { data: summaryRows, error: summaryError } = await summaryQuery
+    if (summaryError) throw summaryError
+
     // Transform and calculate stats
     const transformed = items?.map(item => {
       const quantity_total = item.total_quantity || 0  // total = total inventory quantity (purchased quantity)
@@ -37,15 +84,33 @@ export async function GET(_request: NextRequest) {
     }) || []
     
     // Summary stats
+    const summaryBase = summaryRows || []
     const summary = {
-      total_items: transformed.length,
-      total_quantity: transformed.reduce((sum, i) => sum + i.quantity_total, 0),
-      available_quantity: transformed.reduce((sum, i) => sum + i.quantity_available, 0),
-      total_value: transformed.reduce((sum, i) => sum + i.total_value, 0),
-      remaining_value: transformed.reduce((sum, i) => sum + i.remaining_value, 0)
+      total_items: count || summaryBase.length,
+      total_quantity: summaryBase.reduce((sum, i) => sum + (i.total_quantity || 0), 0),
+      available_quantity: summaryBase.reduce(
+        (sum, i) => sum + ((i.total_quantity || 0) - (i.allocated_quantity || 0)),
+        0
+      ),
+      total_value: summaryBase.reduce((sum, i) => sum + ((i.total_quantity || 0) * (i.cost || 0)), 0),
+      remaining_value: summaryBase.reduce(
+        (sum, i) => sum + (((i.total_quantity || 0) - (i.allocated_quantity || 0)) * (i.cost || 0)),
+        0
+      )
     }
-    
-    return NextResponse.json({ items: transformed, summary })
+
+    const totalPages = Math.max(1, Math.ceil((count || 0) / pageSize))
+
+    return NextResponse.json({
+      items: transformed,
+      summary,
+      pagination: {
+        page,
+        pageSize,
+        totalItems: count || 0,
+        totalPages,
+      },
+    })
     
   } catch (error) {
     logger.error('Failed to fetch inventory', error)
@@ -99,7 +164,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = {
-      vendor: body.vendor || null,
+      name: body.name || null,
       category: body.category || 'pearl',
       purchase_date: body.purchase_date || null,
       cost: body.cost,

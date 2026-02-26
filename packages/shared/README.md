@@ -90,7 +90,7 @@ const { data } = await supabase
 
 // 創建庫存
 await supabase.from('inventory_items').insert({
-  vendor: 'Supplier A',
+  name: 'Supplier A',
   purchase_date: '2026-01-30',
   cost: 1000,
   on_hand: 10,

@@ -21,7 +21,7 @@ export async function GET(
         *,
         inventory_items (
           id,
-          vendor,
+          name,
           cost,
           total_quantity,
           internal_note

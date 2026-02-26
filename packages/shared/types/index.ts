@@ -66,7 +66,7 @@ export interface SessionUser {
 // ============================================
 export interface InventoryItem {
   id: string // uuid
-  vendor: string
+  name: string
   purchase_date: string // date
   cost: number // numeric(12,2)
   on_hand: number // int, >= 0

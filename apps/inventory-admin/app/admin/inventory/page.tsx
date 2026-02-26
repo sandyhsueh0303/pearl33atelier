@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 interface InventoryItem {
   id: string
-  vendor: string | null
+  name: string | null
   purchase_date: string | null
   cost: number | null
   total_quantity: number
@@ -35,7 +35,10 @@ interface InventorySummary {
 }
 
 export default function InventoryPage() {
+  const ITEMS_PER_PAGE = 30
   const [items, setItems] = useState<InventoryItem[]>([])
+  const [totalItems, setTotalItems] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
   const [summary, setSummary] = useState<InventorySummary>({
     total_items: 0,
     total_quantity: 0,
@@ -52,21 +55,11 @@ export default function InventoryPage() {
   const [filterCategory, setFilterCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'date' | 'value' | 'quantity'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
-    loadInventory()
-    
-    // Listen for focus event to reload when returning to this page
-    const handleFocus = () => {
-      loadInventory()
-    }
-    
-    window.addEventListener('focus', handleFocus)
-    
-    return () => {
-      window.removeEventListener('focus', handleFocus)
-    }
-  }, [])
+    void loadInventory(currentPage)
+  }, [currentPage, searchQuery, filterCategory, sortBy, sortOrder])
 
   useEffect(() => {
     if (!notice) return
@@ -74,9 +67,18 @@ export default function InventoryPage() {
     return () => window.clearTimeout(timer)
   }, [notice])
 
-  const loadInventory = async () => {
+  const loadInventory = async (targetPage = currentPage) => {
     try {
-      const response = await fetch('/api/inventory', {
+      const params = new URLSearchParams({
+        page: String(targetPage),
+        pageSize: String(ITEMS_PER_PAGE),
+        search: searchQuery,
+        category: filterCategory,
+        sortBy,
+        sortOrder,
+      })
+
+      const response = await fetch(`/api/inventory?${params.toString()}`, {
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache'
@@ -85,7 +87,15 @@ export default function InventoryPage() {
       if (!response.ok) throw new Error('Failed to load inventory')
       const data = await response.json()
       setItems(data.items || [])
-      setSummary(data.summary || summary)
+      setSummary(data.summary || {
+        total_items: 0,
+        total_quantity: 0,
+        available_quantity: 0,
+        total_value: 0,
+        remaining_value: 0
+      })
+      setTotalItems(data.pagination?.totalItems || 0)
+      setTotalPages(data.pagination?.totalPages || 1)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unknown error')
     } finally {
@@ -93,47 +103,20 @@ export default function InventoryPage() {
     }
   }
 
-  // Filter and sort items
   const filteredItems = items
-    .filter(item => {
-      // Search filter
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase()
-        const vendor = (item.vendor || '').toLowerCase()
-        const notes = (item.internal_note || '').toLowerCase()
-        if (!vendor.includes(query) && !notes.includes(query)) {
-          return false
-        }
-      }
-      
-      // Category filter
-      if (filterCategory !== 'all' && item.category !== filterCategory) {
-        return false
-      }
-      
-      return true
-    })
-    .sort((a, b) => {
-      let comparison = 0
-      
-      if (sortBy === 'date') {
-        const dateA = a.purchase_date ? new Date(a.purchase_date).getTime() : 0
-        const dateB = b.purchase_date ? new Date(b.purchase_date).getTime() : 0
-        comparison = dateA - dateB
-      } else if (sortBy === 'value') {
-        const valueA = (a.total_quantity + a.allocated_quantity) * (a.cost || 0)
-        const valueB = (b.total_quantity + b.allocated_quantity) * (b.cost || 0)
-        comparison = valueA - valueB
-      } else if (sortBy === 'quantity') {
-        const qtyA = a.total_quantity + a.allocated_quantity
-        const qtyB = b.total_quantity + b.allocated_quantity
-        comparison = qtyA - qtyB
-      }
-      
-      return sortOrder === 'asc' ? comparison : -comparison
-    })
-
   const hasFilters = searchQuery !== '' || filterCategory !== 'all'
+  const paginatedItems = filteredItems
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, filterCategory, sortBy, sortOrder])
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
+
   const resetFilters = () => {
     setSearchQuery('')
     setFilterCategory('all')
@@ -142,7 +125,7 @@ export default function InventoryPage() {
   }
 
   const handleDelete = async (item: InventoryItem) => {
-    const label = item.vendor ? `${item.vendor}` : `inventory item`
+    const label = item.name ? `${item.name}` : `inventory item`
     if (!confirm(`Delete ${label}? This action cannot be undone.`)) {
       return
     }
@@ -175,7 +158,7 @@ export default function InventoryPage() {
               setLoading(true)
               setError(null)
               try {
-                await loadInventory()
+                await loadInventory(currentPage)
               } catch (e) {
                 setError('Refresh failed, please try again')
               }
@@ -224,13 +207,13 @@ export default function InventoryPage() {
           {/* Search Input */}
           <div className="admin-filter-item-wide">
             <label className="admin-filter-label">
-              🔍 Search vendor or notes
+              🔍 Search name or notes
             </label>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Enter vendor name or notes..."
+              placeholder="Enter item name or notes..."
               className="admin-control"
             />
           </div>
@@ -302,7 +285,7 @@ export default function InventoryPage() {
 
         {/* Results Count */}
         <div className="admin-filter-results">
-          Showing <strong>{filteredItems.length}</strong> / {items.length} inventory items
+          Showing <strong>{filteredItems.length}</strong> / {totalItems} inventory items
         </div>
       </div>
 
@@ -396,7 +379,7 @@ export default function InventoryPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr className="admin-table-head-row">
-                <th>Vendor</th>
+                <th>Name</th>
                 <th>Category</th>
                 <th>Purchase Date</th>
                 <th className="admin-th-right">Unit Cost</th>
@@ -408,7 +391,7 @@ export default function InventoryPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredItems.map((item) => {
+              {paginatedItems.map((item) => {
                 const remainingQuantity = item.total_quantity - item.allocated_quantity
                 const unitCost = item.cost || 0
                 const remainingValue = remainingQuantity * unitCost
@@ -418,7 +401,7 @@ export default function InventoryPage() {
                   <tr key={item.id} className="admin-row-divider">
                     <td>
                       <div style={{ fontWeight: '500' }}>
-                        {item.vendor || '-'}
+                        {item.name || '-'}
                       </div>
                     </td>
                     <td>
@@ -478,6 +461,32 @@ export default function InventoryPage() {
               })}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {filteredItems.length > 0 && totalPages > 1 && (
+        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', gap: '0.5rem', alignItems: 'center' }}>
+          <button
+            type="button"
+            className="admin-btn admin-btn-secondary admin-btn-sm"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            style={{ opacity: currentPage === 1 ? 0.5 : 1 }}
+          >
+            Previous
+          </button>
+          <span style={{ fontSize: '0.875rem', color: '#666' }}>
+            Page {currentPage} / {totalPages}
+          </span>
+          <button
+            type="button"
+            className="admin-btn admin-btn-secondary admin-btn-sm"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            style={{ opacity: currentPage === totalPages ? 0.5 : 1 }}
+          >
+            Next
+          </button>
         </div>
       )}
     </main>
