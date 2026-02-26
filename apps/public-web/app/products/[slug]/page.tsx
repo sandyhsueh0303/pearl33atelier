@@ -3,13 +3,17 @@ import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { cache } from 'react'
 import ProductDetailClient from './ProductDetailClient'
 
 // Disable caching for this page to always show latest data
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-async function getPublishedProductBySlug(slug: string) {
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pearl33atelier.com'
+const DEFAULT_IMAGE_URL = `${SITE_URL}/images/default-product.jpg`
+
+const getPublishedProductBySlug = cache(async (slug: string) => {
   const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -35,11 +39,18 @@ async function getPublishedProductBySlug(slug: string) {
 
   const images = !imagesError && imagesData ? imagesData : []
   return { product: productData as CatalogProduct, images: images as ProductImage[] }
-}
+})
 
 function buildProductDescription(product: CatalogProduct) {
+  const availabilityText =
+    product.availability === 'IN_STOCK'
+      ? 'In stock.'
+      : product.availability === 'PREORDER'
+      ? 'Available for pre-order.'
+      : 'Currently out of stock.'
+
   if (product.description?.trim()) {
-    return product.description.trim().slice(0, 155)
+    return `${product.description.trim()} ${availabilityText}`.slice(0, 155)
   }
 
   const parts = [
@@ -49,7 +60,7 @@ function buildProductDescription(product: CatalogProduct) {
     product.material,
   ].filter(Boolean)
 
-  return `${product.title} by 33 Pearl Atelier${parts.length ? ` - ${parts.join(', ')}` : ''}.`
+  return `${product.title} by 33 Pearl Atelier${parts.length ? ` - ${parts.join(', ')}` : ''}. ${availabilityText}`.slice(0, 155)
 }
 
 export async function generateMetadata({
@@ -70,22 +81,29 @@ export async function generateMetadata({
   const { product, images } = result
   const description = buildProductDescription(product)
   const primaryImage = images.find((img) => img.is_primary) || images[0]
-  const imageUrl = primaryImage ? getProductImageUrl(primaryImage.storage_path) : undefined
+  const imageUrl = primaryImage ? getProductImageUrl(primaryImage.storage_path) : DEFAULT_IMAGE_URL
+  const productUrl = `${SITE_URL}/products/${slug}`
 
   return {
     title: product.title,
     description,
+    alternates: {
+      canonical: productUrl,
+    },
     openGraph: {
       title: product.title,
       description,
       type: 'website',
-      images: imageUrl ? [{ url: imageUrl }] : undefined,
+      url: productUrl,
+      siteName: '33 Pearl Atelier',
+      locale: 'en_US',
+      images: [{ url: imageUrl }],
     },
     twitter: {
-      card: imageUrl ? 'summary_large_image' : 'summary',
+      card: 'summary_large_image',
       title: product.title,
       description,
-      images: imageUrl ? [imageUrl] : undefined,
+      images: [imageUrl],
     },
   }
 }
