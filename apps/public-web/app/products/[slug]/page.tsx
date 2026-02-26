@@ -63,6 +63,20 @@ function buildProductDescription(product: CatalogProduct) {
   return `${product.title} by 33 Pearl Atelier${parts.length ? ` - ${parts.join(', ')}` : ''}. ${availabilityText}`.slice(0, 155)
 }
 
+function getCategoryName(category: string | null | undefined): string {
+  const names: Record<string, string> = {
+    NECKLACES: 'Necklace',
+    EARRINGS: 'Earrings',
+    STUDS: 'Stud Earrings',
+    BRACELETS: 'Bracelet',
+    RINGS: 'Ring',
+    PENDANTS: 'Pendant',
+    LOOSE_PEARLS: 'Loose Pearls',
+    BROOCHES: 'Brooch',
+  }
+  return category ? names[category] || category : ''
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -83,25 +97,42 @@ export async function generateMetadata({
   const primaryImage = images.find((img) => img.is_primary) || images[0]
   const imageUrl = primaryImage ? getProductImageUrl(primaryImage.storage_path) : DEFAULT_IMAGE_URL
   const productUrl = `${SITE_URL}/products/${slug}`
+  const title = product.size_mm ? `${product.title} ${product.size_mm}mm` : product.title
 
   return {
-    title: product.title,
+    title,
     description,
+    keywords: [
+      product.title,
+      product.pearl_type || '',
+      getCategoryName(product.category),
+      product.material || '',
+      'pearl jewelry',
+      'fine jewelry',
+      '33 Pearl Atelier',
+    ].filter(Boolean),
     alternates: {
       canonical: productUrl,
     },
     openGraph: {
-      title: product.title,
+      title,
       description,
       type: 'website',
       url: productUrl,
       siteName: '33 Pearl Atelier',
       locale: 'en_US',
-      images: [{ url: imageUrl }],
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: product.title,
+      title,
       description,
       images: [imageUrl],
     },
@@ -133,5 +164,60 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     return notFound()
   }
 
-  return <ProductDetailClient product={product} images={images} />
+  const primaryImage = images.find((img) => img.is_primary) || images[0]
+  const imageUrl = primaryImage ? getProductImageUrl(primaryImage.storage_path) : DEFAULT_IMAGE_URL
+  const productUrl = `${SITE_URL}/products/${slug}`
+
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    image: [imageUrl],
+    description: product.description || buildProductDescription(product),
+    sku: product.id,
+    brand: {
+      '@type': 'Brand',
+      name: '33 Pearl Atelier',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: productUrl,
+      priceCurrency: 'USD',
+      price: product.sell_price || 0,
+      availability:
+        product.availability === 'IN_STOCK'
+          ? 'https://schema.org/InStock'
+          : product.availability === 'PREORDER'
+          ? 'https://schema.org/PreOrder'
+          : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: '33 Pearl Atelier',
+      },
+    },
+  }
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Products', item: `${SITE_URL}/products` },
+      { '@type': 'ListItem', position: 3, name: product.title, item: productUrl },
+    ],
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <ProductDetailClient product={product} images={images} />
+    </>
+  )
 }
