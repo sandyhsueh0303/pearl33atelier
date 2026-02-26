@@ -428,7 +428,7 @@ export default function ProductsPage() {
         </div>
       ) : (
         <div className="admin-card admin-table-card">
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr className="admin-table-head-row">
                 <th>Status</th>

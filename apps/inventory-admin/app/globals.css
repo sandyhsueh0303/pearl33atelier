@@ -50,8 +50,8 @@ a {
   --border-light: #F3F4F6;
 }
 
-/* 表格樣式 */
-table {
+/* Admin table styles */
+.admin-table {
   width: 100%;
   border-collapse: collapse;
   background: white;
@@ -59,11 +59,11 @@ table {
   overflow: hidden;
 }
 
-thead {
+.admin-table thead {
   background: var(--bg-hover);
 }
 
-th {
+.admin-table th {
   padding: 1rem;
   text-align: left;
   font-size: 0.875rem;
@@ -72,22 +72,20 @@ th {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-bottom: 2px solid var(--border);
-}
-
-tbody tr {
+.admin-table tbody tr {
   border-bottom: 1px solid var(--border);
   transition: background 0.15s;
 }
 
-tbody tr:nth-child(even) {
+.admin-table tbody tr:nth-child(even) {
   background: var(--bg-stripe);
 }
 
-tbody tr:hover {
+.admin-table tbody tr:hover {
   background: #FEF3E7;
 }
 
-td {
+.admin-table td {
   padding: 1rem;
   font-size: 0.9375rem;
   color: var(--text-primary);
@@ -96,31 +94,6 @@ td {
 /* 按鈕樣式 */
 button {
   font-family: inherit;
-}
-
-/* 輸入框樣式 */
-input[type="text"],
-input[type="email"],
-input[type="number"],
-input[type="date"],
-select,
-textarea {
-  padding: 0.625rem 0.875rem;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 0.875rem;
-  color: var(--text-primary);
-  background: white;
-  transition: all 0.2s;
-  font-family: inherit;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
 }
 
 /* Admin shared layout */
@@ -252,6 +225,12 @@ textarea:focus {
   border-radius: 4px;
   font-size: 0.875rem;
   background: white;
+}
+
+.admin-control:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
 }
 
 .admin-stats-row {

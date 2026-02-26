@@ -144,7 +144,7 @@ export default function ProductMaterials({ productId }: Props) {
       {/* Materials List */}
       {materials.length > 0 ? (
         <div style={{ marginBottom: '2rem' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '2px solid #ddd', backgroundColor: '#f9f9f9' }}>
                 <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Name</th>

@@ -367,7 +367,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
       ) : (
         <div className="admin-card" style={{ overflow: 'hidden' }}>
           <div style={{ overflowX: 'auto' }}>
-            <table style={{
+            <table className="admin-table" style={{
               width: '100%',
               borderCollapse: 'collapse',
             }}>
