@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { colors, typography, spacing, transitions } from './constants/design'
 
@@ -24,7 +22,9 @@ export default function HomePage() {
         background: 'linear-gradient(180deg, #FAF8F5 0%, #FFFFFF 100%)',
       }}>
         {/* Organic Blob Animations */}
-        <div style={{
+        <div
+          className="homeBlobOne"
+          style={{
           position: 'absolute',
           top: '-20%',
           right: '-10%',
@@ -34,12 +34,14 @@ export default function HomePage() {
           filter: 'blur(80px)',
           opacity: 0.9,
           borderRadius: '70% 30% 20% 80% / 70% 20% 80% 30%',
-          animation: 'morph-1 20s ease-in-out infinite',
           pointerEvents: 'none',
           zIndex: 0,
-        }} />
+        }}
+        />
         
-        <div style={{
+        <div
+          className="homeBlobTwo"
+          style={{
           position: 'absolute',
           bottom: '-20%',
           left: '-10%',
@@ -49,12 +51,14 @@ export default function HomePage() {
           filter: 'blur(80px)',
           opacity: 0.7,
           borderRadius: '30% 70% 70% 30% / 70% 20% 80% 30%',
-          animation: 'morph-2 25s ease-in-out infinite',
           pointerEvents: 'none',
           zIndex: 0,
-        }} />
+        }}
+        />
 
-        <div style={{
+        <div
+          className="homeBlobCenter"
+          style={{
           position: 'absolute',
           top: '40%',
           left: '50%',
@@ -67,7 +71,8 @@ export default function HomePage() {
           borderRadius: '50%',
           pointerEvents: 'none',
           zIndex: 0,
-        }} />
+        }}
+        />
 
         {/* Content */}
         <div style={{
@@ -148,7 +153,9 @@ export default function HomePage() {
         </div>
 
         {/* Scroll Indicator */}
-        <div style={{
+        <div
+          className="homeScrollIndicator"
+          style={{
           position: 'absolute',
           bottom: spacing['2xl'],
           fontSize: typography.fontSize.xs,
@@ -156,8 +163,8 @@ export default function HomePage() {
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
           zIndex: 1,
-          animation: 'bounce 2s infinite',
-        }}>
+        }}
+        >
           <div style={{ marginBottom: spacing.xs }}>Scroll to Discover</div>
           <div style={{ 
             fontSize: typography.fontSize.lg,
@@ -166,63 +173,6 @@ export default function HomePage() {
             ↓
           </div>
         </div>
-
-        {/* CSS Animations */}
-        <style jsx>{`
-          @keyframes bounce {
-            0%, 100% {
-              transform: translateY(0);
-            }
-            50% {
-              transform: translateY(-10px);
-            }
-          }
-
-          @keyframes morph-1 {
-            0%, 100% {
-              border-radius: 70% 30% 20% 80% / 70% 20% 80% 30%;
-              transform: translate(0, 0) rotate(0deg) scale(1);
-            }
-            25% {
-              border-radius: 20% 80% 80% 20% / 30% 70% 20% 80%;
-              transform: translate(50px, -60px) rotate(90deg) scale(1.2);
-            }
-            50% {
-              border-radius: 80% 20% 30% 70% / 20% 80% 20% 80%;
-              transform: translate(30px, -90px) rotate(180deg) scale(0.8);
-            }
-            75% {
-              border-radius: 30% 70% 70% 30% / 80% 20% 60% 40%;
-              transform: translate(-30px, -60px) rotate(270deg) scale(1.15);
-            }
-          }
-
-          @keyframes morph-2 {
-            0%, 100% {
-              border-radius: 30% 70% 70% 30% / 70% 20% 80% 30%;
-              transform: translate(0, 0) rotate(0deg) scale(1);
-            }
-            33% {
-              border-radius: 70% 30% 20% 80% / 30% 70% 20% 80%;
-              transform: translate(-50px, 50px) rotate(120deg) scale(1.18);
-            }
-            66% {
-              border-radius: 20% 80% 60% 40% / 60% 40% 80% 20%;
-              transform: translate(-60px, 30px) rotate(240deg) scale(0.85);
-            }
-          }
-
-          .heroCta:hover {
-            background-color: #c9a961 !important;
-            color: #ffffff !important;
-          }
-
-          .journalCard:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            border-color: ${colors.gold};
-          }
-        `}</style>
       </section>
 
       {/* Intent Section */}
