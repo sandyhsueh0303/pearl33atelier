@@ -31,29 +31,38 @@ interface SalesListProps {
 }
 
 export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
+  const ITEMS_PER_PAGE = 30;
   const [sales, setSales] = useState<SalesRecord[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [appliedSearch, setAppliedSearch] = useState('');
   const [sortBy, setSortBy] = useState('sale_date');
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchSales = async () => {
+  const fetchSales = async (targetPage = currentPage) => {
     setLoading(true);
     try {
       setError(null);
       const params = new URLSearchParams({
         sortBy,
         order,
-        ...(search && { search }),
+        page: String(targetPage),
+        pageSize: String(ITEMS_PER_PAGE),
+        ...(appliedSearch && { search: appliedSearch }),
       });
 
       const response = await fetch(`/api/sales?${params}`);
       if (!response.ok) throw new Error('Failed to fetch sales');
       
       const data = await response.json();
-      setSales(data);
+      setSales(data.sales || []);
+      setTotalItems(data.pagination?.totalItems || 0);
+      setTotalPages(data.pagination?.totalPages || 1);
     } catch (error) {
       console.error('Error fetching sales:', error);
       setError('Failed to load sales records');
@@ -69,12 +78,23 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
   }, [notice]);
 
   useEffect(() => {
-    fetchSales();
-  }, [sortBy, order]);
+    fetchSales(currentPage);
+  }, [sortBy, order, currentPage, appliedSearch]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sortBy, order, appliedSearch]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchSales();
+    setAppliedSearch(search.trim());
+    setCurrentPage(1);
   };
 
   const handleDelete = async (id: string) => {
@@ -88,7 +108,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
       if (!response.ok) throw new Error('Failed to delete sale');
       
       setNotice('Sale record deleted successfully');
-      fetchSales();
+      fetchSales(currentPage);
       if (onRefresh) onRefresh();
     } catch (error) {
       console.error('Error deleting sale:', error);
@@ -119,7 +139,6 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
     }),
     { totalRevenue: 0, totalCost: 0, totalProfit: 0, totalOrders: 0, totalUnits: 0 }
   );
-
   return (
     <div>
       {error && (
@@ -247,7 +266,8 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                   type="button"
                   onClick={() => {
                     setSearch('');
-                    setTimeout(fetchSales, 0);
+                    setAppliedSearch('');
+                    setCurrentPage(1);
                   }}
                   style={{
                     padding: '0.75rem 1rem',
@@ -312,7 +332,9 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
 
           <div style={{ flex: '0 0 auto' }}>
             <button
-              onClick={fetchSales}
+              onClick={() => {
+                void fetchSales(currentPage);
+              }}
               style={{
                 padding: '0.75rem 1rem',
                 backgroundColor: '#f5f5f5',
@@ -329,7 +351,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
         </div>
 
         <div style={{ fontSize: '0.875rem', color: '#666' }}>
-          Showing <strong>{sales.length}</strong> sales records
+          Showing <strong>{sales.length}</strong> / {totalItems} sales records
         </div>
       </div>
 
@@ -426,6 +448,32 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {sales.length > 0 && totalPages > 1 && (
+        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', gap: '0.5rem', alignItems: 'center' }}>
+          <button
+            type="button"
+            className="admin-btn admin-btn-secondary admin-btn-sm"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            style={{ opacity: currentPage === 1 ? 0.5 : 1 }}
+          >
+            Previous
+          </button>
+          <span style={{ fontSize: '0.875rem', color: '#666' }}>
+            Page {currentPage} / {totalPages}
+          </span>
+          <button
+            type="button"
+            className="admin-btn admin-btn-secondary admin-btn-sm"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            style={{ opacity: currentPage === totalPages ? 0.5 : 1 }}
+          >
+            Next
+          </button>
         </div>
       )}
     </div>

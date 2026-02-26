@@ -12,24 +12,100 @@ import { slugify } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
 
 type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
+type PearlType = Database['public']['Enums']['pearl_type']
+type ProductCategory = Database['public']['Enums']['product_category']
 
-// GET /api/products - List all products with cost and profit calculations
-export async function GET() {
+const PEARL_TYPES: readonly PearlType[] = [
+  'WhiteAkoya',
+  'GreyAkoya',
+  'WhiteSouthSea',
+  'GoldenSouthSea',
+  'Tahitian',
+  'Freshwater',
+  'Other',
+]
+
+const PRODUCT_CATEGORIES: readonly ProductCategory[] = [
+  'BRACELETS',
+  'NECKLACES',
+  'EARRINGS',
+  'STUDS',
+  'RINGS',
+  'PENDANTS',
+  'LOOSE_PEARLS',
+  'BROOCHES',
+]
+
+// GET /api/products - List products with server-side pagination and cost/profit calculations
+export async function GET(request: NextRequest) {
   try {
     const { supabase, errorResponse } = await requireAdmin()
     if (errorResponse || !supabase) return errorResponse
 
-    const { data: products, error } = await supabase
+    const searchParams = request.nextUrl.searchParams
+    const page = Math.max(1, Number(searchParams.get('page') || '1'))
+    const pageSize = Math.max(1, Math.min(100, Number(searchParams.get('pageSize') || '30')))
+    const search = (searchParams.get('search') || '').trim()
+    const status = searchParams.get('status') || 'all'
+    const pearlTypeParam = searchParams.get('pearlType') || 'all'
+    const categoryParam = searchParams.get('category') || 'all'
+    const pearlType =
+      pearlTypeParam !== 'all' && PEARL_TYPES.includes(pearlTypeParam as PearlType)
+        ? (pearlTypeParam as PearlType)
+        : null
+    const category =
+      categoryParam !== 'all' && PRODUCT_CATEGORIES.includes(categoryParam as ProductCategory)
+        ? (categoryParam as ProductCategory)
+        : null
+    const sortBy = searchParams.get('sortBy') || 'created'
+    const sortOrder = searchParams.get('sortOrder') === 'asc' ? 'asc' : 'desc'
+    const ascending = sortOrder === 'asc'
+
+    const from = (page - 1) * pageSize
+    const to = from + pageSize - 1
+
+    let query = supabase
       .from('catalog_products')
-      .select('*')
-      .order('created_at', { ascending: false })
+      .select('*', { count: 'exact' })
+
+    if (search) {
+      const escaped = search.replace(/[%_]/g, '\\$&')
+      query = query.or(`title.ilike.%${escaped}%,slug.ilike.%${escaped}%,description.ilike.%${escaped}%`)
+    }
+
+    if (status === 'published') query = query.eq('published', true)
+    if (status === 'draft') query = query.eq('published', false)
+    if (pearlType) query = query.eq('pearl_type', pearlType)
+    if (category) query = query.eq('category', category)
+
+    if (sortBy === 'title') {
+      query = query.order('title', { ascending })
+    } else if (sortBy === 'price') {
+      query = query.order('sell_price', { ascending, nullsFirst: false })
+    } else {
+      query = query.order('created_at', { ascending })
+    }
+
+    const { data: products, error, count } = await query.range(from, to)
 
     if (error) throw error
 
+    const { data: filterRows, error: filterError } = await supabase
+      .from('catalog_products')
+      .select('pearl_type,category')
+    if (filterError) throw filterError
+
     // Fetch materials for all products to calculate costs
-    const { data: materials } = await supabase
-      .from('product_materials')
-      .select('product_id, quantity_per_unit, unit_cost_snapshot')
+    const productIds = (products || []).map((p) => p.id)
+    let materials: { product_id: string; quantity_per_unit: number; unit_cost_snapshot: number | null }[] = []
+    if (productIds.length > 0) {
+      const { data: materialsData, error: materialsError } = await supabase
+        .from('product_materials')
+        .select('product_id, quantity_per_unit, unit_cost_snapshot')
+        .in('product_id', productIds)
+      if (materialsError) throw materialsError
+      materials = materialsData || []
+    }
 
     // Calculate cost and profit for each product
     const productsWithStats = products?.map(product => {
@@ -47,7 +123,20 @@ export async function GET() {
       }
     }) || []
 
-    return NextResponse.json({ products: productsWithStats })
+    const pearlTypes = Array.from(new Set((filterRows || []).map((r) => r.pearl_type).filter(Boolean)))
+    const categories = Array.from(new Set((filterRows || []).map((r) => r.category).filter(Boolean)))
+    const totalPages = Math.max(1, Math.ceil((count || 0) / pageSize))
+
+    return NextResponse.json({
+      products: productsWithStats,
+      filters: { pearlTypes, categories },
+      pagination: {
+        page,
+        pageSize,
+        totalItems: count || 0,
+        totalPages,
+      },
+    })
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch products' },

@@ -11,6 +11,10 @@ export async function GET(request: NextRequest) {
   const sortBy = searchParams.get('sortBy') || 'sale_date';
   const order = searchParams.get('order') || 'desc';
   const search = searchParams.get('search') || '';
+  const page = Math.max(1, Number(searchParams.get('page') || '1'));
+  const pageSize = Math.max(1, Math.min(100, Number(searchParams.get('pageSize') || '30')));
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
 
   let query = supabase
     .from('sales_records')
@@ -21,7 +25,7 @@ export async function GET(request: NextRequest) {
         title,
         slug
       )
-    `);
+    `, { count: 'exact' });
 
   // Search by customer name, order number, or platform
   if (search) {
@@ -31,14 +35,23 @@ export async function GET(request: NextRequest) {
   // Sort
   query = query.order(sortBy, { ascending: order === 'asc' });
 
-  const { data: sales, error } = await query;
+  const { data: sales, error, count } = await query.range(from, to);
 
   if (error) {
     console.error('Error fetching sales:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(sales);
+  const totalPages = Math.max(1, Math.ceil((count || 0) / pageSize));
+  return NextResponse.json({
+    sales: sales || [],
+    pagination: {
+      page,
+      pageSize,
+      totalItems: count || 0,
+      totalPages,
+    },
+  });
 }
 
 // POST /api/sales - Create a new sale record

@@ -11,10 +11,16 @@ interface ProductWithStats extends CatalogProduct {
 }
 
 export default function ProductsPage() {
+  const ITEMS_PER_PAGE = 30
   const [products, setProducts] = useState<ProductWithStats[]>([])
+  const [totalItems, setTotalItems] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pearlTypes, setPearlTypes] = useState<string[]>([])
+  const [categories, setCategories] = useState<string[]>([])
   
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState('')
@@ -38,19 +44,8 @@ export default function ProductsPage() {
   }
 
   useEffect(() => {
-    loadProducts()
-    
-    // Listen for focus event to reload when returning to this page
-    const handleFocus = () => {
-      loadProducts()
-    }
-    
-    window.addEventListener('focus', handleFocus)
-    
-    return () => {
-      window.removeEventListener('focus', handleFocus)
-    }
-  }, [])
+    void loadProducts(currentPage)
+  }, [currentPage, searchQuery, filterStatus, filterPearlType, filterCategory, sortBy, sortOrder])
 
   useEffect(() => {
     if (!notice) return
@@ -58,9 +53,20 @@ export default function ProductsPage() {
     return () => window.clearTimeout(timer)
   }, [notice])
 
-  const loadProducts = async () => {
+  const loadProducts = async (targetPage = currentPage) => {
     try {
-      const response = await fetch('/api/products', {
+      const params = new URLSearchParams({
+        page: String(targetPage),
+        pageSize: String(ITEMS_PER_PAGE),
+        search: searchQuery,
+        status: filterStatus,
+        pearlType: filterPearlType,
+        category: filterCategory,
+        sortBy,
+        sortOrder,
+      })
+
+      const response = await fetch(`/api/products?${params.toString()}`, {
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache'
@@ -69,6 +75,10 @@ export default function ProductsPage() {
       if (!response.ok) throw new Error('Failed to load products')
       const data = await response.json()
       setProducts(data.products || [])
+      setPearlTypes(data.filters?.pearlTypes || [])
+      setCategories(data.filters?.categories || [])
+      setTotalItems(data.pagination?.totalItems || 0)
+      setTotalPages(data.pagination?.totalPages || 1)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unknown error')
     } finally {
@@ -99,57 +109,7 @@ export default function ProductsPage() {
     }
   }
 
-  // Get unique pearl types for filter
-  const pearlTypes = Array.from(new Set(products.map(p => p.pearl_type).filter(Boolean)))
-  const categories = Array.from(
-    new Set(
-      products
-        .map((p) => p.category)
-        .filter((category): category is Exclude<ProductWithStats['category'], null> => category !== null)
-    )
-  )
-
-  // Filter and sort products
   const filteredProducts = products
-    .filter(product => {
-      // Search filter
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase()
-        const title = (product.title || '').toLowerCase()
-        const slug = (product.slug || '').toLowerCase()
-        const description = (product.description || '').toLowerCase()
-        if (!title.includes(query) && !slug.includes(query) && !description.includes(query)) {
-          return false
-        }
-      }
-      
-      // Status filter
-      if (filterStatus === 'published' && !product.published) return false
-      if (filterStatus === 'draft' && product.published) return false
-      
-      // Pearl type filter
-      if (filterPearlType !== 'all' && product.pearl_type !== filterPearlType) return false
-
-      // Category filter
-      if (filterCategory !== 'all' && product.category !== filterCategory) return false
-      
-      return true
-    })
-    .sort((a, b) => {
-      let comparison = 0
-      
-      if (sortBy === 'title') {
-        comparison = (a.title || '').localeCompare(b.title || '')
-      } else if (sortBy === 'price') {
-        comparison = (a.sell_price || 0) - (b.sell_price || 0)
-      } else if (sortBy === 'created') {
-        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0
-        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0
-        comparison = dateA - dateB
-      }
-      
-      return sortOrder === 'asc' ? comparison : -comparison
-    })
 
   const hasFilters = searchQuery !== '' || filterStatus !== 'all' || filterPearlType !== 'all' || filterCategory !== 'all'
   const resetFilters = () => {
@@ -169,6 +129,17 @@ export default function ProductsPage() {
   const totalRevenue = filteredProducts.reduce((sum, p) => sum + (p.sell_price || 0), 0)
   const totalProfit = filteredProducts.reduce((sum, p) => sum + (p.profit || 0), 0)
   const totalProfitMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0
+  const paginatedProducts = filteredProducts
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, filterStatus, filterPearlType, filterCategory, sortBy, sortOrder])
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
 
   return (
     <main className="admin-page">
@@ -180,7 +151,7 @@ export default function ProductsPage() {
               setLoading(true)
               setError(null)
               try {
-                await loadProducts()
+                await loadProducts(currentPage)
               } catch (e) {
                 setError('Refresh failed, please try again')
               }
@@ -336,7 +307,7 @@ export default function ProductsPage() {
 
         {/* Results Count */}
         <div className="admin-filter-results">
-          Showing <strong>{filteredProducts.length}</strong> / {products.length} products
+          Showing <strong>{filteredProducts.length}</strong> / {totalItems} products
           {filterStatus !== 'all' && ` • ${filterStatus === 'published' ? 'Published' : 'Draft'}`}
           {filterPearlType !== 'all' && ` • ${filterPearlType}`}
           {filterCategory !== 'all' && ` • ${formatCategory(filterCategory)}`}
@@ -472,7 +443,7 @@ export default function ProductsPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map((product) => (
+              {paginatedProducts.map((product) => (
                 <tr key={product.id} className="admin-row-divider">
                   <td>
                     <span className={`admin-pill ${product.published ? 'admin-pill-success' : 'admin-pill-warning'}`}>
@@ -530,6 +501,32 @@ export default function ProductsPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {filteredProducts.length > 0 && totalPages > 1 && (
+        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', gap: '0.5rem', alignItems: 'center' }}>
+          <button
+            type="button"
+            className="admin-btn admin-btn-secondary admin-btn-sm"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            style={{ opacity: currentPage === 1 ? 0.5 : 1 }}
+          >
+            Previous
+          </button>
+          <span style={{ fontSize: '0.875rem', color: '#666' }}>
+            Page {currentPage} / {totalPages}
+          </span>
+          <button
+            type="button"
+            className="admin-btn admin-btn-secondary admin-btn-sm"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            style={{ opacity: currentPage === totalPages ? 0.5 : 1 }}
+          >
+            Next
+          </button>
         </div>
       )}
     </main>
