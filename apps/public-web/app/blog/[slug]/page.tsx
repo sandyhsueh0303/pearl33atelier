@@ -146,22 +146,33 @@ export default async function BlogPostPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <main style={{ backgroundColor: colors.white }}>
-        {/* Breadcrumb Navigation（用戶 + SEO） */}
+      <main
+        style={{
+          background:
+            'radial-gradient(circle at 8% 12%, rgba(212, 175, 55, 0.14), transparent 30%), radial-gradient(circle at 92% 20%, rgba(247, 231, 206, 0.8), transparent 34%), linear-gradient(180deg, #fffdf9 0%, #ffffff 34%, #f9f5ed 100%)',
+        }}
+      >
         <nav
+          aria-label="Breadcrumb"
           style={{
-            padding: `${spacing.lg} ${spacing.xl}`,
+            maxWidth: '1040px',
+            margin: '0 auto',
+            padding: `${spacing.sm} ${spacing.xl} 0`,
             fontSize: typography.fontSize.sm,
             color: colors.textSecondary,
+            letterSpacing: '0.03em',
+            textAlign: 'left',
           }}
         >
-          <a href="/">Home</a> / <a href="/blog">Journal</a> / {post.title}
+          <Link href="/">Home</Link> / <Link href="/blog">Journal</Link> / {post.title}
         </nav>
 
         {/* Article Header */}
         <header
           style={{
-            padding: `${spacing['3xl']} ${spacing.xl}`,
+            maxWidth: '980px',
+            margin: `${spacing.sm} auto 0`,
+            padding: `${spacing.xl} ${spacing.xl}`,
             textAlign: 'center',
           }}
         >
@@ -173,6 +184,7 @@ export default async function BlogPostPage({ params }: Props) {
               color: colors.darkGray,
               marginBottom: spacing.lg,
               whiteSpace: 'pre-line',
+              textShadow: '0 8px 22px rgba(212, 175, 55, 0.16)',
             }}
           >
             {post.title}
@@ -211,10 +223,12 @@ export default async function BlogPostPage({ params }: Props) {
                   key={tag}
                   style={{
                     padding: '4px 12px',
-                    background: colors.pearl,
-                    borderRadius: '4px',
+                    background: '#f8ecd8',
+                    border: '1px solid rgba(212, 175, 55, 0.34)',
+                    borderRadius: '999px',
                     fontSize: typography.fontSize.xs,
-                    color: colors.textSecondary,
+                    color: '#5f4e2e',
+                    letterSpacing: '0.04em',
                   }}
                 >
                   {tag}
@@ -222,23 +236,38 @@ export default async function BlogPostPage({ params }: Props) {
               ))}
             </div>
           )}
+          <div
+            style={{
+              width: '120px',
+              height: '2px',
+              margin: `${spacing.lg} auto 0`,
+              background:
+                'linear-gradient(90deg, rgba(212, 175, 55, 0.06) 0%, rgba(212, 175, 55, 0.82) 50%, rgba(212, 175, 55, 0.06) 100%)',
+            }}
+          />
         </header>
 
         {/* Article Content */}
         <article
           style={{
-            maxWidth: '760px',
-            margin: '0 auto',
-            padding: `${spacing.xl} ${spacing.lg} ${spacing['4xl']}`,
+            maxWidth: '1040px',
+            margin: `${spacing.md} auto 0`,
+            padding: `${spacing['2xl']} ${spacing['2xl']} ${spacing['4xl']}`,
+            borderRadius: '24px',
+            border: '1px solid rgba(212, 175, 55, 0.2)',
+            background: 'rgba(255, 255, 255, 0.92)',
+            boxShadow: '0 20px 42px rgba(44, 44, 44, 0.1)',
           }}
         >
           {/* Article Body（從 Markdown 轉換的 HTML） */}
           <div
             className="markdown-content"
             style={{
-              fontSize: typography.fontSize.lg,
+              fontSize: '1.08rem',
               lineHeight: typography.lineHeight.relaxed,
               color: colors.textPrimary,
+              maxWidth: '860px',
+              margin: '0 auto',
             }}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
@@ -263,11 +292,12 @@ export default async function BlogPostPage({ params }: Props) {
               style={{
                 display: 'inline-block',
                 padding: `${spacing.xs} ${spacing.md}`,
-                backgroundColor: colors.darkGray,
+                background: 'linear-gradient(135deg, #2c2c2c 0%, #4b463d 100%)',
                 color: colors.white,
                 textDecoration: 'none',
-                border: `1px solid ${colors.darkGray}`,
+                border: '1px solid rgba(212, 175, 55, 0.4)',
                 letterSpacing: '0.08em',
+                boxShadow: '0 10px 22px rgba(44, 44, 44, 0.2)',
               }}
             >
               Start Custom Inquiry
@@ -290,59 +320,62 @@ export default async function BlogPostPage({ params }: Props) {
         .markdown-content h4 {
           color: #2c2c2c;
           line-height: 1.3;
-          margin-top: 2.25rem;
+          margin-top: 2.5rem;
           margin-bottom: 0.85rem;
-          letter-spacing: 0.01em;
+          letter-spacing: 0.015em;
         }
 
         .markdown-content h2 {
-          font-size: 2rem;
+          font-size: clamp(1.65rem, 3.2vw, 2.05rem);
+          padding-bottom: 0.45rem;
+          border-bottom: 1px solid rgba(212, 175, 55, 0.34);
         }
 
         .markdown-content h3 {
-          font-size: 1.5rem;
+          font-size: clamp(1.3rem, 2.5vw, 1.55rem);
         }
 
         .markdown-content p {
-          margin: 0 0 1rem;
+          margin: 0 0 1.15rem;
           color: #4a4a4a;
-          line-height: 1.9;
+          line-height: 1.95;
         }
 
         .markdown-content ul,
         .markdown-content ol {
-          margin: 0.25rem 0 1.25rem 1.3rem;
+          margin: 0.35rem 0 1.35rem 1.3rem;
           color: #4a4a4a;
         }
 
         .markdown-content li {
-          margin-bottom: 0.35rem;
+          margin-bottom: 0.48rem;
           line-height: 1.8;
         }
 
         .markdown-content blockquote {
-          margin: 1.5rem 0;
-          padding: 0.85rem 1rem;
+          margin: 1.7rem 0;
+          padding: 1rem 1.1rem;
           border-left: 3px solid #d4af37;
-          background: #faf8f2;
-          color: #555;
+          background: linear-gradient(135deg, #faf6ed 0%, #fffdf9 100%);
+          color: #4f4f4f;
+          border-radius: 0 12px 12px 0;
         }
 
         .markdown-content hr {
           border: 0;
-          border-top: 1px solid #ececec;
-          margin: 2rem 0;
+          border-top: 1px solid rgba(212, 175, 55, 0.32);
+          margin: 2.2rem 0;
         }
 
         .markdown-content a {
-          color: #2c2c2c;
-          text-decoration: underline;
+          color: #4a3c24;
+          text-decoration: underline 1px rgba(212, 175, 55, 0.65);
           text-underline-offset: 3px;
         }
 
         .markdown-content code {
-          background: #f4f4f4;
-          border: 1px solid #e6e6e6;
+          background: #f7f3ea;
+          border: 1px solid #e8dcc3;
           border-radius: 4px;
           padding: 0.1rem 0.35rem;
           font-size: 0.9em;
@@ -365,6 +398,16 @@ export default async function BlogPostPage({ params }: Props) {
 
         .markdown-content > :first-child {
           margin-top: 0;
+        }
+
+        @media (max-width: 768px) {
+          .markdown-content h2 {
+            font-size: 1.45rem;
+          }
+
+          .markdown-content h3 {
+            font-size: 1.22rem;
+          }
         }
       `}</style>
     </>

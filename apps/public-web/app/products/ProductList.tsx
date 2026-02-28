@@ -146,17 +146,35 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
   return (
     <main style={{ 
       minHeight: '100vh',
-      backgroundColor: colors.white,
-      padding: `clamp(1rem, 3vw, ${spacing['3xl']})`,
+      background: 'linear-gradient(180deg, #fffdf8 0%, #ffffff 32%, #faf7f1 100%)',
     }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        <header style={{ marginBottom: spacing['3xl'], textAlign: 'center' }}>
+      <section
+        style={{
+          padding: `${spacing['4xl']} ${spacing.xl} ${spacing['3xl']}`,
+          background: 'linear-gradient(180deg, #f2e9da 0%, #ffffff 100%)',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <p
+            style={{
+              fontSize: typography.fontSize.sm,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: colors.gold,
+              marginBottom: spacing.md,
+            }}
+          >
+            Collection
+          </p>
           <h1 style={{ 
-            fontSize: typography.fontSize['5xl'], 
-            fontWeight: typography.fontWeight.light,
-            marginBottom: spacing.md,
+            fontSize: 'clamp(2.2rem, 6.5vw, 4rem)',
+            fontWeight: typography.fontWeight.normal,
+            lineHeight: typography.lineHeight.tight,
+            marginBottom: spacing.lg,
             color: colors.darkGray,
-            letterSpacing: '0.02em',
+            letterSpacing: '0.03em',
+            textShadow: '0 6px 16px rgba(212, 175, 55, 0.14)',
           }}>
             Collection
           </h1>
@@ -166,9 +184,22 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
           }}>
             Curated Pearl Jewelry Collection
           </p>
-        </header>
+          <div
+            style={{
+              width: '96px',
+              height: '2px',
+              margin: `${spacing.lg} auto 0`,
+              background:
+                'linear-gradient(90deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.85) 50%, rgba(212, 175, 55, 0.08) 100%)',
+            }}
+          />
+        </div>
+      </section>
 
-        <FilterPanel onFilterChange={setFilters} />
+      <section style={{ padding: `clamp(1rem, 3vw, ${spacing['3xl']})` }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+
+          <FilterPanel onFilterChange={setFilters} />
 
         {filteredProducts.length === 0 ? (
           <div style={{ 
@@ -242,7 +273,7 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        background: 'linear-gradient(135deg, #FAF8F5, #E7DDC9)',
+                        background: '#ffffff',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -367,44 +398,45 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
           </div>
         )}
 
-        {!hasActiveFilters && filteredProducts.length > 0 && (currentPage > 1 || hasNextPage) && (
-          <div style={{ marginTop: spacing['2xl'], textAlign: 'center' }}>
-            <div style={{ display: 'flex', gap: spacing.xs, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Link
-                href={previousPageHref}
-                prefetch
-                style={{
-                  pointerEvents: currentPage === 1 ? 'none' : 'auto',
-                  textDecoration: 'none',
-                  padding: `${spacing.xs} ${spacing.md}`,
-                  border: `1px solid ${colors.lightGray}`,
-                  backgroundColor: currentPage === 1 ? colors.pearl : colors.white,
-                  color: colors.darkGray,
-                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                }}
-              >
-                Previous
-              </Link>
+          {!hasActiveFilters && filteredProducts.length > 0 && (currentPage > 1 || hasNextPage) && (
+            <div style={{ marginTop: spacing['2xl'], textAlign: 'center' }}>
+              <div style={{ display: 'flex', gap: spacing.xs, justifyContent: 'center', flexWrap: 'wrap' }}>
+                <Link
+                  href={previousPageHref}
+                  prefetch
+                  style={{
+                    pointerEvents: currentPage === 1 ? 'none' : 'auto',
+                    textDecoration: 'none',
+                    padding: `${spacing.xs} ${spacing.md}`,
+                    border: `1px solid ${colors.lightGray}`,
+                    backgroundColor: currentPage === 1 ? colors.pearl : colors.white,
+                    color: colors.darkGray,
+                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  Previous
+                </Link>
 
-              <Link
-                href={nextPageHref}
-                prefetch
-                style={{
-                  pointerEvents: hasNextPage ? 'auto' : 'none',
-                  textDecoration: 'none',
-                  padding: `${spacing.xs} ${spacing.md}`,
-                  border: `1px solid ${colors.lightGray}`,
-                  backgroundColor: hasNextPage ? colors.white : colors.pearl,
-                  color: colors.darkGray,
-                  cursor: hasNextPage ? 'pointer' : 'not-allowed',
-                }}
-              >
-                Next
-              </Link>
+                <Link
+                  href={nextPageHref}
+                  prefetch
+                  style={{
+                    pointerEvents: hasNextPage ? 'auto' : 'none',
+                    textDecoration: 'none',
+                    padding: `${spacing.xs} ${spacing.md}`,
+                    border: `1px solid ${colors.lightGray}`,
+                    backgroundColor: hasNextPage ? colors.white : colors.pearl,
+                    color: colors.darkGray,
+                    cursor: hasNextPage ? 'pointer' : 'not-allowed',
+                  }}
+                >
+                  Next
+                </Link>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </section>
       <style jsx>{`
         .productGrid {
           grid-template-columns: repeat(4, minmax(0, 1fr));

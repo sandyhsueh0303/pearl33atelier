@@ -33,15 +33,27 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
 
   return (
     <>
-      <div style={{ maxWidth: '1100px', margin: `0 auto ${spacing.xl}` }}>
+      <div
+        style={{
+          maxWidth: '980px',
+          margin: `0 auto ${spacing.xl}`,
+          padding: spacing.lg,
+          borderRadius: '18px',
+          border: '1px solid rgba(212, 175, 55, 0.24)',
+          background:
+            'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(248, 246, 240, 0.98) 100%)',
+          boxShadow: '0 14px 32px rgba(96, 82, 48, 0.1)',
+        }}
+      >
         <label
           htmlFor="blog-search"
           style={{
             display: 'block',
             fontSize: typography.fontSize.sm,
-            color: colors.textSecondary,
+            color: '#7e6a46',
             marginBottom: spacing.xs,
-            letterSpacing: '0.05em',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
           }}
         >
           Search Journal
@@ -55,12 +67,13 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
           style={{
             width: '100%',
             padding: `${spacing.sm} ${spacing.md}`,
-            borderRadius: '8px',
-            border: `1px solid ${colors.lightGray}`,
+            borderRadius: '12px',
+            border: '1px solid rgba(212, 175, 55, 0.35)',
             fontSize: typography.fontSize.base,
             outline: 'none',
-            backgroundColor: colors.white,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
             color: colors.darkGray,
+            boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.04)',
           }}
         />
       </div>
@@ -83,25 +96,29 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
       ) : (
         <div
           style={{
-            maxWidth: '1100px',
+            maxWidth: '980px',
             margin: '0 auto',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: spacing.lg,
+            gridTemplateColumns: '1fr',
+            gap: spacing.xl,
           }}
         >
           {filteredPosts.map((post) => (
             <article
+              className="journalCard"
               key={post.slug}
               style={{
-                backgroundColor: colors.white,
-                border: `1px solid ${colors.lightGray}`,
-                borderRadius: '10px',
+                background:
+                  'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(249, 245, 237, 0.94) 100%)',
+                border: '1px solid rgba(212, 175, 55, 0.22)',
+                borderRadius: '16px',
                 padding: spacing.lg,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                boxShadow: '0 12px 28px rgba(44, 44, 44, 0.08)',
+                display: 'flex',
+                flexDirection: 'column',
               }}
             >
-              <p style={{ color: colors.textLight, fontSize: typography.fontSize.sm, marginBottom: spacing.xs }}>
+              <p style={{ color: '#8f7a53', fontSize: typography.fontSize.sm, marginBottom: spacing.xs }}>
                 {post.publishedAt} • {post.readingMinutes} min read
               </p>
               <h2
@@ -129,11 +146,12 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
                     key={tag}
                     style={{
                       fontSize: typography.fontSize.xs,
-                      color: colors.darkGray,
-                      backgroundColor: '#f6f6f6',
-                      border: `1px solid ${colors.lightGray}`,
+                      color: '#5a4a2a',
+                      backgroundColor: '#f8ecd7',
+                      border: '1px solid rgba(212, 175, 55, 0.35)',
                       borderRadius: '999px',
                       padding: '4px 10px',
+                      letterSpacing: '0.04em',
                     }}
                   >
                     {tag}
@@ -144,12 +162,17 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
                 href={`/blog/${post.slug}`}
                 style={{
                   display: 'inline-block',
+                  alignSelf: 'flex-end',
+                  marginTop: 'auto',
                   padding: `${spacing.xs} ${spacing.md}`,
-                  border: `1px solid ${colors.darkGray}`,
-                  color: colors.darkGray,
+                  borderRadius: '999px',
+                  border: '1px solid rgba(212, 175, 55, 0.45)',
+                  background: '#f7e7ce',
+                  color: '#473c26',
                   textDecoration: 'none',
-                  letterSpacing: '0.06em',
+                  letterSpacing: '0.08em',
                   transition: transitions.fast,
+                  boxShadow: '0 6px 14px rgba(106, 85, 47, 0.14)',
                 }}
               >
                 Read Article

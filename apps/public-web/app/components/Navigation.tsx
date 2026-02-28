@@ -1,12 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { colors, typography, transitions, spacing } from '../constants/design'
 
 export default function Navigation() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
-  const [isMobile, setIsMobile] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const navItems = [
@@ -20,35 +19,21 @@ export default function Navigation() {
     { label: 'Contact Us', href: '/contact' },
   ]
 
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth <= 900
-      setIsMobile(mobile)
-      if (!mobile) {
-        setIsMenuOpen(false)
-      }
-    }
-
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
   return (
     <nav style={{
       position: 'fixed',
       top: 0,
       left: 0,
       right: 0,
-      backgroundColor: colors.white,
-      borderBottom: `1px solid ${colors.lightGray}`,
+      backgroundColor: '#FFFEFB',
+      borderBottom: '1px solid #E9E1D3',
       zIndex: 1000,
       backdropFilter: 'blur(8px)',
     }}>
       <div style={{
         maxWidth: '1280px',
         margin: '0 auto',
-        padding: `${spacing.md} ${isMobile ? spacing.md : spacing.lg}`,
+        padding: `${spacing.md} ${spacing.lg}`,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -57,9 +42,9 @@ export default function Navigation() {
         <Link 
           href="/"
           style={{
-            fontSize: isMobile ? typography.fontSize.base : typography.fontSize.xl,
+            fontSize: typography.fontSize['2xl'],
             fontWeight: typography.fontWeight.semibold,
-            color: colors.darkGray,
+            color: '#3A3328',
             letterSpacing: '0.05em',
             textDecoration: 'none',
           }}
@@ -67,59 +52,62 @@ export default function Navigation() {
           33 PEARL ATELIER
         </Link>
 
-        {isMobile ? (
-          <button
-            type="button"
-            onClick={() => setIsMenuOpen((prev) => !prev)}
-            aria-label="Toggle navigation menu"
-            style={{
-              border: `1px solid ${colors.lightGray}`,
-              backgroundColor: colors.white,
-              color: colors.darkGray,
-              padding: `${spacing.xs} ${spacing.sm}`,
-              cursor: 'pointer',
-              fontSize: typography.fontSize.base,
-            }}
-          >
-            {isMenuOpen ? 'Close' : 'Menu'}
-          </button>
-        ) : (
-          <div style={{
+        <button
+          type="button"
+          className="mobileToggle"
+          onClick={() => setIsMenuOpen((prev) => !prev)}
+          aria-label="Toggle navigation menu"
+          style={{
+            border: '1px solid #E9E1D3',
+            backgroundColor: '#FFFEFB',
+            color: '#3A3328',
+            padding: `${spacing.xs} ${spacing.sm}`,
+            cursor: 'pointer',
+            fontSize: typography.fontSize.lg,
+          }}
+        >
+          {isMenuOpen ? 'Close' : 'Menu'}
+        </button>
+
+        <div
+          className="desktopLinks"
+          style={{
             display: 'flex',
             gap: spacing.lg,
             alignItems: 'center',
-          }}>
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onMouseEnter={() => setHoveredItem(item.href)}
-                onMouseLeave={() => setHoveredItem(null)}
-                style={{
-                  fontSize: typography.fontSize.sm,
-                  fontWeight: typography.fontWeight.normal,
-                  color: colors.textSecondary,
-                  textDecoration: 'none',
-                  transition: transitions.fast,
-                  position: 'relative',
-                  paddingBottom: '4px',
-                  borderBottom: hoveredItem === item.href
-                    ? `2px solid ${colors.gold}`
-                    : '2px solid transparent',
-                }}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        )}
+          }}
+        >
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onMouseEnter={() => setHoveredItem(item.href)}
+              onMouseLeave={() => setHoveredItem(null)}
+              style={{
+                fontSize: typography.fontSize.base,
+                fontWeight: typography.fontWeight.normal,
+                color: '#3A3328',
+                textDecoration: 'none',
+                transition: transitions.fast,
+                position: 'relative',
+                paddingBottom: '4px',
+                borderBottom: hoveredItem === item.href
+                  ? '2px solid #C9A961'
+                  : '2px solid transparent',
+              }}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
       </div>
 
-      {isMobile && isMenuOpen && (
+      {isMenuOpen && (
         <div
+          className="mobileMenu"
           style={{
-            borderTop: `1px solid ${colors.lightGray}`,
-            backgroundColor: colors.white,
+            borderTop: '1px solid #E9E1D3',
+            backgroundColor: '#FFFEFB',
             padding: `${spacing.sm} ${spacing.md}`,
             display: 'grid',
             gap: spacing.xs,
@@ -131,10 +119,10 @@ export default function Navigation() {
               href={item.href}
               onClick={() => setIsMenuOpen(false)}
               style={{
-                color: colors.textSecondary,
+                color: '#3A3328',
                 padding: `${spacing.xs} 0`,
-                borderBottom: `1px solid ${colors.lightGray}`,
-                fontSize: typography.fontSize.base,
+                borderBottom: '1px solid #E9E1D3',
+                fontSize: typography.fontSize.lg,
               }}
             >
               {item.label}
@@ -142,6 +130,31 @@ export default function Navigation() {
           ))}
         </div>
       )}
+      <style jsx>{`
+        .mobileToggle {
+          display: none;
+        }
+
+        @media (max-width: 900px) {
+          .desktopLinks {
+            display: none !important;
+          }
+
+          .mobileToggle {
+            display: inline-block;
+          }
+
+          nav > div {
+            padding: ${spacing.md} ${spacing.md} !important;
+          }
+        }
+
+        @media (min-width: 901px) {
+          .mobileMenu {
+            display: none;
+          }
+        }
+      `}</style>
     </nav>
   )
 }

@@ -93,12 +93,16 @@ export default function FAQPage() {
   }
 
   return (
-    <main style={{ backgroundColor: colors.white }}>
+    <main
+      style={{
+        background: 'linear-gradient(180deg, #fffdf8 0%, #ffffff 32%, #faf7f1 100%)',
+      }}
+    >
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <section
         style={{
           padding: `${spacing['4xl']} ${spacing.xl} ${spacing['3xl']}`,
-          background: 'linear-gradient(180deg, #f7f4ee 0%, #ffffff 100%)',
+          background: 'linear-gradient(180deg, #f2e9da 0%, #ffffff 100%)',
           textAlign: 'center',
         }}
       >
@@ -116,12 +120,13 @@ export default function FAQPage() {
           </p>
           <h1
             style={{
-              fontSize: 'clamp(2.3rem, 6.5vw, 4.2rem)',
+              fontSize: 'clamp(2.2rem, 6.5vw, 4rem)',
               fontWeight: typography.fontWeight.normal,
               lineHeight: typography.lineHeight.tight,
               letterSpacing: '0.03em',
               color: colors.darkGray,
               marginBottom: spacing.lg,
+              textShadow: '0 6px 16px rgba(212, 175, 55, 0.14)',
             }}
           >
             Frequently Asked Questions
@@ -137,6 +142,15 @@ export default function FAQPage() {
           >
             Common questions about custom pearl jewelry, timelines, care, and after-service support.
           </p>
+          <div
+            style={{
+              width: '96px',
+              height: '2px',
+              margin: `${spacing.lg} auto 0`,
+              background:
+                'linear-gradient(90deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.85) 50%, rgba(212, 175, 55, 0.08) 100%)',
+            }}
+          />
         </div>
       </section>
 

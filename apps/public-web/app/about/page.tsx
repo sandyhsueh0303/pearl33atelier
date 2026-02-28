@@ -25,11 +25,15 @@ export default function AboutPage() {
   ]
 
   return (
-    <main style={{ backgroundColor: colors.white }}>
+    <main
+      style={{
+        background: 'linear-gradient(180deg, #fffdf8 0%, #ffffff 32%, #faf7f1 100%)',
+      }}
+    >
       <section
         style={{
           padding: `${spacing['4xl']} ${spacing.xl} ${spacing['3xl']}`,
-          background: 'linear-gradient(180deg, #f9f7f1 0%, #ffffff 100%)',
+          background: 'linear-gradient(180deg, #f2e9da 0%, #ffffff 100%)',
           textAlign: 'center',
         }}
       >
@@ -52,12 +56,13 @@ export default function AboutPage() {
           </p>
           <h1
             style={{
-              fontSize: 'clamp(2.4rem, 7vw, 4.4rem)',
+              fontSize: 'clamp(2.2rem, 6.5vw, 4rem)',
               fontWeight: typography.fontWeight.normal,
               lineHeight: typography.lineHeight.tight,
               letterSpacing: '0.03em',
               color: colors.darkGray,
               marginBottom: spacing.lg,
+              textShadow: '0 6px 16px rgba(212, 175, 55, 0.14)',
             }}
           >
             33 Pearl Atelier
@@ -74,6 +79,15 @@ export default function AboutPage() {
             33 Pearl Atelier is dedicated to handcrafted pearl jewelry that blends quiet luxury,
             modern femininity, and artisanal precision.
           </p>
+          <div
+            style={{
+              width: '96px',
+              height: '2px',
+              margin: `${spacing.lg} auto 0`,
+              background:
+                'linear-gradient(90deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.85) 50%, rgba(212, 175, 55, 0.08) 100%)',
+            }}
+          />
         </div>
       </section>
 
@@ -95,19 +109,24 @@ export default function AboutPage() {
           }}
         >
           <div style={{
-            display: 'inline-block',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             justifySelf: 'center',
-            padding: '2px',
+            width: '100%',
+            maxWidth: '360px',
+            padding: '2.5%',
             background: 'rgba(201, 169, 97, 0.06)',
-            borderRadius: '12px',
+            borderRadius: '28px',
+            overflow: 'hidden',
           }}>
             <img
               src="/images/sandy.png"
               alt="Sandy, Founder"
               style={{
                 width: '100%',
-                maxWidth: '400px',
-                borderRadius: '12px',
+                margin: '0 auto',
+                borderRadius: '24px',
                 display: 'block',
               }}
             />
@@ -119,6 +138,9 @@ export default function AboutPage() {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
+              maxWidth: '640px',
+              margin: '0 auto',
+              textAlign: 'left',
             }}
           >
             <p
@@ -137,27 +159,41 @@ export default function AboutPage() {
                 fontSize: 'clamp(2rem, 4vw, 3rem)',
                 fontWeight: typography.fontWeight.normal,
                 color: colors.darkGray,
-                marginBottom: spacing.xl,
+                lineHeight: typography.lineHeight.tight,
+                letterSpacing: '0.02em',
+                marginBottom: spacing.lg,
               }}
             >
               From the Founder
             </h2>
+            <div
+              style={{
+                width: '72px',
+                height: '2px',
+                marginBottom: spacing.lg,
+                background:
+                  'linear-gradient(90deg, rgba(212, 175, 55, 0.85) 0%, rgba(212, 175, 55, 0.15) 100%)',
+              }}
+            />
             <p
               style={{
-                fontSize: typography.fontSize.lg,
-                color: colors.textPrimary,
-                lineHeight: typography.lineHeight.relaxed,
+                fontSize: 'clamp(1.06rem, 1.8vw, 1.2rem)',
+                fontWeight: typography.fontWeight.medium,
+                color: colors.darkGray,
+                lineHeight: 1.72,
                 marginBottom: spacing.sm,
+                maxWidth: '62ch',
               }}
             >
               I&apos;m Sandy — founder of 33 Pearl Atelier and certified pearl appraiser.
             </p>
             <p
               style={{
-                fontSize: typography.fontSize.lg,
-                color: colors.textPrimary,
-                lineHeight: typography.lineHeight.relaxed,
+                fontSize: 'clamp(1.03rem, 1.6vw, 1.14rem)',
+                color: '#4a4338',
+                lineHeight: 1.72,
                 marginBottom: spacing.sm,
+                maxWidth: '62ch',
               }}
             >
               My fascination with pearls began with their quiet elegance and the simple truth that no two are ever alike.
@@ -166,10 +202,11 @@ export default function AboutPage() {
             </p>
             <p
               style={{
-                fontSize: typography.fontSize.lg,
-                color: colors.textPrimary,
-                lineHeight: typography.lineHeight.relaxed,
+                fontSize: 'clamp(1.03rem, 1.6vw, 1.14rem)',
+                color: '#4a4338',
+                lineHeight: 1.72,
                 marginBottom: spacing.sm,
+                maxWidth: '62ch',
               }}
             >
               Every pearl here is hand-selected by me. Beyond measurements and grades, I focus on how each pearl catches light,
@@ -177,9 +214,10 @@ export default function AboutPage() {
             </p>
             <p
               style={{
-                fontSize: typography.fontSize.lg,
-                color: colors.textPrimary,
-                lineHeight: typography.lineHeight.relaxed,
+                fontSize: 'clamp(1.03rem, 1.6vw, 1.14rem)',
+                color: '#4a4338',
+                lineHeight: 1.72,
+                maxWidth: '62ch',
               }}
             >
               My goal isn&apos;t just to create fine jewelry — it&apos;s to offer pieces that bring confidence and refined
