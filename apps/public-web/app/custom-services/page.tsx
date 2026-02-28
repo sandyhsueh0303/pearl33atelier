@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions } from '../constants/design'
+import { pageHeroStyles } from '../constants/pageHero'
+import PageHero from '../components/PageHero'
 
 export const metadata: Metadata = {
   title: 'Custom Pearl Jewelry Service',
@@ -41,66 +43,12 @@ export default function CustomServicesPage() {
   
 
   return (
-    <main
-      style={{
-        background: 'linear-gradient(180deg, #fffdf8 0%, #ffffff 32%, #faf7f1 100%)',
-      }}
-    >
-      <section
-        style={{
-          padding: `${spacing['4xl']} ${spacing.xl} ${spacing['3xl']}`,
-          background: 'linear-gradient(180deg, #f2e9da 0%, #ffffff 100%)',
-          textAlign: 'center',
-        }}
-      >
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-          <p
-            style={{
-              fontSize: typography.fontSize.sm,
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              color: colors.gold,
-              marginBottom: spacing.md,
-            }}
-          >
-            Custom Services
-          </p>
-          <h1
-            style={{
-              fontSize: 'clamp(2.2rem, 6.5vw, 4rem)',
-              fontWeight: typography.fontWeight.normal,
-              lineHeight: typography.lineHeight.tight,
-              letterSpacing: '0.03em',
-              color: colors.darkGray,
-              marginBottom: spacing.lg,
-              textShadow: '0 6px 16px rgba(212, 175, 55, 0.14)',
-            }}
-          >
-            Create a Piece That Is Truly Yours
-          </h1>
-          <p
-            style={{
-              fontSize: typography.fontSize.lg,
-              color: colors.textSecondary,
-              lineHeight: typography.lineHeight.relaxed,
-              maxWidth: '760px',
-              margin: '0 auto',
-            }}
-          >
-            We offer one-on-one custom pearl jewelry design for meaningful pieces shaped around your story,
-            preferred pearl character, and milestones.
-          </p>
-          <div
-            style={{
-              width: '96px',
-              height: '2px',
-              margin: `${spacing.lg} auto 0`,
-              background:
-                'linear-gradient(90deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.85) 50%, rgba(212, 175, 55, 0.08) 100%)',
-            }}
-          />
-        </div>
-      </section>
+    <main style={pageHeroStyles.main}>
+      <PageHero
+        eyebrow="Custom Services"
+        title="Create a Piece That Is Truly Yours"
+        description="We offer one-on-one custom pearl jewelry design for meaningful pieces shaped around your story, preferred pearl character, and milestones."
+      />
 
       <section style={{ padding: `${spacing['3xl']} ${spacing.xl}` }}>
         <div

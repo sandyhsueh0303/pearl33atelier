@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { AvailabilityKind, ProductCategory } from '@pearl33atelier/shared/types'
 import { colors, typography, spacing, transitions, shadows } from '../constants/design'
+import { pageHeroStyles } from '../constants/pageHero'
+import PageHero from '../components/PageHero'
 import FilterPanel, { type ProductFilters } from '../components/FilterPanel'
 
 export interface ProductListItem {
@@ -144,57 +146,12 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
   const nextPageHref = `/products?page=${currentPage + 1}`
 
   return (
-    <main style={{ 
-      minHeight: '100vh',
-      background: 'linear-gradient(180deg, #fffdf8 0%, #ffffff 32%, #faf7f1 100%)',
-    }}>
-      <section
-        style={{
-          padding: `${spacing['4xl']} ${spacing.xl} ${spacing['3xl']}`,
-          background: 'linear-gradient(180deg, #f2e9da 0%, #ffffff 100%)',
-          textAlign: 'center',
-        }}
-      >
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-          <p
-            style={{
-              fontSize: typography.fontSize.sm,
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              color: colors.gold,
-              marginBottom: spacing.md,
-            }}
-          >
-            Collection
-          </p>
-          <h1 style={{ 
-            fontSize: 'clamp(2.2rem, 6.5vw, 4rem)',
-            fontWeight: typography.fontWeight.normal,
-            lineHeight: typography.lineHeight.tight,
-            marginBottom: spacing.lg,
-            color: colors.darkGray,
-            letterSpacing: '0.03em',
-            textShadow: '0 6px 16px rgba(212, 175, 55, 0.14)',
-          }}>
-            Collection
-          </h1>
-          <p style={{ 
-            fontSize: typography.fontSize.lg, 
-            color: colors.textSecondary 
-          }}>
-            Curated Pearl Jewelry Collection
-          </p>
-          <div
-            style={{
-              width: '96px',
-              height: '2px',
-              margin: `${spacing.lg} auto 0`,
-              background:
-                'linear-gradient(90deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.85) 50%, rgba(212, 175, 55, 0.08) 100%)',
-            }}
-          />
-        </div>
-      </section>
+    <main style={{ ...pageHeroStyles.main, minHeight: '100vh' }}>
+      <PageHero
+        eyebrow="Collection"
+        title="Collection"
+        description="Curated Pearl Jewelry Collection"
+      />
 
       <section style={{ padding: `clamp(1rem, 3vw, ${spacing['3xl']})` }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
