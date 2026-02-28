@@ -1,20 +1,6 @@
-'use client'
-
 import { colors, typography, spacing } from '../constants/design'
 
 export default function Footer() {
-  const handleWeChatClick = async () => {
-    try {
-      await navigator.clipboard.writeText('_33pearlatelier')
-    } catch {
-      // ignore
-    }
-    window.location.href = 'weixin://'
-    window.setTimeout(() => {
-      window.alert('Open WeChat and search "_33pearlatelier" to start chatting.')
-    }, 250)
-  }
-
   return (
     <footer
       style={{
@@ -61,10 +47,9 @@ export default function Footer() {
             <circle cx="17.25" cy="6.75" r="1.1" fill={colors.white} />
           </svg>
         </a>
-        <button
-          type="button"
-          onClick={handleWeChatClick}
-          aria-label="Open WeChat and search _33pearlatelier"
+        <a
+          href="weixin://"
+          aria-label="Open WeChat"
           style={{
             display: 'inline-flex',
             width: '36px',
@@ -75,7 +60,7 @@ export default function Footer() {
             borderRadius: '999px',
             color: colors.white,
             backgroundColor: 'transparent',
-            cursor: 'pointer',
+            textDecoration: 'none',
           }}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -93,7 +78,7 @@ export default function Footer() {
             <circle cx="14.3" cy="14.1" r="0.85" fill={colors.darkGray} />
             <circle cx="17.7" cy="14.1" r="0.85" fill={colors.darkGray} />
           </svg>
-        </button>
+        </a>
         <a
           href="mailto:33pearlatelier@gmail.com"
           aria-label="Email"

@@ -157,10 +157,10 @@ export default function HomePage() {
         }}
         >
           <div style={{ marginBottom: spacing.xs }}>Scroll to Discover</div>
-          <div style={{ 
-            fontSize: typography.fontSize.lg,
-            animation: 'bounce 2s infinite'
-          }}>
+          <div
+            className="homeScrollArrow"
+            style={{ fontSize: typography.fontSize.lg }}
+          >
             ↓
           </div>
         </div>
