@@ -82,7 +82,7 @@ export async function PATCH(
     }
     
     if ('name' in body) updates.name = body.name ?? null
-    if ('category' in body) updates.category = body.category ?? 'pearl'
+    if ('category' in body) updates.category = body.category ?? 'loose_pearl'
     if ('purchase_date' in body) updates.purchase_date = body.purchase_date ?? null
     if ('cost' in body) updates.cost = body.cost ?? null
     if ('internal_note' in body) updates.internal_note = body.internal_note ?? null

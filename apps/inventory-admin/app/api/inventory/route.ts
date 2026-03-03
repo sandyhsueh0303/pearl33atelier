@@ -169,7 +169,7 @@ export async function POST(request: NextRequest) {
 
     const data = {
       name: body.name || null,
-      category: body.category || 'pearl',
+      category: body.category || 'loose_pearl',
       purchase_date: body.purchase_date || null,
       cost: body.cost,
       total_quantity: totalQuantity,

@@ -18,7 +18,8 @@ interface InventoryItem {
 
 // Category options
 const CATEGORIES = [
-  { value: 'pearl', label: 'Pearl', color: '#FCE7F3', textColor: '#BE185D'},
+  { value: 'loose_pearl', label: 'Loose Pearl', color: '#FCE7F3', textColor: '#BE185D' },
+  { value: 'finished_jewelry', label: 'Finished Jewelry', color: '#FDF2F8', textColor: '#9D174D' },
   { value: 'pt900', label: 'Pt900 Platinum 900', color: '#F3E5F5', textColor: '#7B1FA2' },
   { value: '925_silver', label: '925 Silver', color: '#E0F2FE', textColor: '#0369A1' },
   { value: '18k', label: '18K Gold', color: '#FEF3C7', textColor: '#92400E' },

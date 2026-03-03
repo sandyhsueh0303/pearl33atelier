@@ -16,7 +16,7 @@ export default function InventoryForm({ inventoryId }: Props) {
   
   // Form state
   const [name, setName] = useState('')
-  const [category, setCategory] = useState('pearl')
+  const [category, setCategory] = useState('loose_pearl')
   const [purchaseDate, setPurchaseDate] = useState(new Date().toISOString().split('T')[0])
   const [cost, setCost] = useState('')
   const [totalQuantity, setTotalQuantity] = useState('')
@@ -25,7 +25,8 @@ export default function InventoryForm({ inventoryId }: Props) {
   
   // Category options
   const CATEGORIES = [
-    { value: 'pearl', label: 'Pearl' },
+    { value: 'loose_pearl', label: 'Loose Pearl' },
+    { value: 'finished_jewelry', label: 'Finished Jewelry' },
     { value: 'pt900', label: 'Pt900 Platinum' },
     { value: '925_silver', label: '925 Silver' },
     { value: '18k', label: '18K Gold' },
@@ -47,7 +48,7 @@ export default function InventoryForm({ inventoryId }: Props) {
       const data = await response.json()
       
       setName(data.name || '')
-      setCategory(data.category || 'pearl')
+      setCategory(data.category || 'loose_pearl')
       setPurchaseDate(data.purchase_date || new Date().toISOString().split('T')[0])
       setCost(data.cost?.toString() || '')
       setTotalQuantity(data.total_quantity?.toString() || '')
