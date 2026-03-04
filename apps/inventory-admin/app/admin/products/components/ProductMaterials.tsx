@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 interface InventoryItem {
   id: string
   name: string | null
+  category: string | null
   cost: number | null
   total_quantity: number
   internal_note: string | null
@@ -33,8 +34,21 @@ export default function ProductMaterials({ productId }: Props) {
   
   // Add form state
   const [selectedItemId, setSelectedItemId] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('all')
+  const [materialSearch, setMaterialSearch] = useState('')
   const [quantity, setQuantity] = useState('1')
   const [notes, setNotes] = useState('')
+
+  const materialCategoryOptions = [
+    { value: 'all', label: 'All Categories' },
+    { value: 'loose_pearl', label: 'Loose Pearl' },
+    { value: 'finished_jewelry', label: 'Finished Jewelry' },
+    { value: 'pt900', label: 'Pt900' },
+    { value: '925_silver', label: '925 Silver' },
+    { value: '18k', label: '18K Gold' },
+    { value: 'package', label: 'Packaging' },
+    { value: 'shipment', label: 'Shipping' },
+  ] as const
 
   useEffect(() => {
     loadMaterials()
@@ -57,11 +71,25 @@ export default function ProductMaterials({ productId }: Props) {
 
   const loadInventoryItems = async () => {
     try {
-      const res = await fetch('/api/inventory')
-      if (res.ok) {
+      const pageSize = 100
+      let page = 1
+      let totalPages = 1
+      const allItems: InventoryItem[] = []
+
+      while (page <= totalPages) {
+        const res = await fetch(`/api/inventory?page=${page}&pageSize=${pageSize}`)
+        if (!res.ok) break
         const data = await res.json()
-        setInventoryItems(data.items || [])
+        allItems.push(...(data.items || []))
+        totalPages = data.pagination?.totalPages || 1
+        page += 1
       }
+
+      // Deduplicate by inventory id to keep React option keys stable
+      const dedupedItems = Array.from(
+        new Map(allItems.map((item) => [item.id, item])).values()
+      )
+      setInventoryItems(dedupedItems)
     } catch (error) {
       console.error('Failed to load inventory:', error)
     }
@@ -124,6 +152,14 @@ export default function ProductMaterials({ productId }: Props) {
   const totalMaterialCost = materials.reduce((sum, m) => {
     return sum + (m.quantity_per_unit * (m.unit_cost_snapshot || 0))
   }, 0)
+  const normalizedSearch = materialSearch.trim().toLowerCase()
+  const filteredInventoryItems = inventoryItems.filter((item) => {
+    const categoryMatched = categoryFilter === 'all' || item.category === categoryFilter
+    const searchMatched =
+      normalizedSearch.length === 0 ||
+      (item.name || '').toLowerCase().includes(normalizedSearch)
+    return categoryMatched && searchMatched
+  })
 
   if (loading) {
     return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
@@ -236,7 +272,50 @@ export default function ProductMaterials({ productId }: Props) {
           ➕ Add Material
         </h3>
         <form onSubmit={handleAddMaterial}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 2fr auto', gap: '1rem', alignItems: 'end' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr 1fr 2fr auto', gap: '1rem', alignItems: 'end' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
+                Category
+              </label>
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '0.875rem',
+                  backgroundColor: 'white'
+                }}
+              >
+                {materialCategoryOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
+                Search
+              </label>
+              <input
+                type="text"
+                value={materialSearch}
+                onChange={(e) => setMaterialSearch(e.target.value)}
+                placeholder="Search material name..."
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+
             <div>
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
                 Select inventory material
@@ -255,9 +334,9 @@ export default function ProductMaterials({ productId }: Props) {
                 }}
               >
                 <option value="">-- Select material --</option>
-                {inventoryItems.map(item => (
+                {filteredInventoryItems.map(item => (
                   <option key={item.id} value={item.id}>
-                    {item.name || 'Unnamed'} - Stock: {item.total_quantity} - ${item.cost?.toFixed(2) || '0.00'}
+                    {item.name || 'Unnamed'} ({item.category || 'uncategorized'}) - Stock: {item.total_quantity} - ${item.cost?.toFixed(2) || '0.00'}
                   </option>
                 ))}
               </select>
