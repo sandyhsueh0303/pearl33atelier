@@ -40,7 +40,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [appliedSearch, setAppliedSearch] = useState('');
-  const [sortBy, setSortBy] = useState('sale_date');
+  const [sortBy, setSortBy] = useState('order_number');
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -302,6 +302,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                 backgroundColor: 'white'
               }}
             >
+              <option value="order_number">Order Number</option>
               <option value="sale_date">Date</option>
               <option value="total_price">Revenue</option>
               <option value="profit">Profit</option>

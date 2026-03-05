@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import SalesForm from './components/SalesForm';
 import SalesList from './components/SalesList';
@@ -26,14 +26,6 @@ function SalesPageContent() {
   const [refreshing, setRefreshing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingSale, setEditingSale] = useState<SaleRecord | null>(null);
-
-  // Auto-show form if a product is preselected
-  useEffect(() => {
-    if (preselectedProductId) {
-      setShowForm(true);
-      setEditingSale(null);
-    }
-  }, [preselectedProductId]);
 
   const handleSaleSuccess = () => {
     // Trigger refresh of the sales list

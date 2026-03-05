@@ -53,6 +53,18 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
   const [profit, setProfit] = useState(0);
   const [profitMargin, setProfitMargin] = useState(0);
 
+  const fetchNextOrderNumber = async () => {
+    try {
+      const response = await fetch('/api/sales?page=1&pageSize=1');
+      if (!response.ok) return;
+      const data = await response.json();
+      const totalItems = Number(data?.pagination?.totalItems || 0);
+      setOrderNumber(String(totalItems + 1));
+    } catch (error) {
+      console.error('Failed to fetch next order number:', error);
+    }
+  };
+
   // Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
@@ -87,6 +99,13 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
       setOrderNumber(editSale.order_number || '');
       setPlatform(editSale.platform || '');
       setNotes(editSale.notes || '');
+    }
+  }, [editSale]);
+
+  // Prefill next order number for new sale
+  useEffect(() => {
+    if (!editSale) {
+      void fetchNextOrderNumber();
     }
   }, [editSale]);
 
@@ -195,7 +214,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         setUnitCost('');
         setSaleDate(new Date().toISOString().split('T')[0]);
         setCustomerName('');
-        setOrderNumber('');
+        await fetchNextOrderNumber();
         setPlatform('');
         setNotes('');
       }

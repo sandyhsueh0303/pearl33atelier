@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 
   // Get query parameters
   const searchParams = request.nextUrl.searchParams;
-  const sortBy = searchParams.get('sortBy') || 'sale_date';
+  const sortBy = searchParams.get('sortBy') || 'order_number';
   const order = searchParams.get('order') || 'desc';
   const search = searchParams.get('search') || '';
   const page = Math.max(1, Number(searchParams.get('page') || '1'));
