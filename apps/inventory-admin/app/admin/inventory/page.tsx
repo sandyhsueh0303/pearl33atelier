@@ -54,13 +54,14 @@ export default function InventoryPage() {
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState('')
   const [filterCategory, setFilterCategory] = useState<string>('all')
+  const [filterStatus, setFilterStatus] = useState<'all' | 'instock' | 'sold'>('all')
   const [sortBy, setSortBy] = useState<'date' | 'value' | 'quantity'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     void loadInventory(currentPage)
-  }, [currentPage, searchQuery, filterCategory, sortBy, sortOrder])
+  }, [currentPage, searchQuery, filterCategory, filterStatus, sortBy, sortOrder])
 
   useEffect(() => {
     if (!notice) return
@@ -75,6 +76,7 @@ export default function InventoryPage() {
         pageSize: String(ITEMS_PER_PAGE),
         search: searchQuery,
         category: filterCategory,
+        status: filterStatus,
         sortBy,
         sortOrder,
       })
@@ -105,12 +107,12 @@ export default function InventoryPage() {
   }
 
   const filteredItems = items
-  const hasFilters = searchQuery !== '' || filterCategory !== 'all'
+  const hasFilters = searchQuery !== '' || filterCategory !== 'all' || filterStatus !== 'all'
   const paginatedItems = filteredItems
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [searchQuery, filterCategory, sortBy, sortOrder])
+  }, [searchQuery, filterCategory, filterStatus, sortBy, sortOrder])
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -121,6 +123,7 @@ export default function InventoryPage() {
   const resetFilters = () => {
     setSearchQuery('')
     setFilterCategory('all')
+    setFilterStatus('all')
     setSortBy('date')
     setSortOrder('desc')
   }
@@ -233,6 +236,22 @@ export default function InventoryPage() {
               {CATEGORIES.map(cat => (
                 <option key={cat.value} value={cat.value}>{cat.label}</option>
               ))}
+            </select>
+          </div>
+
+          {/* Sort By */}
+          <div style={{ flex: '0 1 180px' }}>
+            <label className="admin-filter-label">
+              📦 Status
+            </label>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value as 'all' | 'instock' | 'sold')}
+              className="admin-control"
+            >
+              <option value="all">All</option>
+              <option value="instock">In Stock</option>
+              <option value="sold">Sold</option>
             </select>
           </div>
 
@@ -380,12 +399,12 @@ export default function InventoryPage() {
           <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr className="admin-table-head-row">
+                <th className="admin-th-center">Status</th>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Purchase Date</th>
                 <th className="admin-th-right">Unit Cost</th>
-                <th className="admin-th-right">Available</th>
-                <th className="admin-th-right">Used</th>
+                <th className="admin-th-right">Qty</th>
                 <th className="admin-th-right">Remaining</th>
                 <th className="admin-th-right">Remaining Value</th>
                 <th className="admin-th-center">Actions</th>
@@ -396,10 +415,30 @@ export default function InventoryPage() {
                 const remainingQuantity = item.total_quantity - item.allocated_quantity
                 const unitCost = item.cost || 0
                 const remainingValue = remainingQuantity * unitCost
+                const isSold = remainingQuantity <= 0
                 const categoryInfo = CATEGORIES.find(c => c.value === item.category) || CATEGORIES[0]
                 
                 return (
-                  <tr key={item.id} className="admin-row-divider">
+                  <tr
+                    key={item.id}
+                    className="admin-row-divider"
+                    style={{
+                      opacity: isSold ? 0.7 : 1,
+                      backgroundColor: isSold ? '#FFFBFB' : 'transparent',
+                    }}
+                  >
+                    <td className="admin-cell-center">
+                      <span
+                        className="admin-chip"
+                        style={{
+                          padding: '0.375rem 0.75rem',
+                          backgroundColor: isSold ? '#FEE2E2' : '#DCFCE7',
+                          color: isSold ? '#B91C1C' : '#166534',
+                        }}
+                      >
+                        {isSold ? 'Sold' : 'In Stock'}
+                      </span>
+                    </td>
                     <td>
                       <div style={{ fontWeight: '500' }}>
                         {item.name || '-'}
@@ -427,12 +466,7 @@ export default function InventoryPage() {
                       ${unitCost.toFixed(2)}
                     </td>
                     <td className="admin-cell-right">
-                      <span className="admin-pill-soft admin-pill-success">
-                        {item.total_quantity}
-                      </span>
-                    </td>
-                    <td className="admin-cell-right admin-cell-muted">
-                      {item.allocated_quantity}
+                      {item.total_quantity}
                     </td>
                     <td style={{ fontWeight: '600' }} className="admin-cell-right">
                       {remainingQuantity}

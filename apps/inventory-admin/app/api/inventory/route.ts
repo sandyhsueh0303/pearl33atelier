@@ -16,6 +16,7 @@ export async function GET(_request: NextRequest) {
     const pageSize = Math.max(1, Math.min(100, Number(searchParams.get('pageSize') || '30')))
     const search = searchParams.get('search')?.trim() || ''
     const category = searchParams.get('category') || 'all'
+    const status = searchParams.get('status') || 'all'
     const sortBy = searchParams.get('sortBy') || 'date'
     const sortOrder = searchParams.get('sortOrder') === 'asc' ? 'asc' : 'desc'
     const ascending = sortOrder === 'asc'
@@ -59,8 +60,10 @@ export async function GET(_request: NextRequest) {
       summaryQuery = summaryQuery.eq('category', category)
     }
 
+    const applyStatusFilter = status === 'instock' || status === 'sold'
+
     const [itemsResult, summaryResult] = await Promise.all([
-      query.range(from, to),
+      applyStatusFilter ? query : query.range(from, to),
       summaryQuery,
     ])
 
@@ -87,10 +90,18 @@ export async function GET(_request: NextRequest) {
       }
     }) || []
     
+    const statusFilteredItems = applyStatusFilter
+      ? transformed.filter((item) =>
+          status === 'instock' ? item.quantity_available > 0 : item.quantity_available <= 0
+        )
+      : transformed
+
     // Summary stats
-    const summaryBase = summaryRows || []
+    const summaryBase = applyStatusFilter
+      ? statusFilteredItems
+      : (summaryRows || [])
     const summary = {
-      total_items: count || summaryBase.length,
+      total_items: applyStatusFilter ? statusFilteredItems.length : (count || summaryBase.length),
       total_quantity: summaryBase.reduce((sum, i) => sum + (i.total_quantity || 0), 0),
       available_quantity: summaryBase.reduce(
         (sum, i) => sum + ((i.total_quantity || 0) - (i.allocated_quantity || 0)),
@@ -103,15 +114,20 @@ export async function GET(_request: NextRequest) {
       )
     }
 
-    const totalPages = Math.max(1, Math.ceil((count || 0) / pageSize))
+    const paginatedItems = applyStatusFilter
+      ? statusFilteredItems.slice(from, to + 1)
+      : statusFilteredItems
+
+    const filteredTotalItems = applyStatusFilter ? statusFilteredItems.length : (count || 0)
+    const totalPages = Math.max(1, Math.ceil(filteredTotalItems / pageSize))
 
     return NextResponse.json({
-      items: transformed,
+      items: paginatedItems,
       summary,
       pagination: {
         page,
         pageSize,
-        totalItems: count || 0,
+        totalItems: filteredTotalItems,
         totalPages,
       },
     })
