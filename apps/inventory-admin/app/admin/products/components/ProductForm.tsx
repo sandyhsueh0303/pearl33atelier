@@ -75,7 +75,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
       setNote(product.note || '')
       setPearlType(product.pearl_type)
       setCategory(product.category || '')
-      setSizeMm(product.size_mm?.toString() || '')
+      setSizeMm(product.size_mm || '')
       setShape(product.shape || '')
       setMaterial(product.material || '')
       setSellPrice(product.sell_price?.toString() || '')
@@ -106,7 +106,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
         note: note || null,
         pearl_type: pearlType,
         category: category || null,
-        size_mm: sizeMm ? parseFloat(sizeMm) : null,
+        size_mm: sizeMm.trim() || null,
         shape: shape || null,
         material: material || null,
         sell_price: sellPrice ? parseFloat(sellPrice) : null,
@@ -405,10 +405,10 @@ export default function ProductForm({ productId }: ProductFormProps) {
               Size (mm)
             </label>
             <input
-              type="number"
-              step="0.1"
+              type="text"
               value={sizeMm}
               onChange={(e) => setSizeMm(e.target.value)}
+              placeholder="e.g.: 7.5 or 7-7.5 or 3.5-8"
               style={{
                 width: '100%',
                 padding: '0.75rem',

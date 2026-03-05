@@ -16,6 +16,17 @@ import type { Database } from '@pearl33atelier/shared/types'
 type ProductUpdate = Database['public']['Tables']['catalog_products']['Update']
 type ProductImage = Database['public']['Tables']['product_images']['Row']
 
+function normalizeSizeRange(value: unknown): string | null {
+  if (value == null) return null
+  const size = String(value).trim()
+  if (!size) return null
+  const isValid = /^\d+(\.\d+)?(-\d+(\.\d+)?)?$/.test(size)
+  if (!isValid) {
+    throw new Error('size_mm must be a number or range like 7, 7.5, 7-7.5, 3.5-8')
+  }
+  return size
+}
+
 // GET /api/products/[id] - Get single product with images
 export async function GET(
   request: NextRequest,
@@ -61,6 +72,17 @@ export async function PATCH(
     const body = await request.json()
     const { supabase, errorResponse } = await requireAdmin()
     if (errorResponse || !supabase) return errorResponse
+    let normalizedSize: string | null = null
+    if ('size_mm' in body) {
+      try {
+        normalizedSize = normalizeSizeRange(body.size_mm)
+      } catch (error) {
+        return NextResponse.json(
+          { error: error instanceof Error ? error.message : 'Invalid size_mm format' },
+          { status: 400 }
+        )
+      }
+    }
 
     // Reject slug modification
     if ('slug' in body) {
@@ -79,7 +101,7 @@ export async function PATCH(
     if ('category' in body) updates.category = body.category ?? null
     if ('description' in body) updates.description = body.description ?? null
     if ('note' in body) updates.note = body.note ?? null
-    if ('size_mm' in body) updates.size_mm = body.size_mm ?? null
+    if ('size_mm' in body) updates.size_mm = normalizedSize
     if ('shape' in body) updates.shape = body.shape ?? null
     if ('material' in body) updates.material = body.material ?? null
     if ('sell_price' in body) updates.sell_price = body.sell_price ?? null

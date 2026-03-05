@@ -15,6 +15,17 @@ type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
 type PearlType = Database['public']['Enums']['pearl_type']
 type ProductCategory = Database['public']['Enums']['product_category']
 
+function normalizeSizeRange(value: unknown): string | null {
+  if (value == null) return null
+  const size = String(value).trim()
+  if (!size) return null
+  const isValid = /^\d+(\.\d+)?(-\d+(\.\d+)?)?$/.test(size)
+  if (!isValid) {
+    throw new Error('size_mm must be a number or range like 7, 7.5, 7-7.5, 3.5-8')
+  }
+  return size
+}
+
 const PEARL_TYPES: readonly PearlType[] = [
   'WhiteAkoya',
   'GreyAkoya',
@@ -155,6 +166,15 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { supabase, errorResponse } = await requireAdmin()
     if (errorResponse || !supabase) return errorResponse
+    let normalizedSize: string | null = null
+    try {
+      normalizedSize = normalizeSizeRange(body.size_mm)
+    } catch (error) {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : 'Invalid size_mm format' },
+        { status: 400 }
+      )
+    }
 
     // Auto-generate slug if not provided
     const slug = body.slug || slugify(body.title)
@@ -167,7 +187,7 @@ export async function POST(request: NextRequest) {
       description: body.description ?? null,
       pearl_type: body.pearl_type,
       category: body.category ?? null,
-      size_mm: body.size_mm ?? null,
+      size_mm: normalizedSize,
       shape: body.shape ?? null,
       material: body.material ?? null,
       sell_price: body.sell_price ?? null,

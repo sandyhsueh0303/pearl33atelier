@@ -87,7 +87,7 @@ export interface CatalogProduct {
   description: string | null
   note: string | null // internal notes for admin
   pearl_type: PearlType
-  size_mm: number | null // numeric(4,1)
+  size_mm: string | null // text, supports ranges like "7-7.5"
   shape: string | null
   material: string | null
   sell_price: number | null // numeric(12,2), >= 0

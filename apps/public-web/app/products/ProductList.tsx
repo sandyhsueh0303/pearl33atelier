@@ -15,7 +15,7 @@ export interface ProductListItem {
   title: string
   slug: string
   pearl_type: string
-  size_mm: number | null
+  size_mm: string | null
   sell_price: number | null
   original_price: number | null
   category: ProductCategory | null
