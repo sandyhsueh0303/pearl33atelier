@@ -313,7 +313,7 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
                         {product.availability === 'IN_STOCK'
                           ? 'In Stock'
                           : product.availability === 'OUT_OF_STOCK'
-                          ? 'Out of Stock'
+                          ? 'Sold'
                           : 'Pre-order'}
                       </span>
                     </div>

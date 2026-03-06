@@ -569,7 +569,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             >
               <option value="IN_STOCK">In Stock</option>
               <option value="PREORDER">Preorder</option>
-              <option value="OUT_OF_STOCK">Out of Stock</option>
+              <option value="OUT_OF_STOCK">Sold</option>
             </select>
           </div>
 

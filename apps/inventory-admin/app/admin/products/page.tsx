@@ -437,8 +437,8 @@ export default function ProductsPage() {
                 <th>Category</th>
                 <th>Pearl Type</th>
                 <th>Available</th>
-                <th className="admin-th-right">Total Cost</th>
-                <th className="admin-th-right">Sell Price</th>
+                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Total Cost</th>
+                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Sell Price</th>
                 <th className="admin-th-right" style={{ minWidth: '140px' }}>Profit</th>
                 <th className="admin-th-center">Actions</th>
               </tr>
@@ -487,7 +487,7 @@ export default function ProductsPage() {
                         ? 'In Stock'
                         : product.availability === 'PREORDER'
                         ? 'Preorder'
-                        : 'Out of Stock'}
+                        : 'Sold'}
                     </span>
                   </td>
                   <td className="admin-cell-right admin-money admin-money-danger">
