@@ -1,0 +1,206 @@
+.navbar {
+  background-color: #1e3a5f;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-height: 68px;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  min-height: 52px;
+}
+
+.brand {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.navLinks {
+  display: flex;
+  gap: 1rem;
+  margin-left: 1rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  flex: 1 1 auto;
+}
+
+.navLinks::-webkit-scrollbar {
+  height: 6px;
+}
+
+.navLink {
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.navLink:hover {
+  color: #fff;
+}
+
+.rightGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  flex: 0 0 auto;
+}
+
+.userName {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dot {
+  opacity: 0.5;
+}
+
+.badge {
+  padding: 0.35rem 0.75rem;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.logoutButton {
+  padding: 0.5rem 0.9rem;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.logoutButton:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.mobileActions {
+  display: none;
+}
+
+.mobileMenuButton {
+  padding: 0.5rem 0.85rem;
+  background-color: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mobileMenu {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .navbar {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .brand {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .topRow {
+    gap: 0.5rem;
+  }
+
+  .brand {
+    font-size: 1rem;
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .rightGroup {
+    display: none;
+  }
+
+  .mobileActions {
+    display: flex;
+    margin-left: auto;
+  }
+
+  .mobileMenu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.35rem;
+    padding: 0.45rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .mobileMenuLink {
+    display: block;
+    padding: 0.6rem 0.7rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .mobileMenuLink:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+  }
+
+  .mobileMetaRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    padding: 0.5rem 0.7rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+  }
+
+  .mobileUserName {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.8rem;
+    max-width: 56%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobileLogoutButton {
+    padding: 0.42rem 0.7rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .mobileLogoutButton:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+  }
+}

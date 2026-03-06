@@ -53,6 +53,7 @@ a {
 /* Admin table styles */
 .admin-table {
   width: 100%;
+  min-width: 860px;
   border-collapse: collapse;
   background: white;
   border-radius: 12px;
@@ -259,7 +260,9 @@ button {
 }
 
 .admin-table-card {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-table-head-row {
@@ -391,4 +394,64 @@ button {
   font-weight: 600;
   font-size: 0.75rem;
   border-radius: 4px;
+}
+
+@media (max-width: 1024px) {
+  .admin-page {
+    padding: 1rem;
+  }
+
+  .admin-page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .admin-page-title-row {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .admin-filter-row > div {
+    flex: 1 1 100% !important;
+  }
+
+  .admin-filter-row .admin-btn {
+    width: 100%;
+  }
+
+  .admin-stats-row {
+    flex-wrap: wrap;
+  }
+
+  .admin-stats-row > * {
+    flex: 1 1 calc(50% - 0.5rem) !important;
+    min-width: 0;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 0.75rem;
+  }
+
+  .admin-action-group {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-page-title {
+    font-size: 1.5rem;
+  }
+
+  .admin-stats-row > * {
+    flex: 1 1 100% !important;
+  }
+
+  .admin-link-btn-primary,
+  .admin-btn-primary,
+  .admin-btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
 }

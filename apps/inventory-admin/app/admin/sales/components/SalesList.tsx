@@ -120,14 +120,6 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
     return `$${value.toFixed(2)}`;
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
   // Calculate summary statistics
   const summary = sales.reduce(
     (acc, sale) => ({
@@ -139,6 +131,9 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
     }),
     { totalRevenue: 0, totalCost: 0, totalProfit: 0, totalOrders: 0, totalUnits: 0 }
   );
+  const totalProfitMargin = summary.totalRevenue > 0
+    ? (summary.totalProfit / summary.totalRevenue) * 100
+    : 0;
   return (
     <div>
       {error && (
@@ -220,6 +215,9 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10B981' }}>
             {formatCurrency(summary.totalProfit)}
           </div>
+          <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#10B981', marginTop: '0.35rem' }}>
+            {totalProfitMargin.toFixed(1)}% Profit Margin
+          </div>
         </div>
       </div>
 
@@ -236,7 +234,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
               🔍 Search
             </label>
-            <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem' }}>
+            <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               <input
                 type="text"
                 placeholder="Search customer, order number, or channel..."
@@ -303,7 +301,6 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
               }}
             >
               <option value="order_number">Order Number</option>
-              <option value="sale_date">Date</option>
               <option value="total_price">Revenue</option>
               <option value="profit">Profit</option>
               <option value="customer_name">Customer</option>
@@ -374,7 +371,6 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
             }}>
               <thead>
                 <tr className="admin-table-head-row">
-                  <th>Date</th>
                   <th>Order Number</th>
                   <th>Product</th>
                   <th className="admin-th-center">Quantity</th>
@@ -382,14 +378,12 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                   <th className="admin-th-right">Cost</th>
                   <th className="admin-th-right">Profit</th>
                   <th>Customer</th>
-                  <th>Channel</th>
                   <th className="admin-th-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {sales.map((sale) => (
                   <tr key={sale.id} className="admin-row-divider">
-                    <td className="admin-cell-sm">{formatDate(sale.sale_date)}</td>
                     <td className="admin-cell-sm">
                       {sale.order_number ? (
                         <span className="admin-cell-mono">{sale.order_number}</span>
@@ -421,13 +415,6 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                       )}
                     </td>
                     <td className="admin-cell-sm">{sale.customer_name || '-'}</td>
-                    <td className="admin-cell-sm">
-                      {sale.platform ? (
-                        <span className="admin-pill-soft admin-pill-gold">
-                          {sale.platform}
-                        </span>
-                      ) : '-'}
-                    </td>
                     <td className="admin-cell-center">
                       <div className="admin-action-group">
                         <button

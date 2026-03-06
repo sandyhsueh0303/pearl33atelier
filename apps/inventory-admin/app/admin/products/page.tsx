@@ -436,6 +436,7 @@ export default function ProductsPage() {
                 <th>Title</th>
                 <th>Category</th>
                 <th>Pearl Type</th>
+                <th>Available</th>
                 <th className="admin-th-right">Total Cost</th>
                 <th className="admin-th-right">Sell Price</th>
                 <th className="admin-th-right" style={{ minWidth: '140px' }}>Profit</th>
@@ -464,6 +465,29 @@ export default function ProductsPage() {
                   <td>
                     <span className="admin-pill admin-pill-sky" style={{ fontSize: '0.875rem' }}>
                       {product.pearl_type}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      className={
+                        product.availability === 'IN_STOCK'
+                          ? 'admin-pill admin-pill-success'
+                          : product.availability === 'PREORDER'
+                          ? 'admin-pill admin-pill-gold'
+                          : 'admin-pill'
+                      }
+                      style={{
+                        fontSize: '0.875rem',
+                        ...(product.availability === 'OUT_OF_STOCK'
+                          ? { background: '#FEE2E2', color: '#B91C1C' }
+                          : {}),
+                      }}
+                    >
+                      {product.availability === 'IN_STOCK'
+                        ? 'In Stock'
+                        : product.availability === 'PREORDER'
+                        ? 'Preorder'
+                        : 'Out of Stock'}
                     </span>
                   </td>
                   <td className="admin-cell-right admin-money admin-money-danger">

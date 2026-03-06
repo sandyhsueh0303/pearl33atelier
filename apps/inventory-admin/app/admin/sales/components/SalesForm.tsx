@@ -256,7 +256,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
           {formNotice}
         </div>
       )}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
         <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 'bold' }}>{editSale ? 'Edit Sales Record' : 'Record New Sale'}</h2>
         {editSale && onCancelEdit && (
           <button
@@ -313,7 +313,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         </div>
 
         {/* Quantity, Price, Cost */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
               Quantity <span style={{ color: '#EF4444' }}>*</span>
@@ -386,7 +386,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             borderRadius: '4px',
             border: '1px solid #ddd',
           }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
               <div>
                 <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Total Price</div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#C9A961' }}>
