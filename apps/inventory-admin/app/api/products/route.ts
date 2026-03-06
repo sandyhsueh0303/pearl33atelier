@@ -26,6 +26,19 @@ function normalizeSizeRange(value: unknown): string | null {
   return size
 }
 
+function buildDefaultSlugFromFields(body: any, normalizedSize: string | null): string {
+  const parts = [
+    body?.pearl_type,
+    normalizedSize,
+    body?.shape,
+    body?.material,
+    body?.category,
+  ]
+    .map((value) => String(value || '').trim())
+    .filter(Boolean)
+  return slugify(parts.join('-'))
+}
+
 const PEARL_TYPES: readonly PearlType[] = [
   'WhiteAkoya',
   'GreyAkoya',
@@ -176,8 +189,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Auto-generate slug if not provided
-    const slug = body.slug || slugify(body.title)
+    // Auto-generate slug from pearl_type, size_mm, shape, material, category if not provided
+    const providedSlug = String(body.slug || '').trim()
+    const slug = providedSlug
+      ? slugify(providedSlug)
+      : buildDefaultSlugFromFields(body, normalizedSize)
 
     // Use nullish coalescing (??) to preserve falsy values like 0 and ''
     const productData: ProductInsert = {

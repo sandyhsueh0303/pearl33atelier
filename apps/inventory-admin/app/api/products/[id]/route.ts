@@ -10,7 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
-import { STORAGE_BUCKET } from '@pearl33atelier/shared'
+import { STORAGE_BUCKET, slugify } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
 
 type ProductUpdate = Database['public']['Tables']['catalog_products']['Update']
@@ -84,19 +84,21 @@ export async function PATCH(
       }
     }
 
-    // Reject slug modification
-    if ('slug' in body) {
-      return NextResponse.json(
-        { error: 'Cannot modify slug after product creation' },
-        { status: 400 }
-      )
-    }
-
     const updates: ProductUpdate = {}
     
     // Only include fields that are present in the request body
     // Use nullish coalescing (??) to preserve falsy values like 0 and ''
     if ('title' in body) updates.title = body.title
+    if ('slug' in body) {
+      const nextSlug = slugify(String(body.slug || '').trim())
+      if (!nextSlug) {
+        return NextResponse.json(
+          { error: 'slug cannot be empty' },
+          { status: 400 }
+        )
+      }
+      updates.slug = nextSlug
+    }
     if ('pearl_type' in body) updates.pearl_type = body.pearl_type
     if ('category' in body) updates.category = body.category ?? null
     if ('description' in body) updates.description = body.description ?? null

@@ -20,6 +20,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
   // Form fields
   const [title, setTitle] = useState('')
   const [slug, setSlug] = useState('')
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
   const [description, setDescription] = useState('')
   const [note, setNote] = useState('')
   const [pearlType, setPearlType] = useState<PearlType>('WhiteAkoya')
@@ -37,19 +38,31 @@ export default function ProductForm({ productId }: ProductFormProps) {
   const [images, setImages] = useState<ProductImage[]>([])
   const [uploadingImages, setUploadingImages] = useState(false)
 
-  // Auto-slugify when title changes (only in create mode)
-  const handleTitleChange = (value: string) => {
-    setTitle(value)
-    if (!isEditMode) {
-      setSlug(slugify(value))
-    }
+  const buildDefaultSlug = () => {
+    const parts = [pearlType, sizeMm.trim(), shape.trim(), material.trim(), category]
+      .map((value) => String(value || '').trim())
+      .filter(Boolean)
+    return slugify(parts.join('-'))
   }
 
-  // Auto-slugify when slug field changes
+  // Keep title editing separate from slug generation
+  const handleTitleChange = (value: string) => {
+    setTitle(value)
+  }
+
+  // Manual slug override
   const handleSlugChange = (value: string) => {
+    setSlugManuallyEdited(true)
     const slugified = slugify(value)
     setSlug(slugified)
   }
+
+  // Auto-generate slug from pearl_type, size_mm, shape, material, category for new products
+  useEffect(() => {
+    if (isEditMode || slugManuallyEdited) return
+    const nextSlug = buildDefaultSlug()
+    setSlug(nextSlug)
+  }, [isEditMode, slugManuallyEdited, pearlType, sizeMm, shape, material, category])
 
   // Load product data if editing
   useEffect(() => {
@@ -71,6 +84,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
       
       setTitle(product.title)
       setSlug(product.slug)
+      setSlugManuallyEdited(true)
       setDescription(product.description || '')
       setNote(product.note || '')
       setPearlType(product.pearl_type)
@@ -101,6 +115,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
     try {
       const productData: any = {
+        slug,
         title,
         description: description || null,
         note: note || null,
@@ -115,11 +130,6 @@ export default function ProductForm({ productId }: ProductFormProps) {
         preorder_note: preorderNote || null,
         published: false, // Always save as draft initially
         inventory_item_id: null // Can be connected later
-      }
-
-      // Only include slug on creation, not on update
-      if (!isEditMode) {
-        productData.slug = slug
       }
 
       const url = isEditMode ? `/api/products/${productId}` : '/api/products'
@@ -328,7 +338,6 @@ export default function ProductForm({ productId }: ProductFormProps) {
               value={slug}
               onChange={(e) => handleSlugChange(e.target.value)}
               required
-              disabled={isEditMode}
               placeholder="white-akoya-8mm"
               style={{
                 width: '100%',
@@ -337,12 +346,12 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 borderRadius: '4px',
                 fontSize: '1rem',
                 fontFamily: 'monospace',
-                backgroundColor: isEditMode ? '#f5f5f5' : 'white'
+                backgroundColor: 'white'
               }}
             />
             <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
-              {isEditMode 
-                ? 'Cannot be changed after creation' 
+              {isEditMode
+                ? 'Editable. URL will update after saving.'
                 : 'Auto-generated from title, but editable manually'}
             </small>
           </div>
