@@ -40,14 +40,15 @@ export default function CustomServicesPage() {
 
   const customNote =
     'From first pearl selection to final setting, our custom service is focused on precision and wearability. Whether you are looking for a timeless pendant, elegant earrings, a matched bracelet, or a custom ring, we tailor pearl quality, metal tone, and design proportion to your personal style.'
-  
+  const introTitle =
+    "Whether you envision a unique necklace, elegant earrings, or a statement piece, we'll bring your vision to life with the finest pearls and expert craftsmanship."
 
   return (
     <main style={pageHeroStyles.main}>
       <PageHero
         eyebrow="Custom Services"
-        title="Create a Piece That Is Truly Yours"
-        description="We offer one-on-one custom pearl jewelry design for meaningful pieces shaped around your story, preferred pearl character, and milestones."
+        title="Design Your Dream Jewelry"
+        description={introTitle}
       />
 
       <section style={{ padding: `${spacing['3xl']} ${spacing.xl}` }}>
@@ -200,7 +201,7 @@ export default function CustomServicesPage() {
             marginBottom: spacing.md,
           }}
         >
-          Start Your Custom Inquiry
+          Ready to Begin?
         </h2>
         <p
           style={{
@@ -217,7 +218,7 @@ export default function CustomServicesPage() {
         </p>
         <div style={{ display: 'flex', gap: spacing.md, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link
-            href="/contact"
+            href="/custom/inquiry"
             style={{
               padding: `${spacing.sm} ${spacing.lg}`,
               backgroundColor: colors.darkGray,
@@ -228,7 +229,7 @@ export default function CustomServicesPage() {
               transition: transitions.fast,
             }}
           >
-            Start Custom Inquiry
+            Start Your Custom Design Journey 
           </Link>
         </div>
         <p style={{ marginTop: spacing.sm }}>
