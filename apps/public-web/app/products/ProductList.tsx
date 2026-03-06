@@ -193,7 +193,8 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
                 style={{
                   textDecoration: 'none',
                   color: 'inherit',
-                  display: 'block'
+                  display: 'block',
+                  height: '100%',
                 }}
               >
                 <div style={{
@@ -201,7 +202,10 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
                   overflow: 'hidden',
                   boxShadow: shadows.subtle,
                   transition: transitions.normal,
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
                 }}
                 className="productCard"
                 >
@@ -246,60 +250,25 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
                   </div>
 
                   {/* Product Info */}
-                  <div style={{ padding: spacing.lg }}>
+                  <div style={{ padding: spacing.lg, display: 'flex', flexDirection: 'column', flex: 1 }}>
                     <h2 style={{ 
                       fontSize: typography.fontSize.lg,
                       fontWeight: typography.fontWeight.medium,
                       marginBottom: spacing.xs,
-                      color: colors.darkGray
+                      color: colors.darkGray,
+                      lineHeight: 1.4,
+                      wordBreak: 'break-word',
                     }}>
                       {product.title}
                     </h2>
-
-                    <div style={{ 
-                      display: 'flex',
-                      gap: spacing.xs,
-                      marginBottom: spacing.sm
-                    }}>
-                      {product.category && (
-                        <span style={{
-                          padding: '4px 12px',
-                          backgroundColor: '#f3e5f5',
-                          color: colors.darkGray,
-                          fontSize: typography.fontSize.xs,
-                          fontWeight: typography.fontWeight.medium,
-                        }}>
-                          {getCategoryLabel(product.category)}
-                        </span>
-                      )}
-                      <span style={{
-                        padding: '4px 12px',
-                        backgroundColor: colors.pearl,
-                        color: colors.gold,
-                        fontSize: typography.fontSize.xs,
-                        fontWeight: typography.fontWeight.medium,
-                        letterSpacing: '0.05em',
-                      }}>
-                        {product.pearl_type}
-                      </span>
-                      {product.size_mm && (
-                        <span style={{
-                          padding: '4px 12px',
-                          backgroundColor: colors.lightGray,
-                          color: colors.textSecondary,
-                          fontSize: typography.fontSize.xs
-                        }}>
-                          {product.size_mm}mm
-                        </span>
-                      )}
-                    </div>
 
                     {/* Description removed from card view; only shown on detail page */}
 
                     <div style={{ 
                       display: 'flex',
                       justifyContent: 'space-between',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      marginTop: 'auto',
                     }}>
                       <div>
                         {product.sell_price && (

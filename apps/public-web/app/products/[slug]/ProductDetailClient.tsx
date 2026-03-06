@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type CSSProperties, type ReactNode } from 'react'
 import ImageZoom from '../../components/ImageZoom'
 import ProductInquiryModal from '../../components/ProductInquiryModal'
 import { getProductImageUrl } from '@pearl33atelier/shared'
@@ -26,11 +26,10 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
     LOOSE_PEARLS: 'Loose Pearls',
     BROOCHES: 'Brooches',
   }
-  
-  // Handle case when there are no images
   const hasImages = images.length > 0
-  const primaryImage = hasImages ? (images.find(img => img.is_primary) || images[0]) : null
-  const currentImage = hasImages ? (images[currentImageIndex] || primaryImage) : null
+  const currentImage = hasImages
+    ? images[currentImageIndex] || images.find((img) => img.is_primary) || images[0]
+    : null
 
   const nextImage = () => {
     if (!hasImages) return
@@ -41,6 +40,31 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
     if (!hasImages) return
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
   }
+
+  const specRowStyle: CSSProperties = { borderBottom: `1px solid ${colors.pearl}` }
+  const specLabelCellStyle: CSSProperties = {
+    padding: `${spacing.xs} 0`,
+    color: colors.textSecondary,
+    fontSize: typography.fontSize.sm,
+  }
+  const specValueCellStyle: CSSProperties = {
+    padding: `${spacing.xs} 0`,
+    color: colors.darkGray,
+    fontWeight: typography.fontWeight.medium,
+    fontSize: typography.fontSize.sm,
+  }
+  const specCodeValueCellStyle: CSSProperties = {
+    ...specValueCellStyle,
+    fontFamily: 'monospace',
+    fontWeight: typography.fontWeight.normal,
+  }
+
+  const renderSpecRow = (label: string, value: ReactNode, valueStyle: CSSProperties = specValueCellStyle) => (
+    <tr style={specRowStyle}>
+      <td style={specLabelCellStyle}>{label}</td>
+      <td style={valueStyle}>{value}</td>
+    </tr>
+  )
 
   return (
     <main style={{ 
@@ -282,7 +306,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
             </div>
 
             {/* Price */}
-            <div style={{ marginBottom: spacing['2xl'] }}>
+            <div style={{ marginBottom: spacing.md }}>
               {product.sell_price && (
                 <div style={{ 
                   fontSize: typography.fontSize['5xl'],
@@ -304,102 +328,36 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
               )}
             </div>
 
-            {/* Description */}
-            {product.description && (
-              <div style={{ 
-                marginBottom: spacing['2xl'],
-                padding: spacing.lg,
-                backgroundColor: colors.pearl,
-              }}>
-                <h3 style={{ 
-                  fontSize: typography.fontSize.lg,
-                  fontWeight: typography.fontWeight.medium,
-                  marginBottom: spacing.sm,
-                  color: colors.darkGray
-                }}>
-                  Description
-                </h3>
-                <p style={{ 
-                  color: colors.textSecondary,
-                  lineHeight: typography.lineHeight.relaxed,
-                  whiteSpace: 'pre-wrap'
-                }}>
-                  {product.description}
-                </p>
-              </div>
-            )}
-
             {/* Product Details */}
             <div style={{ 
               borderTop: `1px solid ${colors.lightGray}`,
-              paddingTop: spacing.lg,
-              marginBottom: spacing['2xl']
+              paddingTop: spacing.xs,
+              marginBottom: spacing.xl
             }}>
               <h3 style={{ 
                 fontSize: typography.fontSize.lg,
                 fontWeight: typography.fontWeight.medium,
-                marginBottom: spacing.md,
+                marginBottom: spacing.sm,
                 color: colors.darkGray
               }}>
                 Specifications
               </h3>
               <table style={{ width: '100%' }}>
                 <tbody>
+                  {renderSpecRow('Pearl Type', product.pearl_type)}
+                  {product.category && (
+                    renderSpecRow('Category', categoryLabels[product.category] || product.category)
+                  )}
+                  {product.size_mm && (
+                    renderSpecRow('Size', `${product.size_mm}mm`)
+                  )}
                   {product.shape && (
-                    <tr style={{ borderBottom: `1px solid ${colors.pearl}` }}>
-                      <td style={{ 
-                        padding: `${spacing.sm} 0`,
-                        color: colors.textSecondary,
-                        fontSize: typography.fontSize.sm
-                      }}>
-                        Shape
-                      </td>
-                      <td style={{ 
-                        padding: `${spacing.sm} 0`,
-                        color: colors.darkGray,
-                        fontWeight: typography.fontWeight.medium,
-                        fontSize: typography.fontSize.sm
-                      }}>
-                        {product.shape}
-                      </td>
-                    </tr>
+                    renderSpecRow('Shape', product.shape)
                   )}
                   {product.material && (
-                    <tr style={{ borderBottom: `1px solid ${colors.pearl}` }}>
-                      <td style={{ 
-                        padding: `${spacing.sm} 0`,
-                        color: colors.textSecondary,
-                        fontSize: typography.fontSize.sm
-                      }}>
-                        Material
-                      </td>
-                      <td style={{ 
-                        padding: `${spacing.sm} 0`,
-                        color: colors.darkGray,
-                        fontWeight: typography.fontWeight.medium,
-                        fontSize: typography.fontSize.sm
-                      }}>
-                        {product.material}
-                      </td>
-                    </tr>
+                    renderSpecRow('Material', product.material)
                   )}
-                  <tr style={{ borderBottom: `1px solid ${colors.pearl}` }}>
-                    <td style={{ 
-                      padding: `${spacing.sm} 0`,
-                      color: colors.textSecondary,
-                      fontSize: typography.fontSize.sm
-                    }}>
-                      Product Code
-                    </td>
-                    <td style={{ 
-                      padding: `${spacing.sm} 0`,
-                      color: colors.darkGray,
-                      fontFamily: 'monospace',
-                      fontSize: typography.fontSize.sm
-                    }}>
-                      {product.slug}
-                    </td>
-                  </tr>
+                  {renderSpecRow('Product Code', product.slug, specCodeValueCellStyle)}
                 </tbody>
               </table>
             </div>
@@ -418,54 +376,113 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                 </span>
               </div>
             )}
+          </div>
+        </div>
 
-            {/* Contact CTA */}
-            <div style={{ 
-              padding: spacing.lg,
-              backgroundColor: colors.pearl,
-              textAlign: 'center'
-            }}>
-              <p style={{ 
-                color: colors.darkGray,
-                marginBottom: spacing.xs,
-                fontWeight: typography.fontWeight.medium,
-                fontSize: typography.fontSize.lg,
-              }}>
-                Interested in this item?
-              </p>
-              <p style={{ 
-                color: colors.textSecondary,
-                fontSize: typography.fontSize.sm,
-                marginBottom: spacing.md
-              }}>
-                Contact us to learn more or ask about this product.
-              </p>
+        {/* Description and CTA below image/specifications */}
+        <section style={{ marginTop: spacing.lg }}>
+            {product.description && (
+              <div
+                style={{
+                  marginBottom: spacing['2xl'],
+                  padding: `${spacing.lg} ${spacing.xl}`,
+                  backgroundColor: '#fbf8f2',
+                  border: `1px solid #e5dccb`,
+                  borderRadius: '14px',
+                  boxShadow: '0 10px 24px rgba(45, 36, 24, 0.06)',
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: typography.fontSize.xl,
+                    fontWeight: typography.fontWeight.medium,
+                    marginBottom: spacing.sm,
+                    color: colors.darkGray,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    fontFamily: '"Cormorant Garamond", "Times New Roman", serif',
+                  }}
+                >
+                  Description
+                </h3>
+                <p
+                  style={{
+                    color: colors.textSecondary,
+                    lineHeight: 1.9,
+                    whiteSpace: 'pre-wrap',
+                    fontSize: typography.fontSize.base,
+                    fontFamily: '"Cormorant Garamond", "Times New Roman", serif',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {product.description}
+                </p>
+              </div>
+            )}
+
+            <div
+              style={{
+                padding: `${spacing.lg} ${spacing.xl}`,
+                backgroundColor: '#fffdf9',
+                borderTop: `1px solid ${colors.lightGray}`,
+                borderBottom: `1px solid ${colors.lightGray}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: spacing.lg,
+                flexWrap: 'wrap',
+              }}
+            >
+              <div style={{ minWidth: '260px', flex: 1 }}>
+                <p
+                  style={{
+                    color: colors.darkGray,
+                    marginBottom: spacing.xs,
+                    fontWeight: typography.fontWeight.medium,
+                    fontSize: typography.fontSize.lg,
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Interested in this item?
+                </p>
+                <p
+                  style={{
+                    color: colors.textSecondary,
+                    fontSize: typography.fontSize.base,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  Contact us to learn more or ask about this product.
+                </p>
+              </div>
               <button
                 onClick={() => setInquiryOpen(true)}
                 style={{
                   padding: `${spacing.md} ${spacing.xl}`,
                   backgroundColor: colors.gold,
                   color: colors.white,
-                  border: 'none',
-                  borderRadius: 6,
+                  border: `1px solid ${colors.gold}`,
+                  borderRadius: '999px',
                   fontWeight: typography.fontWeight.medium,
-                  fontSize: typography.fontSize.base,
+                  fontSize: typography.fontSize.sm,
+                  letterSpacing: '0.04em',
                   cursor: 'pointer',
                   boxShadow: shadows.soft,
-                  transition: transitions.fast
+                  transition: transitions.fast,
                 }}
               >
                 Inquire About This Product
               </button>
-              <ProductInquiryModal
-                open={inquiryOpen}
-                onClose={() => setInquiryOpen(false)}
-                productTitle={product.title}
-                productSlug={product.slug}
-              />
             </div>
-          </div>
-        </div>
+        </section>
+
+        <ProductInquiryModal
+          open={inquiryOpen}
+          onClose={() => setInquiryOpen(false)}
+          productTitle={product.title}
+          productSlug={product.slug}
+        />
 
         {/* Back to list */}
         <div style={{ marginTop: spacing['3xl'], textAlign: 'center' }}>

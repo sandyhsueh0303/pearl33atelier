@@ -1,6 +1,23 @@
+'use client'
+
+import type { MouseEvent } from 'react'
 import { colors, typography, spacing } from '../constants/design'
 
 export default function Footer() {
+  const handleOpenWeChat = async (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const wechatId = '_33pearlatelier'
+
+    try {
+      await navigator.clipboard.writeText(wechatId)
+      window.alert(`WeChat ID copied: ${wechatId}`)
+    } catch {
+      window.alert(`Unable to copy automatically. Please search WeChat ID: ${wechatId}`)
+    }
+
+    window.location.href = 'weixin://'
+  }
+
   return (
     <footer
       style={{
@@ -49,6 +66,7 @@ export default function Footer() {
         </a>
         <a
           href="weixin://"
+          onClick={handleOpenWeChat}
           aria-label="Open WeChat"
           style={{
             display: 'inline-flex',

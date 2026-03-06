@@ -10,6 +10,7 @@ interface ProductInquiryModalProps {
 const ProductInquiryModal: React.FC<ProductInquiryModalProps> = ({ open, onClose, productTitle, productSlug }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
@@ -18,6 +19,10 @@ const ProductInquiryModal: React.FC<ProductInquiryModalProps> = ({ open, onClose
 
   useEffect(() => {
     if (!open) {
+      setName('');
+      setEmail('');
+      setPhone('');
+      setMessage('');
       setSubmitted(false);
       setError('');
       setLoading(false);
@@ -34,11 +39,12 @@ I am interested in this item:
 
 Name: ${name}
 Email: ${email}
+Phone: ${phone || 'Not provided'}
 
 Message:
 ${message}
 `,
-    [productTitle, productSlug, name, email, message]
+    [productTitle, productSlug, name, email, phone, message]
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,15 +75,16 @@ ${message}
   };
 
   const handleOpenWeChat = async () => {
+    const wechatId = '_33pearlatelier';
+
     try {
-      await navigator.clipboard.writeText('_33pearlatelier');
+      await navigator.clipboard.writeText(wechatId);
+      window.alert(`WeChat ID copied: ${wechatId}`);
     } catch {
-      // ignore
+      window.alert(`Unable to copy automatically. Please search WeChat ID: ${wechatId}`);
     }
+
     window.location.href = 'weixin://';
-    window.setTimeout(() => {
-      window.alert('Open WeChat and search "_33pearlatelier" to start chatting.');
-    }, 250);
   };
 
   const handleCopyAgain = async () => {
@@ -174,6 +181,15 @@ ${message}
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
+                style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+              />
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <input
+                type="tel"
+                placeholder="Phone (optional)"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
                 style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
               />
             </div>

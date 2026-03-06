@@ -180,6 +180,22 @@ p {
   border-color: #c9a961 !important;
 }
 
+.journalCardLink {
+  text-decoration: none;
+}
+
+.journalCardLink:hover .journalCard {
+  transform: translateY(-6px);
+  background-color: #fffefb;
+  box-shadow: 0 12px 24px rgba(44, 44, 44, 0.12);
+  border-color: #c9a961 !important;
+}
+
+.journalCardLink:hover .journalCardCta {
+  color: #c9a961 !important;
+  text-decoration-color: #c9a961 !important;
+}
+
 @media (max-width: 768px) {
   :root {
     --home-blob-scale: 0.55;
