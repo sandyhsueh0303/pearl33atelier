@@ -19,6 +19,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
   
   // Form fields
   const [title, setTitle] = useState('')
+  const [sku, setSku] = useState('')
   const [slug, setSlug] = useState('')
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
   const [description, setDescription] = useState('')
@@ -83,6 +84,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
       const product: CatalogProduct = data.product
       
       setTitle(product.title)
+      setSku(product.sku || '')
       setSlug(product.slug)
       setSlugManuallyEdited(true)
       setDescription(product.description || '')
@@ -117,6 +119,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
       const productData: any = {
         slug,
         title,
+        sku: sku.trim() || null,
         description: description || null,
         note: note || null,
         pearl_type: pearlType,
@@ -325,6 +328,26 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 border: '1px solid #ddd',
                 borderRadius: '4px',
                 fontSize: '1rem'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              SKU
+            </label>
+            <input
+              type="text"
+              value={sku}
+              onChange={(e) => setSku(e.target.value)}
+              placeholder="e.g.: AKOYA-001"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem',
+                fontFamily: 'monospace'
               }}
             />
           </div>

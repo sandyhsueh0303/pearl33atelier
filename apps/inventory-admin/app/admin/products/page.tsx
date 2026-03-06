@@ -432,6 +432,7 @@ export default function ProductsPage() {
             <thead>
               <tr className="admin-table-head-row">
                 <th>Status</th>
+                <th>SKU</th>
                 <th>Slug</th>
                 <th>Title</th>
                 <th>Category</th>
@@ -449,6 +450,9 @@ export default function ProductsPage() {
                     <span className={`admin-pill ${product.published ? 'admin-pill-success' : 'admin-pill-warning'}`}>
                       {product.published ? 'Published' : 'Draft'}
                     </span>
+                  </td>
+                  <td className="admin-cell-mono">
+                    {product.sku || '-'}
                   </td>
                   <td className="admin-cell-mono">
                     {product.slug}

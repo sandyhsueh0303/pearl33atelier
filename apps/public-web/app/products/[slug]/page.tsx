@@ -198,7 +198,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     name: product.title,
     image: [imageUrl],
     description: product.description || buildProductDescription(product),
-    sku: product.id,
+    sku: product.sku || product.id,
     brand: {
       '@type': 'Brand',
       name: '33 Pearl Atelier',

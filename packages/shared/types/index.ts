@@ -82,6 +82,7 @@ export interface InventoryItem {
 export interface CatalogProduct {
   id: string // uuid
   inventory_item_id: string | null // uuid, FK -> inventory_items.id
+  sku: string | null // merchant-facing stock keeping unit
   title: string
   slug: string // UNIQUE - public identifier for URLs
   description: string | null

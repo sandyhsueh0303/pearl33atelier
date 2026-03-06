@@ -27,6 +27,16 @@ function normalizeSizeRange(value: unknown): string | null {
   return size
 }
 
+function normalizeSku(value: unknown): string | null {
+  if (value == null) return null
+  const sku = String(value).trim().toUpperCase()
+  if (!sku) return null
+  if (!/^PA[0-9]{4}$/.test(sku)) {
+    throw new Error('sku must match format PA0001')
+  }
+  return sku
+}
+
 // GET /api/products/[id] - Get single product with images
 export async function GET(
   request: NextRequest,
@@ -89,6 +99,16 @@ export async function PATCH(
     // Only include fields that are present in the request body
     // Use nullish coalescing (??) to preserve falsy values like 0 and ''
     if ('title' in body) updates.title = body.title
+    if ('sku' in body) {
+      try {
+        updates.sku = normalizeSku(body.sku)
+      } catch (error) {
+        return NextResponse.json(
+          { error: error instanceof Error ? error.message : 'Invalid sku format' },
+          { status: 400 }
+        )
+      }
+    }
     if ('slug' in body) {
       const nextSlug = slugify(String(body.slug || '').trim())
       if (!nextSlug) {

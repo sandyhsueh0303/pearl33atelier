@@ -26,6 +26,16 @@ function normalizeSizeRange(value: unknown): string | null {
   return size
 }
 
+function normalizeSku(value: unknown): string | null {
+  if (value == null) return null
+  const sku = String(value).trim().toUpperCase()
+  if (!sku) return null
+  if (!/^PA[0-9]{4}$/.test(sku)) {
+    throw new Error('sku must match format PA0001')
+  }
+  return sku
+}
+
 function buildDefaultSlugFromFields(body: any, normalizedSize: string | null): string {
   const parts = [
     body?.pearl_type,
@@ -91,13 +101,13 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('catalog_products')
       .select(
-        'id, inventory_item_id, title, slug, description, note, pearl_type, size_mm, shape, material, sell_price, original_price, category, availability, preorder_note, published, published_at, created_at, updated_at',
+        'id, inventory_item_id, sku, title, slug, description, note, pearl_type, size_mm, shape, material, sell_price, original_price, category, availability, preorder_note, published, published_at, created_at, updated_at',
         { count: 'exact' }
       )
 
     if (search) {
       const escaped = search.replace(/[%_]/g, '\\$&')
-      query = query.or(`title.ilike.%${escaped}%,slug.ilike.%${escaped}%,description.ilike.%${escaped}%`)
+      query = query.or(`title.ilike.%${escaped}%,slug.ilike.%${escaped}%,sku.ilike.%${escaped}%,description.ilike.%${escaped}%`)
     }
 
     if (status === 'published') query = query.eq('published', true)
@@ -180,11 +190,13 @@ export async function POST(request: NextRequest) {
     const { supabase, errorResponse } = await requireAdmin()
     if (errorResponse || !supabase) return errorResponse
     let normalizedSize: string | null = null
+    let normalizedSku: string | null = null
     try {
+      normalizedSku = normalizeSku(body.sku)
       normalizedSize = normalizeSizeRange(body.size_mm)
     } catch (error) {
       return NextResponse.json(
-        { error: error instanceof Error ? error.message : 'Invalid size_mm format' },
+        { error: error instanceof Error ? error.message : 'Invalid product input' },
         { status: 400 }
       )
     }
@@ -199,6 +211,7 @@ export async function POST(request: NextRequest) {
     const productData: ProductInsert = {
       title: body.title,
       slug: slug,
+      sku: normalizedSku,
       note: body.note ?? null,
       description: body.description ?? null,
       pearl_type: body.pearl_type,

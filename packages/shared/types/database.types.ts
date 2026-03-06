@@ -47,6 +47,7 @@ export type Database = {
           sell_price: number | null
           shape: string | null
           size_mm: string | null
+          sku: string | null
           slug: string
           title: string
           updated_at: string
@@ -68,6 +69,7 @@ export type Database = {
           sell_price?: number | null
           shape?: string | null
           size_mm?: string | null
+          sku?: string | null
           slug: string
           title: string
           updated_at?: string
@@ -89,6 +91,7 @@ export type Database = {
           sell_price?: number | null
           shape?: string | null
           size_mm?: string | null
+          sku?: string | null
           slug?: string
           title?: string
           updated_at?: string
@@ -392,6 +395,7 @@ export type Database = {
           sell_price: number | null
           shape: string | null
           size_mm: string | null
+          sku: string | null
           slug: string
           title: string
           updated_at: string
@@ -426,6 +430,7 @@ export type Database = {
           sell_price: number | null
           shape: string | null
           size_mm: string | null
+          sku: string | null
           slug: string
           title: string
           updated_at: string
