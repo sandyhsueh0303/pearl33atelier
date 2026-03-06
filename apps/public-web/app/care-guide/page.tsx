@@ -48,7 +48,36 @@ export default function CareGuidePage() {
         description="Pearls are organic and delicate. With consistent, gentle care, they retain their glow and elegance for many years."
       />
 
-      <section style={{ padding: `${spacing['3xl']} ${spacing.xl}` }}>
+      <section
+        style={{
+          padding: `${spacing['2xl']} ${spacing.xl}`,
+          background: colors.white,
+        }}
+      >
+        <div style={{ maxWidth: '1100px', margin: `0 auto ${spacing.xl}` }}>
+          <p
+            style={{
+              textAlign: 'center',
+              fontSize: typography.fontSize.sm,
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              color: colors.gold,
+              marginBottom: spacing.xs,
+            }}
+          >
+            Everyday Essentials
+          </p>
+          <h2
+            style={{
+              textAlign: 'center',
+              fontSize: typography.fontSize['3xl'],
+              color: colors.darkGray,
+              marginBottom: spacing.sm,
+            }}
+          >
+            Daily Habits That Protect Pearl Luster
+          </h2>
+        </div>
         <div
           style={{
             maxWidth: '1100px',
@@ -64,11 +93,28 @@ export default function CareGuidePage() {
               style={{
                 backgroundColor: colors.white,
                 border: `1px solid ${colors.lightGray}`,
-                borderRadius: '10px',
+                borderTop: '3px solid rgba(212, 175, 55, 0.55)',
+                borderRadius: '12px',
                 padding: spacing.lg,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                boxShadow: '0 6px 16px rgba(24, 24, 24, 0.05)',
               }}
             >
+              <span
+                style={{
+                  display: 'inline-flex',
+                  width: '28px',
+                  height: '28px',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '999px',
+                  backgroundColor: 'rgba(212, 175, 55, 0.16)',
+                  color: colors.darkGray,
+                  fontSize: typography.fontSize.sm,
+                  marginBottom: spacing.sm,
+                }}
+              >
+                ✓
+              </span>
               <h2
                 style={{
                   fontSize: typography.fontSize.xl,
@@ -95,8 +141,9 @@ export default function CareGuidePage() {
 
       <section
         style={{
-          padding: `${spacing['2xl']} ${spacing.xl} ${spacing['4xl']}`,
-          backgroundColor: '#fcfbf8',
+          padding: `${spacing['2xl']} ${spacing.xl}`,
+          background:
+            'linear-gradient(180deg, #ffffff 0%, #fcfaf6 100%)',
         }}
       >
         <div
@@ -111,16 +158,18 @@ export default function CareGuidePage() {
         >
           <article
             style={{
-              backgroundColor: colors.white,
-              border: `1px solid ${colors.lightGray}`,
-              borderRadius: '10px',
+              backgroundColor: '#fff',
+              border: `1px solid #d8ead8`,
+              borderRadius: '12px',
+              borderLeft: '4px solid #4b7f54',
               padding: spacing.lg,
+              boxShadow: '0 6px 16px rgba(24, 24, 24, 0.04)',
             }}
           >
             <h3
               style={{
                 fontSize: typography.fontSize.xl,
-                color: colors.darkGray,
+                color: '#2f5a37',
                 marginBottom: spacing.md,
               }}
             >
@@ -135,16 +184,18 @@ export default function CareGuidePage() {
 
           <article
             style={{
-              backgroundColor: colors.white,
-              border: `1px solid ${colors.lightGray}`,
-              borderRadius: '10px',
+              backgroundColor: '#fff',
+              border: `1px solid #efd7d4`,
+              borderRadius: '12px',
+              borderLeft: '4px solid #9a3d37',
               padding: spacing.lg,
+              boxShadow: '0 6px 16px rgba(24, 24, 24, 0.04)',
             }}
           >
             <h3
               style={{
                 fontSize: typography.fontSize.xl,
-                color: colors.darkGray,
+                color: '#8a332e',
                 marginBottom: spacing.md,
               }}
             >
@@ -159,7 +210,7 @@ export default function CareGuidePage() {
         </div>
       </section>
 
-      <section style={{ padding: `${spacing['3xl']} ${spacing.xl}`, textAlign: 'center' }}>
+      <section style={{ padding: `${spacing['2xl']} ${spacing.xl}`, textAlign: 'center' }}>
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
           <h2
             style={{
@@ -178,8 +229,8 @@ export default function CareGuidePage() {
               marginBottom: spacing.md,
             }}
           >
-            For deeper maintenance, wipe pearls gently with a cloth slightly dampened with clean water,
-            then lay flat to air dry completely before storing.
+            For deeper maintenance, wipe pearls gently with a cloth slightly dampened with clean water.
+            Then lay flat to air dry completely before storing.
           </p>
           <p
             style={{
@@ -195,9 +246,10 @@ export default function CareGuidePage() {
 
       <section
         style={{
-          padding: `${spacing['3xl']} ${spacing.xl}`,
+          padding: `${spacing['2xl']} ${spacing.xl}`,
           textAlign: 'center',
           borderTop: `1px solid ${colors.lightGray}`,
+          background: 'linear-gradient(180deg, #fffefb 0%, #ffffff 100%)',
         }}
       >
         <h2
@@ -235,7 +287,46 @@ export default function CareGuidePage() {
           >
             Contact Us
           </Link>
+          <a
+            href="https://www.instagram.com/33_pearl_atelier/"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              padding: `${spacing.sm} ${spacing.lg}`,
+              backgroundColor: colors.white,
+              color: colors.darkGray,
+              textDecoration: 'none',
+              border: `1px solid ${colors.darkGray}`,
+              letterSpacing: '0.06em',
+              transition: transitions.fast,
+            }}
+          >
+            Instagram
+          </a>
+          <a
+            href="weixin://"
+            style={{
+              padding: `${spacing.sm} ${spacing.lg}`,
+              backgroundColor: colors.white,
+              color: colors.darkGray,
+              textDecoration: 'none',
+              border: `1px solid ${colors.darkGray}`,
+              letterSpacing: '0.06em',
+              transition: transitions.fast,
+            }}
+          >
+            WeChat
+          </a>
         </div>
+        <p
+          style={{
+            marginTop: spacing.sm,
+            color: colors.textSecondary,
+            fontSize: typography.fontSize.sm,
+          }}
+        >
+          WeChat ID: <strong>_33pearlatelier</strong>
+        </p>
         <p style={{ marginTop: spacing.sm }}>
           <Link href="/faq#daily-care" style={{ color: colors.textSecondary }}>
             Need quick answers? Read care FAQ.
