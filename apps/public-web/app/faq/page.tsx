@@ -3,11 +3,15 @@ import Link from 'next/link'
 import { colors, typography, spacing, transitions } from '../constants/design'
 import { pageHeroStyles } from '../constants/pageHero'
 import PageHero from '../components/PageHero'
+import styles from './faq.module.css'
 
 export const metadata: Metadata = {
   title: 'Pearl Jewelry FAQ',
   description:
     'Answers to common questions about pearl jewelry, custom services, shipping, care, and returns from 33 Pearl Atelier.',
+  alternates: {
+    canonical: '/faq',
+  },
 }
 
 export default function FAQPage() {
@@ -103,15 +107,22 @@ export default function FAQPage() {
         description="Common questions about custom pearl jewelry, timelines, care, and after-service support."
       />
 
-      <section style={{ padding: `${spacing['3xl']} ${spacing.xl} ${spacing['4xl']}` }}>
+      <section style={{ padding: `${spacing['2xl']} ${spacing.xl} ${spacing['3xl']}` }}>
         <div style={{ maxWidth: '980px', margin: '0 auto', display: 'grid', gap: spacing.xl }}>
           {groupedFaqs.map((group) => (
-            <section key={group.title}>
+            <section
+              key={group.title}
+              style={{
+                paddingTop: spacing.md,
+                borderTop: `1px solid ${colors.lightGray}`,
+              }}
+            >
               <h2
                 style={{
                   fontSize: typography.fontSize['2xl'],
                   color: colors.darkGray,
                   marginBottom: spacing.md,
+                  letterSpacing: '0.01em',
                 }}
               >
                 {group.title}
@@ -125,16 +136,18 @@ export default function FAQPage() {
                     <details
                       key={item.q}
                       id={item.id}
+                      className={styles.faqItem}
                       style={{
                         scrollMarginTop: '110px',
                         backgroundColor: colors.white,
                         border: `1px solid ${colors.lightGray}`,
-                        borderRadius: '10px',
+                        borderRadius: '12px',
                         padding: `${spacing.md} ${spacing.lg}`,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                        boxShadow: '0 6px 14px rgba(24, 24, 24, 0.04)',
                       }}
                     >
                       <summary
+                        className={styles.faqSummary}
                         style={{
                           fontSize: typography.fontSize.xl,
                           fontWeight: typography.fontWeight.medium,
@@ -148,7 +161,11 @@ export default function FAQPage() {
                         }}
                       >
                         <span>{item.q}</span>
-                        <span style={{ color: colors.gold, fontSize: typography.fontSize.lg }}>+</span>
+                        <span
+                          className={styles.marker}
+                          aria-hidden="true"
+                          style={{ color: colors.gold, fontSize: typography.fontSize.lg }}
+                        />
                       </summary>
                       <p
                         style={{
@@ -156,6 +173,8 @@ export default function FAQPage() {
                           color: colors.textSecondary,
                           lineHeight: typography.lineHeight.relaxed,
                           marginTop: spacing.sm,
+                          paddingTop: spacing.sm,
+                          borderTop: `1px solid ${colors.lightGray}`,
                         }}
                       >
                         {item.a}
@@ -171,11 +190,23 @@ export default function FAQPage() {
 
       <section
         style={{
-          padding: `${spacing['3xl']} ${spacing.xl}`,
+          padding: `${spacing['2xl']} ${spacing.xl}`,
           textAlign: 'center',
           borderTop: `1px solid ${colors.lightGray}`,
+          background: 'linear-gradient(180deg, #fffefb 0%, #ffffff 100%)',
         }}
       >
+        <p
+          style={{
+            fontSize: typography.fontSize.sm,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: colors.textSecondary,
+            marginBottom: spacing.sm,
+          }}
+        >
+          Personal guidance available
+        </p>
         <h2
           style={{
             fontSize: typography.fontSize['3xl'],

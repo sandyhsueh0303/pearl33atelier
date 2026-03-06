@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: 'Pearl Care Guide',
   description:
     'Learn how to care for pearl jewelry with daily wear, storage, cleaning, and maintenance tips from 33 Pearl Atelier.',
+  alternates: {
+    canonical: '/care-guide',
+  },
 }
 
 export default function CareGuidePage() {
@@ -84,50 +87,35 @@ export default function CareGuidePage() {
             margin: '0 auto',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: spacing.lg,
+            gap: spacing.md,
           }}
         >
           {essentials.map((item) => (
             <article
               key={item.title}
               style={{
-                backgroundColor: colors.white,
+                backgroundColor: '#fffdfa',
                 border: `1px solid ${colors.lightGray}`,
-                borderTop: '3px solid rgba(212, 175, 55, 0.55)',
+                borderTop: '1px solid rgba(212, 175, 55, 0.45)',
                 borderRadius: '12px',
                 padding: spacing.lg,
-                boxShadow: '0 6px 16px rgba(24, 24, 24, 0.05)',
+                boxShadow: '0 4px 10px rgba(24, 24, 24, 0.035)',
               }}
             >
-              <span
-                style={{
-                  display: 'inline-flex',
-                  width: '28px',
-                  height: '28px',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '999px',
-                  backgroundColor: 'rgba(212, 175, 55, 0.16)',
-                  color: colors.darkGray,
-                  fontSize: typography.fontSize.sm,
-                  marginBottom: spacing.sm,
-                }}
-              >
-                ✓
-              </span>
               <h2
                 style={{
-                  fontSize: typography.fontSize.xl,
-                  fontWeight: typography.fontWeight.medium,
+                  fontSize: typography.fontSize.lg,
+                  fontWeight: typography.fontWeight.normal,
                   color: colors.darkGray,
                   marginBottom: spacing.sm,
+                  letterSpacing: '0.01em',
                 }}
               >
                 {item.title}
               </h2>
               <p
                 style={{
-                  fontSize: typography.fontSize.base,
+                  fontSize: typography.fontSize.sm,
                   color: colors.textSecondary,
                   lineHeight: typography.lineHeight.relaxed,
                 }}
@@ -142,8 +130,7 @@ export default function CareGuidePage() {
       <section
         style={{
           padding: `${spacing['2xl']} ${spacing.xl}`,
-          background:
-            'linear-gradient(180deg, #ffffff 0%, #fcfaf6 100%)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #fcfaf6 100%)',
         }}
       >
         <div
@@ -158,52 +145,120 @@ export default function CareGuidePage() {
         >
           <article
             style={{
-              backgroundColor: '#fff',
-              border: `1px solid #d8ead8`,
+              backgroundColor: '#fffdfa',
+              border: '1px solid rgba(212, 175, 55, 0.35)',
               borderRadius: '12px',
-              borderLeft: '4px solid #4b7f54',
-              padding: spacing.lg,
-              boxShadow: '0 6px 16px rgba(24, 24, 24, 0.04)',
+              padding: `${spacing.md} ${spacing.lg}`,
+              boxShadow: '0 4px 12px rgba(24, 24, 24, 0.035)',
             }}
           >
+            <p
+              style={{
+                fontSize: typography.fontSize.sm,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: colors.darkGray,
+                marginBottom: spacing.sm,
+                display: 'inline-block',
+                border: '1px solid rgba(212, 175, 55, 0.5)',
+                borderRadius: '999px',
+                padding: '0.22rem 0.72rem',
+              }}
+            >
+              Recommended
+            </p>
             <h3
               style={{
                 fontSize: typography.fontSize.xl,
-                color: '#2f5a37',
-                marginBottom: spacing.md,
+                color: colors.darkGray,
+                marginBottom: spacing.sm,
               }}
             >
               Do
             </h3>
-            <ul style={{ paddingLeft: '1.25rem', color: colors.textSecondary, lineHeight: 1.9 }}>
+            <ul
+              style={{
+                listStyle: 'none',
+                paddingLeft: 0,
+                color: colors.textSecondary,
+                lineHeight: 1.85,
+                margin: 0,
+              }}
+            >
               {dos.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item} style={{ paddingLeft: '1rem', position: 'relative' }}>
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: '0.85em',
+                      width: '0.45rem',
+                      borderTop: '1px solid rgba(24, 24, 24, 0.45)',
+                    }}
+                  />
+                  {item}
+                </li>
               ))}
             </ul>
           </article>
 
           <article
             style={{
-              backgroundColor: '#fff',
-              border: `1px solid #efd7d4`,
+              backgroundColor: '#fffdfa',
+              border: '1px solid rgba(212, 175, 55, 0.35)',
               borderRadius: '12px',
-              borderLeft: '4px solid #9a3d37',
-              padding: spacing.lg,
-              boxShadow: '0 6px 16px rgba(24, 24, 24, 0.04)',
+              padding: `${spacing.md} ${spacing.lg}`,
+              boxShadow: '0 4px 12px rgba(24, 24, 24, 0.035)',
             }}
           >
+            <p
+              style={{
+                fontSize: typography.fontSize.sm,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: colors.darkGray,
+                marginBottom: spacing.sm,
+                display: 'inline-block',
+                border: '1px solid rgba(212, 175, 55, 0.5)',
+                borderRadius: '999px',
+                padding: '0.22rem 0.72rem',
+              }}
+            >
+              Avoid
+            </p>
             <h3
               style={{
                 fontSize: typography.fontSize.xl,
-                color: '#8a332e',
-                marginBottom: spacing.md,
+                color: colors.darkGray,
+                marginBottom: spacing.sm,
               }}
             >
               Don&apos;t
             </h3>
-            <ul style={{ paddingLeft: '1.25rem', color: colors.textSecondary, lineHeight: 1.9 }}>
+            <ul
+              style={{
+                listStyle: 'none',
+                paddingLeft: 0,
+                color: colors.textSecondary,
+                lineHeight: 1.85,
+                margin: 0,
+              }}
+            >
               {donts.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item} style={{ paddingLeft: '1rem', position: 'relative' }}>
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: '0.85em',
+                      width: '0.45rem',
+                      borderTop: '1px solid rgba(24, 24, 24, 0.45)',
+                    }}
+                  />
+                  {item}
+                </li>
               ))}
             </ul>
           </article>

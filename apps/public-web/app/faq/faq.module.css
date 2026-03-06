@@ -1,0 +1,32 @@
+.faqItem {
+  transition: box-shadow 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.faqItem:hover {
+  border-color: #e6dec9;
+  box-shadow: 0 10px 18px rgba(24, 24, 24, 0.06);
+}
+
+.faqSummary {
+  outline: none;
+}
+
+.faqSummary::-webkit-details-marker {
+  display: none;
+}
+
+.faqSummary::marker {
+  content: '';
+}
+
+.marker::before {
+  content: '+';
+}
+
+.faqItem[open] {
+  border-color: #e0d5bb;
+}
+
+.faqItem[open] .marker::before {
+  content: '−';
+}

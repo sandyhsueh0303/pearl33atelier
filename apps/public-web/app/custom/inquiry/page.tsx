@@ -120,7 +120,7 @@ I have reference photos to share!`
       
       {/* Hero Section */}
       <PageHero
-        eyebrow="CONTACT"
+        eyebrow="INQUIRY"
         title="Start Your Inquiry"
         description="Share your pearl type preference, budget range, occasion, and preferred timeline. We will reply with clear next steps for collection purchase or custom design."
       />
@@ -129,30 +129,34 @@ I have reference photos to share!`
       <section style={{
         maxWidth: '860px',
         margin: '0 auto',
-        padding: `${spacing['3xl']} ${spacing.xl}`,
+        padding: `${spacing['2xl']} ${spacing.xl}`,
       }}>
         
         {/* What to Include */}
         <div style={{
-          background: 'linear-gradient(180deg, #FCFAF6 0%, #F8F6F0 100%)',
-          padding: spacing.xl,
+          background: '#fffdfa',
+          padding: spacing.lg,
           borderRadius: '14px',
-          border: '1px solid #E7E0D3',
+          border: '1px solid #E6DDCF',
+          borderTop: '2px solid rgba(212, 175, 55, 0.45)',
           marginBottom: spacing['2xl'],
+          boxShadow: '0 6px 14px rgba(24, 24, 24, 0.04)',
         }}>
           <h2 style={{
             fontSize: typography.fontSize.lg,
             fontWeight: typography.fontWeight.semibold,
             marginBottom: spacing.md,
             color: colors.darkGray,
+            letterSpacing: '0.01em',
           }}>
             What to Include in Your Inquiry
           </h2>
           <ul style={{
             fontSize: typography.fontSize.base,
-            lineHeight: '1.8',
+            lineHeight: '1.75',
             color: colors.textPrimary,
-            paddingLeft: spacing.lg,
+            paddingLeft: '1.05rem',
+            margin: 0,
           }}>
             <li>Jewelry style and pearl preference</li>
             <li>Metal type and timeline</li>
@@ -163,11 +167,11 @@ I have reference photos to share!`
 
         {/* Form */}
         <div style={{
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #FCFBF8 100%)',
+          background: '#fff',
           padding: spacing['2xl'],
           borderRadius: '16px',
           border: '1px solid #E7E0D3',
-          boxShadow: '0 10px 24px rgba(36, 28, 16, 0.06)',
+          boxShadow: '0 8px 18px rgba(36, 28, 16, 0.05)',
         }}>
           
           {/* Name */}
@@ -617,7 +621,7 @@ I have reference photos to share!`
               transition: 'all 0.3s ease',
             }}
           >
-            📋 Copy Inquiry Message
+            Copy Inquiry Message
           </button>
           
           {/* Reminder before copying */}
@@ -629,7 +633,7 @@ I have reference photos to share!`
               textAlign: 'center',
               lineHeight: '1.6',
             }}>
-              💡 Have reference photos? Attach them when sending your message
+              Have reference photos? Attach them when sending your message.
             </p>
           )}
         </div>
@@ -637,10 +641,11 @@ I have reference photos to share!`
         {/* Success Message & Channels - Show after copy */}
         {copied && (
           <div style={{
-            background: 'white',
+            background: '#fffdfa',
             padding: spacing['2xl'],
             borderRadius: '12px',
-            border: `2px solid ${colors.gold}`,
+            border: `1px solid ${colors.lightGray}`,
+            borderTop: '2px solid rgba(212, 175, 55, 0.45)',
             marginTop: spacing.xl,
             animation: 'fadeIn 0.3s ease-in',
           }}>
@@ -650,51 +655,43 @@ I have reference photos to share!`
               textAlign: 'center',
               marginBottom: spacing.xl,
             }}>
-              <div style={{
-                fontSize: '3rem',
-                marginBottom: spacing.md,
-              }}>
-                ✓
-              </div>
               <h3 style={{
-                fontSize: typography.fontSize['3xl'],
-                fontWeight: typography.fontWeight.semibold,
-                color: colors.gold,
-                marginBottom: spacing.sm,
-              }}>
-                Message copied to clipboard!
-              </h3>
-            </div>
-
-            {/* Photo Reminder - Highlighted */}
-            <div style={{
-              background: 'linear-gradient(135deg, #FFF9E6 0%, #FFF3D6 100%)',
-              padding: spacing.lg,
-              borderRadius: '8px',
-              border: '2px solid #FFD700',
-              marginBottom: spacing.xl,
-              textAlign: 'center',
-            }}>
-              <div style={{
-                fontSize: '2.5rem',
-                marginBottom: spacing.sm,
-              }}>
-                📸
-              </div>
-              <h4 style={{
-                fontSize: typography.fontSize.lg,
+                fontSize: typography.fontSize['2xl'],
                 fontWeight: typography.fontWeight.semibold,
                 color: colors.darkGray,
                 marginBottom: spacing.xs,
               }}>
-                Remember to attach your reference photos!
+                Inquiry copied successfully
+              </h3>
+              <p style={{ color: colors.textSecondary, margin: 0 }}>
+                Choose your preferred channel below.
+              </p>
+            </div>
+
+            {/* Photo Reminder - Highlighted */}
+            <div style={{
+              background: '#fff',
+              padding: spacing.md,
+              borderRadius: '8px',
+              border: '1px solid #E8DCC8',
+              marginBottom: spacing.xl,
+              textAlign: 'center',
+            }}>
+              <h4 style={{
+                fontSize: typography.fontSize.base,
+                fontWeight: typography.fontWeight.semibold,
+                color: colors.darkGray,
+                marginBottom: spacing.xs,
+              }}>
+                Attach reference photos if available
               </h4>
               <p style={{
                 fontSize: typography.fontSize.sm,
                 color: colors.textSecondary,
                 lineHeight: '1.6',
+                margin: 0,
               }}>
-                Photos help us understand your style and provide better recommendations
+                They help us understand your style and recommend better options.
               </p>
             </div>
 
@@ -706,8 +703,26 @@ I have reference photos to share!`
                 marginBottom: spacing.lg,
                 fontWeight: typography.fontWeight.medium,
               }}>
-                Choose your preferred channel:
+                Continue via
               </p>
+
+              <button
+                onClick={handleCopy}
+                style={{
+                  marginBottom: spacing.lg,
+                  padding: `${spacing.xs} ${spacing.lg}`,
+                  border: '1px solid #E0E0E0',
+                  borderRadius: '999px',
+                  background: '#fff',
+                  color: colors.darkGray,
+                  fontSize: typography.fontSize.sm,
+                  fontWeight: typography.fontWeight.medium,
+                  letterSpacing: '0.04em',
+                  cursor: 'pointer',
+                }}
+              >
+                Copy Again
+              </button>
               
               <div style={{
                 display: 'grid',
@@ -737,7 +752,6 @@ I have reference photos to share!`
                     e.currentTarget.style.boxShadow = 'none'
                   }}
                 >
-                  <div style={{ fontSize: '2.5rem', marginBottom: spacing.sm }}>📱</div>
                   <div style={{
                     fontSize: typography.fontSize.base,
                     fontWeight: typography.fontWeight.semibold,
@@ -775,7 +789,6 @@ I have reference photos to share!`
                     e.currentTarget.style.boxShadow = 'none'
                   }}
                 >
-                  <div style={{ fontSize: '2.5rem', marginBottom: spacing.sm }}>💬</div>
                   <div style={{
                     fontSize: typography.fontSize.base,
                     fontWeight: typography.fontWeight.semibold,
@@ -813,7 +826,6 @@ I have reference photos to share!`
                     e.currentTarget.style.boxShadow = 'none'
                   }}
                 >
-                  <div style={{ fontSize: '2.5rem', marginBottom: spacing.sm }}>✉️</div>
                   <div style={{
                     fontSize: typography.fontSize.base,
                     fontWeight: typography.fontWeight.semibold,
@@ -834,41 +846,21 @@ I have reference photos to share!`
         )}
       </section>
 
-      {/* Business Hours */}
-      <section style={{
-        background: '#F8F6F0',
-        padding: `${spacing['3xl']} ${spacing.xl}`,
-      }}>
-        <div style={{
-          maxWidth: '800px',
-          margin: '0 auto',
+      <section
+        style={{
+          padding: `${spacing.xl} ${spacing.xl} ${spacing['2xl']}`,
           textAlign: 'center',
-        }}>
-          <h3 style={{
-            fontSize: typography.fontSize.xl,
-            fontWeight: typography.fontWeight.semibold,
-            marginBottom: spacing.lg,
-            color: colors.darkGray,
-          }}>
-            🕐 Business Hours
-          </h3>
-          <div style={{
-            fontSize: typography.fontSize.base,
-            lineHeight: '1.8',
-            color: colors.textPrimary,
-            marginBottom: spacing.md,
-          }}>
-            <div>Monday - Friday: 10:00 AM - 6:00 PM</div>
-            <div>Saturday: 11:00 AM - 4:00 PM</div>
-            <div>Sunday: Closed</div>
-          </div>
-          <p style={{
+        }}
+      >
+        <p
+          style={{
             fontSize: typography.fontSize.sm,
             color: colors.textSecondary,
-          }}>
-            ✓ We typically respond within 24 hours
-          </p>
-        </div>
+            margin: 0,
+          }}
+        >
+          ✓ We typically respond within 24 hours
+        </p>
       </section>
 
       {/* Inline CSS for animation */}

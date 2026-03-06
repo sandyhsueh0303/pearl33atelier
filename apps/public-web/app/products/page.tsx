@@ -2,9 +2,18 @@ import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
 import ProductList from './ProductList'
 import type { ProductListImage, ProductListItem } from './ProductList'
 import { redirect } from 'next/navigation'
+import type { Metadata } from 'next'
 
 interface ProductWithImages extends ProductListItem {
   primaryImage?: ProductListImage
+}
+
+export const metadata: Metadata = {
+  title: 'Collection',
+  description: 'Explore the handcrafted pearl jewelry collection at 33 Pearl Atelier.',
+  alternates: {
+    canonical: '/products',
+  },
 }
 
 // ISR cache to reduce cold-load latency for collection page

@@ -96,14 +96,16 @@ ${formData.message}
       </h2>
       <p
         style={{
-          fontSize: typography.fontSize.base,
+          fontSize: typography.fontSize.sm,
           color: colors.textSecondary,
-          marginBottom: spacing['2xl'],
+          marginBottom: spacing.xl,
           textAlign: 'center',
+          lineHeight: typography.lineHeight.relaxed,
         }}
       >
-        Fill out the form below and we&apos;ll get back to you shortly. <br />
-        For a faster reply, scroll to the bottom and contact us <b> via Instagram, WeChat, or Email</b>.
+        Share your request below and we&apos;ll get back to you within 24 hours.
+        <br />
+        Prefer direct contact? Use Instagram, WeChat, or email links above.
       </p>
 
       {status === 'ready' ? (
@@ -224,11 +226,11 @@ ${formData.message}
               onChange={handleChange}
               style={{
                 width: '100%',
-                padding: spacing.md,
+                padding: `${spacing.sm} ${spacing.md}`,
                 border: `1px solid ${colors.lightGray}`,
-                borderRadius: '10px',
+                borderRadius: '8px',
                 backgroundColor: '#FFFEFC',
-                fontSize: typography.fontSize.base,
+                fontSize: typography.fontSize.sm,
                 color: colors.darkGray,
                 transition: transitions.normal,
                 outline: 'none',
@@ -264,11 +266,11 @@ ${formData.message}
               onChange={handleChange}
               style={{
                 width: '100%',
-                padding: spacing.md,
+                padding: `${spacing.sm} ${spacing.md}`,
                 border: `1px solid ${colors.lightGray}`,
-                borderRadius: '10px',
+                borderRadius: '8px',
                 backgroundColor: '#FFFEFC',
-                fontSize: typography.fontSize.base,
+                fontSize: typography.fontSize.sm,
                 color: colors.darkGray,
                 transition: transitions.normal,
                 outline: 'none',
@@ -293,22 +295,22 @@ ${formData.message}
                 marginBottom: spacing.xs,
               }}
             >
-              Phone
+              Phone *
             </label>
             <input
               type="tel"
               id="phone"
               name="phone"
+              required
               value={formData.phone}
               onChange={handleChange}
-              placeholder="+1 ..."
               style={{
                 width: '100%',
-                padding: spacing.md,
+                padding: `${spacing.sm} ${spacing.md}`,
                 border: `1px solid ${colors.lightGray}`,
-                borderRadius: '10px',
+                borderRadius: '8px',
                 backgroundColor: '#FFFEFC',
-                fontSize: typography.fontSize.base,
+                fontSize: typography.fontSize.sm,
                 color: colors.darkGray,
                 transition: transitions.normal,
                 outline: 'none',
@@ -335,37 +337,59 @@ ${formData.message}
             >
               Subject
             </label>
-            <select
-              id="subject"
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              style={{
-                width: '100%',
-                padding: spacing.md,
-                border: `1px solid ${colors.lightGray}`,
-                borderRadius: '10px',
-                fontSize: typography.fontSize.base,
-                color: colors.darkGray,
-                transition: transitions.normal,
-                outline: 'none',
-                backgroundColor: '#FFFEFC',
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = colors.gold
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = colors.lightGray
-              }}
-            >
-              <option value="">Select a subject</option>
-              <option value="general">General Question</option>
-              <option value="product">Product Inquiry</option>
-              <option value="shipping">Shipping & Delivery</option>
-              <option value="care">Care & Maintenance</option>
-              <option value="order">Order Status</option>
-              <option value="other">Other</option>
-            </select>
+            <div style={{ position: 'relative' }}>
+              <select
+                id="subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                style={{
+                  width: '100%',
+                  padding: `${spacing.sm} ${spacing.md}`,
+                  paddingRight: '2.4rem',
+                  border: `1px solid ${colors.lightGray}`,
+                  borderRadius: '8px',
+                  fontSize: typography.fontSize.sm,
+                  color: colors.darkGray,
+                  transition: transitions.normal,
+                  outline: 'none',
+                  backgroundColor: '#FFFEFC',
+                  appearance: 'none',
+                  WebkitAppearance: 'none',
+                  MozAppearance: 'none',
+                  cursor: 'pointer',
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = colors.gold
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = colors.lightGray
+                }}
+              >
+                <option value="">Select a subject</option>
+                <option value="general">General Question</option>
+                <option value="product">Product Inquiry</option>
+                <option value="shipping">Shipping & Delivery</option>
+                <option value="care">Care & Maintenance</option>
+                <option value="order">Order Status</option>
+                <option value="other">Other</option>
+              </select>
+              <span
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  right: '0.95rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: colors.textSecondary,
+                  fontSize: typography.fontSize.xs,
+                  pointerEvents: 'none',
+                  letterSpacing: '0.02em',
+                }}
+              >
+                ▼
+              </span>
+            </div>
           </div>
 
           <div style={{ marginBottom: spacing.xl }}>
@@ -392,9 +416,9 @@ ${formData.message}
                 width: '100%',
                 padding: spacing.md,
                 border: `1px solid ${colors.lightGray}`,
-                borderRadius: '10px',
+                borderRadius: '8px',
                 backgroundColor: '#FFFEFC',
-                fontSize: typography.fontSize.base,
+                fontSize: typography.fontSize.sm,
                 color: colors.darkGray,
                 transition: transitions.normal,
                 outline: 'none',
@@ -415,14 +439,14 @@ ${formData.message}
             disabled={status === 'submitting'}
             style={{
               width: '100%',
-              padding: `${spacing.md} ${spacing.xl}`,
+              padding: `${spacing.sm} ${spacing.xl}`,
               backgroundColor: colors.darkGray,
               color: colors.white,
               border: 'none',
-              borderRadius: '4px',
-              fontSize: typography.fontSize.base,
+              borderRadius: '8px',
+              fontSize: typography.fontSize.sm,
               fontWeight: typography.fontWeight.medium,
-              letterSpacing: '0.05em',
+              letterSpacing: '0.12em',
               textTransform: 'uppercase',
               cursor: status === 'submitting' ? 'not-allowed' : 'pointer',
               transition: transitions.normal,

@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: 'About Us',
   description:
     'Learn about 33 Pearl Atelier, our pearl sourcing standards, craftsmanship approach, and custom pearl jewelry philosophy.',
+  alternates: {
+    canonical: '/about',
+  },
 }
 
 export default function AboutPage() {

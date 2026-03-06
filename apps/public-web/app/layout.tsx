@@ -10,8 +10,10 @@ const playfairDisplay = Playfair_Display({
   display: 'swap',
   variable: '--font-playfair-display',
 })
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: '33 Pearl Atelier | Pearl Jewelry & Custom Pearl Design',
     template: '%s | 33 Pearl Atelier',

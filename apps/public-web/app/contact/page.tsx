@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: 'Contact Us | 33 Pearl Atelier',
   description:
     'Get in touch with 33 Pearl Atelier. Questions about our pearl jewelry collection, shipping, or care? We typically respond within 24 hours.',
+  alternates: {
+    canonical: '/contact',
+  },
 }
 
 export default function ContactPage() {
@@ -19,10 +22,83 @@ export default function ContactPage() {
         description="Have a question about our collection, shipping, or pearl care? We&apos;re here to help. We typically respond within 24 hours."
       />
 
+      <section
+        style={{
+          padding: `0 ${spacing.xl} ${spacing['2xl']}`,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '980px',
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: spacing.md,
+          }}
+        >
+          <a
+            href="mailto:33pearlatelier@gmail.com"
+            style={{
+              textDecoration: 'none',
+              color: colors.darkGray,
+              border: `1px solid ${colors.lightGray}`,
+              backgroundColor: '#fffdfa',
+              borderRadius: '12px',
+              padding: spacing.md,
+            }}
+          >
+            <p style={{ margin: 0, fontSize: typography.fontSize.sm, color: colors.gold, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+              Email
+            </p>
+            <p style={{ margin: `${spacing.xs} 0 0`, fontSize: typography.fontSize.base }}>
+              33pearlatelier@gmail.com
+            </p>
+          </a>
+          <a
+            href="https://www.instagram.com/33_pearl_atelier/"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              textDecoration: 'none',
+              color: colors.darkGray,
+              border: `1px solid ${colors.lightGray}`,
+              backgroundColor: '#fffdfa',
+              borderRadius: '12px',
+              padding: spacing.md,
+            }}
+          >
+            <p style={{ margin: 0, fontSize: typography.fontSize.sm, color: colors.gold, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+              Instagram
+            </p>
+            <p style={{ margin: `${spacing.xs} 0 0`, fontSize: typography.fontSize.base }}>
+              @33_pearl_atelier
+            </p>
+          </a>
+          <a
+            href="weixin://"
+            style={{
+              textDecoration: 'none',
+              color: colors.darkGray,
+              border: `1px solid ${colors.lightGray}`,
+              backgroundColor: '#fffdfa',
+              borderRadius: '12px',
+              padding: spacing.md,
+            }}
+          >
+            <p style={{ margin: 0, fontSize: typography.fontSize.sm, color: colors.gold, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+              WeChat
+            </p>
+            <p style={{ margin: `${spacing.xs} 0 0`, fontSize: typography.fontSize.base }}>
+              _33pearlatelier
+            </p>
+          </a>
+        </div>
+      </section>
+
       {/* Contact Form Section */}
       <section
         style={{
-          padding: `${spacing['3xl']} ${spacing.xl}`,
+          padding: `0 ${spacing.xl} ${spacing['2xl']}`,
         }}
       >
         <div
@@ -31,8 +107,8 @@ export default function ContactPage() {
             margin: '0 auto',
             backgroundColor: colors.white,
             border: `1px solid ${colors.lightGray}`,
-            borderRadius: '10px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            borderRadius: '12px',
+            boxShadow: '0 8px 20px rgba(24, 24, 24, 0.05)',
             padding: spacing.xl,
           }}
         >
@@ -43,79 +119,16 @@ export default function ContactPage() {
       {/* Business Hours */}
       <section
         style={{
-          padding: `${spacing['2xl']} ${spacing.xl} ${spacing['4xl']}`,
+          padding: `${spacing.xl} ${spacing.xl} ${spacing['4xl']}`,
           textAlign: 'center',
         }}
       >
-        <div
-          style={{
-            maxWidth: '980px',
-            margin: '0 auto',
-            backgroundColor: colors.white,
-            border: `1px solid ${colors.lightGray}`,
-            borderRadius: '10px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-            padding: spacing.xl,
-          }}
-        >
-          <h2
-            style={{
-              fontSize: typography.fontSize['2xl'],
-              fontWeight: typography.fontWeight.medium,
-              color: colors.darkGray,
-              marginBottom: spacing.xl,
-            }}
-          >
-            Business Hours
-          </h2>
-          <div style={{ textAlign: 'left', display: 'inline-block' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: spacing['2xl'],
-                marginBottom: spacing.md,
-                fontSize: typography.fontSize.base,
-              }}
-            >
-              <span style={{ color: colors.textSecondary }}>Monday - Friday</span>
-              <span style={{ color: colors.darkGray, fontWeight: typography.fontWeight.medium }}>
-                10:00 AM - 6:00 PM PST
-              </span>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: spacing['2xl'],
-                marginBottom: spacing.md,
-                fontSize: typography.fontSize.base,
-              }}
-            >
-              <span style={{ color: colors.textSecondary }}>Saturday</span>
-              <span style={{ color: colors.darkGray, fontWeight: typography.fontWeight.medium }}>
-                11:00 AM - 4:00 PM PST
-              </span>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: spacing['2xl'],
-                fontSize: typography.fontSize.base,
-              }}
-            >
-              <span style={{ color: colors.textSecondary }}>Sunday</span>
-              <span style={{ color: colors.darkGray, fontWeight: typography.fontWeight.medium }}>
-                Closed
-              </span>
-            </div>
-          </div>
+        <div style={{ maxWidth: '980px', margin: '0 auto', padding: `0 ${spacing.md}` }}>
           <p
             style={{
-              fontSize: typography.fontSize.sm,
+              fontSize: typography.fontSize.base,
               color: colors.gold,
-              marginTop: spacing.xl,
+              marginTop: 0,
               fontWeight: typography.fontWeight.medium,
             }}
           >

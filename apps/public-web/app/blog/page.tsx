@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: 'Pearl Blog',
   description:
     'Pearl blog by 33 Pearl Atelier covering Pearl Types, Pearl Care, Buying Guide, and Custom Design insights.',
+  alternates: {
+    canonical: '/blog',
+  },
 }
 
 export default function JournalPage() {

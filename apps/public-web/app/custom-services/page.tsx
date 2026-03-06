@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: 'Custom Pearl Jewelry Service',
   description:
     'Design custom pearl jewelry with 33 Pearl Atelier. Choose pearl type, size, tone, and setting for a bespoke handcrafted piece.',
+  alternates: {
+    canonical: '/custom-services',
+  },
 }
 
 export default function CustomServicesPage() {
