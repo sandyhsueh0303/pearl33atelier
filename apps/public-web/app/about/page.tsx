@@ -11,6 +11,13 @@ export const metadata: Metadata = {
 }
 
 export default function AboutPage() {
+  const unifiedCardStyle = {
+    background: '#FFFFFF',
+    border: `1px solid ${colors.lightGray}`,
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+  }
+
   const values = [
     {
       title: 'Pearl Selection',
@@ -104,11 +111,22 @@ export default function AboutPage() {
                 color: colors.darkGray,
                 lineHeight: typography.lineHeight.tight,
                 letterSpacing: '0.02em',
-                marginBottom: spacing.lg,
+                marginBottom: spacing.xs,
               }}
             >
               From the Founder
             </h2>
+            <p
+              style={{
+                fontSize: typography.fontSize.sm,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: colors.textSecondary,
+                marginBottom: spacing.md,
+              }}
+            >
+              GIA Certified Gemologist
+            </p>
             <div
               style={{
                 width: '72px',
@@ -171,76 +189,105 @@ export default function AboutPage() {
       </section>
       <section
         style={{
-          textAlign: 'center',
-          padding: `${spacing['3xl']} ${spacing.xl}`,
-          background: '#FAFAF8',
+          padding: `${spacing.sm} ${spacing.xl}`,
+          background: '#fffdf9',
+          borderTop: `1px solid ${colors.lightGray}`,
+          borderBottom: `1px solid ${colors.lightGray}`,
         }}
       >
-        <h2
-          style={{
-            fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)',
-            marginBottom: spacing['2xl'],
-          }}
-        >
-          Certifications & Expertise
-        </h2>
-
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
             gap: spacing.md,
-            maxWidth: '600px',
+            maxWidth: '980px',
             margin: '0 auto',
-            fontSize: typography.fontSize.lg,
+            fontSize: typography.fontSize.base,
+            color: colors.textSecondary,
+            letterSpacing: '0.02em',
           }}
         >
-          <div>✓ GIA Certified Gemologist</div>
-          <div>✓ Pearl Grading Specialist</div>
-          <div>✓ Curated Pearl Styling & Design</div>
+          <span>✓ GIA Certified Gemologist</span>
+          <span style={{ color: colors.gold }}>•</span>
+          <span>✓ Pearl Grading Specialist</span>
+          <span style={{ color: colors.gold }}>•</span>
+          <span>✓ Curated Pearl Styling &amp; Design</span>
         </div>
       </section>
 
       <section
         style={{
-          background: 'linear-gradient(180deg, #FAFAF8 0%, #FFFFFF 100%)',
-          padding: `${spacing['4xl']} ${spacing.xl}`,
+          background:
+            'radial-gradient(circle at 50% 0%, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0) 45%), linear-gradient(180deg, #fdfbf7 0%, #ffffff 100%)',
+          padding: `${spacing['3xl']} ${spacing.xl}`,
         }}
       >
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <h2
-            style={{
-              textAlign: 'center',
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              fontWeight: typography.fontWeight.normal,
-              color: colors.darkGray,
-              marginBottom: spacing['3xl'],
-            }}
-          >
-            What We Value
-          </h2>
+          <div style={{ textAlign: 'center', marginBottom: spacing.xl }}>
+            <p
+              style={{
+                fontSize: typography.fontSize.sm,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: colors.gold,
+                marginBottom: spacing.sm,
+              }}
+            >
+              Our Values
+            </p>
+            <h2
+              style={{
+                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                fontWeight: typography.fontWeight.normal,
+                color: colors.darkGray,
+                marginBottom: spacing.sm,
+              }}
+            >
+              What We Value
+            </h2>
+            <p
+              style={{
+                maxWidth: '720px',
+                margin: '0 auto',
+                color: colors.textSecondary,
+                lineHeight: typography.lineHeight.relaxed,
+              }}
+            >
+              The standards behind every piece we curate and create.
+            </p>
+          </div>
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: spacing['2xl'],
+              gap: spacing.lg,
             }}
           >
             {values.map((value) => (
               <article
                 key={value.title}
                 style={{
-                  background: '#F8F6F0',
-                  padding: spacing.xl,
-                  borderRadius: '12px',
-                  textAlign: 'center',
-                  transition: 'transform 0.3s ease',
+                  ...unifiedCardStyle,
+                  padding: `${spacing.lg} ${spacing.lg}`,
+                  textAlign: 'left',
+                  transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+                  borderTop: '3px solid rgba(212, 175, 55, 0.55)',
                 }}
               >
                 <div
                   style={{
-                    fontSize: '3rem',
-                    marginBottom: spacing.lg,
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '999px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.4rem',
+                    background: 'rgba(212, 175, 55, 0.12)',
+                    color: colors.darkGray,
+                    marginBottom: spacing.md,
                   }}
                 >
                   ✦
@@ -250,7 +297,7 @@ export default function AboutPage() {
                     fontSize: typography.fontSize.xl,
                     fontWeight: typography.fontWeight.semibold,
                     color: colors.darkGray,
-                    marginBottom: spacing.md,
+                    marginBottom: spacing.sm,
                   }}
                 >
                   {value.title}
@@ -259,7 +306,7 @@ export default function AboutPage() {
                   style={{
                     fontSize: typography.fontSize.base,
                     color: colors.textSecondary,
-                    lineHeight: typography.lineHeight.relaxed,
+                    lineHeight: 1.65,
                   }}
                 >
                   {value.description}
@@ -267,12 +314,25 @@ export default function AboutPage() {
               </article>
             ))}
           </div>
+          <p
+            style={{
+              maxWidth: '960px',
+              margin: `${spacing.xl} auto 0`,
+              textAlign: 'center',
+              color: colors.textSecondary,
+              fontSize: typography.fontSize.base,
+              lineHeight: typography.lineHeight.relaxed,
+            }}
+          >
+            33 Pearl Atelier specializes in handcrafted pearl jewelry, offers one-on-one custom pearl design,
+            and is led by a GIA certified gemologist to ensure trusted quality and refined craftsmanship.
+          </p>
         </div>
       </section>
 
       <section
         style={{
-          padding: `${spacing['3xl']} ${spacing.xl}`,
+          padding: `${spacing['2xl']} ${spacing.xl}`,
         }}
       >
         <div
@@ -302,38 +362,31 @@ export default function AboutPage() {
                 fontSize: typography.fontSize.base,
                 color: colors.textSecondary,
                 lineHeight: typography.lineHeight.relaxed,
-                marginBottom: spacing.md,
+                marginBottom: spacing.sm,
               }}
             >
-              What started as a passion for exceptional pearls in 2025 became a studio dedicated to creating jewelry that tells a story.
+              We started in 2025 with one goal: create pearl jewelry that feels personal and wearable every day.
             </p>
-            <p
+            <ul
               style={{
                 fontSize: typography.fontSize.base,
                 color: colors.textSecondary,
                 lineHeight: typography.lineHeight.relaxed,
-                marginBottom: spacing.md,
+                margin: 0,
+                paddingLeft: spacing.md,
+                display: 'grid',
+                gap: spacing.xs,
               }}
             >
-              Every piece begins with careful pearl selection from trusted sources worldwide. From sourcing to final polish,
-              we treat each design as a small work of art — created to celebrate your personal style and life&apos;s meaningful moments.
-            </p>
-            <p
-              style={{
-                fontSize: typography.fontSize.base,
-                color: colors.textSecondary,
-                lineHeight: typography.lineHeight.relaxed,
-              }}
-            >
-              We believe pearls aren&apos;t just for special occasions. They&apos;re for every day, every moment, every you.
-            </p>
+              <li>Pearls are selected from trusted sources for luster, harmony, and character.</li>
+              <li>Each design is refined by hand from sourcing to final finish.</li>
+              <li>We focus on pieces that move easily from special moments to everyday life.</li>
+            </ul>
           </div>
 
           <div
             style={{
-              backgroundColor: colors.pearl,
-              border: `1px solid ${colors.lightGray}`,
-              borderRadius: '10px',
+              ...unifiedCardStyle,
               padding: spacing.lg,
             }}
           >
@@ -355,25 +408,30 @@ export default function AboutPage() {
                 marginBottom: spacing.sm,
               }}
             >
-              Custom pearl jewelry, curated ready-to-wear pieces, and one-on-one design consultation.
+              We specialize in:
             </p>
-            <p
+            <ul
               style={{
                 fontSize: typography.fontSize.base,
                 color: colors.textSecondary,
                 lineHeight: typography.lineHeight.relaxed,
+                margin: 0,
+                paddingLeft: spacing.md,
+                display: 'grid',
+                gap: spacing.xs,
               }}
             >
-              We work closely with each client to ensure proportion, material choices, and finishing details
-              feel distinctly personal.
-            </p>
+              <li>Custom pearl jewelry and one-on-one design guidance.</li>
+              <li>Curated ready-to-wear pieces with balanced proportions.</li>
+              <li>Material and finishing choices tailored to your personal style.</li>
+            </ul>
           </div>
         </div>
       </section>
 
       <section
         style={{
-          padding: `${spacing['4xl']} ${spacing.xl}`,
+          padding: `${spacing['3xl']} ${spacing.xl}`,
           background: 'linear-gradient(180deg, #FFFFFF 0%, #F7F4EE 100%)',
         }}
       >
@@ -381,7 +439,7 @@ export default function AboutPage() {
           style={{
             textAlign: 'center',
             fontSize: 'clamp(2rem, 4vw, 3rem)',
-            marginBottom: spacing['3xl'],
+            marginBottom: spacing['2xl'],
           }}
         >
           What Clients Say
@@ -391,25 +449,23 @@ export default function AboutPage() {
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: spacing['2xl'],
+            gap: spacing.lg,
             maxWidth: '1200px',
             margin: '0 auto',
           }}
         >
           <div
             style={{
-              padding: spacing.xl,
-              background: 'white',
-              borderRadius: '12px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+              ...unifiedCardStyle,
+              padding: spacing.lg,
             }}
           >
             <p
               style={{
                 fontSize: typography.fontSize.base,
                 fontStyle: 'italic',
-                lineHeight: typography.lineHeight.relaxed,
-                marginBottom: spacing.lg,
+                lineHeight: 1.55,
+                marginBottom: spacing.md,
                 color: colors.textPrimary,
               }}
             >
@@ -428,18 +484,16 @@ export default function AboutPage() {
 
           <div
             style={{
-              padding: spacing.xl,
-              background: 'white',
-              borderRadius: '12px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+              ...unifiedCardStyle,
+              padding: spacing.lg,
             }}
           >
             <p
               style={{
                 fontSize: typography.fontSize.base,
                 fontStyle: 'italic',
-                lineHeight: typography.lineHeight.relaxed,
-                marginBottom: spacing.lg,
+                lineHeight: 1.55,
+                marginBottom: spacing.md,
                 color: colors.textPrimary,
               }}
             >
@@ -458,18 +512,16 @@ export default function AboutPage() {
 
           <div
             style={{
-              padding: spacing.xl,
-              background: 'white',
-              borderRadius: '12px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+              ...unifiedCardStyle,
+              padding: spacing.lg,
             }}
           >
             <p
               style={{
                 fontSize: typography.fontSize.base,
                 fontStyle: 'italic',
-                lineHeight: typography.lineHeight.relaxed,
-                marginBottom: spacing.lg,
+                lineHeight: 1.55,
+                marginBottom: spacing.md,
                 color: colors.textPrimary,
               }}
             >
@@ -490,7 +542,7 @@ export default function AboutPage() {
 
       <section
         style={{
-          padding: `${spacing['3xl']} ${spacing.xl}`,
+          padding: `${spacing['2xl']} ${spacing.xl}`,
           textAlign: 'center',
           borderTop: `1px solid ${colors.lightGray}`,
         }}
