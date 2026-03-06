@@ -16,30 +16,31 @@ export default function CustomServicesPage() {
       step: '01',
       title: 'Consultation',
       description:
-        'Share your preferred style, occasion, and budget. We help define pearl type, size range, overtone, and setting direction.',
+        'Share your style, occasion, and budget. We align pearl type, size range, and setting direction.',
     },
     {
       step: '02',
       title: 'Select Your Pearl',
       description:
-        'Choose your pearl variety and quality level. We then provide curated design options with recommendations on pearl matching, metal tone, and silhouette.',
+        'Choose pearl variety and quality level. We provide curated options for matching, metal tone, and silhouette.',
     },
     {
       step: '03',
       title: 'Finalize the Artistry',
       description:
-        'Confirm final details including measurements, clasp or setting style, and finishing touches before production.',
+        'Confirm measurements, clasp or setting style, and final finishing details before production.',
     },
     {
       step: '04',
       title: 'Handcraft & Delivery',
       description:
-        'Your custom piece is handcrafted, matched for symmetry, and quality-checked before final delivery.',
+        'Your piece is handcrafted, matched for symmetry, and quality-checked before delivery.',
     },
   ]
 
   const customNote =
-    'From first pearl selection to final setting, our custom service is focused on precision and wearability. Whether you are looking for a timeless pendant, elegant earrings, a matched bracelet, or a custom ring, we tailor pearl quality, metal tone, and design proportion to your personal style.'
+    'From first pearl selection to final setting, our custom service is focused on precision, proportion, and long-term wearability.'
+  const customizableItems = ['Necklace', 'Earrings', 'Bracelet', 'Ring', 'Restringing']
   const introTitle =
     "Whether you envision a unique necklace, elegant earrings, or a statement piece, we'll bring your vision to life with the finest pearls and expert craftsmanship."
 
@@ -57,11 +58,31 @@ export default function CustomServicesPage() {
             maxWidth: '1100px',
             margin: '0 auto',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             gap: spacing['2xl'],
+            alignItems: 'stretch',
           }}
         >
-          <article>
+          <article
+            style={{
+              backgroundColor: colors.white,
+              border: `1px solid ${colors.lightGray}`,
+              borderRadius: '12px',
+              padding: spacing.lg,
+              boxShadow: '0 8px 18px rgba(24, 24, 24, 0.04)',
+            }}
+          >
+            <p
+              style={{
+                fontSize: typography.fontSize.sm,
+                letterSpacing: '0.16em',
+                textTransform: 'uppercase',
+                color: colors.gold,
+                marginBottom: spacing.xs,
+              }}
+            >
+              Bespoke options
+            </p>
             <h2
               style={{
                 fontSize: typography.fontSize['3xl'],
@@ -81,27 +102,54 @@ export default function CustomServicesPage() {
             >
               {customNote}
             </p>
+            <ul
+              style={{
+                margin: 0,
+                paddingLeft: '1.1rem',
+                color: colors.textSecondary,
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: 0,
+              }}
+            >
+              {customizableItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
           </article>
 
           <aside
             style={{
-              backgroundColor: colors.pearl,
+              background:
+                'linear-gradient(180deg, rgba(250,247,241,1) 0%, rgba(246,242,235,1) 100%)',
               border: `1px solid ${colors.lightGray}`,
-              borderRadius: '10px',
+              borderTop: `3px solid rgba(212, 175, 55, 0.5)`,
+              borderRadius: '12px',
               padding: spacing.lg,
+              boxShadow: '0 8px 18px rgba(24, 24, 24, 0.04)',
             }}
           >
+            <p
+              style={{
+                fontSize: typography.fontSize.sm,
+                letterSpacing: '0.16em',
+                textTransform: 'uppercase',
+                color: colors.gold,
+                marginBottom: spacing.xs,
+              }}
+            >
+              Typical lead time
+            </p>
             <h3
               style={{
-                fontSize: typography.fontSize.xl,
+                fontSize: typography.fontSize['2xl'],
                 color: colors.darkGray,
                 marginBottom: spacing.sm,
               }}
             >
-              Typical Timeline
+              3-8 weeks
             </h3>
             <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed }}>
-              Most custom projects are completed within 3-8 weeks depending on complexity,
+              Most custom projects are completed within this window depending on complexity,
               pearl availability, matching requirements, and revision rounds.
             </p>
             <p
@@ -112,6 +160,30 @@ export default function CustomServicesPage() {
               }}
             >
               For event deadlines, we recommend contacting us as early as possible.
+              <br />
+              <span
+                style={{
+                  display: 'inline-block',
+                  marginTop: spacing.sm,
+                  fontSize: typography.fontSize.sm,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  color: colors.gold,
+                }}
+              >
+                Need It Sooner?
+              </span>
+              <span
+                style={{
+                  display: 'block',
+                  marginTop: spacing.xs,
+                  fontSize: typography.fontSize.lg,
+                  fontWeight: typography.fontWeight.normal,
+                  color: colors.darkGray,
+                }}
+              >
+                Rush inquiry welcome.
+              </span>
             </p>
           </aside>
         </div>
@@ -119,7 +191,7 @@ export default function CustomServicesPage() {
 
       <section
         style={{
-          padding: `${spacing['2xl']} ${spacing.xl} ${spacing['4xl']}`,
+          padding: `${spacing['2xl']} ${spacing.xl} ${spacing['3xl']}`,
           backgroundColor: '#fcfbf8',
         }}
       >
@@ -136,6 +208,27 @@ export default function CustomServicesPage() {
           </h2>
           <div
             style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: spacing.sm,
+              flexWrap: 'wrap',
+              marginBottom: spacing.lg,
+              color: colors.textSecondary,
+              fontSize: typography.fontSize.sm,
+              letterSpacing: '0.08em',
+            }}
+          >
+            <span>01</span>
+            <span style={{ color: colors.gold }}>→</span>
+            <span>02</span>
+            <span style={{ color: colors.gold }}>→</span>
+            <span>03</span>
+            <span style={{ color: colors.gold }}>→</span>
+            <span>04</span>
+          </div>
+          <div
+            style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
               gap: spacing.lg,
@@ -148,7 +241,7 @@ export default function CustomServicesPage() {
                   backgroundColor: colors.white,
                   border: `1px solid ${colors.lightGray}`,
                   borderRadius: '10px',
-                  padding: spacing.lg,
+                  padding: spacing.md,
                   boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 }}
               >
@@ -175,7 +268,7 @@ export default function CustomServicesPage() {
                   style={{
                     fontSize: typography.fontSize.base,
                     color: colors.textSecondary,
-                    lineHeight: typography.lineHeight.relaxed,
+                    lineHeight: 1.65,
                   }}
                 >
                   {item.description}
@@ -188,11 +281,22 @@ export default function CustomServicesPage() {
 
       <section
         style={{
-          padding: `${spacing['3xl']} ${spacing.xl}`,
+          padding: `${spacing['2xl']} ${spacing.xl}`,
           textAlign: 'center',
           borderTop: `1px solid ${colors.lightGray}`,
         }}
       >
+        <p
+          style={{
+            fontSize: typography.fontSize.sm,
+            letterSpacing: '0.08em',
+            color: colors.textSecondary,
+            marginBottom: spacing.sm,
+            textTransform: 'uppercase',
+          }}
+        >
+          GIA-guided consultation · Personalized design · Clear timeline
+        </p>
         <h2
           style={{
             fontSize: typography.fontSize['3xl'],
