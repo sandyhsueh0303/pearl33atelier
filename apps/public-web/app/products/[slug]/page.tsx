@@ -26,7 +26,15 @@ const getPublishedProductBySlug = cache(async (slug: string) => {
     .eq('published', true)
     .single()
 
-  if (productError || !productData) {
+  if (productError) {
+    // PGRST116 means no rows found for .single() - treat as 404.
+    if (productError.code === 'PGRST116') {
+      return null
+    }
+    throw new Error(`Failed to load product: ${productError.message}`)
+  }
+
+  if (!productData) {
     return null
   }
 
@@ -83,7 +91,15 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const result = await getPublishedProductBySlug(slug)
+  let result: Awaited<ReturnType<typeof getPublishedProductBySlug>>
+  try {
+    result = await getPublishedProductBySlug(slug)
+  } catch {
+    return {
+      title: 'Product | 33 Pearl Atelier',
+      description: 'Product details are temporarily unavailable. Please try again shortly.',
+    }
+  }
 
   if (!result) {
     return {
@@ -141,28 +157,36 @@ export async function generateMetadata({
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  
-  let product: CatalogProduct | null = null
-  let images: ProductImage[] = []
 
+  let result: Awaited<ReturnType<typeof getPublishedProductBySlug>>
   try {
-    const result = await getPublishedProductBySlug(slug)
-    if (!result) {
-      return notFound()
-    }
-
-    product = result.product
-    images = result.images
-  } catch (e) {
-    // Server-side error, safe to log in development
+    result = await getPublishedProductBySlug(slug)
+  } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('Error loading product:', e)
+      console.error('Error loading product:', error)
     }
+    return (
+      <main
+        style={{
+          minHeight: '60vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2rem',
+          textAlign: 'center',
+          color: '#2e2e2e',
+        }}
+      >
+        Product details are temporarily unavailable. Please try again in a moment.
+      </main>
+    )
   }
 
-  if (!product) {
+  if (!result) {
     return notFound()
   }
+  const product: CatalogProduct = result.product
+  const images: ProductImage[] = result.images
 
   const primaryImage = images.find((img) => img.is_primary) || images[0]
   const imageUrl = primaryImage ? getProductImageUrl(primaryImage.storage_path) : DEFAULT_IMAGE_URL

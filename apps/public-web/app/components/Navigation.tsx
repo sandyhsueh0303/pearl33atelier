@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { colors, typography, transitions, spacing } from '../constants/design'
+import styles from './Navigation.module.css'
 
 export default function Navigation() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -54,7 +55,7 @@ export default function Navigation() {
 
         <button
           type="button"
-          className="mobileToggle"
+          className={styles.mobileToggle}
           onClick={() => setIsMenuOpen((prev) => !prev)}
           aria-label="Toggle navigation menu"
           style={{
@@ -70,7 +71,7 @@ export default function Navigation() {
         </button>
 
         <div
-          className="desktopLinks"
+          className={styles.desktopLinks}
           style={{
             display: 'flex',
             gap: spacing.lg,
@@ -104,7 +105,7 @@ export default function Navigation() {
 
       {isMenuOpen && (
         <div
-          className="mobileMenu"
+          className={styles.mobileMenu}
           style={{
             borderTop: '1px solid #E9E1D3',
             backgroundColor: '#FFFEFB',
@@ -130,31 +131,6 @@ export default function Navigation() {
           ))}
         </div>
       )}
-      <style jsx>{`
-        .mobileToggle {
-          display: none;
-        }
-
-        @media (max-width: 900px) {
-          .desktopLinks {
-            display: none !important;
-          }
-
-          .mobileToggle {
-            display: inline-block;
-          }
-
-          nav > div {
-            padding: ${spacing.md} ${spacing.md} !important;
-          }
-        }
-
-        @media (min-width: 901px) {
-          .mobileMenu {
-            display: none;
-          }
-        }
-      `}</style>
     </nav>
   )
 }

@@ -1,0 +1,19 @@
+.mobileToggle {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .desktopLinks {
+    display: none !important;
+  }
+
+  .mobileToggle {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 901px) {
+  .mobileMenu {
+    display: none;
+  }
+}
