@@ -329,12 +329,22 @@ export default function HomePage() {
               </ul>
             </div>
 
-            <div style={{ padding: `${spacing.lg} ${spacing.lg}` }}>
+            <div
+              style={{
+                padding: `${spacing.lg} ${spacing.lg}`,
+                display: 'flex',
+                gap: spacing.lg,
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+              }}
+            >
               <p
                 style={{
                   color: colors.textSecondary,
-                  marginBottom: spacing.sm,
+                  marginBottom: 0,
                   lineHeight: typography.lineHeight.relaxed,
+                  flex: '1 1 560px',
                 }}
               >
                 Contact us when you want help choosing between ready-to-wear options, need custom design advice,
@@ -349,6 +359,7 @@ export default function HomePage() {
                   color: colors.darkGray,
                   textDecoration: 'none',
                   letterSpacing: '0.08em',
+                  marginLeft: 'auto',
                 }}
               >
                 Contact Us
@@ -377,8 +388,12 @@ export default function HomePage() {
             <Link
               href="/faq"
               style={{
-                color: colors.textSecondary,
-                textDecoration: 'underline',
+                display: 'inline-block',
+                border: `1px solid ${colors.darkGray}`,
+                padding: `${spacing.xs} ${spacing.lg}`,
+                color: colors.darkGray,
+                textDecoration: 'none',
+                letterSpacing: '0.08em',
               }}
             >
               View FAQ

@@ -222,7 +222,7 @@ export default function CareGuidePage() {
         </p>
         <div style={{ display: 'flex', gap: spacing.md, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link
-            href="/products"
+            href="/contact"
             style={{
               padding: `${spacing.sm} ${spacing.lg}`,
               backgroundColor: colors.darkGray,
@@ -233,7 +233,7 @@ export default function CareGuidePage() {
               transition: transitions.fast,
             }}
           >
-            Shop Collection
+            Contact Us
           </Link>
         </div>
         <p style={{ marginTop: spacing.sm }}>
