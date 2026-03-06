@@ -15,6 +15,36 @@ type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
 type PearlType = Database['public']['Enums']['pearl_type']
 type ProductCategory = Database['public']['Enums']['product_category']
 
+function parseSkuNumber(sku: string): number | null {
+  const match = /^PA(\d{4})$/.exec(sku)
+  if (!match) return null
+  return Number(match[1])
+}
+
+function formatSku(value: number): string {
+  return `PA${String(value).padStart(4, '0')}`
+}
+
+export async function getNextProductSku(supabase: any): Promise<string> {
+  const { data, error } = await supabase
+    .from('catalog_products')
+    .select('sku')
+    .not('sku', 'is', null)
+    .ilike('sku', 'PA%')
+    .order('sku', { ascending: false })
+    .limit(100)
+
+  if (error) throw error
+
+  let max = 0
+  for (const row of data || []) {
+    const n = parseSkuNumber(String(row.sku || ''))
+    if (n && n > max) max = n
+  }
+
+  return formatSku(max + 1)
+}
+
 function normalizeSizeRange(value: unknown): string | null {
   if (value == null) return null
   const size = String(value).trim()
@@ -192,13 +222,17 @@ export async function POST(request: NextRequest) {
     let normalizedSize: string | null = null
     let normalizedSku: string | null = null
     try {
-      normalizedSku = normalizeSku(body.sku)
+      normalizedSku = body.sku == null ? null : normalizeSku(body.sku)
       normalizedSize = normalizeSizeRange(body.size_mm)
     } catch (error) {
       return NextResponse.json(
         { error: error instanceof Error ? error.message : 'Invalid product input' },
         { status: 400 }
       )
+    }
+
+    if (!normalizedSku) {
+      normalizedSku = await getNextProductSku(supabase)
     }
 
     // Auto-generate slug from pearl_type, size_mm, shape, material, category if not provided

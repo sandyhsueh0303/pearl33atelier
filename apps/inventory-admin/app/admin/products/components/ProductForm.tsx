@@ -20,6 +20,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
   // Form fields
   const [title, setTitle] = useState('')
   const [sku, setSku] = useState('')
+  const [skuManuallyEdited, setSkuManuallyEdited] = useState(false)
   const [slug, setSlug] = useState('')
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
   const [description, setDescription] = useState('')
@@ -58,6 +59,11 @@ export default function ProductForm({ productId }: ProductFormProps) {
     setSlug(slugified)
   }
 
+  const handleSkuChange = (value: string) => {
+    setSkuManuallyEdited(true)
+    setSku(value.toUpperCase())
+  }
+
   // Auto-generate slug from pearl_type, size_mm, shape, material, category for new products
   useEffect(() => {
     if (isEditMode || slugManuallyEdited) return
@@ -72,6 +78,23 @@ export default function ProductForm({ productId }: ProductFormProps) {
     }
   }, [productId])
 
+  useEffect(() => {
+    if (isEditMode || skuManuallyEdited || sku) return
+
+    const loadNextSku = async () => {
+      try {
+        const response = await fetch('/api/products/next-sku', { cache: 'no-store' })
+        if (!response.ok) return
+        const data = await response.json()
+        if (data?.sku) setSku(String(data.sku))
+      } catch {
+        // Keep form usable even if prefill fails.
+      }
+    }
+
+    void loadNextSku()
+  }, [isEditMode, skuManuallyEdited, sku])
+
   const loadProduct = async () => {
     setLoading(true)
     setError(null)
@@ -85,6 +108,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
       
       setTitle(product.title)
       setSku(product.sku || '')
+      setSkuManuallyEdited(true)
       setSlug(product.slug)
       setSlugManuallyEdited(true)
       setDescription(product.description || '')
@@ -339,8 +363,8 @@ export default function ProductForm({ productId }: ProductFormProps) {
             <input
               type="text"
               value={sku}
-              onChange={(e) => setSku(e.target.value)}
-              placeholder="e.g.: AKOYA-001"
+              onChange={(e) => handleSkuChange(e.target.value)}
+              placeholder="e.g.: PA0001"
               style={{
                 width: '100%',
                 padding: '0.75rem',

@@ -433,7 +433,6 @@ export default function ProductsPage() {
               <tr className="admin-table-head-row">
                 <th>Status</th>
                 <th>SKU</th>
-                <th>Slug</th>
                 <th>Title</th>
                 <th>Category</th>
                 <th>Pearl Type</th>
@@ -453,9 +452,6 @@ export default function ProductsPage() {
                   </td>
                   <td className="admin-cell-mono">
                     {product.sku || '-'}
-                  </td>
-                  <td className="admin-cell-mono">
-                    {product.slug}
                   </td>
                   <td style={{ fontWeight: '500' }}>
                     {product.title}
