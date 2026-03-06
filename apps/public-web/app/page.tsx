@@ -329,9 +329,19 @@ export default function HomePage() {
               </ul>
             </div>
 
-            <div style={{ padding: `${spacing.lg} ${spacing.lg}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
+            <div style={{ padding: `${spacing.lg} ${spacing.lg}` }}>
+              <p
+                style={{
+                  color: colors.textSecondary,
+                  marginBottom: spacing.sm,
+                  lineHeight: typography.lineHeight.relaxed,
+                }}
+              >
+                Contact us when you want help choosing between ready-to-wear options, need custom design advice,
+                or have timeline and aftercare questions before placing your order.
+              </p>
               <Link
-                href="/custom/inquiry"
+                href="/contact"
                 style={{
                   display: 'inline-block',
                   border: `1px solid ${colors.darkGray}`,
@@ -341,9 +351,6 @@ export default function HomePage() {
                   letterSpacing: '0.08em',
                 }}
               >
-                Start Custom Inquiry
-              </Link>
-              <Link href="/contact" style={{ color: colors.textSecondary, alignSelf: 'center' }}>
                 Contact Us
               </Link>
             </div>

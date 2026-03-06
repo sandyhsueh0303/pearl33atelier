@@ -200,6 +200,10 @@ p {
   :root {
     --home-blob-scale: 0.55;
   }
+
+  .homeScrollIndicator {
+    display: none !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
