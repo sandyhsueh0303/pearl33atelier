@@ -155,9 +155,13 @@ export async function generateMetadata({
     robots: {
       index: true,
       follow: true,
-      maxImagePreview: 'large',
-      maxSnippet: -1,
-      maxVideoPreview: -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
+      },
     },
     other: {
       'product:price:amount': String(product.sell_price || 0),
