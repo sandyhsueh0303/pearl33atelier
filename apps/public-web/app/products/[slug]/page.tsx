@@ -10,7 +10,7 @@ import ProductDetailClient from './ProductDetailClient'
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pearl33atelier.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
 const DEFAULT_IMAGE_URL = `${SITE_URL}/images/default-product.jpg`
 
 const getPublishedProductBySlug = cache(async (slug: string) => {
@@ -152,6 +152,24 @@ export async function generateMetadata({
       description,
       images: [imageUrl],
     },
+    robots: {
+      index: true,
+      follow: true,
+      maxImagePreview: 'large',
+      maxSnippet: -1,
+      maxVideoPreview: -1,
+    },
+    other: {
+      'product:price:amount': String(product.sell_price || 0),
+      'product:price:currency': 'USD',
+      'product:availability':
+        product.availability === 'IN_STOCK'
+          ? 'in stock'
+          : product.availability === 'PREORDER'
+          ? 'preorder'
+          : 'out of stock',
+      'product:condition': 'new',
+    },
   }
 }
 
@@ -195,19 +213,51 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const productSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
+    '@id': `${productUrl}#product`,
+    url: productUrl,
     name: product.title,
-    image: [imageUrl],
+    image: images.length
+      ? images.map((img) => getProductImageUrl(img.storage_path))
+      : [imageUrl],
     description: product.description || buildProductDescription(product),
     sku: product.sku || product.id,
+    mpn: product.sku || product.id,
+    category: getCategoryName(product.category),
+    material: product.material || undefined,
     brand: {
       '@type': 'Brand',
       name: '33 Pearl Atelier',
     },
+    additionalProperty: [
+      product.pearl_type
+        ? {
+            '@type': 'PropertyValue',
+            name: 'Pearl Type',
+            value: product.pearl_type,
+          }
+        : null,
+      product.size_mm
+        ? {
+            '@type': 'PropertyValue',
+            name: 'Size',
+            value: `${product.size_mm}mm`,
+          }
+        : null,
+      product.shape
+        ? {
+            '@type': 'PropertyValue',
+            name: 'Shape',
+            value: product.shape,
+          }
+        : null,
+    ].filter(Boolean),
     offers: {
       '@type': 'Offer',
+      '@id': `${productUrl}#offer`,
       url: productUrl,
       priceCurrency: 'USD',
       price: product.sell_price || 0,
+      itemCondition: 'https://schema.org/NewCondition',
       availability:
         product.availability === 'IN_STOCK'
           ? 'https://schema.org/InStock'

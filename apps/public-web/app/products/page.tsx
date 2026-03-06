@@ -1,4 +1,5 @@
 import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
+import { getProductImageUrl } from '@pearl33atelier/shared'
 import ProductList from './ProductList'
 import type { ProductListImage, ProductListItem } from './ProductList'
 import { redirect } from 'next/navigation'
@@ -8,12 +9,68 @@ interface ProductWithImages extends ProductListItem {
   primaryImage?: ProductListImage
 }
 
-export const metadata: Metadata = {
-  title: 'Collection',
-  description: 'Explore the handcrafted pearl jewelry collection at 33 Pearl Atelier.',
-  alternates: {
-    canonical: '/products',
-  },
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
+const DEFAULT_PRODUCT_IMAGE = `${SITE_URL}/images/default-product.jpg`
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: Promise<{ page?: string }> | { page?: string }
+}): Promise<Metadata> {
+  const resolvedSearchParams = await Promise.resolve(searchParams)
+  const parsedPage = Number(resolvedSearchParams?.page ?? '1')
+  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? Math.floor(parsedPage) : 1
+  const canonicalPath = page > 1 ? `/products?page=${page}` : '/products'
+  const title = page > 1 ? `Collection (Page ${page})` : 'Collection'
+  const description =
+    'Explore handcrafted pearl jewelry by 33 Pearl Atelier, including necklaces, earrings, bracelets, rings, and bespoke-ready pieces.'
+  const ogUrl = `${SITE_URL}${canonicalPath}`
+
+  return {
+    title,
+    description,
+    keywords: [
+      'pearl jewelry collection',
+      'handcrafted pearl jewelry',
+      'akoya pearls',
+      'south sea pearls',
+      'tahitian pearls',
+      'fine pearl jewelry',
+      '33 Pearl Atelier',
+    ],
+    alternates: {
+      canonical: canonicalPath,
+    },
+    openGraph: {
+      title: `${title} | 33 Pearl Atelier`,
+      description,
+      type: 'website',
+      url: ogUrl,
+      siteName: '33 Pearl Atelier',
+      locale: 'en_US',
+      images: [
+        {
+          url: DEFAULT_PRODUCT_IMAGE,
+          width: 1200,
+          height: 630,
+          alt: '33 Pearl Atelier Collection',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | 33 Pearl Atelier`,
+      description,
+      images: [DEFAULT_PRODUCT_IMAGE],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      maxImagePreview: 'large',
+      maxSnippet: -1,
+      maxVideoPreview: -1,
+    },
+  }
 }
 
 // ISR cache to reduce cold-load latency for collection page
@@ -104,5 +161,30 @@ export default async function ProductsPage({
     primaryImage: imageByProductId.get(product.id)
   }))
 
-  return <ProductList products={products} currentPage={page} hasNextPage={hasNextPage} />
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: '33 Pearl Atelier Collection',
+    itemListOrder: 'https://schema.org/ItemListOrderDescending',
+    numberOfItems: products.length,
+    itemListElement: products.map((product, index) => ({
+      '@type': 'ListItem',
+      position: from + index + 1,
+      url: `${SITE_URL}/products/${product.slug}`,
+      name: product.title,
+      image: product.primaryImage
+        ? getProductImageUrl(product.primaryImage.storage_path)
+        : DEFAULT_PRODUCT_IMAGE,
+    })),
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <ProductList products={products} currentPage={page} hasNextPage={hasNextPage} />
+    </>
+  )
 }
