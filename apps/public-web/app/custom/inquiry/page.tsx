@@ -113,6 +113,10 @@ I have reference photos to share!`
     window.open(`mailto:33pearlatelier@gmail.com?subject=${subject}&body=${body}`, '_blank')
   }
 
+  const openLine = () => {
+    window.open('https://line.me/R/ti/p/~sandyhsiue0303', '_blank')
+  }
+
   const isFormValid = formData.name && formData.email && formData.interests.length > 0 && formData.message
 
   return (
@@ -801,6 +805,43 @@ I have reference photos to share!`
                     color: colors.textSecondary,
                   }}>
                     _33pearlatelier
+                  </div>
+                </button>
+
+                {/* LINE */}
+                <button
+                  onClick={openLine}
+                  style={{
+                    background: 'white',
+                    padding: spacing.lg,
+                    borderRadius: '8px',
+                    border: '2px solid #E0E0E0',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = colors.gold
+                    e.currentTarget.style.transform = 'translateY(-2px)'
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#E0E0E0'
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
+                >
+                  <div style={{
+                    fontSize: typography.fontSize.base,
+                    fontWeight: typography.fontWeight.semibold,
+                    marginBottom: spacing.xs,
+                  }}>
+                    LINE
+                  </div>
+                  <div style={{
+                    fontSize: typography.fontSize.sm,
+                    color: colors.textSecondary,
+                  }}>
+                    sandyhsiue0303
                   </div>
                 </button>
 

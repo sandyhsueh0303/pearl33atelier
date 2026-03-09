@@ -4,6 +4,8 @@ import type { MouseEvent } from 'react'
 import { colors, typography, spacing } from '../constants/design'
 
 export default function Footer() {
+  const lineUrl = 'https://line.me/R/ti/p/~sandyhsiue0303'
+
   const handleOpenWeChat = async (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     const wechatId = '_33pearlatelier'
@@ -95,6 +97,42 @@ export default function Footer() {
             <circle cx="11.2" cy="9.95" r="0.95" fill={colors.darkGray} />
             <circle cx="14.3" cy="14.1" r="0.85" fill={colors.darkGray} />
             <circle cx="17.7" cy="14.1" r="0.85" fill={colors.darkGray} />
+          </svg>
+        </a>
+        <a
+          href={lineUrl}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="LINE"
+          style={{
+            display: 'inline-flex',
+            width: '36px',
+            height: '36px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '1px solid rgba(255, 255, 255, 0.35)',
+            borderRadius: '999px',
+            color: colors.white,
+            textDecoration: 'none',
+            backgroundColor: 'transparent',
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M12 3.1c-5.52 0-10 3.66-10 8.16 0 4.03 3.52 7.4 8.28 8.03l-.37 2.7 2.77-2.59c6-.03 10.32-3.69 10.32-8.14 0-4.5-4.48-8.16-10-8.16Z"
+              fill={colors.white}
+            />
+            <text
+              x="12"
+              y="14.25"
+              textAnchor="middle"
+              fontSize="5.8"
+              fontWeight="700"
+              fontFamily="Arial, sans-serif"
+              fill={colors.darkGray}
+            >
+              LINE
+            </text>
           </svg>
         </a>
         <a

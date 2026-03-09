@@ -87,6 +87,10 @@ ${message}
     window.location.href = 'weixin://';
   };
 
+  const handleOpenLine = () => {
+    window.open('https://line.me/R/ti/p/~sandyhsiue0303', '_blank');
+  };
+
   const handleCopyAgain = async () => {
     try {
       await navigator.clipboard.writeText(inquiryContent);
@@ -145,12 +149,15 @@ ${message}
 
             <div style={{ border: '1px solid #e9e1cf', borderRadius: 8, padding: 12 }}>
               <div style={{ fontWeight: 600, marginBottom: 8 }}>B. Copy &amp; Message Us Directly</div>
-              <div style={{ display: 'grid', gap: 8, gridTemplateColumns: '1fr 1fr' }}>
+              <div style={{ display: 'grid', gap: 8, gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))' }}>
                 <button type="button" onClick={handleOpenInstagram} style={{ padding: 10, border: '1px solid #ddd', borderRadius: 6, background: '#fff', cursor: 'pointer' }}>
                   Instagram
                 </button>
                 <button type="button" onClick={handleOpenWeChat} style={{ padding: 10, border: '1px solid #ddd', borderRadius: 6, background: '#fff', cursor: 'pointer' }}>
                   WeChat
+                </button>
+                <button type="button" onClick={handleOpenLine} style={{ padding: 10, border: '1px solid #ddd', borderRadius: 6, background: '#fff', cursor: 'pointer' }}>
+                  LINE
                 </button>
               </div>
               <button

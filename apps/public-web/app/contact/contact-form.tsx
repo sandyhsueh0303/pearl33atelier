@@ -71,6 +71,10 @@ ${formData.message}
     window.location.href = 'weixin://'
   }
 
+  const handleOpenLine = () => {
+    window.open('https://line.me/R/ti/p/~sandyhsiue0303', '_blank')
+  }
+
   const handleCopyAgain = async () => {
     try {
       await navigator.clipboard.writeText(buildMessage())
@@ -81,15 +85,26 @@ ${formData.message}
     }
   }
 
+  const labelStyle = {
+    display: 'block',
+    fontSize: typography.fontSize.xs,
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase' as const,
+    fontWeight: typography.fontWeight.medium,
+    color: colors.darkGray,
+    marginBottom: spacing.xs,
+  }
+
   return (
     <div>
       <h2
         style={{
-          fontSize: typography.fontSize['2xl'],
+          fontSize: 'clamp(2rem, 3.4vw, 2.3rem)',
           fontWeight: typography.fontWeight.medium,
           color: colors.darkGray,
-          marginBottom: spacing.xs,
+          marginBottom: spacing.sm,
           textAlign: 'center',
+          letterSpacing: '0.01em',
         }}
       >
         Quick Inquiry
@@ -157,7 +172,7 @@ ${formData.message}
             <p style={{ marginBottom: spacing.sm, fontWeight: typography.fontWeight.medium }}>
               B. Message Us Directly
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.sm }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: spacing.sm }}>
               <button
                 type="button"
                 onClick={handleOpenInstagram}
@@ -184,6 +199,19 @@ ${formData.message}
               >
                 WeChat
               </button>
+              <button
+                type="button"
+                onClick={handleOpenLine}
+                style={{
+                  padding: spacing.sm,
+                  border: `1px solid ${colors.lightGray}`,
+                  borderRadius: '6px',
+                  backgroundColor: colors.white,
+                  cursor: 'pointer',
+                }}
+              >
+                LINE
+              </button>
             </div>
             <button
               type="button"
@@ -205,16 +233,7 @@ ${formData.message}
       ) : (
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: spacing.lg }}>
-            <label
-              htmlFor="name"
-              style={{
-                display: 'block',
-                fontSize: typography.fontSize.sm,
-                fontWeight: typography.fontWeight.medium,
-                color: colors.darkGray,
-                marginBottom: spacing.xs,
-              }}
-            >
+            <label htmlFor="name" style={labelStyle}>
               Name *
             </label>
             <input
@@ -245,16 +264,7 @@ ${formData.message}
           </div>
 
           <div style={{ marginBottom: spacing.lg }}>
-            <label
-              htmlFor="email"
-              style={{
-                display: 'block',
-                fontSize: typography.fontSize.sm,
-                fontWeight: typography.fontWeight.medium,
-                color: colors.darkGray,
-                marginBottom: spacing.xs,
-              }}
-            >
+            <label htmlFor="email" style={labelStyle}>
               Email *
             </label>
             <input
@@ -285,16 +295,7 @@ ${formData.message}
           </div>
 
           <div style={{ marginBottom: spacing.lg }}>
-            <label
-              htmlFor="phone"
-              style={{
-                display: 'block',
-                fontSize: typography.fontSize.sm,
-                fontWeight: typography.fontWeight.medium,
-                color: colors.darkGray,
-                marginBottom: spacing.xs,
-              }}
-            >
+            <label htmlFor="phone" style={labelStyle}>
               Phone *
             </label>
             <input
@@ -325,16 +326,7 @@ ${formData.message}
           </div>
 
           <div style={{ marginBottom: spacing.lg }}>
-            <label
-              htmlFor="subject"
-              style={{
-                display: 'block',
-                fontSize: typography.fontSize.sm,
-                fontWeight: typography.fontWeight.medium,
-                color: colors.darkGray,
-                marginBottom: spacing.xs,
-              }}
-            >
+            <label htmlFor="subject" style={labelStyle}>
               Subject
             </label>
             <div style={{ position: 'relative' }}>
@@ -393,16 +385,7 @@ ${formData.message}
           </div>
 
           <div style={{ marginBottom: spacing.xl }}>
-            <label
-              htmlFor="message"
-              style={{
-                display: 'block',
-                fontSize: typography.fontSize.sm,
-                fontWeight: typography.fontWeight.medium,
-                color: colors.darkGray,
-                marginBottom: spacing.xs,
-              }}
-            >
+            <label htmlFor="message" style={labelStyle}>
               Message *
             </label>
             <textarea
