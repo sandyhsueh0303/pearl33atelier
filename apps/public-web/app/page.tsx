@@ -317,7 +317,7 @@ export default function HomePage() {
                 }}
               >
                 <li>In-stock: ships quickly after order confirmation.</li>
-                <li>Custom lead time: usually 3-8 weeks depending on complexity.</li>
+                <li>Custom lead time: usually 3-6 weeks depending on complexity.</li>
               </ul>
             </div>
 

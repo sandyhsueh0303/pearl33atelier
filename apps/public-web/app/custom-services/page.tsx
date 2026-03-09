@@ -149,7 +149,7 @@ export default function CustomServicesPage() {
                 marginBottom: spacing.sm,
               }}
             >
-              3-8 weeks
+              3-6 weeks
             </h3>
             <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed }}>
               Most custom projects are completed within this window depending on complexity,

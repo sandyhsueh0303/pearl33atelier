@@ -39,7 +39,7 @@ export default function FAQPage() {
     {
       id: 'timeline-faq',
       q: 'How long does custom take?',
-      a: 'Most custom pieces are completed in 3-8 weeks, depending on pearl availability, matching requirements, and design complexity.',
+      a: 'Most custom pieces are completed in 3-6 weeks, depending on pearl availability, matching requirements, and design complexity.',
     },
     {
       id: 'shipping-policy',
