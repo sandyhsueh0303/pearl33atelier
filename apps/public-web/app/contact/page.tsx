@@ -3,7 +3,7 @@ import { colors, typography, spacing } from '../constants/design'
 import { pageHeroStyles } from '../constants/pageHero'
 import PageHero from '../components/PageHero'
 import ContactMethods from './ContactMethods'
-import ContactForm from './contact-form'
+import ContactForm from './ContactForm'
 
 export const metadata: Metadata = {
   title: 'Contact Us | 33 Pearl Atelier',
