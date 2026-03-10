@@ -30,9 +30,10 @@ interface Product {
 
 interface Props {
   productId: string
+  refreshToken?: number
 }
 
-export default function ProductCostAnalysis({ productId }: Props) {
+export default function ProductCostAnalysis({ productId, refreshToken = 0 }: Props) {
   const [product, setProduct] = useState<Product | null>(null)
   const [materials, setMaterials] = useState<ProductMaterial[]>([])
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([])
@@ -59,7 +60,7 @@ export default function ProductCostAnalysis({ productId }: Props) {
 
   useEffect(() => {
     loadData()
-  }, [productId])
+  }, [productId, refreshToken])
 
   const loadData = async () => {
     try {

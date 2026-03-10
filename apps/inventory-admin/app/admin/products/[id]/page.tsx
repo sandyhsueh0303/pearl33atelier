@@ -1,12 +1,13 @@
 'use client'
 
-import { use } from 'react'
+import { use, useState } from 'react'
 import ProductForm from '../components/ProductForm'
 import ProductCostAnalysis from '../components/ProductCostAnalysis'
 import QuickSaleButton from '../components/QuickSaleButton'
 
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
+  const [costAnalysisRefreshToken, setCostAnalysisRefreshToken] = useState(0)
   
   return (
     <div style={{ 
@@ -26,7 +27,10 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
       </div>
 
       {/* Basic Product Info */}
-      <ProductForm productId={id} />
+      <ProductForm
+        productId={id}
+        onSaved={() => setCostAnalysisRefreshToken((prev) => prev + 1)}
+      />
       
       {/* Divider */}
       <div style={{ 
@@ -50,7 +54,10 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
       </div>
 
       {/* Cost Analysis: Materials + Other Costs + Profit */}
-      <ProductCostAnalysis productId={id} />
+      <ProductCostAnalysis
+        productId={id}
+        refreshToken={costAnalysisRefreshToken}
+      />
     </div>
   )
 }

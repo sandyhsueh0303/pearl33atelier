@@ -7,9 +7,10 @@ import type { CatalogProduct, PearlType, AvailabilityKind, ProductCategory, Prod
 
 interface ProductFormProps {
   productId?: string
+  onSaved?: () => void
 }
 
-export default function ProductForm({ productId }: ProductFormProps) {
+export default function ProductForm({ productId, onSaved }: ProductFormProps) {
   const router = useRouter()
   const isEditMode = !!productId
   
@@ -174,6 +175,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
       }
 
       const data = await response.json()
+      onSaved?.()
       router.push(`/admin/products/${data.product.id}`)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to save product')
