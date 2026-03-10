@@ -9,12 +9,50 @@ export const metadata: Metadata = {
 }
 
 export default function HomePage() {
+  const promoBanner = {
+    text: 'March Only: Receive complimentary 18K Blue Rose stud earrings with your order over $500.',
+    linkLabel: 'Shop Now',
+    linkHref: '/products',
+  }
+
   return (
     <div style={{
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
     }}>
+      {/* Promotional Banner */}
+      <section
+        style={{
+          padding: `${spacing.xs} ${spacing.lg}`,
+          backgroundColor: '#fdf7ea',
+          borderBottom: '1px solid #efe2c8',
+          textAlign: 'center',
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            color: colors.darkGray,
+            fontSize: typography.fontSize.sm,
+            letterSpacing: '0.03em',
+          }}
+        >
+          <span style={{ color: colors.gold, fontWeight: typography.fontWeight.medium }}>✦ {promoBanner.text}</span>{' '}
+          <Link
+            href={promoBanner.linkHref}
+            style={{
+              color: colors.darkGray,
+              fontWeight: typography.fontWeight.medium,
+              textDecoration: 'underline',
+              textUnderlineOffset: '3px',
+            }}
+          >
+            {promoBanner.linkLabel}
+          </Link>
+        </p>
+      </section>
+
       {/* Hero Section */}
       <section style={{
         minHeight: '75vh',
