@@ -231,6 +231,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    if (!body?.title || !String(body.title).trim()) {
+      return NextResponse.json({ error: 'title is required' }, { status: 400 })
+    }
+    if (!body?.pearl_type || !PEARL_TYPES.includes(body.pearl_type as PearlType)) {
+      return NextResponse.json({ error: 'pearl_type is invalid or missing' }, { status: 400 })
+    }
+    if (!body?.availability || !['IN_STOCK', 'PREORDER', 'OUT_OF_STOCK'].includes(String(body.availability))) {
+      return NextResponse.json({ error: 'availability is invalid or missing' }, { status: 400 })
+    }
+
     if (!normalizedSku) {
       normalizedSku = await getNextProductSku(supabase)
     }
@@ -269,10 +279,18 @@ export async function POST(request: NextRequest) {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      const code = (error as any).code as string | undefined
+      if (code === '23505') {
+        // unique_violation (slug/sku)
+        return NextResponse.json({ error: 'slug or sku already exists' }, { status: 409 })
+      }
+      throw error
+    }
 
     return NextResponse.json({ product: data }, { status: 201 })
   } catch (error) {
+    console.error('POST /api/products failed:', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to create product' },
       { status: 500 }

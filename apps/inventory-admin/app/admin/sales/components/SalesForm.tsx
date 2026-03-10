@@ -17,7 +17,7 @@ interface SaleRecord {
   unit_cost: number;
   sale_date: string;
   customer_name: string | null;
-  order_number: string | null;
+  order_number: number | null;
   platform: string | null;
   notes: string | null;
 }
@@ -96,7 +96,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
       setUnitCost(editSale.unit_cost.toString());
       setSaleDate(editSale.sale_date);
       setCustomerName(editSale.customer_name || '');
-      setOrderNumber(editSale.order_number || '');
+      setOrderNumber(editSale.order_number?.toString() || '');
       setPlatform(editSale.platform || '');
       setNotes(editSale.notes || '');
     }
@@ -172,6 +172,13 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
       return;
     }
 
+    const parsedOrderNumber =
+      orderNumber.trim() === '' ? null : Number.parseInt(orderNumber.trim(), 10);
+    if (parsedOrderNumber !== null && Number.isNaN(parsedOrderNumber)) {
+      setFormError('Order number must be a valid number');
+      return;
+    }
+
     setLoading(true);
     try {
       setFormError(null);
@@ -188,7 +195,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
           unit_cost: parseFloat(unitCost),
           sale_date: saleDate,
           customer_name: customerName || null,
-          order_number: orderNumber || null,
+          order_number: parsedOrderNumber,
           platform: platform || null,
           notes: notes || null,
         }),

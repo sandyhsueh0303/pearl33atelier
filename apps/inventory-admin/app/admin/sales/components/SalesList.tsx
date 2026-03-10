@@ -15,7 +15,7 @@ interface SalesRecord {
   profit: number;
   profit_margin: number | null;
   customer_name: string | null;
-  order_number: string | null;
+  order_number: number | null;
   platform: string | null;
   notes: string | null;
   catalog_products?: {

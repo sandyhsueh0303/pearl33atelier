@@ -13,7 +13,7 @@ interface SaleRecord {
   unit_cost: number;
   sale_date: string;
   customer_name: string | null;
-  order_number: string | null;
+  order_number: number | null;
   platform: string | null;
   notes: string | null;
 }

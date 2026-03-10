@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/app/utils/adminAuth';
 
+const parseOptionalOrderNumber = (value: unknown): number | null => {
+  if (value === undefined || value === null || value === '') return null;
+  const parsed = Number.parseInt(String(value), 10);
+  return Number.isNaN(parsed) ? NaN : parsed;
+};
+
 // GET /api/sales - List all sales records
 export async function GET(request: NextRequest) {
   const { supabase, errorResponse } = await requireAdmin();
@@ -16,7 +22,7 @@ export async function GET(request: NextRequest) {
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 
-  let query = supabase
+  let baseQuery = supabase
     .from('sales_records')
     .select(`
       *,
@@ -29,12 +35,20 @@ export async function GET(request: NextRequest) {
 
   // Search by customer name, order number, or platform
   if (search) {
-    query = query.or(`customer_name.ilike.%${search}%,order_number.ilike.%${search}%,platform.ilike.%${search}%`);
+    const orFilters = [
+      `customer_name.ilike.%${search}%`,
+      `platform.ilike.%${search}%`,
+    ];
+
+    if (/^\d+$/.test(search)) {
+      orFilters.push(`order_number.eq.${Number.parseInt(search, 10)}`);
+    }
+
+    baseQuery = baseQuery.or(orFilters.join(','));
   }
 
   // Sort
-  query = query.order(sortBy, { ascending: order === 'asc' });
-
+  const query = baseQuery.order(sortBy, { ascending: order === 'asc' });
   const { data: sales, error, count } = await query.range(from, to);
 
   if (error) {
@@ -87,6 +101,11 @@ export async function POST(request: NextRequest) {
   const profit_margin = total_price > 0 
     ? parseFloat(((profit / total_price) * 100).toFixed(2))
     : 0;
+  const parsedOrderNumber = parseOptionalOrderNumber(order_number);
+
+  if (Number.isNaN(parsedOrderNumber)) {
+    return NextResponse.json({ error: 'order_number must be a valid number' }, { status: 400 });
+  }
 
   const { data: sale, error } = await supabase
     .from('sales_records')
@@ -101,7 +120,7 @@ export async function POST(request: NextRequest) {
       profit_margin,
       sale_date: sale_date || new Date().toISOString().split('T')[0],
       customer_name: customer_name || null,
-      order_number: order_number || null,
+      order_number: parsedOrderNumber,
       platform: platform || null,
       notes: notes || null,
     })

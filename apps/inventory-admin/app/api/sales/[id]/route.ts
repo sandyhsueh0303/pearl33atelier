@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/app/utils/adminAuth';
 
+const parseOptionalOrderNumber = (value: unknown): number | null => {
+  if (value === undefined || value === null || value === '') return null;
+  const parsed = Number.parseInt(String(value), 10);
+  return Number.isNaN(parsed) ? NaN : parsed;
+};
+
 // GET /api/sales/[id] - Get a single sale record
 export async function GET(
   request: NextRequest,
@@ -78,7 +84,13 @@ export async function PUT(
 
   if (sale_date !== undefined) updateData.sale_date = sale_date;
   if (customer_name !== undefined) updateData.customer_name = customer_name || null;
-  if (order_number !== undefined) updateData.order_number = order_number || null;
+  if (order_number !== undefined) {
+    const parsedOrderNumber = parseOptionalOrderNumber(order_number);
+    if (Number.isNaN(parsedOrderNumber)) {
+      return NextResponse.json({ error: 'order_number must be a valid number' }, { status: 400 });
+    }
+    updateData.order_number = parsedOrderNumber;
+  }
   if (platform !== undefined) updateData.platform = platform || null;
   if (notes !== undefined) updateData.notes = notes || null;
 
