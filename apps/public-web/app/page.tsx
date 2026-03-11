@@ -2,13 +2,121 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions } from './constants/design'
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
+
 export const metadata: Metadata = {
+  title: '33 Pearl Atelier | Fine Pearl Jewelry | GIA Certified Pearls',
+  description:
+    'Discover exquisite handcrafted pearl jewelry at 33 Pearl Atelier. Shop GIA certified White South Sea, Akoya, and Tahitian pearls. Free shipping on orders over $200. Custom design services available.',
+  keywords: [
+    'pearl jewelry',
+    'fine jewelry',
+    'GIA certified pearls',
+    'white south sea pearls',
+    'akoya pearls',
+    'tahitian pearls',
+    'freshwater pearls',
+    'pearl necklace',
+    'pearl earrings',
+    'pearl bracelet',
+    'pearl rings',
+    'custom pearl jewelry',
+    'handcrafted jewelry',
+    'pearl atelier',
+    '33 Pearl Atelier',
+  ],
   alternates: {
-    canonical: '/',
+    canonical: SITE_URL,
+  },
+  openGraph: {
+    title: '33 Pearl Atelier - Finest Pearl Jewelry',
+    description:
+      'Discover exquisite handcrafted pearl jewelry. GIA certified pearls with free shipping over $200.',
+    type: 'website',
+    url: SITE_URL,
+    siteName: '33 Pearl Atelier',
+    locale: 'en_US',
+    images: [
+      {
+        url: `${SITE_URL}/og-home.jpg`,
+        width: 1200,
+        height: 630,
+        alt: '33 Pearl Atelier - Fine Pearl Jewelry Collection',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '33 Pearl Atelier - Finest Pearl Jewelry',
+    description: 'Discover exquisite handcrafted pearl jewelry. GIA certified pearls.',
+    images: [`${SITE_URL}/og-home.jpg`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  other: {
+    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { 'google-site-verification': process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : {}),
   },
 }
 
 export default function HomePage() {
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${SITE_URL}#organization`,
+    name: '33 Pearl Atelier',
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo.png`,
+    description:
+      'Fine pearl jewelry boutique specializing in GIA certified pearls and custom designs.',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'San Jose',
+      addressRegion: 'CA',
+      addressCountry: 'US',
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'Customer Service',
+      email: 'info@33pearlatelier.com',
+      availableLanguage: ['en', 'zh'],
+    },
+    sameAs: [
+      'https://www.instagram.com/33pearlatelier',
+      'https://www.facebook.com/33pearlatelier',
+    ],
+  }
+
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE_URL}#website`,
+    url: SITE_URL,
+    name: '33 Pearl Atelier',
+    description: 'Fine pearl jewelry boutique',
+    publisher: {
+      '@id': `${SITE_URL}#organization`,
+    },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${SITE_URL}/products?search={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
   const promoBanner = {
     text: 'March Only: Receive complimentary 18K Blue Rose stud earrings with your order over $500.',
     linkLabel: 'Shop Now',
@@ -16,11 +124,21 @@ export default function HomePage() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-    }}>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
       {/* Promotional Banner */}
       <section
         style={{
@@ -618,6 +736,7 @@ export default function HomePage() {
         </div>
       </section>
 
-    </div>
+      </div>
+    </>
   )
 }
