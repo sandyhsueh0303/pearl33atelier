@@ -16,11 +16,14 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const sortBy = searchParams.get('sortBy') || 'order_number';
   const order = searchParams.get('order') || 'desc';
-  const search = searchParams.get('search') || '';
+  const search = (searchParams.get('search') || '').trim();
   const page = Math.max(1, Number(searchParams.get('page') || '1'));
   const pageSize = Math.max(1, Math.min(100, Number(searchParams.get('pageSize') || '30')));
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
+  const ascending = order === 'asc';
+  const allowedSortFields = new Set(['order_number', 'total_price', 'profit', 'customer_name', 'sale_date']);
+  const safeSortBy = allowedSortFields.has(sortBy) ? sortBy : 'order_number';
 
   let baseQuery = supabase
     .from('sales_records')
@@ -33,36 +36,61 @@ export async function GET(request: NextRequest) {
       )
     `, { count: 'exact' });
 
-  // Search by customer name, order number, or platform
-  if (search) {
-    const orFilters = [
-      `customer_name.ilike.%${search}%`,
-      `platform.ilike.%${search}%`,
-    ];
+  // Without search, keep DB-level filtering/pagination for performance.
+  if (!search) {
+    const query = baseQuery.order(safeSortBy, { ascending });
+    const { data: sales, error, count } = await query.range(from, to);
 
-    if (/^\d+$/.test(search)) {
-      orFilters.push(`order_number.eq.${Number.parseInt(search, 10)}`);
+    if (error) {
+      console.error('Error fetching sales:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    baseQuery = baseQuery.or(orFilters.join(','));
+    const totalPages = Math.max(1, Math.ceil((count || 0) / pageSize));
+    return NextResponse.json({
+      sales: sales || [],
+      pagination: {
+        page,
+        pageSize,
+        totalItems: count || 0,
+        totalPages,
+      },
+    });
   }
 
-  // Sort
-  const query = baseQuery.order(sortBy, { ascending: order === 'asc' });
-  const { data: sales, error, count } = await query.range(from, to);
+  // With search, fetch full set then filter in-memory so search can include related product title/slug.
+  const { data: allSales, error } = await baseQuery.order(safeSortBy, { ascending });
 
   if (error) {
     console.error('Error fetching sales:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const totalPages = Math.max(1, Math.ceil((count || 0) / pageSize));
+  const q = search.toLowerCase();
+  const filtered = (allSales || []).filter((sale: any) => {
+    const customer = String(sale.customer_name || '').toLowerCase();
+    const platform = String(sale.platform || '').toLowerCase();
+    const orderNumber = String(sale.order_number ?? '').toLowerCase();
+    const productTitle = String(sale.catalog_products?.title || '').toLowerCase();
+    const productSlug = String(sale.catalog_products?.slug || '').toLowerCase();
+
+    return (
+      customer.includes(q) ||
+      platform.includes(q) ||
+      orderNumber.includes(q) ||
+      productTitle.includes(q) ||
+      productSlug.includes(q)
+    );
+  });
+
+  const paginated = filtered.slice(from, to + 1);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   return NextResponse.json({
-    sales: sales || [],
+    sales: paginated,
     pagination: {
       page,
       pageSize,
-      totalItems: count || 0,
+      totalItems: filtered.length,
       totalPages,
     },
   });
