@@ -60,7 +60,14 @@ export default function ProductCostAnalysis({ productId, refreshToken = 0 }: Pro
 
   useEffect(() => {
     loadData()
-  }, [productId, refreshToken])
+  }, [productId])
+
+  useEffect(() => {
+    if (refreshToken <= 0) return
+    // On product save, only refresh product pricing data.
+    // Material/inventory lists are unchanged and expensive to refetch.
+    loadProduct()
+  }, [refreshToken])
 
   const loadData = async () => {
     try {
@@ -105,15 +112,18 @@ export default function ProductCostAnalysis({ productId, refreshToken = 0 }: Pro
     try {
       const pageSize = 100
       let page = 1
-      let totalPages = 1
       const allItems: InventoryItem[] = []
 
-      while (page <= totalPages) {
-        const res = await fetch(`/api/inventory?page=${page}&pageSize=${pageSize}`)
+      while (true) {
+        const res = await fetch(
+          `/api/inventory?page=${page}&pageSize=${pageSize}&status=all&sortBy=date&sortOrder=desc`,
+          { cache: 'no-store' }
+        )
         if (!res.ok) break
         const data = await res.json()
-        allItems.push(...(data.items || []))
-        totalPages = data.pagination?.totalPages || 1
+        const pageItems: InventoryItem[] = data.items || []
+        allItems.push(...pageItems)
+        if (pageItems.length < pageSize) break
         page += 1
       }
 
