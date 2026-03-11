@@ -142,6 +142,9 @@ export async function GET(request: NextRequest) {
 
     if (status === 'published') query = query.eq('published', true)
     if (status === 'draft') query = query.eq('published', false)
+    if (status === 'in_stock') query = query.eq('availability', 'IN_STOCK')
+    if (status === 'preorder') query = query.eq('availability', 'PREORDER')
+    if (status === 'sold') query = query.eq('availability', 'OUT_OF_STOCK')
     if (pearlType) query = query.eq('pearl_type', pearlType)
     if (category) query = query.eq('category', category)
 

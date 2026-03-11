@@ -33,7 +33,9 @@ export default function ProductsPage() {
   
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState('')
-  const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all')
+  const [filterStatus, setFilterStatus] = useState<
+    'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold'
+  >('all')
   const [filterPearlType, setFilterPearlType] = useState<string>('all')
   const [filterCategory, setFilterCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'title' | 'price' | 'created'>('created')
@@ -294,12 +296,19 @@ export default function ProductsPage() {
             </label>
             <select
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft')}
+              onChange={(e) =>
+                setFilterStatus(
+                  e.target.value as 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold'
+                )
+              }
               className="admin-control"
             >
               <option value="all">All</option>
               <option value="published">Published</option>
               <option value="draft">Draft</option>
+              <option value="in_stock">In Stock</option>
+              <option value="preorder">Preorder</option>
+              <option value="sold">Sold</option>
             </select>
           </div>
 
@@ -384,7 +393,18 @@ export default function ProductsPage() {
         {/* Results Count */}
         <div className="admin-filter-results">
           Showing <strong>{filteredProducts.length}</strong> / {totalItems} products
-          {filterStatus !== 'all' && ` • ${filterStatus === 'published' ? 'Published' : 'Draft'}`}
+          {filterStatus !== 'all' &&
+            ` • ${
+              filterStatus === 'published'
+                ? 'Published'
+                : filterStatus === 'draft'
+                ? 'Draft'
+                : filterStatus === 'in_stock'
+                ? 'In Stock'
+                : filterStatus === 'preorder'
+                ? 'Preorder'
+                : 'Sold'
+            }`}
           {filterPearlType !== 'all' && ` • ${filterPearlType}`}
           {filterCategory !== 'all' && ` • ${formatCategory(filterCategory)}`}
         </div>
@@ -509,10 +529,10 @@ export default function ProductsPage() {
               <tr className="admin-table-head-row">
                 <th>Status</th>
                 <th>SKU</th>
+                <th>Available</th>
                 <th>Title</th>
                 <th>Category</th>
                 <th>Pearl Type</th>
-                <th>Available</th>
                 <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Total Cost</th>
                 <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Sell Price</th>
                 <th className="admin-th-right" style={{ minWidth: '140px' }}>Profit</th>
@@ -529,19 +549,6 @@ export default function ProductsPage() {
                   </td>
                   <td className="admin-cell-mono">
                     {product.sku || '-'}
-                  </td>
-                  <td style={{ fontWeight: '500' }}>
-                    {product.title}
-                  </td>
-                  <td>
-                    <span className="admin-pill admin-pill-lilac" style={{ fontSize: '0.875rem' }}>
-                      {product.category ? formatCategory(product.category) : '-'}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="admin-pill admin-pill-sky" style={{ fontSize: '0.875rem' }}>
-                      {product.pearl_type}
-                    </span>
                   </td>
                   <td>
                     <span
@@ -564,6 +571,19 @@ export default function ProductsPage() {
                         : product.availability === 'PREORDER'
                         ? 'Preorder'
                         : 'Sold'}
+                    </span>
+                  </td>
+                  <td style={{ fontWeight: '500' }}>
+                    {product.title}
+                  </td>
+                  <td>
+                    <span className="admin-pill admin-pill-lilac" style={{ fontSize: '0.875rem' }}>
+                      {product.category ? formatCategory(product.category) : '-'}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="admin-pill admin-pill-sky" style={{ fontSize: '0.875rem' }}>
+                      {product.pearl_type}
                     </span>
                   </td>
                   <td className="admin-cell-right admin-money admin-money-danger">

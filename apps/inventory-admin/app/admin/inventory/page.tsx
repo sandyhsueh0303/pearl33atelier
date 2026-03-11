@@ -402,11 +402,11 @@ export default function InventoryPage() {
                 <th className="admin-th-center">Status</th>
                 <th>Name</th>
                 <th>Category</th>
-                <th>Purchase Date</th>
-                <th className="admin-th-right">Unit Cost</th>
-                <th className="admin-th-right">Qty</th>
-                <th className="admin-th-right">Remaining</th>
-                <th className="admin-th-right">Remaining Value</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Purchase Date</th>
+                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Unit Cost</th>
+                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Qty</th>
+                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Remaining</th>
+                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Remaining Value</th>
                 <th className="admin-th-center">Actions</th>
               </tr>
             </thead>
@@ -429,12 +429,12 @@ export default function InventoryPage() {
                   >
                     <td className="admin-cell-center">
                       <span
-                        className="admin-chip"
-                        style={{
-                          padding: '0.375rem 0.75rem',
-                          backgroundColor: isSold ? '#FEE2E2' : '#DCFCE7',
-                          color: isSold ? '#B91C1C' : '#166534',
-                        }}
+                        className={isSold ? 'admin-pill' : 'admin-pill admin-pill-success'}
+                        style={
+                          isSold
+                            ? { background: '#FEE2E2', color: '#B91C1C', fontSize: '0.875rem', whiteSpace: 'nowrap' }
+                            : { fontSize: '0.875rem', whiteSpace: 'nowrap' }
+                        }
                       >
                         {isSold ? 'Sold' : 'In Stock'}
                       </span>
@@ -445,33 +445,26 @@ export default function InventoryPage() {
                       </div>
                     </td>
                     <td>
-                      <span
-                        className="admin-chip"
-                        style={{
-                          padding: '0.375rem 0.75rem',
-                          backgroundColor: categoryInfo.color,
-                          color: categoryInfo.textColor,
-                        }}
-                      >
-                        {categoryInfo.label.split(' ')[0]}
+                      <span className="admin-pill admin-pill-lilac" style={{ fontSize: '0.875rem', whiteSpace: 'nowrap' }}>
+                        {categoryInfo.label}
                       </span>
                     </td>
-                    <td className="admin-cell-muted">
+                    <td className="admin-cell-muted" style={{ whiteSpace: 'nowrap' }}>
                       {item.purchase_date 
                         ? new Date(item.purchase_date).toLocaleDateString('zh-TW')
                         : '-'
                       }
                     </td>
-                    <td className="admin-cell-right admin-money">
+                    <td className="admin-cell-right admin-money" style={{ whiteSpace: 'nowrap' }}>
                       ${unitCost.toFixed(2)}
                     </td>
-                    <td className="admin-cell-right">
+                    <td className="admin-cell-right" style={{ whiteSpace: 'nowrap' }}>
                       {item.total_quantity}
                     </td>
-                    <td style={{ fontWeight: '600' }} className="admin-cell-right">
+                    <td style={{ fontWeight: '600', whiteSpace: 'nowrap' }} className="admin-cell-right">
                       {remainingQuantity}
                     </td>
-                    <td className="admin-cell-right admin-money admin-money-accent">
+                    <td className="admin-cell-right admin-money admin-money-accent" style={{ whiteSpace: 'nowrap' }}>
                       ${remainingValue.toFixed(2)}
                     </td>
                     <td className="admin-cell-center">
