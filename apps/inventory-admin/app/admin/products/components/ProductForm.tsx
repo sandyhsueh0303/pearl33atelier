@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { slugify, getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, PearlType, AvailabilityKind, ProductCategory, ProductImage } from '@pearl33atelier/shared/types'
@@ -9,6 +9,32 @@ interface ProductFormProps {
   productId?: string
   onSaved?: () => void
 }
+
+const MATERIAL_OPTIONS = [
+  '18K Gold',
+  '18K White Gold',
+  '925 Sterling Silver with 18K Gold Plating',
+  '925 Sterling Silver with White Gold Plating',
+  'Natural Diamond',
+  'Lab-Grown Diamond',
+  'Cubic Zirconia',
+] as const
+
+const SHAPE_OPTIONS = [
+  'round',
+  'near-round',
+  'drop',
+  'button',
+  'oval',
+  'baroque',
+] as const
+
+const normalizeMaterial = (value: string) => value.trim().toLowerCase()
+const splitMaterialValues = (value: string) =>
+  value
+    .split(/[,;/\n]+/)
+    .map((part) => part.trim())
+    .filter(Boolean)
 
 export default function ProductForm({ productId, onSaved }: ProductFormProps) {
   const router = useRouter()
@@ -30,7 +56,8 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
   const [category, setCategory] = useState<ProductCategory | ''>('')
   const [sizeMm, setSizeMm] = useState('')
   const [shape, setShape] = useState('')
-  const [material, setMaterial] = useState('')
+  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([])
+  const [customMaterials, setCustomMaterials] = useState('')
   const [sellPrice, setSellPrice] = useState('')
   const [originalPrice, setOriginalPrice] = useState('')
   const [availability, setAvailability] = useState<AvailabilityKind>('IN_STOCK')
@@ -41,8 +68,14 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
   const [images, setImages] = useState<ProductImage[]>([])
   const [uploadingImages, setUploadingImages] = useState(false)
 
+  const materialValue = useMemo(() => {
+    const custom = splitMaterialValues(customMaterials)
+    const all = [...selectedMaterials, ...custom]
+    return all.join(', ')
+  }, [selectedMaterials, customMaterials])
+
   const buildDefaultSlug = () => {
-    const parts = [pearlType, sizeMm.trim(), shape.trim(), material.trim(), category]
+    const parts = [pearlType, sizeMm.trim(), shape.trim(), materialValue.trim(), category]
       .map((value) => String(value || '').trim())
       .filter(Boolean)
     return slugify(parts.join('-'))
@@ -70,7 +103,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     if (isEditMode || slugManuallyEdited) return
     const nextSlug = buildDefaultSlug()
     setSlug(nextSlug)
-  }, [isEditMode, slugManuallyEdited, pearlType, sizeMm, shape, material, category])
+  }, [isEditMode, slugManuallyEdited, pearlType, sizeMm, shape, materialValue, category])
 
   // Load product data if editing
   useEffect(() => {
@@ -118,7 +151,21 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
       setCategory(product.category || '')
       setSizeMm(product.size_mm || '')
       setShape(product.shape || '')
-      setMaterial(product.material || '')
+      const rawMaterials = splitMaterialValues(product.material || '')
+      const matched: string[] = []
+      const unmatched: string[] = []
+      rawMaterials.forEach((item) => {
+        const found = MATERIAL_OPTIONS.find(
+          (option) => normalizeMaterial(option) === normalizeMaterial(item)
+        )
+        if (found) {
+          matched.push(found)
+        } else {
+          unmatched.push(item)
+        }
+      })
+      setSelectedMaterials(Array.from(new Set(matched)))
+      setCustomMaterials(unmatched.join(', '))
       setSellPrice(product.sell_price?.toString() || '')
       setOriginalPrice(product.original_price?.toString() || '')
       setAvailability(product.availability)
@@ -151,7 +198,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
         category: category || null,
         size_mm: sizeMm.trim() || null,
         shape: shape || null,
-        material: material || null,
+        material: materialValue || null,
         sell_price: sellPrice ? parseFloat(sellPrice) : null,
         original_price: originalPrice ? parseFloat(originalPrice) : null,
         availability,
@@ -182,6 +229,13 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     } finally {
       setSaving(false)
     }
+  }
+
+  const toggleMaterial = (value: string) => {
+    setSelectedMaterials((prev) => {
+      if (prev.includes(value)) return prev.filter((item) => item !== value)
+      return [...prev, value]
+    })
   }
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -481,38 +535,90 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Shape
             </label>
-            <input
-              type="text"
-              value={shape}
-              onChange={(e) => setShape(e.target.value)}
-              placeholder="e.g.: round, oval"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
-            />
+            <div style={{
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              padding: '0.75rem',
+              backgroundColor: '#fff'
+            }}>
+              <div style={{ display: 'grid', gap: '0.5rem' }}>
+                {SHAPE_OPTIONS.map((option) => (
+                  <label
+                    key={option}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      fontSize: '0.95rem',
+                      cursor: 'pointer',
+                      textTransform: 'capitalize'
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={shape === option}
+                      onChange={() => setShape(shape === option ? '' : option)}
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <small style={{ color: '#666', display: 'block', marginTop: '0.35rem' }}>
+              Choose one
+            </small>
           </div>
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Material
             </label>
-            <input
-              type="text"
-              value={material}
-              onChange={(e) => setMaterial(e.target.value)}
-              placeholder="e.g.: 18K gold, 925 silver"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
-            />
+            <div style={{
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              padding: '0.75rem',
+              backgroundColor: '#fff'
+            }}>
+              <div style={{ display: 'grid', gap: '0.5rem' }}>
+                {MATERIAL_OPTIONS.map((option) => (
+                  <label
+                    key={option}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      fontSize: '0.95rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedMaterials.includes(option)}
+                      onChange={() => toggleMaterial(option)}
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+
+              <input
+                type="text"
+                value={customMaterials}
+                onChange={(e) => setCustomMaterials(e.target.value)}
+                placeholder="Other materials (optional)"
+                style={{
+                  marginTop: '0.75rem',
+                  width: '100%',
+                  padding: '0.625rem',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '0.95rem'
+                }}
+              />
+            </div>
+            <small style={{ color: '#666', display: 'block', marginTop: '0.35rem' }}>
+              Multiple selection supported
+            </small>
           </div>
 
           <div>
