@@ -29,6 +29,29 @@ export const metadata: Metadata = {
     'pearl care guide',
     'pearl blog',
   ],
+  openGraph: {
+    type: 'website',
+    siteName: '33 Pearl Atelier',
+    url: siteUrl,
+    title: '33 Pearl Atelier | Pearl Jewelry & Custom Pearl Design',
+    description:
+      'Shop handcrafted pearl jewelry and custom pearl design services by 33 Pearl Atelier. Discover pearl guides, care tips, and bespoke pieces.',
+    images: [
+      {
+        url: `${siteUrl}/images/og-home.png`,
+        width: 1200,
+        height: 630,
+        alt: '33 Pearl Atelier',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '33 Pearl Atelier | Pearl Jewelry & Custom Pearl Design',
+    description:
+      'Shop handcrafted pearl jewelry and custom pearl design services by 33 Pearl Atelier. Discover pearl guides, care tips, and bespoke pieces.',
+    images: [`${siteUrl}/images/og-home.png`],
+  },
 }
 
 export const viewport: Viewport = {

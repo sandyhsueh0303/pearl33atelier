@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: `${SITE_URL}/og-home.jpg`,
+        url: `${SITE_URL}/images/og-home.png`,
         width: 1200,
         height: 630,
         alt: '33 Pearl Atelier - Fine Pearl Jewelry Collection',
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '33 Pearl Atelier - Finest Pearl Jewelry',
     description: 'Discover exquisite handcrafted pearl jewelry. GIA certified pearls.',
-    images: [`${SITE_URL}/og-home.jpg`],
+    images: [`${SITE_URL}/images/og-home.png`],
   },
   robots: {
     index: true,
