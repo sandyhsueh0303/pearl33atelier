@@ -163,7 +163,6 @@ export default function ProductCostAnalysis({ productId, refreshToken = 0 }: Pro
       setNotes('')
       
       await loadMaterials()
-      alert('Material added')
     } catch (error) {
       alert('Add failed: ' + (error instanceof Error ? error.message : ''))
     } finally {
@@ -183,7 +182,6 @@ export default function ProductCostAnalysis({ productId, refreshToken = 0 }: Pro
       if (!res.ok) throw new Error('Failed to delete')
 
       await loadMaterials()
-      alert('Material deleted')
     } catch (error) {
       alert('Delete failed')
     }

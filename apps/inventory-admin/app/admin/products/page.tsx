@@ -10,6 +10,15 @@ interface ProductWithStats extends CatalogProduct {
   profit?: number
 }
 
+interface ProductSummaryStats {
+  total: number
+  published: number
+  draft: number
+  totalCost: number
+  totalRevenue: number
+  totalProfit: number
+}
+
 export default function ProductsPage() {
   const ITEMS_PER_PAGE = 30
   const [products, setProducts] = useState<ProductWithStats[]>([])
@@ -29,6 +38,14 @@ export default function ProductsPage() {
   const [filterCategory, setFilterCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'title' | 'price' | 'created'>('created')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [summaryStats, setSummaryStats] = useState<ProductSummaryStats>({
+    total: 0,
+    published: 0,
+    draft: 0,
+    totalCost: 0,
+    totalRevenue: 0,
+    totalProfit: 0,
+  })
   const formatCategory = (category: string) => {
     const labels: Record<string, string> = {
       BRACELETS: 'Bracelets',
@@ -46,6 +63,10 @@ export default function ProductsPage() {
   useEffect(() => {
     void loadProducts(currentPage)
   }, [currentPage, searchQuery, filterStatus, filterPearlType, filterCategory, sortBy, sortOrder])
+
+  useEffect(() => {
+    void loadSummaryStats()
+  }, [searchQuery, filterStatus, filterPearlType, filterCategory])
 
   useEffect(() => {
     if (!notice) return
@@ -86,6 +107,61 @@ export default function ProductsPage() {
     }
   }
 
+  const loadSummaryStats = async () => {
+    try {
+      const pageSize = 100
+      let page = 1
+      let totalPagesForSummary = 1
+      const allFilteredProducts: ProductWithStats[] = []
+
+      while (page <= totalPagesForSummary) {
+        const params = new URLSearchParams({
+          page: String(page),
+          pageSize: String(pageSize),
+          search: searchQuery,
+          status: filterStatus,
+          pearlType: filterPearlType,
+          category: filterCategory,
+          // Sorting does not affect totals, keep fixed for consistency.
+          sortBy: 'created',
+          sortOrder: 'desc',
+        })
+
+        const response = await fetch(`/api/products?${params.toString()}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        })
+
+        if (!response.ok) throw new Error('Failed to load product summary')
+        const data = await response.json()
+        allFilteredProducts.push(...(data.products || []))
+        totalPagesForSummary = data.pagination?.totalPages || 1
+        page += 1
+      }
+
+      const total = allFilteredProducts.length
+      const published = allFilteredProducts.filter((p) => p.published).length
+      const draft = total - published
+      const totalCost = allFilteredProducts.reduce((sum, p) => sum + (p.total_cost || 0), 0)
+      const totalRevenue = allFilteredProducts.reduce((sum, p) => sum + (p.sell_price || 0), 0)
+      const totalProfit = allFilteredProducts.reduce((sum, p) => sum + (p.profit || 0), 0)
+
+      setSummaryStats({
+        total,
+        published,
+        draft,
+        totalCost,
+        totalRevenue,
+        totalProfit,
+      })
+    } catch (e) {
+      // Keep previous summary values if loading summary fails.
+      console.error('Failed to load product summary stats', e)
+    }
+  }
+
   const handleDelete = async (productId: string, productTitle: string) => {
     if (!confirm(`Delete "${productTitle}"? This action cannot be undone.`)) {
       return
@@ -121,13 +197,13 @@ export default function ProductsPage() {
     setSortOrder('desc')
   }
 
-  const publishedCount = filteredProducts.filter(p => p.published).length
-  const draftCount = filteredProducts.filter(p => !p.published).length
-  
-  // Calculate totals
-  const totalCost = filteredProducts.reduce((sum, p) => sum + (p.total_cost || 0), 0)
-  const totalRevenue = filteredProducts.reduce((sum, p) => sum + (p.sell_price || 0), 0)
-  const totalProfit = filteredProducts.reduce((sum, p) => sum + (p.profit || 0), 0)
+  const publishedCount = summaryStats.published
+  const draftCount = summaryStats.draft
+
+  // Calculate totals from all filtered products across pages
+  const totalCost = summaryStats.totalCost
+  const totalRevenue = summaryStats.totalRevenue
+  const totalProfit = summaryStats.totalProfit
   const totalProfitMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0
   const paginatedProducts = filteredProducts
 
@@ -323,7 +399,7 @@ export default function ProductsPage() {
           }}>
             <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Total</p>
             <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#C9A961', margin: 0 }}>
-              {filteredProducts.length}
+              {summaryStats.total}
             </p>
           </div>
           <div className="admin-stat-card" style={{ 

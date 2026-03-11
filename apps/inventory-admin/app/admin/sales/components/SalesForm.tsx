@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 interface Product {
   id: string;
   title: string;
   slug: string;
-  sell_price: number;
+  pearl_type: string;
+  sell_price: number | null;
 }
 
 interface SaleRecord {
@@ -31,6 +32,8 @@ interface SalesFormProps {
 
 export default function SalesForm({ onSuccess, preselectedProductId, editSale, onCancelEdit }: SalesFormProps) {
   const [products, setProducts] = useState<Product[]>([]);
+  const [pearlTypeFilter, setPearlTypeFilter] = useState('all');
+  const [productSearch, setProductSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingCost, setLoadingCost] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -65,14 +68,48 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
     }
   };
 
+  const pearlTypeOptions = useMemo(() => {
+    const uniqueTypes = Array.from(new Set(products.map((p) => p.pearl_type).filter(Boolean)));
+    return uniqueTypes.sort((a, b) => a.localeCompare(b));
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    const q = productSearch.trim().toLowerCase();
+    return products.filter((product) => {
+      const pearlTypeMatched = pearlTypeFilter === 'all' || product.pearl_type === pearlTypeFilter;
+      const searchMatched =
+        q.length === 0 ||
+        product.title.toLowerCase().includes(q) ||
+        product.slug.toLowerCase().includes(q);
+      return pearlTypeMatched && searchMatched;
+    });
+  }, [products, pearlTypeFilter, productSearch]);
+
   // Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/products');
-        if (!response.ok) throw new Error('Failed to fetch products');
-        const data = await response.json();
-        setProducts(data.products || []);
+        const pageSize = 100;
+        let page = 1;
+        let totalPages = 1;
+        const allProducts: Product[] = [];
+
+        while (page <= totalPages) {
+          const response = await fetch(
+            `/api/products?page=${page}&pageSize=${pageSize}&status=all&sortBy=title&sortOrder=asc`,
+            { cache: 'no-store' }
+          );
+          if (!response.ok) throw new Error('Failed to fetch products');
+          const data = await response.json();
+          allProducts.push(...(data.products || []));
+          totalPages = data.pagination?.totalPages || 1;
+          page += 1;
+        }
+
+        const dedupedProducts = Array.from(
+          new Map(allProducts.map((product) => [product.id, product])).values()
+        );
+        setProducts(dedupedProducts);
 
         // If preselected, fetch its cost automatically
         if (preselectedProductId && !editSale) {
@@ -288,6 +325,54 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
       <div style={{ display: 'grid', gap: '1.5rem' }}>
         {/* Product Selection */}
         <div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.35rem', fontWeight: '500', fontSize: '0.8125rem', color: '#666' }}>
+                Pearl Type Filter
+              </label>
+              <select
+                value={pearlTypeFilter}
+                onChange={(e) => setPearlTypeFilter(e.target.value)}
+                disabled={!!preselectedProductId}
+                style={{
+                  width: '100%',
+                  padding: '0.625rem',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '0.875rem',
+                  backgroundColor: 'white'
+                }}
+              >
+                <option value="all">All Pearl Types</option>
+                {pearlTypeOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.35rem', fontWeight: '500', fontSize: '0.8125rem', color: '#666' }}>
+                Search Product
+              </label>
+              <input
+                type="text"
+                value={productSearch}
+                onChange={(e) => setProductSearch(e.target.value)}
+                disabled={!!preselectedProductId}
+                placeholder="Search by title or slug..."
+                style={{
+                  width: '100%',
+                  padding: '0.625rem',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+          </div>
+
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
             Product <span style={{ color: '#EF4444' }}>*</span>
           </label>
@@ -306,12 +391,15 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             }}
           >
             <option value="">Select product...</option>
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <option key={product.id} value={product.id}>
-                {product.title} (${product.sell_price})
+                {product.title} ({product.pearl_type}) (${product.sell_price ?? 0})
               </option>
             ))}
           </select>
+          <div style={{ marginTop: '0.35rem', fontSize: '0.75rem', color: '#666' }}>
+            Showing {filteredProducts.length} / {products.length} products
+          </div>
           {loadingCost && (
             <div style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#666' }}>
               Loading product cost...

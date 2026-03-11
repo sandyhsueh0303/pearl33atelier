@@ -126,7 +126,6 @@ export default function ProductMaterials({ productId }: Props) {
       
       // Reload materials
       await loadMaterials()
-      alert('Material added')
     } catch (error) {
       alert('Add failed: ' + (error instanceof Error ? error.message : ''))
     } finally {
@@ -146,7 +145,6 @@ export default function ProductMaterials({ productId }: Props) {
       if (!res.ok) throw new Error('Failed to delete')
 
       await loadMaterials()
-      alert('Material deleted')
     } catch (error) {
       alert('Delete failed')
     }

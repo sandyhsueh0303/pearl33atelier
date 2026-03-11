@@ -30,9 +30,24 @@ interface SalesListProps {
   onEdit?: (sale: SalesRecord) => void;
 }
 
+interface SalesSummary {
+  totalRevenue: number;
+  totalCost: number;
+  totalProfit: number;
+  totalOrders: number;
+  totalUnits: number;
+}
+
 export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
   const ITEMS_PER_PAGE = 30;
   const [sales, setSales] = useState<SalesRecord[]>([]);
+  const [summary, setSummary] = useState<SalesSummary>({
+    totalRevenue: 0,
+    totalCost: 0,
+    totalProfit: 0,
+    totalOrders: 0,
+    totalUnits: 0,
+  });
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -82,6 +97,10 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
   }, [sortBy, order, currentPage, appliedSearch]);
 
   useEffect(() => {
+    void fetchSummary();
+  }, [appliedSearch]);
+
+  useEffect(() => {
     setCurrentPage(1);
   }, [sortBy, order, appliedSearch]);
 
@@ -95,6 +114,48 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
     e.preventDefault();
     setAppliedSearch(search.trim());
     setCurrentPage(1);
+  };
+
+  const fetchSummary = async () => {
+    try {
+      const pageSize = 100;
+      let page = 1;
+      let totalPagesForSummary = 1;
+      const allSales: SalesRecord[] = [];
+
+      while (page <= totalPagesForSummary) {
+        const params = new URLSearchParams({
+          sortBy: 'order_number',
+          order: 'desc',
+          page: String(page),
+          pageSize: String(pageSize),
+          ...(appliedSearch && { search: appliedSearch }),
+        });
+
+        const response = await fetch(`/api/sales?${params.toString()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error('Failed to fetch sales summary');
+
+        const data = await response.json();
+        allSales.push(...(data.sales || []));
+        totalPagesForSummary = data.pagination?.totalPages || 1;
+        page += 1;
+      }
+
+      const nextSummary = allSales.reduce(
+        (acc, sale) => ({
+          totalRevenue: acc.totalRevenue + sale.total_price,
+          totalCost: acc.totalCost + sale.total_cost,
+          totalProfit: acc.totalProfit + sale.profit,
+          totalOrders: acc.totalOrders + 1,
+          totalUnits: acc.totalUnits + sale.quantity,
+        }),
+        { totalRevenue: 0, totalCost: 0, totalProfit: 0, totalOrders: 0, totalUnits: 0 }
+      );
+
+      setSummary(nextSummary);
+    } catch (error) {
+      console.error('Error fetching summary:', error);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -120,17 +181,6 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
     return `$${value.toFixed(2)}`;
   };
 
-  // Calculate summary statistics
-  const summary = sales.reduce(
-    (acc, sale) => ({
-      totalRevenue: acc.totalRevenue + sale.total_price,
-      totalCost: acc.totalCost + sale.total_cost,
-      totalProfit: acc.totalProfit + sale.profit,
-      totalOrders: acc.totalOrders + 1,
-      totalUnits: acc.totalUnits + sale.quantity,
-    }),
-    { totalRevenue: 0, totalCost: 0, totalProfit: 0, totalOrders: 0, totalUnits: 0 }
-  );
   const totalProfitMargin = summary.totalRevenue > 0
     ? (summary.totalProfit / summary.totalRevenue) * 100
     : 0;
