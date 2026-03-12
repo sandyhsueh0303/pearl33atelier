@@ -212,7 +212,7 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
                   {/* Image */}
                   <div style={{
                     width: '100%',
-                    paddingBottom: '100%',
+                    paddingBottom: '133.333%',
                     position: 'relative',
                     backgroundColor: colors.pearl
                   }}>

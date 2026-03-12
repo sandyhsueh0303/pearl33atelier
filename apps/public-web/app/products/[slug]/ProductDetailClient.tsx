@@ -100,7 +100,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
             <div style={{ position: 'relative', marginBottom: spacing.md }}>
               <div style={{
                 width: '100%',
-                paddingBottom: '100%',
+                paddingBottom: '133.333%',
                 position: 'relative',
                 backgroundColor: colors.pearl,
                 overflow: 'hidden'
