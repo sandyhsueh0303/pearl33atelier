@@ -47,6 +47,16 @@ export default function FAQPage() {
       a: 'Yes. U.S. shipping is estimated at 3 business days (excluding weekends). International shipping is usually 10-14 days, depending on destination and customs processing.',
     },
     {
+      id: 'tax-policy',
+      q: 'Do you charge tax?',
+      a: 'Tax is currently applied to California orders only, because we are required to collect sales tax for orders delivered within California based on local tax regulations.',
+    },
+    {
+      id: 'shipping-fee',
+      q: 'How much is shipping?',
+      a: 'Shipping is free for orders over $200. For orders below $200, a flat $10 shipping fee applies.',
+    },
+    {
       id: 'returns-policy',
       q: 'Return policy?',
       a: 'Because every pearl is individually chosen, we do not offer standard returns. Instead, we provide a lifetime restyling service for all pearl jewelry purchased from us — allowing your piece to be refreshed or redesigned as your style evolves.',
@@ -75,7 +85,7 @@ export default function FAQPage() {
     },
     {
       title: 'Ordering & Delivery',
-      ids: ['timeline-faq', 'shipping-policy', 'returns-policy'],
+      ids: ['timeline-faq', 'shipping-policy', 'shipping-fee', 'tax-policy', 'returns-policy'],
     },
     {
       title: 'After Purchase',

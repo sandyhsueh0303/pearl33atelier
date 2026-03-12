@@ -139,6 +139,31 @@ export default function HomePage() {
         display: 'flex',
         flexDirection: 'column',
       }}>
+      {/* Tax & Shipping Banner */}
+      <section
+        style={{
+          padding: `${spacing.xs} ${spacing.lg}`,
+          backgroundColor: '#fffdf8',
+          borderBottom: '1px solid #f1e7d1',
+          textAlign: 'center',
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            color: colors.textSecondary,
+            fontSize: typography.fontSize.sm,
+            letterSpacing: '0.02em',
+          }}
+        >
+          Tax: California only
+          <span style={{ color: colors.gold, margin: `0 ${spacing.xs}` }}>•</span>
+          Shipping: Free over $200
+          <span style={{ color: colors.gold, margin: `0 ${spacing.xs}` }}>•</span>
+          Otherwise $10 flat rate
+        </p>
+      </section>
+
       {/* Promotional Banner */}
       <section
         style={{
