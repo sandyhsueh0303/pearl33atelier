@@ -13,6 +13,24 @@ export const revalidate = 0
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
 const DEFAULT_IMAGE_URL = `${SITE_URL}/images/default-product.jpg`
 
+function getAvailabilityText(availability: CatalogProduct['availability']) {
+  if (availability === 'IN_STOCK') return 'In stock.'
+  if (availability === 'PREORDER') return 'Available for pre-order.'
+  return 'Currently sold out.'
+}
+
+function getAvailabilityMetaValue(availability: CatalogProduct['availability']) {
+  if (availability === 'IN_STOCK') return 'in stock'
+  if (availability === 'PREORDER') return 'preorder'
+  return 'out of stock'
+}
+
+function getAvailabilitySchemaUrl(availability: CatalogProduct['availability']) {
+  if (availability === 'IN_STOCK') return 'https://schema.org/InStock'
+  if (availability === 'PREORDER') return 'https://schema.org/PreOrder'
+  return 'https://schema.org/OutOfStock'
+}
+
 const getPublishedProductBySlug = cache(async (slug: string) => {
   const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -50,15 +68,10 @@ const getPublishedProductBySlug = cache(async (slug: string) => {
 })
 
 function buildProductDescription(product: CatalogProduct) {
-  const availabilityText =
-    product.availability === 'IN_STOCK'
-      ? 'In stock.'
-      : product.availability === 'PREORDER'
-      ? 'Available for pre-order.'
-      : 'Currently out of stock.'
+  const availabilityText = getAvailabilityText(product.availability)
 
   if (product.description?.trim()) {
-    return `${product.description.trim()} ${availabilityText}`.slice(0, 155)
+    return `${product.description.trim()} ${availabilityText}`.slice(0, 160)
   }
 
   const parts = [
@@ -68,7 +81,7 @@ function buildProductDescription(product: CatalogProduct) {
     product.material,
   ].filter(Boolean)
 
-  return `${product.title} by 33 Pearl Atelier${parts.length ? ` - ${parts.join(', ')}` : ''}. ${availabilityText}`.slice(0, 155)
+  return `${product.title} by 33 Pearl Atelier${parts.length ? ` - ${parts.join(', ')}` : ''}. ${availabilityText}`.slice(0, 160)
 }
 
 function getCategoryName(category: string | null | undefined): string {
@@ -166,12 +179,7 @@ export async function generateMetadata({
     other: {
       'product:price:amount': String(product.sell_price || 0),
       'product:price:currency': 'USD',
-      'product:availability':
-        product.availability === 'IN_STOCK'
-          ? 'in stock'
-          : product.availability === 'PREORDER'
-          ? 'preorder'
-          : 'out of stock',
+      'product:availability': getAvailabilityMetaValue(product.availability),
       'product:condition': 'new',
     },
   }
@@ -260,14 +268,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       '@id': `${productUrl}#offer`,
       url: productUrl,
       priceCurrency: 'USD',
-      price: product.sell_price || 0,
+      price: String(product.sell_price || 0),
       itemCondition: 'https://schema.org/NewCondition',
-      availability:
-        product.availability === 'IN_STOCK'
-          ? 'https://schema.org/InStock'
-          : product.availability === 'PREORDER'
-          ? 'https://schema.org/PreOrder'
-          : 'https://schema.org/OutOfStock',
+      availability: getAvailabilitySchemaUrl(product.availability),
       seller: {
         '@type': 'Organization',
         name: '33 Pearl Atelier',
