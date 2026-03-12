@@ -3,7 +3,7 @@
 import type { CatalogProduct } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 // Extended product type with cost and profit
 interface ProductWithStats extends CatalogProduct {
@@ -21,6 +21,14 @@ interface ProductSummaryStats {
 }
 
 export default function ProductsPage() {
+  return (
+    <Suspense fallback={<main className="admin-page"><div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div></main>}>
+      <ProductsPageContent />
+    </Suspense>
+  )
+}
+
+function ProductsPageContent() {
   const ITEMS_PER_PAGE = 30
   const router = useRouter()
   const pathname = usePathname()

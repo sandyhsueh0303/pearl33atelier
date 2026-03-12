@@ -36,6 +36,45 @@ const splitMaterialValues = (value: string) =>
     .map((part) => part.trim())
     .filter(Boolean)
 
+const normalizeImageOrientation = async (file: File): Promise<File> => {
+  if (!file.type.startsWith('image/')) return file
+
+  const outputType =
+    file.type === 'image/png' || file.type === 'image/webp' || file.type === 'image/jpeg'
+      ? file.type
+      : 'image/jpeg'
+
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return file
+
+  if (typeof createImageBitmap === 'function') {
+    try {
+      const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' } as any)
+      canvas.width = bitmap.width
+      canvas.height = bitmap.height
+      ctx.drawImage(bitmap, 0, 0)
+      bitmap.close()
+    } catch {
+      return file
+    }
+  } else {
+    return file
+  }
+
+  const blob = await new Promise<Blob | null>((resolve) => {
+    const quality = outputType === 'image/jpeg' || outputType === 'image/webp' ? 0.92 : undefined
+    canvas.toBlob((result) => resolve(result), outputType, quality)
+  })
+
+  if (!blob) return file
+
+  return new File([blob], file.name, {
+    type: blob.type || outputType,
+    lastModified: file.lastModified,
+  })
+}
+
 export default function ProductForm({ productId, onSaved }: ProductFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -253,8 +292,18 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     setError(null)
 
     try {
+      const normalizedFiles = await Promise.all(
+        Array.from(files).map(async (file) => {
+          try {
+            return await normalizeImageOrientation(file)
+          } catch {
+            return file
+          }
+        })
+      )
+
       const formData = new FormData()
-      Array.from(files).forEach(file => {
+      normalizedFiles.forEach(file => {
         formData.append('images', file)
       })
 
@@ -311,6 +360,25 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
       })))
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to set primary image')
+    }
+  }
+
+  const deleteImage = async (imageId: string) => {
+    if (!confirm('Delete this image? This action cannot be undone.')) return
+
+    try {
+      const response = await fetch(`/api/products/${productId}/images/${imageId}`, {
+        method: 'DELETE'
+      })
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload?.error || 'Failed to delete image')
+      }
+
+      setImages((prev) => prev.filter((img) => img.id !== imageId))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to delete image')
     }
   }
 
@@ -887,6 +955,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
                   
                   <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
                     <button
+                      type="button"
                       onClick={() => toggleImagePublish(image.id, image.published)}
                       style={{
                         flex: 1,
@@ -905,6 +974,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
                     
                     {!image.is_primary && (
                       <button
+                        type="button"
                         onClick={() => setPrimaryImage(image.id)}
                         style={{
                           flex: 1,
@@ -921,6 +991,23 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
                         Set as primary
                       </button>
                     )}
+                    <button
+                      type="button"
+                      onClick={() => deleteImage(image.id)}
+                      style={{
+                        flex: 1,
+                        padding: '0.5rem',
+                        backgroundColor: '#FEE2E2',
+                        color: '#B91C1C',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        cursor: 'pointer',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Delete
+                    </button>
                   </div>
                   
                   <div style={{ 

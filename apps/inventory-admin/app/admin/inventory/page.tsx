@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
@@ -37,6 +37,14 @@ interface InventorySummary {
 }
 
 export default function InventoryPage() {
+  return (
+    <Suspense fallback={<main className="admin-page"><div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div></main>}>
+      <InventoryPageContent />
+    </Suspense>
+  )
+}
+
+function InventoryPageContent() {
   const ITEMS_PER_PAGE = 30
   const router = useRouter()
   const pathname = usePathname()
