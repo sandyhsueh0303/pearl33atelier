@@ -27,9 +27,18 @@ function SalesPageContent() {
   const [showForm, setShowForm] = useState(false);
   const [editingSale, setEditingSale] = useState<SaleRecord | null>(null);
 
-  const handleSaleSuccess = () => {
-    // Trigger refresh of the sales list
+  const refreshSalesList = () => {
     setRefreshKey(prev => prev + 1);
+  };
+
+  const handleCreateSaleSuccess = () => {
+    refreshSalesList();
+    setEditingSale(null);
+    setShowForm(false);
+  };
+
+  const handleUpdateSaleSuccess = () => {
+    // Hide edit form and keep list state (page/scroll/filters) unchanged.
     setEditingSale(null);
     setShowForm(false);
   };
@@ -87,7 +96,7 @@ function SalesPageContent() {
       {showForm && (
         <div style={{ marginBottom: '2rem' }}>
           <SalesForm 
-            onSuccess={handleSaleSuccess}
+            onSuccess={editingSale ? handleUpdateSaleSuccess : handleCreateSaleSuccess}
             preselectedProductId={editingSale ? undefined : (preselectedProductId || undefined)}
             editSale={editingSale || undefined}
             onCancelEdit={handleCancelEdit}
@@ -98,7 +107,7 @@ function SalesPageContent() {
       <div>
         <SalesList 
           key={refreshKey} 
-          onRefresh={handleSaleSuccess}
+          onRefresh={handleCreateSaleSuccess}
           onEdit={handleEdit}
         />
       </div>

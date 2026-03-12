@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 interface InventoryItem {
   id: string
@@ -37,6 +38,9 @@ interface InventorySummary {
 
 export default function InventoryPage() {
   const ITEMS_PER_PAGE = 30
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [items, setItems] = useState<InventoryItem[]>([])
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
@@ -52,12 +56,56 @@ export default function InventoryPage() {
   const [loading, setLoading] = useState(true)
   
   // Search and filter states
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filterCategory, setFilterCategory] = useState<string>('all')
-  const [filterStatus, setFilterStatus] = useState<'all' | 'instock' | 'sold'>('all')
-  const [sortBy, setSortBy] = useState<'date' | 'value' | 'quantity'>('date')
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
-  const [currentPage, setCurrentPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('search') || '')
+  const [filterCategory, setFilterCategory] = useState<string>(
+    () => searchParams.get('category') || 'all'
+  )
+  const [filterStatus, setFilterStatus] = useState<'all' | 'instock' | 'sold'>(() => {
+    const value = searchParams.get('status')
+    return value === 'instock' || value === 'sold' || value === 'all' ? value : 'all'
+  })
+  const [sortBy, setSortBy] = useState<'date' | 'value' | 'quantity'>(() => {
+    const value = searchParams.get('sortBy')
+    return value === 'date' || value === 'value' || value === 'quantity' ? value : 'date'
+  })
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(() => {
+    const value = searchParams.get('sortOrder')
+    return value === 'asc' || value === 'desc' ? value : 'desc'
+  })
+  const [currentPage, setCurrentPage] = useState(() => {
+    const page = Number(searchParams.get('page') || '1')
+    return Number.isFinite(page) && page > 0 ? Math.floor(page) : 1
+  })
+  const returnToParams = new URLSearchParams()
+  if (searchQuery.trim()) returnToParams.set('search', searchQuery.trim())
+  if (filterCategory !== 'all') returnToParams.set('category', filterCategory)
+  if (filterStatus !== 'all') returnToParams.set('status', filterStatus)
+  if (sortBy !== 'date') returnToParams.set('sortBy', sortBy)
+  if (sortOrder !== 'desc') returnToParams.set('sortOrder', sortOrder)
+  if (currentPage > 1) returnToParams.set('page', String(currentPage))
+  const returnToQuery = returnToParams.toString()
+  const returnToUrl = returnToQuery ? `${pathname}?${returnToQuery}` : pathname
+  const returnToParam = encodeURIComponent(returnToUrl)
+
+  useEffect(() => {
+    const page = Number(searchParams.get('page') || '1')
+    const nextPage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1
+    setCurrentPage((prevPage) => (prevPage === nextPage ? prevPage : nextPage))
+  }, [searchParams])
+
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (searchQuery.trim()) params.set('search', searchQuery.trim())
+    if (filterCategory !== 'all') params.set('category', filterCategory)
+    if (filterStatus !== 'all') params.set('status', filterStatus)
+    if (sortBy !== 'date') params.set('sortBy', sortBy)
+    if (sortOrder !== 'desc') params.set('sortOrder', sortOrder)
+    if (currentPage > 1) params.set('page', String(currentPage))
+
+    const nextQuery = params.toString()
+    const nextUrl = nextQuery ? `${pathname}?${nextQuery}` : pathname
+    router.replace(nextUrl, { scroll: false })
+  }, [currentPage, searchQuery, filterCategory, filterStatus, sortBy, sortOrder, pathname, router])
 
   useEffect(() => {
     void loadInventory(currentPage)
@@ -111,14 +159,11 @@ export default function InventoryPage() {
   const paginatedItems = filteredItems
 
   useEffect(() => {
-    setCurrentPage(1)
-  }, [searchQuery, filterCategory, filterStatus, sortBy, sortOrder])
-
-  useEffect(() => {
+    if (loading) return
     if (currentPage > totalPages) {
       setCurrentPage(totalPages)
     }
-  }, [currentPage, totalPages])
+  }, [currentPage, totalPages, loading])
 
   const resetFilters = () => {
     setSearchQuery('')
@@ -176,7 +221,7 @@ export default function InventoryPage() {
           </button>
         </div>
         <Link
-          href="/admin/inventory/new"
+          href={`/admin/inventory/new?returnTo=${returnToParam}`}
           className="admin-link-btn admin-link-btn-primary"
         >
           + Add Inventory
@@ -216,7 +261,10 @@ export default function InventoryPage() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value)
+                setCurrentPage(1)
+              }}
               placeholder="Enter item name or notes..."
               className="admin-control"
             />
@@ -229,7 +277,10 @@ export default function InventoryPage() {
             </label>
             <select
               value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
+              onChange={(e) => {
+                setFilterCategory(e.target.value)
+                setCurrentPage(1)
+              }}
               className="admin-control"
             >
               <option value="all">All Categories</option>
@@ -246,7 +297,10 @@ export default function InventoryPage() {
             </label>
             <select
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value as 'all' | 'instock' | 'sold')}
+              onChange={(e) => {
+                setFilterStatus(e.target.value as 'all' | 'instock' | 'sold')
+                setCurrentPage(1)
+              }}
               className="admin-control"
             >
               <option value="all">All</option>
@@ -262,7 +316,10 @@ export default function InventoryPage() {
             </label>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'date' | 'value' | 'quantity')}
+              onChange={(e) => {
+                setSortBy(e.target.value as 'date' | 'value' | 'quantity')
+                setCurrentPage(1)
+              }}
               className="admin-control"
             >
               <option value="date">Purchase Date</option>
@@ -278,7 +335,10 @@ export default function InventoryPage() {
             </label>
             <select
               value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+              onChange={(e) => {
+                setSortOrder(e.target.value as 'asc' | 'desc')
+                setCurrentPage(1)
+              }}
               className="admin-control"
             >
               <option value="desc">Descending ↓</option>
@@ -364,7 +424,7 @@ export default function InventoryPage() {
           </p>
           {items.length === 0 ? (
             <Link
-              href="/admin/inventory/new"
+              href={`/admin/inventory/new?returnTo=${returnToParam}`}
               style={{
                 display: 'inline-block',
                 padding: '0.75rem 1.5rem',
@@ -470,7 +530,7 @@ export default function InventoryPage() {
                     <td className="admin-cell-center">
                       <div className="admin-action-group admin-action-group-inline">
                         <Link
-                          href={`/admin/inventory/${item.id}`}
+                          href={`/admin/inventory/${item.id}?returnTo=${returnToParam}`}
                           className="admin-btn admin-btn-edit admin-link-btn admin-btn-md"
                         >
                           Edit

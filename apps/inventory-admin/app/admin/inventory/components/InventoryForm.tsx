@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 interface Props {
@@ -10,6 +10,9 @@ interface Props {
 
 export default function InventoryForm({ inventoryId }: Props) {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const returnTo = searchParams.get('returnTo') || ''
+  const backToListPath = returnTo.startsWith('/admin/inventory') ? returnTo : '/admin/inventory'
   const [loading, setLoading] = useState(!!inventoryId)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -95,7 +98,7 @@ export default function InventoryForm({ inventoryId }: Props) {
         throw new Error(data.error || 'Failed to save inventory')
       }
       
-      router.push('/admin/inventory')
+      router.push(backToListPath)
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -119,7 +122,7 @@ export default function InventoryForm({ inventoryId }: Props) {
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <Link
-          href="/admin/inventory"
+          href={backToListPath}
           style={{
             color: '#1976d2',
             textDecoration: 'none',
@@ -389,7 +392,7 @@ export default function InventoryForm({ inventoryId }: Props) {
           <div style={{ display: 'flex', gap: '1rem', paddingTop: '1rem', borderTop: '1px solid #eee' }}>
             <button
               type="button"
-              onClick={() => router.back()}
+              onClick={() => router.push(backToListPath)}
               style={{
                 padding: '0.75rem 1.5rem',
                 border: '1px solid #ddd',

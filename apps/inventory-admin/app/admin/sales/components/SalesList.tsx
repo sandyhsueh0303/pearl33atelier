@@ -105,10 +105,11 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
   }, [sortBy, order, appliedSearch]);
 
   useEffect(() => {
+    if (loading) return;
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
     }
-  }, [currentPage, totalPages]);
+  }, [currentPage, totalPages, loading]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { slugify, getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, PearlType, AvailabilityKind, ProductCategory, ProductImage } from '@pearl33atelier/shared/types'
 
@@ -38,7 +38,10 @@ const splitMaterialValues = (value: string) =>
 
 export default function ProductForm({ productId, onSaved }: ProductFormProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const isEditMode = !!productId
+  const returnTo = searchParams.get('returnTo') || ''
+  const backToListPath = returnTo.startsWith('/admin/products') ? returnTo : '/admin/products'
   
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -223,7 +226,11 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
 
       const data = await response.json()
       onSaved?.()
-      router.push(`/admin/products/${data.product.id}`)
+      if (isEditMode) {
+        return
+      } else {
+        router.push(`/admin/products/${data.product.id}?returnTo=${encodeURIComponent(backToListPath)}`)
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to save product')
     } finally {
@@ -324,7 +331,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
       }
 
       alert('Product published successfully!')
-      router.push('/admin/products')
+      router.push(backToListPath)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to publish product')
     } finally {
@@ -366,7 +373,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
       <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>{isEditMode ? 'Edit Product' : 'Add Product'}</h1>
         <button
-          onClick={() => router.push('/admin/products')}
+          onClick={() => router.push(backToListPath)}
           style={{
             padding: '0.5rem 1rem',
             backgroundColor: '#f5f5f5',
@@ -765,7 +772,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
           
           <button
             type="button"
-            onClick={() => router.push('/admin/products')}
+            onClick={() => router.push(backToListPath)}
             style={{
               padding: '0.75rem 2rem',
               backgroundColor: 'white',

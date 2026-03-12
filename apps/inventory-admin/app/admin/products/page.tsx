@@ -2,6 +2,7 @@
 
 import type { CatalogProduct } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 // Extended product type with cost and profit
@@ -21,25 +22,47 @@ interface ProductSummaryStats {
 
 export default function ProductsPage() {
   const ITEMS_PER_PAGE = 30
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [products, setProducts] = useState<ProductWithStats[]>([])
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(() => {
+    const page = Number(searchParams.get('page') || '1')
+    return Number.isFinite(page) && page > 0 ? Math.floor(page) : 1
+  })
   const [pearlTypes, setPearlTypes] = useState<string[]>([])
   const [categories, setCategories] = useState<string[]>([])
   
   // Search and filter states
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('search') || '')
   const [filterStatus, setFilterStatus] = useState<
     'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold'
-  >('all')
-  const [filterPearlType, setFilterPearlType] = useState<string>('all')
-  const [filterCategory, setFilterCategory] = useState<string>('all')
-  const [sortBy, setSortBy] = useState<'title' | 'price' | 'created'>('created')
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  >(() => {
+    const value = searchParams.get('status')
+    const allowed = ['all', 'published', 'draft', 'in_stock', 'preorder', 'sold'] as const
+    return allowed.includes(value as (typeof allowed)[number])
+      ? (value as 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold')
+      : 'all'
+  })
+  const [filterPearlType, setFilterPearlType] = useState<string>(
+    () => searchParams.get('pearlType') || 'all'
+  )
+  const [filterCategory, setFilterCategory] = useState<string>(
+    () => searchParams.get('category') || 'all'
+  )
+  const [sortBy, setSortBy] = useState<'title' | 'price' | 'created'>(() => {
+    const value = searchParams.get('sortBy')
+    return value === 'title' || value === 'price' || value === 'created' ? value : 'created'
+  })
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(() => {
+    const value = searchParams.get('sortOrder')
+    return value === 'asc' || value === 'desc' ? value : 'desc'
+  })
   const [summaryStats, setSummaryStats] = useState<ProductSummaryStats>({
     total: 0,
     published: 0,
@@ -48,6 +71,49 @@ export default function ProductsPage() {
     totalRevenue: 0,
     totalProfit: 0,
   })
+
+  const returnToParams = new URLSearchParams()
+  if (searchQuery.trim()) returnToParams.set('search', searchQuery.trim())
+  if (filterStatus !== 'all') returnToParams.set('status', filterStatus)
+  if (filterPearlType !== 'all') returnToParams.set('pearlType', filterPearlType)
+  if (filterCategory !== 'all') returnToParams.set('category', filterCategory)
+  if (sortBy !== 'created') returnToParams.set('sortBy', sortBy)
+  if (sortOrder !== 'desc') returnToParams.set('sortOrder', sortOrder)
+  if (currentPage > 1) returnToParams.set('page', String(currentPage))
+  const returnToQuery = returnToParams.toString()
+  const returnToUrl = returnToQuery ? `${pathname}?${returnToQuery}` : pathname
+  const returnToParam = encodeURIComponent(returnToUrl)
+
+  useEffect(() => {
+    const page = Number(searchParams.get('page') || '1')
+    const nextPage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1
+    setCurrentPage((prevPage) => (prevPage === nextPage ? prevPage : nextPage))
+  }, [searchParams])
+
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (searchQuery.trim()) params.set('search', searchQuery.trim())
+    if (filterStatus !== 'all') params.set('status', filterStatus)
+    if (filterPearlType !== 'all') params.set('pearlType', filterPearlType)
+    if (filterCategory !== 'all') params.set('category', filterCategory)
+    if (sortBy !== 'created') params.set('sortBy', sortBy)
+    if (sortOrder !== 'desc') params.set('sortOrder', sortOrder)
+    if (currentPage > 1) params.set('page', String(currentPage))
+
+    const nextQuery = params.toString()
+    const nextUrl = nextQuery ? `${pathname}?${nextQuery}` : pathname
+    router.replace(nextUrl, { scroll: false })
+  }, [
+    currentPage,
+    searchQuery,
+    filterStatus,
+    filterPearlType,
+    filterCategory,
+    sortBy,
+    sortOrder,
+    pathname,
+    router,
+  ])
   const formatCategory = (category: string) => {
     const labels: Record<string, string> = {
       BRACELETS: 'Bracelets',
@@ -197,6 +263,7 @@ export default function ProductsPage() {
     setFilterCategory('all')
     setSortBy('created')
     setSortOrder('desc')
+    setCurrentPage(1)
   }
 
   const publishedCount = summaryStats.published
@@ -210,14 +277,11 @@ export default function ProductsPage() {
   const paginatedProducts = filteredProducts
 
   useEffect(() => {
-    setCurrentPage(1)
-  }, [searchQuery, filterStatus, filterPearlType, filterCategory, sortBy, sortOrder])
-
-  useEffect(() => {
+    if (loading) return
     if (currentPage > totalPages) {
       setCurrentPage(totalPages)
     }
-  }, [currentPage, totalPages])
+  }, [currentPage, totalPages, loading])
 
   return (
     <main className="admin-page">
@@ -243,7 +307,7 @@ export default function ProductsPage() {
           </button>
         </div>
         <Link
-          href="/admin/products/new"
+          href={`/admin/products/new?returnTo=${returnToParam}`}
           className="admin-link-btn admin-link-btn-primary"
         >
           + Add Product
@@ -283,7 +347,10 @@ export default function ProductsPage() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value)
+                setCurrentPage(1)
+              }}
               placeholder="Search title, slug, or description..."
               className="admin-control"
             />
@@ -296,11 +363,12 @@ export default function ProductsPage() {
             </label>
             <select
               value={filterStatus}
-              onChange={(e) =>
+              onChange={(e) => {
                 setFilterStatus(
                   e.target.value as 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold'
                 )
-              }
+                setCurrentPage(1)
+              }}
               className="admin-control"
             >
               <option value="all">All</option>
@@ -319,7 +387,10 @@ export default function ProductsPage() {
             </label>
             <select
               value={filterPearlType}
-              onChange={(e) => setFilterPearlType(e.target.value)}
+              onChange={(e) => {
+                setFilterPearlType(e.target.value)
+                setCurrentPage(1)
+              }}
               className="admin-control"
             >
               <option value="all">All Types</option>
@@ -335,7 +406,10 @@ export default function ProductsPage() {
             </label>
             <select
               value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
+              onChange={(e) => {
+                setFilterCategory(e.target.value)
+                setCurrentPage(1)
+              }}
               className="admin-control"
             >
               <option value="all">All Categories</option>
@@ -352,7 +426,10 @@ export default function ProductsPage() {
             </label>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'title' | 'price' | 'created')}
+              onChange={(e) => {
+                setSortBy(e.target.value as 'title' | 'price' | 'created')
+                setCurrentPage(1)
+              }}
               className="admin-control"
             >
               <option value="created">Created Time</option>
@@ -368,7 +445,10 @@ export default function ProductsPage() {
             </label>
             <select
               value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+              onChange={(e) => {
+                setSortOrder(e.target.value as 'asc' | 'desc')
+                setCurrentPage(1)
+              }}
               className="admin-control"
             >
               <option value="desc">Descending ↓</option>
@@ -492,7 +572,7 @@ export default function ProductsPage() {
           </p>
           {products.length === 0 ? (
             <Link
-              href="/admin/products/new"
+              href={`/admin/products/new?returnTo=${returnToParam}`}
               style={{
                 display: 'inline-block',
                 padding: '0.75rem 1.5rem',
@@ -604,7 +684,7 @@ export default function ProductsPage() {
                   <td className="admin-cell-center">
                     <div className="admin-action-group">
                       <Link
-                        href={`/admin/products/${product.id}`}
+                        href={`/admin/products/${product.id}?returnTo=${returnToParam}`}
                         className="admin-btn admin-btn-edit admin-link-btn admin-btn-md"
                       >
                         Edit

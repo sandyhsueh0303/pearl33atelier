@@ -245,10 +245,8 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
       setFormNotice(editSale ? 'Sales record updated! ✅' : 'Sales record created! ✅');
       
-      // Reset form or call cancel if editing
-      if (editSale && onCancelEdit) {
-        onCancelEdit();
-      } else if (!editSale) {
+      // Reset form only for new records
+      if (!editSale) {
         // Reset form only for new records
         if (!preselectedProductId) {
           setProductId('');
