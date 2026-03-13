@@ -953,12 +953,20 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
                     </span>
                   )}
                   
-                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.5rem',
+                      marginTop: '0.5rem',
+                    }}
+                  >
                     <button
                       type="button"
                       onClick={() => toggleImagePublish(image.id, image.published)}
                       style={{
-                        flex: 1,
+                        width: '100%',
+                        minWidth: 0,
                         padding: '0.5rem',
                         backgroundColor: image.published ? '#fff3e0' : '#e8f5e9',
                         color: image.published ? '#F59E0B' : '#10B981',
@@ -966,7 +974,8 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
                         borderRadius: '4px',
                         fontSize: '0.75rem',
                         cursor: 'pointer',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
+                        whiteSpace: 'nowrap',
                       }}
                     >
                       {image.published ? 'Unpublish' : 'Publish'}
@@ -977,7 +986,8 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
                         type="button"
                         onClick={() => setPrimaryImage(image.id)}
                         style={{
-                          flex: 1,
+                          width: '100%',
+                          minWidth: 0,
                           padding: '0.5rem',
                           backgroundColor: '#e3f2fd',
                           color: '#1976d2',
@@ -985,7 +995,8 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
                           borderRadius: '4px',
                           fontSize: '0.75rem',
                           cursor: 'pointer',
-                          fontWeight: 'bold'
+                          fontWeight: 'bold',
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         Set as primary
@@ -995,7 +1006,8 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
                       type="button"
                       onClick={() => deleteImage(image.id)}
                       style={{
-                        flex: 1,
+                        width: '100%',
+                        minWidth: 0,
                         padding: '0.5rem',
                         backgroundColor: '#FEE2E2',
                         color: '#B91C1C',
@@ -1003,7 +1015,8 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
                         borderRadius: '4px',
                         fontSize: '0.75rem',
                         cursor: 'pointer',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
+                        whiteSpace: 'nowrap',
                       }}
                     >
                       Delete
