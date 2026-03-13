@@ -3,6 +3,7 @@
 import { useState, type CSSProperties, type ReactNode } from 'react'
 import ImageZoom from '../../components/ImageZoom'
 import ProductInquiryModal from '../../components/ProductInquiryModal'
+import { useCart } from '../../components/CartProvider'
 import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
@@ -15,7 +16,9 @@ interface ProductDetailClientProps {
 
 export default function ProductDetailClient({ product, images }: ProductDetailClientProps) {
   const [inquiryOpen, setInquiryOpen] = useState(false)
+  const [cartNotice, setCartNotice] = useState<string | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const { addItem } = useCart()
   const categoryLabels: Record<string, string> = {
     BRACELETS: 'Bracelets',
     NECKLACES: 'Necklaces',
@@ -39,6 +42,21 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
   const prevImage = () => {
     if (!hasImages) return
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
+  }
+
+  const handleAddToCart = () => {
+    addItem({
+      id: product.id,
+      slug: product.slug,
+      title: product.title,
+      imageUrl: currentImage ? getProductImageUrl(currentImage.storage_path) : null,
+      pearlType: product.pearl_type || null,
+      sizeMm: product.size_mm || null,
+      price: product.sell_price || null,
+      availability: product.availability,
+    })
+    setCartNotice('Added to cart')
+    setTimeout(() => setCartNotice(null), 1800)
   }
 
   const specRowStyle: CSSProperties = { borderBottom: `1px solid ${colors.pearl}` }
@@ -456,25 +474,54 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
                   Contact us to learn more or ask about this product.
                 </p>
               </div>
-              <button
-                onClick={() => setInquiryOpen(true)}
-                style={{
-                  padding: `${spacing.md} ${spacing.xl}`,
-                  backgroundColor: colors.gold,
-                  color: colors.white,
-                  border: `1px solid ${colors.gold}`,
-                  borderRadius: '999px',
-                  fontWeight: typography.fontWeight.medium,
-                  fontSize: typography.fontSize.sm,
-                  letterSpacing: '0.04em',
-                  cursor: 'pointer',
-                  boxShadow: shadows.soft,
-                  transition: transitions.fast,
-                }}
-              >
-                Inquire About This Product
-              </button>
+              <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
+                <button
+                  onClick={handleAddToCart}
+                  disabled={product.availability === 'OUT_OF_STOCK'}
+                  style={{
+                    padding: `${spacing.md} ${spacing.xl}`,
+                    backgroundColor:
+                      product.availability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray,
+                    color: colors.white,
+                    border: `1px solid ${
+                      product.availability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray
+                    }`,
+                    borderRadius: '999px',
+                    fontWeight: typography.fontWeight.medium,
+                    fontSize: typography.fontSize.sm,
+                    letterSpacing: '0.04em',
+                    cursor: product.availability === 'OUT_OF_STOCK' ? 'not-allowed' : 'pointer',
+                    boxShadow: shadows.soft,
+                    transition: transitions.fast,
+                  }}
+                >
+                  {product.availability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Add to Cart'}
+                </button>
+                <button
+                  onClick={() => setInquiryOpen(true)}
+                  style={{
+                    padding: `${spacing.md} ${spacing.xl}`,
+                    backgroundColor: colors.gold,
+                    color: colors.white,
+                    border: `1px solid ${colors.gold}`,
+                    borderRadius: '999px',
+                    fontWeight: typography.fontWeight.medium,
+                    fontSize: typography.fontSize.sm,
+                    letterSpacing: '0.04em',
+                    cursor: 'pointer',
+                    boxShadow: shadows.soft,
+                    transition: transitions.fast,
+                  }}
+                >
+                  Inquire About This Product
+                </button>
+              </div>
             </div>
+            {cartNotice && (
+              <div style={{ marginTop: spacing.sm, color: '#2e7d32', fontSize: typography.fontSize.sm }}>
+                {cartNotice}
+              </div>
+            )}
         </section>
 
         <ProductInquiryModal

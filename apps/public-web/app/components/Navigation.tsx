@@ -4,10 +4,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { colors, typography, transitions, spacing } from '../constants/design'
 import styles from './Navigation.module.css'
+import { useCart } from './CartProvider'
 
 export default function Navigation() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { itemCount } = useCart()
 
   const navItems = [
     { label: 'Home', href: '/' },
@@ -18,6 +20,7 @@ export default function Navigation() {
     { label: 'FAQ', href: '/faq' },
     { label: 'Blog', href: '/blog' },
     { label: 'Contact Us', href: '/contact' },
+    { label: 'Cart', href: '/cart' },
   ]
 
   return (
@@ -98,6 +101,27 @@ export default function Navigation() {
               }}
             >
               {item.label}
+              {item.href === '/cart' && itemCount > 0 && (
+                <span
+                  style={{
+                    marginLeft: '0.4rem',
+                    display: 'inline-flex',
+                    minWidth: '20px',
+                    height: '20px',
+                    padding: '0 6px',
+                    borderRadius: '999px',
+                    backgroundColor: colors.gold,
+                    color: colors.white,
+                    fontSize: '0.72rem',
+                    lineHeight: '20px',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontWeight: typography.fontWeight.medium,
+                  }}
+                >
+                  {itemCount}
+                </span>
+              )}
             </Link>
           ))}
         </div>
@@ -125,10 +149,31 @@ export default function Navigation() {
                 borderBottom: '1px solid #E9E1D3',
                 fontSize: typography.fontSize.lg,
               }}
-            >
-              {item.label}
-            </Link>
-          ))}
+              >
+                {item.label}
+                {item.href === '/cart' && itemCount > 0 && (
+                  <span
+                    style={{
+                      marginLeft: '0.4rem',
+                      display: 'inline-flex',
+                      minWidth: '20px',
+                      height: '20px',
+                      padding: '0 6px',
+                      borderRadius: '999px',
+                      backgroundColor: colors.gold,
+                      color: colors.white,
+                      fontSize: '0.72rem',
+                      lineHeight: '20px',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontWeight: typography.fontWeight.medium,
+                    }}
+                  >
+                    {itemCount}
+                  </span>
+                )}
+              </Link>
+            ))}
         </div>
       )}
     </nav>

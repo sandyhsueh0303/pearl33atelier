@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Playfair_Display } from 'next/font/google'
 import Navigation from './components/Navigation'
 import Footer from './components/Footer'
+import { CartProvider } from './components/CartProvider'
 import './globals.css'
 
 const playfairDisplay = Playfair_Display({
@@ -79,11 +80,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-        <Navigation />
-        <main style={{ paddingTop: '80px' }}>
-          {children}
-        </main>
-        <Footer />
+        <CartProvider>
+          <Navigation />
+          <main style={{ paddingTop: '80px' }}>
+            {children}
+          </main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   )
