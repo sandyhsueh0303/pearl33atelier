@@ -1,5 +1,10 @@
 import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
-import { getProductImageUrl } from '@pearl33atelier/shared'
+import {
+  computeProductInventorySummary,
+  getProductImageUrl,
+  resolveProductAvailability,
+  type MaterialInventoryInput,
+} from '@pearl33atelier/shared'
 import ProductList from './ProductList'
 import type { ProductListImage, ProductListItem } from './ProductList'
 import { redirect } from 'next/navigation'
@@ -7,6 +12,24 @@ import type { Metadata } from 'next'
 
 interface ProductWithImages extends ProductListItem {
   primaryImage?: ProductListImage
+}
+
+interface ProductMaterialRow {
+  product_id: string
+  inventory_item_id: string
+  quantity_per_unit: number
+  inventory_items:
+    | {
+        name: string | null
+        total_quantity: number
+        allocated_quantity: number
+      }
+    | {
+        name: string | null
+        total_quantity: number
+        allocated_quantity: number
+      }[]
+    | null
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
@@ -146,24 +169,58 @@ export default async function ProductsPage({
   const pagedProductIds = productsList.map((p) => p.id)
   
   let imagesList: ProductListImage[] = []
+  const materialInputsByProductId = new Map<string, MaterialInventoryInput[]>()
   if (pagedProductIds.length > 0) {
-    const { data: imagesData } = await supabase
-      .from('product_images')
-      .select('product_id, storage_path')
-      .in('product_id', pagedProductIds)
-      .eq('published', true)
-      .eq('is_primary', true)
+    const [{ data: imagesData }, { data: materialsData }] = await Promise.all([
+      supabase
+        .from('product_images')
+        .select('product_id, storage_path')
+        .in('product_id', pagedProductIds)
+        .eq('published', true)
+        .eq('is_primary', true),
+      supabase
+        .from('product_materials')
+        .select(`
+          product_id,
+          inventory_item_id,
+          quantity_per_unit,
+          inventory_items (
+            name,
+            total_quantity,
+            allocated_quantity
+          )
+        `)
+        .in('product_id', pagedProductIds),
+    ])
 
     imagesList = imagesData || []
+    for (const material of (materialsData || []) as ProductMaterialRow[]) {
+      const existing = materialInputsByProductId.get(material.product_id) || []
+      existing.push({
+        inventory_item_id: material.inventory_item_id,
+        quantity_per_unit: material.quantity_per_unit,
+        inventory_item: Array.isArray(material.inventory_items)
+          ? material.inventory_items[0] ?? null
+          : material.inventory_items ?? null,
+      })
+      materialInputsByProductId.set(material.product_id, existing)
+    }
   }
 
   const imageByProductId = new Map(imagesList.map((img) => [img.product_id, img]))
 
   // Combine products with their primary images
-  const products: ProductWithImages[] = productsList.map(product => ({
-    ...product,
-    primaryImage: imageByProductId.get(product.id)
-  }))
+  const products: ProductWithImages[] = productsList.map(product => {
+    const inventorySummary = computeProductInventorySummary(
+      materialInputsByProductId.get(product.id) || [],
+      product.availability
+    )
+    return {
+      ...product,
+      availability: resolveProductAvailability(product.availability, inventorySummary),
+      primaryImage: imageByProductId.get(product.id),
+    }
+  })
 
   const itemListSchema = {
     '@context': 'https://schema.org',

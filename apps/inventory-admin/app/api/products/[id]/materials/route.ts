@@ -24,6 +24,7 @@ export async function GET(
           name,
           cost,
           total_quantity,
+          allocated_quantity,
           internal_note
         )
       `)
@@ -31,8 +32,26 @@ export async function GET(
       .order('sort_order')
     
     if (error) throw error
-    
-    return NextResponse.json(data || [])
+
+    const normalized = (data || []).map((material: any) => {
+      const inventoryItem = Array.isArray(material.inventory_items)
+        ? material.inventory_items[0] ?? null
+        : material.inventory_items ?? null
+      const totalQuantity = Number(inventoryItem?.total_quantity || 0)
+      const allocatedQuantity = Number(inventoryItem?.allocated_quantity || 0)
+
+      return {
+        ...material,
+        inventory_items: inventoryItem
+          ? {
+              ...inventoryItem,
+              remaining_quantity: Math.max(0, totalQuantity - allocatedQuantity),
+            }
+          : null,
+      }
+    })
+
+    return NextResponse.json(normalized)
     
   } catch (error) {
     logger.error('Failed to fetch product materials', error)

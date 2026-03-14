@@ -2,7 +2,7 @@
 
 import { use, useState } from 'react'
 import ProductForm from '../components/ProductForm'
-import ProductCostAnalysis from '../components/ProductCostAnalysis'
+import ProductMaterials from '../components/ProductMaterials'
 import QuickSaleButton from '../components/QuickSaleButton'
 
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -32,32 +32,9 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         onSaved={() => setCostAnalysisRefreshToken((prev) => prev + 1)}
       />
       
-      {/* Divider */}
-      <div style={{ 
-        margin: '3rem 0', 
-        borderTop: '2px solid #e0e0e0',
-        position: 'relative'
-      }}>
-        <span style={{
-          position: 'absolute',
-          top: '-12px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          backgroundColor: 'white',
-          padding: '0 1rem',
-          fontSize: '0.875rem',
-          color: '#666',
-          fontWeight: '600'
-        }}>
-          Cost Analysis and Profit Calculation
-        </span>
+      <div style={{ marginTop: '2rem' }}>
+        <ProductMaterials productId={id} refreshToken={costAnalysisRefreshToken} />
       </div>
-
-      {/* Cost Analysis: Materials + Other Costs + Profit */}
-      <ProductCostAnalysis
-        productId={id}
-        refreshToken={costAnalysisRefreshToken}
-      />
     </div>
   )
 }

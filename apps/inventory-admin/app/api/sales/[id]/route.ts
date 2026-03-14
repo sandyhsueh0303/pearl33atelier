@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/app/utils/adminAuth';
+import { applyMaterialInventoryDelta } from '../materialInventory';
 
 const parseOptionalOrderNumber = (value: unknown): number | null => {
   if (value === undefined || value === null || value === '') return null;
@@ -62,6 +63,30 @@ export async function PUT(
     notes
   } = body;
 
+  const { data: existingSale, error: existingSaleError } = await supabase
+    .from('sales_records')
+    .select('id, product_id, quantity')
+    .eq('id', id)
+    .single();
+
+  if (existingSaleError || !existingSale) {
+    return NextResponse.json({ error: 'Sale not found' }, { status: 404 });
+  }
+
+  const nextQuantity = quantity !== undefined ? parseInt(quantity) : existingSale.quantity;
+  const quantityDelta = nextQuantity - existingSale.quantity;
+
+  if (quantityDelta !== 0) {
+    try {
+      await applyMaterialInventoryDelta(supabase, existingSale.product_id, quantityDelta);
+    } catch (error) {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : 'Unable to update material inventory' },
+        { status: 400 }
+      );
+    }
+  }
+
   // Recalculate totals and profit if price/cost/quantity changed
   const updateData: any = {};
 
@@ -109,6 +134,11 @@ export async function PUT(
     .single();
 
   if (error) {
+    if (quantityDelta !== 0) {
+      try {
+        await applyMaterialInventoryDelta(supabase, existingSale.product_id, -quantityDelta);
+      } catch {}
+    }
     console.error('Error updating sale:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -125,12 +155,34 @@ export async function DELETE(
   const { supabase, errorResponse } = await requireAdmin();
   if (errorResponse || !supabase) return errorResponse;
 
+  const { data: existingSale, error: existingSaleError } = await supabase
+    .from('sales_records')
+    .select('id, product_id, quantity')
+    .eq('id', id)
+    .single();
+
+  if (existingSaleError || !existingSale) {
+    return NextResponse.json({ error: 'Sale not found' }, { status: 404 });
+  }
+
+  try {
+    await applyMaterialInventoryDelta(supabase, existingSale.product_id, -existingSale.quantity);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Unable to restore material inventory' },
+      { status: 500 }
+    );
+  }
+
   const { error } = await supabase
     .from('sales_records')
     .delete()
     .eq('id', id);
 
   if (error) {
+    try {
+      await applyMaterialInventoryDelta(supabase, existingSale.product_id, existingSale.quantity);
+    } catch {}
     console.error('Error deleting sale:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

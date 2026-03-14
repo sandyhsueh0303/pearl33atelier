@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { computeProductInventorySummary } from '@pearl33atelier/shared'
 
 interface InventoryItem {
   id: string
@@ -8,6 +9,8 @@ interface InventoryItem {
   category: string | null
   cost: number | null
   total_quantity: number
+  allocated_quantity: number
+  remaining_quantity: number
   internal_note: string | null
 }
 
@@ -24,9 +27,17 @@ interface ProductMaterial {
 
 interface Props {
   productId: string
+  refreshToken?: number
 }
 
-export default function ProductMaterials({ productId }: Props) {
+interface Product {
+  id: string
+  title: string
+  sell_price: number | null
+}
+
+export default function ProductMaterials({ productId, refreshToken = 0 }: Props) {
+  const [product, setProduct] = useState<Product | null>(null)
   const [materials, setMaterials] = useState<ProductMaterial[]>([])
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -51,9 +62,34 @@ export default function ProductMaterials({ productId }: Props) {
   ] as const
 
   useEffect(() => {
-    loadMaterials()
-    loadInventoryItems()
+    void loadData()
   }, [productId])
+
+  useEffect(() => {
+    if (refreshToken <= 0) return
+    void loadData()
+  }, [refreshToken])
+
+  const loadData = async () => {
+    try {
+      setLoading(true)
+      await Promise.all([loadProduct(), loadMaterials(), loadInventoryItems()])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const loadProduct = async () => {
+    try {
+      const res = await fetch(`/api/products/${productId}`)
+      if (res.ok) {
+        const data = await res.json()
+        setProduct(data.product || data)
+      }
+    } catch (error) {
+      console.error('Failed to load product:', error)
+    }
+  }
 
   const loadMaterials = async () => {
     try {
@@ -64,8 +100,6 @@ export default function ProductMaterials({ productId }: Props) {
       }
     } catch (error) {
       console.error('Failed to load materials:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -88,10 +122,7 @@ export default function ProductMaterials({ productId }: Props) {
         page += 1
       }
 
-      // Deduplicate by inventory id to keep React option keys stable
-      const dedupedItems = Array.from(
-        new Map(allItems.map((item) => [item.id, item])).values()
-      )
+      const dedupedItems = Array.from(new Map(allItems.map((item) => [item.id, item])).values())
       setInventoryItems(dedupedItems)
     } catch (error) {
       console.error('Failed to load inventory:', error)
@@ -119,13 +150,10 @@ export default function ProductMaterials({ productId }: Props) {
 
       if (!res.ok) throw new Error('Failed to add material')
 
-      // Reset form
       setSelectedItemId('')
       setQuantity('1')
       setNotes('')
-      
-      // Reload materials
-      await loadMaterials()
+      await loadData()
     } catch (error) {
       alert('Add failed: ' + (error instanceof Error ? error.message : ''))
     } finally {
@@ -144,7 +172,7 @@ export default function ProductMaterials({ productId }: Props) {
 
       if (!res.ok) throw new Error('Failed to delete')
 
-      await loadMaterials()
+      await loadData()
     } catch (error) {
       alert('Delete failed')
     }
@@ -153,6 +181,20 @@ export default function ProductMaterials({ productId }: Props) {
   const totalMaterialCost = materials.reduce((sum, m) => {
     return sum + (m.quantity_per_unit * (m.unit_cost_snapshot || 0))
   }, 0)
+  const sellingPrice = product?.sell_price || 0
+  const profit = sellingPrice - totalMaterialCost
+  const profitMargin = sellingPrice > 0 ? (profit / sellingPrice) * 100 : 0
+  const inventorySummary = computeProductInventorySummary(
+    materials.map((material) => ({
+      inventory_item_id: material.inventory_item_id,
+      quantity_per_unit: material.quantity_per_unit,
+      inventory_item: {
+        name: material.inventory_items.name,
+        total_quantity: material.inventory_items.total_quantity,
+        allocated_quantity: material.inventory_items.allocated_quantity,
+      },
+    }))
+  )
   const normalizedSearch = materialSearch.trim().toLowerCase()
   const filteredInventoryItems = inventoryItems.filter((item) => {
     const categoryMatched = categoryFilter === 'all' || item.category === categoryFilter
@@ -174,9 +216,47 @@ export default function ProductMaterials({ productId }: Props) {
       boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
       marginBottom: '2rem'
     }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        gap: '1rem',
+        marginBottom: '1.5rem',
+      }}>
+        <div style={{ padding: '1.25rem', backgroundColor: '#ffebee', borderRadius: '8px' }}>
+          <div style={{ fontSize: '0.875rem', color: '#EF4444', fontWeight: '500', marginBottom: '0.5rem' }}>Total Cost</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#EF4444' }}>${totalMaterialCost.toFixed(2)}</div>
+        </div>
+        <div style={{ padding: '1.25rem', backgroundColor: '#e3f2fd', borderRadius: '8px' }}>
+          <div style={{ fontSize: '0.875rem', color: '#1565c0', fontWeight: '500', marginBottom: '0.5rem' }}>Sell Price</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2196f3' }}>${sellingPrice.toFixed(2)}</div>
+        </div>
+        <div style={{ padding: '1.25rem', backgroundColor: profit >= 0 ? '#e8f5e9' : '#ffebee', borderRadius: '8px' }}>
+          <div style={{ fontSize: '0.875rem', color: profit >= 0 ? '#10B981' : '#EF4444', fontWeight: '500', marginBottom: '0.5rem' }}>Profit</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: profit >= 0 ? '#10B981' : '#EF4444' }}>${profit.toFixed(2)}</div>
+          <div style={{ fontSize: '0.875rem', color: profit >= 0 ? '#10B981' : '#EF4444', marginTop: '0.5rem', fontWeight: '600' }}>
+            {profitMargin.toFixed(1)}% Profit Margin
+          </div>
+        </div>
+        <div style={{ padding: '1.25rem', backgroundColor: '#fff8e1', borderRadius: '8px' }}>
+          <div style={{ fontSize: '0.875rem', color: '#b7791f', fontWeight: '500', marginBottom: '0.5rem' }}>Max Sellable Units</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#b7791f' }}>{inventorySummary.availableQuantity ?? '-'}</div>
+          <div style={{ fontSize: '0.875rem', color: '#8a6d1d', marginTop: '0.5rem' }}>
+            {inventorySummary.limitingMaterialName
+              ? `Limited by ${inventorySummary.limitingMaterialName}`
+              : 'Based on current material inventory'}
+          </div>
+        </div>
+      </div>
       <h2 style={{ marginTop: 0, marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: 'bold' }}>
         🧾 BOM Materials List (BOM)
       </h2>
+      {materials.length > 0 ? (
+        <div style={{ marginBottom: '1rem', color: '#444', fontSize: '0.95rem' }}>
+          Max sellable units from current materials:{' '}
+          <strong>{inventorySummary.availableQuantity ?? 'Not tracked'}</strong>
+          {inventorySummary.limitingMaterialName ? ` (limited by ${inventorySummary.limitingMaterialName})` : ''}
+        </div>
+      ) : null}
 
       {/* Materials List */}
       {materials.length > 0 ? (
@@ -188,7 +268,7 @@ export default function ProductMaterials({ productId }: Props) {
                 <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Qty/Unit</th>
                 <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Unit Cost</th>
                 <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Subtotal</th>
-                <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Stock</th>
+                <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Remaining</th>
                 <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Notes</th>
                 <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: '600' }}>Actions</th>
               </tr>
@@ -211,13 +291,13 @@ export default function ProductMaterials({ productId }: Props) {
                   <td style={{ padding: '0.75rem', textAlign: 'right' }}>
                     <span style={{
                       padding: '0.25rem 0.5rem',
-                      backgroundColor: material.inventory_items.total_quantity > 0 ? '#e8f5e9' : '#ffebee',
-                      color: material.inventory_items.total_quantity > 0 ? '#10B981' : '#EF4444',
+                      backgroundColor: material.inventory_items.remaining_quantity > 0 ? '#e8f5e9' : '#ffebee',
+                      color: material.inventory_items.remaining_quantity > 0 ? '#10B981' : '#EF4444',
                       borderRadius: '4px',
                       fontSize: '0.875rem',
                       fontWeight: '500'
                     }}>
-                      {material.inventory_items.total_quantity}
+                      {material.inventory_items.remaining_quantity}
                     </span>
                   </td>
                   <td style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#666' }}>
@@ -337,7 +417,7 @@ export default function ProductMaterials({ productId }: Props) {
                 <option value="">-- Select material --</option>
                 {filteredInventoryItems.map(item => (
                   <option key={item.id} value={item.id}>
-                    {item.name || 'Unnamed'} ({item.category || 'uncategorized'}) - Stock: {item.total_quantity} - ${item.cost?.toFixed(2) || '0.00'}
+                    {item.name || 'Unnamed'} ({item.category || 'uncategorized'}) - Remaining: {item.remaining_quantity} - ${item.cost?.toFixed(2) || '0.00'}
                   </option>
                 ))}
               </select>

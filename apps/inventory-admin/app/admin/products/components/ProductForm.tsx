@@ -210,7 +210,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
       setCustomMaterials(unmatched.join(', '))
       setSellPrice(product.sell_price?.toString() || '')
       setOriginalPrice(product.original_price?.toString() || '')
-      setAvailability(product.availability)
+      setAvailability(product.availability === 'PREORDER' ? 'PREORDER' : 'IN_STOCK')
       setPreorderNote(product.preorder_note || '')
       setPublished(product.published)
       
@@ -610,41 +610,29 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Shape
             </label>
-            <div style={{
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              padding: '0.75rem',
-              backgroundColor: '#fff'
-            }}>
-              <div style={{ display: 'grid', gap: '0.5rem' }}>
-                {SHAPE_OPTIONS.map((option) => (
-                  <label
-                    key={option}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      fontSize: '0.95rem',
-                      cursor: 'pointer',
-                      textTransform: 'capitalize'
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={shape === option}
-                      onChange={() => setShape(shape === option ? '' : option)}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-            <small style={{ color: '#666', display: 'block', marginTop: '0.35rem' }}>
-              Choose one
-            </small>
+            <select
+              value={shape}
+              onChange={(e) => setShape(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem',
+                backgroundColor: '#fff',
+                textTransform: 'capitalize'
+              }}
+            >
+              <option value="">Select shape</option>
+              {SHAPE_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div>
+          <div style={{ gridColumn: '1 / -1' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Material
             </label>
@@ -736,8 +724,11 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Availability <span style={{ color: 'red' }}>*</span>
+              Selling Mode <span style={{ color: 'red' }}>*</span>
             </label>
+            <p style={{ margin: '0 0 0.5rem 0', color: '#666', fontSize: '0.875rem', lineHeight: 1.5 }}>
+              `Preorder` is a manual selling mode. Actual in-stock or sold-out status is determined by BOM material inventory.
+            </p>
             <select
               value={availability}
               onChange={(e) => setAvailability(e.target.value as AvailabilityKind)}
@@ -750,9 +741,8 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
                 fontSize: '1rem'
               }}
             >
-              <option value="IN_STOCK">In Stock</option>
+              <option value="IN_STOCK">Normal Sale</option>
               <option value="PREORDER">Preorder</option>
-              <option value="OUT_OF_STOCK">Sold</option>
             </select>
           </div>
 

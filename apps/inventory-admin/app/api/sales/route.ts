@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/app/utils/adminAuth';
+import { applyMaterialInventoryDelta } from './materialInventory';
 
 const parseOptionalOrderNumber = (value: unknown): number | null => {
   if (value === undefined || value === null || value === '') return null;
@@ -135,6 +136,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'order_number must be a valid number' }, { status: 400 });
   }
 
+  try {
+    await applyMaterialInventoryDelta(supabase, product_id, parseInt(quantity));
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Insufficient material stock' },
+      { status: 400 }
+    );
+  }
+
   const { data: sale, error } = await supabase
     .from('sales_records')
     .insert({
@@ -163,6 +173,9 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error) {
+    try {
+      await applyMaterialInventoryDelta(supabase, product_id, -parseInt(quantity));
+    } catch {}
     console.error('Error creating sale:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

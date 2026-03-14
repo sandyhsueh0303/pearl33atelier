@@ -119,6 +119,9 @@ export default function CartPage() {
                 <div style={{ color: colors.darkGray, fontSize: typography.fontSize.xl, fontWeight: typography.fontWeight.medium }}>
                   Subtotal: $ {subtotal.toLocaleString()}
                 </div>
+                <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
+                  Use inquiry to confirm availability, payment, and shipping.
+                </div>
               </div>
               <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
                 <button
@@ -131,6 +134,7 @@ export default function CartPage() {
                 <Link
                   href="/contact"
                   style={{
+                    display: 'inline-block',
                     padding: `${spacing.sm} ${spacing.lg}`,
                     backgroundColor: colors.darkGray,
                     color: colors.white,

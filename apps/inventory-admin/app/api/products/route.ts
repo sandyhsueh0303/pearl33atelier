@@ -8,7 +8,12 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
-import { slugify } from '@pearl33atelier/shared'
+import {
+  computeProductInventorySummary,
+  resolveProductAvailability,
+  slugify,
+  type MaterialInventoryInput,
+} from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
 
 type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
@@ -127,6 +132,7 @@ export async function GET(request: NextRequest) {
 
     const from = (page - 1) * pageSize
     const to = from + pageSize - 1
+    const usesComputedAvailabilityFilter = status === 'in_stock' || status === 'sold'
 
     let query = supabase
       .from('catalog_products')
@@ -142,9 +148,7 @@ export async function GET(request: NextRequest) {
 
     if (status === 'published') query = query.eq('published', true)
     if (status === 'draft') query = query.eq('published', false)
-    if (status === 'in_stock') query = query.eq('availability', 'IN_STOCK')
     if (status === 'preorder') query = query.eq('availability', 'PREORDER')
-    if (status === 'sold') query = query.eq('availability', 'OUT_OF_STOCK')
     if (pearlType) query = query.eq('pearl_type', pearlType)
     if (category) query = query.eq('category', category)
 
@@ -157,7 +161,7 @@ export async function GET(request: NextRequest) {
     }
 
     const [productsResult, filterRowsResult] = await Promise.all([
-      query.range(from, to),
+      usesComputedAvailabilityFilter ? query : query.range(from, to),
       supabase.from('catalog_products').select('pearl_type,category'),
     ])
 
@@ -168,43 +172,89 @@ export async function GET(request: NextRequest) {
 
     // Fetch materials for all products to calculate costs
     const productIds = (products || []).map((p) => p.id)
-    let materials: { product_id: string; quantity_per_unit: number; unit_cost_snapshot: number | null }[] = []
+    let materials: {
+      product_id: string
+      inventory_item_id: string
+      quantity_per_unit: number
+      unit_cost_snapshot: number | null
+      inventory_items:
+        | {
+            name: string | null
+            total_quantity: number
+            allocated_quantity: number
+          }
+        | {
+            name: string | null
+            total_quantity: number
+            allocated_quantity: number
+          }[]
+        | null
+    }[] = []
     if (productIds.length > 0) {
       const { data: materialsData, error: materialsError } = await supabase
         .from('product_materials')
-        .select('product_id, quantity_per_unit, unit_cost_snapshot')
+        .select(`
+          product_id,
+          inventory_item_id,
+          quantity_per_unit,
+          unit_cost_snapshot,
+          inventory_items (
+            name,
+            total_quantity,
+            allocated_quantity
+          )
+        `)
         .in('product_id', productIds)
       if (materialsError) throw materialsError
       materials = materialsData || []
     }
 
     // Calculate cost and profit for each product
-    const productsWithStats = products?.map(product => {
+    const productsWithStats = (products?.map(product => {
       const productMaterials = materials?.filter(m => m.product_id === product.id) || []
       const totalCost = productMaterials.reduce((sum, m) => {
         return sum + (m.quantity_per_unit * (m.unit_cost_snapshot || 0))
       }, 0)
+      const inventorySummary = computeProductInventorySummary(
+        productMaterials.map((material) => ({
+          inventory_item_id: material.inventory_item_id,
+          quantity_per_unit: material.quantity_per_unit,
+          inventory_item: Array.isArray(material.inventory_items)
+            ? material.inventory_items[0] ?? null
+            : material.inventory_items ?? null,
+        })) as MaterialInventoryInput[],
+        product.availability
+      )
       const sellPrice = product.sell_price || 0
       const profit = sellPrice - totalCost
       
       return {
         ...product,
+        availability: resolveProductAvailability(product.availability, inventorySummary),
         total_cost: totalCost,
         profit: profit
       }
-    }) || []
+    }) || []).filter((product) => {
+      if (status === 'in_stock') return product.availability === 'IN_STOCK'
+      if (status === 'sold') return product.availability === 'OUT_OF_STOCK'
+      return true
+    })
 
     const pearlTypes = Array.from(new Set((filterRows || []).map((r) => r.pearl_type).filter(Boolean)))
     const categories = Array.from(new Set((filterRows || []).map((r) => r.category).filter(Boolean)))
-    const totalPages = Math.max(1, Math.ceil((count || 0) / pageSize))
+    const paginatedProducts = usesComputedAvailabilityFilter
+      ? productsWithStats.slice(from, to + 1)
+      : productsWithStats
+    const filteredTotalItems = usesComputedAvailabilityFilter ? productsWithStats.length : (count || 0)
+    const totalPages = Math.max(1, Math.ceil(filteredTotalItems / pageSize))
 
     return NextResponse.json({
-      products: productsWithStats,
+      products: paginatedProducts,
       filters: { pearlTypes, categories },
       pagination: {
         page,
         pageSize,
-        totalItems: count || 0,
+        totalItems: filteredTotalItems,
         totalPages,
       },
     })

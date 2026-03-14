@@ -5,6 +5,7 @@ import ImageZoom from '../../components/ImageZoom'
 import ProductInquiryModal from '../../components/ProductInquiryModal'
 import { useCart } from '../../components/CartProvider'
 import { getProductImageUrl } from '@pearl33atelier/shared'
+import type { ProductInventorySummary } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions, shadows } from '../../constants/design'
@@ -12,13 +13,15 @@ import { colors, typography, spacing, transitions, shadows } from '../../constan
 interface ProductDetailClientProps {
   product: CatalogProduct
   images: ProductImage[]
+  inventorySummary: ProductInventorySummary
 }
 
-export default function ProductDetailClient({ product, images }: ProductDetailClientProps) {
+export default function ProductDetailClient({ product, images, inventorySummary }: ProductDetailClientProps) {
   const [inquiryOpen, setInquiryOpen] = useState(false)
   const [cartNotice, setCartNotice] = useState<string | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const { addItem } = useCart()
+  const effectiveAvailability = inventorySummary.availability
   const categoryLabels: Record<string, string> = {
     BRACELETS: 'Bracelets',
     NECKLACES: 'Necklaces',
@@ -45,6 +48,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
   }
 
   const handleAddToCart = () => {
+    if (effectiveAvailability === 'OUT_OF_STOCK') return
     addItem({
       id: product.id,
       slug: product.slug,
@@ -53,7 +57,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
       pearlType: product.pearl_type || null,
       sizeMm: product.size_mm || null,
       price: product.sell_price || null,
-      availability: product.availability,
+      availability: effectiveAvailability,
     })
     setCartNotice('Added to cart')
     setTimeout(() => setCartNotice(null), 1800)
@@ -314,14 +318,22 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
               )}
               <span style={{
                 padding: `${spacing.xs} ${spacing.md}`,
-                backgroundColor: product.availability === 'IN_STOCK' ? '#e8f5e9' : colors.champagne,
-                color: product.availability === 'IN_STOCK' ? '#2e7d32' : colors.gold,
+                backgroundColor:
+                  effectiveAvailability === 'IN_STOCK' ? '#e8f5e9' : effectiveAvailability === 'OUT_OF_STOCK' ? '#fbe9e7' : colors.champagne,
+                color:
+                  effectiveAvailability === 'IN_STOCK' ? '#2e7d32' : effectiveAvailability === 'OUT_OF_STOCK' ? '#b71c1c' : colors.gold,
                 fontSize: typography.fontSize.sm,
                 fontWeight: typography.fontWeight.medium,
               }}>
-                {product.availability === 'IN_STOCK' ? 'In Stock' : 'Pre-order'}
+                {effectiveAvailability === 'IN_STOCK' ? 'In Stock' : effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Pre-order'}
               </span>
             </div>
+            {inventorySummary.tracked && typeof inventorySummary.availableQuantity === 'number' ? (
+              <p style={{ color: colors.textSecondary, marginBottom: spacing.lg, fontSize: typography.fontSize.sm }}>
+                Materials-based stock: {inventorySummary.availableQuantity} available
+                {inventorySummary.limitingMaterialName ? `, limited by ${inventorySummary.limitingMaterialName}` : ''}
+              </p>
+            ) : null}
 
             {/* Price */}
             <div style={{ marginBottom: spacing.md }}>
@@ -381,7 +393,7 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
             </div>
 
             {/* Preorder Note */}
-            {product.availability === 'PREORDER' && product.preorder_note && (
+            {effectiveAvailability === 'PREORDER' && product.preorder_note && (
               <div style={{ 
                 padding: spacing.md,
                 backgroundColor: colors.champagne,
@@ -477,25 +489,25 @@ export default function ProductDetailClient({ product, images }: ProductDetailCl
               <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
                 <button
                   onClick={handleAddToCart}
-                  disabled={product.availability === 'OUT_OF_STOCK'}
+                  disabled={effectiveAvailability === 'OUT_OF_STOCK'}
                   style={{
                     padding: `${spacing.md} ${spacing.xl}`,
                     backgroundColor:
-                      product.availability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray,
+                      effectiveAvailability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray,
                     color: colors.white,
                     border: `1px solid ${
-                      product.availability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray
+                      effectiveAvailability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray
                     }`,
                     borderRadius: '999px',
                     fontWeight: typography.fontWeight.medium,
                     fontSize: typography.fontSize.sm,
                     letterSpacing: '0.04em',
-                    cursor: product.availability === 'OUT_OF_STOCK' ? 'not-allowed' : 'pointer',
+                    cursor: effectiveAvailability === 'OUT_OF_STOCK' ? 'not-allowed' : 'pointer',
                     boxShadow: shadows.soft,
                     transition: transitions.fast,
                   }}
                 >
-                  {product.availability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Add to Cart'}
+                  {effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Add to Cart'}
                 </button>
                 <button
                   onClick={() => setInquiryOpen(true)}

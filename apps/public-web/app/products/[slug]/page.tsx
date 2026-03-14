@@ -1,5 +1,11 @@
 import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
-import { getProductImageUrl } from '@pearl33atelier/shared'
+import {
+  computeProductInventorySummary,
+  getProductImageUrl,
+  resolveProductAvailability,
+  type MaterialInventoryInput,
+  type ProductInventorySummary,
+} from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -64,7 +70,35 @@ const getPublishedProductBySlug = cache(async (slug: string) => {
     .order('sort_order', { ascending: true })
 
   const images = !imagesError && imagesData ? imagesData : []
-  return { product: productData as CatalogProduct, images: images as ProductImage[] }
+  const { data: materialsData, error: materialsError } = await supabase
+    .from('product_materials')
+    .select(`
+      inventory_item_id,
+      quantity_per_unit,
+      inventory_items (
+        name,
+        total_quantity,
+        allocated_quantity
+      )
+    `)
+    .eq('product_id', productData.id)
+
+  if (materialsError) {
+    throw new Error(`Failed to load product materials: ${materialsError.message}`)
+  }
+
+  const inventorySummary = computeProductInventorySummary(
+    ((materialsData || []) as Array<MaterialInventoryInput & { inventory_items?: MaterialInventoryInput['inventory_item'] | MaterialInventoryInput['inventory_item'][] }>).map((material) => ({
+      inventory_item_id: material.inventory_item_id,
+      quantity_per_unit: material.quantity_per_unit,
+      inventory_item: Array.isArray(material.inventory_items)
+        ? material.inventory_items[0] ?? null
+        : material.inventory_items ?? null,
+    })),
+    (productData as CatalogProduct).availability
+  )
+
+  return { product: productData as CatalogProduct, images: images as ProductImage[], inventorySummary }
 })
 
 function buildProductDescription(product: CatalogProduct) {
@@ -122,7 +156,9 @@ export async function generateMetadata({
   }
 
   const { product, images } = result
-  const description = buildProductDescription(product)
+  const effectiveAvailability = resolveProductAvailability(product.availability, result.inventorySummary)
+  const productWithEffectiveAvailability = { ...product, availability: effectiveAvailability }
+  const description = buildProductDescription(productWithEffectiveAvailability)
   const primaryImage = images.find((img) => img.is_primary) || images[0]
   const imageUrl = primaryImage ? getProductImageUrl(primaryImage.storage_path) : DEFAULT_IMAGE_URL
   const productUrl = `${SITE_URL}/products/${slug}`
@@ -179,7 +215,7 @@ export async function generateMetadata({
     other: {
       'product:price:amount': String(product.sell_price || 0),
       'product:price:currency': 'USD',
-      'product:availability': getAvailabilityMetaValue(product.availability),
+      'product:availability': getAvailabilityMetaValue(effectiveAvailability),
       'product:condition': 'new',
     },
   }
@@ -217,6 +253,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   }
   const product: CatalogProduct = result.product
   const images: ProductImage[] = result.images
+  const inventorySummary: ProductInventorySummary = result.inventorySummary
+  const effectiveAvailability = resolveProductAvailability(product.availability, inventorySummary)
 
   const primaryImage = images.find((img) => img.is_primary) || images[0]
   const imageUrl = primaryImage ? getProductImageUrl(primaryImage.storage_path) : DEFAULT_IMAGE_URL
@@ -270,7 +308,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       priceCurrency: 'USD',
       price: String(product.sell_price || 0),
       itemCondition: 'https://schema.org/NewCondition',
-      availability: getAvailabilitySchemaUrl(product.availability),
+      availability: getAvailabilitySchemaUrl(effectiveAvailability),
       seller: {
         '@type': 'Organization',
         name: '33 Pearl Atelier',
@@ -298,7 +336,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <ProductDetailClient product={product} images={images} />
+      <ProductDetailClient
+        product={{ ...product, availability: effectiveAvailability }}
+        images={images}
+        inventorySummary={inventorySummary}
+      />
     </>
   )
 }
