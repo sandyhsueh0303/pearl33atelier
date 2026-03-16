@@ -295,14 +295,14 @@ export default function HomePage() {
             letterSpacing: '0.02em',
             margin: `0 auto ${spacing['3xl']} auto`,
           }}>
-            Handcrafted Pearl Jewelry Collection
+            Hand-selected pearl jewelry and custom design services
             <br />
             <span style={{ 
               fontSize: typography.fontSize.lg,
               fontStyle: 'italic',
               opacity: 0.95
             }}>
-              Each piece is a unique work of art
+              Crafted for everyday elegance
             </span>
           </p>
 
@@ -593,7 +593,7 @@ export default function HomePage() {
             </div>
 
             <div style={{ padding: `${spacing.lg} ${spacing.lg}`, borderBottom: `1px solid ${colors.lightGray}`, borderLeft: '3px solid #d4af37' }}>
-              <h3 style={{ color: colors.darkGray, marginBottom: spacing.xs }}>Lifetime Pearl Care & Support</h3>
+              <h3 style={{ color: colors.darkGray, marginBottom: spacing.xs }}>Availability & Inquiry</h3>
               <ul
                 style={{
                   color: colors.textSecondary,
@@ -602,8 +602,8 @@ export default function HomePage() {
                   paddingLeft: spacing.md,
                 }}
               >
-                <li>Complimentary lifetime care for pearl necklaces purchased from us.</li>
-                <li>Pearl redesign services are available by quote.</li>
+                <li>Use the cart or contact form to request availability, payment, and shipping details.</li>
+                <li>We confirm the next steps personally for ready-to-wear and custom orders.</li>
               </ul>
             </div>
 
@@ -626,23 +626,9 @@ export default function HomePage() {
                 }}
               >
                 Contact us when you want help choosing between ready-to-wear options, need custom design advice,
-                need restringing or redesign support, or have timeline and aftercare questions before placing your order.
+                or want guidance on timing, availability, and the best next step for your order.
               </p>
               <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginLeft: 'auto' }}>
-                <Link
-                  href="/care-guide"
-                  style={{
-                    display: 'inline-block',
-                    border: `1px solid ${colors.lightGray}`,
-                    padding: `${spacing.xs} ${spacing.lg}`,
-                    color: colors.darkGray,
-                    textDecoration: 'none',
-                    letterSpacing: '0.08em',
-                    backgroundColor: colors.white,
-                  }}
-                >
-                  Pearl Care
-                </Link>
                 <Link
                   href="/custom-services"
                   style={{
@@ -672,39 +658,6 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        style={{
-          padding: `${spacing['3xl']} ${spacing.xl}`,
-          borderTop: `1px solid ${colors.lightGray}`,
-          borderBottom: `1px solid ${colors.lightGray}`,
-          backgroundColor: '#fffdf9',
-        }}
-      >
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: typography.fontSize['3xl'], color: colors.darkGray, marginBottom: spacing.sm, textAlign: 'center' }}>
-            Customer Care & FAQ
-          </h2>
-          <p style={{ color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.xl }}>
-            Complimentary lifetime care, redesign support, and pearl care guidance to help you choose with confidence.
-          </p>
-          <div style={{ textAlign: 'center' }}>
-            <Link
-              href="/faq"
-              style={{
-                display: 'inline-block',
-                border: `1px solid ${colors.darkGray}`,
-                padding: `${spacing.xs} ${spacing.lg}`,
-                color: colors.darkGray,
-                textDecoration: 'none',
-                letterSpacing: '0.08em',
-              }}
-            >
-              View FAQ
-            </Link>
           </div>
         </div>
       </section>
@@ -928,6 +881,39 @@ export default function HomePage() {
           >
             View All Journal Posts
           </Link>
+        </div>
+      </section>
+
+      <section
+        style={{
+          padding: `${spacing['3xl']} ${spacing.xl}`,
+          borderTop: `1px solid ${colors.lightGray}`,
+          borderBottom: `1px solid ${colors.lightGray}`,
+          backgroundColor: '#fffdf9',
+        }}
+      >
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <h2 style={{ fontSize: typography.fontSize['3xl'], color: colors.darkGray, marginBottom: spacing.sm, textAlign: 'center' }}>
+            Customer Care & FAQ
+          </h2>
+          <p style={{ color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.xl }}>
+            Find quick answers about ordering, availability, shipping, pearl care, and redesign services.
+          </p>
+          <div style={{ textAlign: 'center' }}>
+            <Link
+              href="/faq"
+              style={{
+                display: 'inline-block',
+                border: `1px solid ${colors.darkGray}`,
+                padding: `${spacing.xs} ${spacing.lg}`,
+                color: colors.darkGray,
+                textDecoration: 'none',
+                letterSpacing: '0.08em',
+              }}
+            >
+              View FAQ
+            </Link>
+          </div>
         </div>
       </section>
 

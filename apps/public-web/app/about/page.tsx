@@ -149,7 +149,7 @@ export default function AboutPage() {
                 maxWidth: '62ch',
               }}
             >
-              I&apos;m Sandy — founder of 33 Pearl Atelier and certified pearl appraiser.
+              I&apos;m Sandy, founder of 33 Pearl Atelier and a GIA Certified Gemologist.
             </p>
             <p
               style={{
@@ -160,9 +160,7 @@ export default function AboutPage() {
                 maxWidth: '62ch',
               }}
             >
-              My fascination with pearls began with their quiet elegance and the simple truth that no two are ever alike.
-              After studying gemology and pearl grading, I founded 33 Pearl Atelier to share pearls that feel personal,
-              wearable, and timeless.
+              I founded 33 Pearl Atelier to offer pearl jewelry that feels personal, wearable, and quietly refined. Every pearl is selected with attention to luster, proportion, and how it will live with the wearer over time.
             </p>
             <p
               style={{
@@ -173,19 +171,7 @@ export default function AboutPage() {
                 maxWidth: '62ch',
               }}
             >
-              Every pearl here is hand-selected by me. Beyond measurements and grades, I focus on how each pearl catches light,
-              sits against skin, and becomes part of daily life.
-            </p>
-            <p
-              style={{
-                fontSize: 'clamp(1.03rem, 1.6vw, 1.14rem)',
-                color: '#4a4338',
-                lineHeight: 1.72,
-                maxWidth: '62ch',
-              }}
-            >
-              My goal isn&apos;t just to create fine jewelry — it&apos;s to offer pieces that bring confidence and refined
-              beauty to your everyday.
+              Beyond technical grading, I focus on character, balance, and everyday elegance. My goal is to create pieces that feel timeless, modern, and easy to wear with confidence.
             </p>
           </article>
         </div>

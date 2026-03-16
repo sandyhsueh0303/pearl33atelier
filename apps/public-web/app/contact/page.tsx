@@ -20,7 +20,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="Get in Touch"
-        description="Have a question about our collection, shipping, pearl care, lifetime service, or redesign requests? We&apos;re here to help. We typically respond within 24 hours."
+        description="Reach out for ready-to-wear inquiries, custom design requests, pearl care questions, or pearl redesign service. We typically respond within 24 hours."
       />
 
       <div style={{ marginTop: `-${spacing.lg}` }}>

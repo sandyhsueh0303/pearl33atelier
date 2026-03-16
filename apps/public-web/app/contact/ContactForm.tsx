@@ -128,9 +128,9 @@ ${formData.message}
           lineHeight: typography.lineHeight.relaxed,
         }}
       >
-        Share your request below and we&apos;ll get back to you within 24 hours.
+        Use this form for ready-to-wear inquiries, custom design requests, pearl care questions, or redesign service.
         <br />
-        Prefer direct contact? Use Instagram, WeChat, or email links above.
+        We&apos;ll get back to you within 24 hours. Prefer direct contact? Use Instagram, WeChat, or email links above.
       </p>
 
       {status === 'ready' ? (

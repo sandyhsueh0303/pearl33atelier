@@ -14,7 +14,7 @@ export default function CartPage() {
           Shopping Cart
         </h1>
         <p style={{ color: colors.textSecondary, marginBottom: spacing.xl }}>
-          Guest cart is saved in your browser.
+          Your guest cart is saved in your browser. Submit an inquiry from this cart and we&apos;ll confirm availability, payment, and shipping details with you directly.
         </p>
 
         {!hydrated ? (
@@ -120,7 +120,7 @@ export default function CartPage() {
                   Subtotal: $ {subtotal.toLocaleString()}
                 </div>
                 <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
-                  Use inquiry to confirm availability, payment, and shipping.
+                  This cart does not check out online. Proceed to inquiry and we&apos;ll confirm availability, payment, and shipping details personally.
                 </div>
               </div>
               <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>

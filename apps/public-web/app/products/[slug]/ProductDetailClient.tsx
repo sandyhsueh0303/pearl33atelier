@@ -285,17 +285,6 @@ export default function ProductDetailClient({ product, images, inventorySummary 
               marginBottom: spacing.lg,
               flexWrap: 'wrap'
             }}>
-              {product.category && (
-                <span style={{
-                  padding: `${spacing.xs} ${spacing.md}`,
-                  backgroundColor: '#f3e5f5',
-                  color: colors.darkGray,
-                  fontSize: typography.fontSize.sm,
-                  fontWeight: typography.fontWeight.medium,
-                }}>
-                  {categoryLabels[product.category] || product.category}
-                </span>
-              )}
               <span style={{
                 padding: `${spacing.xs} ${spacing.md}`,
                 backgroundColor: colors.pearl,
@@ -306,16 +295,6 @@ export default function ProductDetailClient({ product, images, inventorySummary 
               }}>
                 {product.pearl_type}
               </span>
-              {product.size_mm && (
-                <span style={{
-                  padding: `${spacing.xs} ${spacing.md}`,
-                  backgroundColor: colors.lightGray,
-                  color: colors.textSecondary,
-                  fontSize: typography.fontSize.sm,
-                }}>
-                  {product.size_mm}mm
-                </span>
-              )}
               <span style={{
                 padding: `${spacing.xs} ${spacing.md}`,
                 backgroundColor:
@@ -328,13 +307,6 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                 {effectiveAvailability === 'IN_STOCK' ? 'In Stock' : effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Pre-order'}
               </span>
             </div>
-            {inventorySummary.tracked && typeof inventorySummary.availableQuantity === 'number' ? (
-              <p style={{ color: colors.textSecondary, marginBottom: spacing.lg, fontSize: typography.fontSize.sm }}>
-                Materials-based stock: {inventorySummary.availableQuantity} available
-                {inventorySummary.limitingMaterialName ? `, limited by ${inventorySummary.limitingMaterialName}` : ''}
-              </p>
-            ) : null}
-
             {/* Price */}
             <div style={{ marginBottom: spacing.md }}>
               {product.sell_price && (
@@ -483,7 +455,7 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                     lineHeight: 1.7,
                   }}
                 >
-                  Contact us to learn more or ask about this product.
+                  Add this piece to your cart or send an inquiry and we&apos;ll confirm availability, payment, and shipping details with you directly.
                 </p>
               </div>
               <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>

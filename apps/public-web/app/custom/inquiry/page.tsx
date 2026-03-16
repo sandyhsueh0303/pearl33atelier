@@ -125,8 +125,8 @@ I have reference photos to share!`
       {/* Hero Section */}
       <PageHero
         eyebrow="INQUIRY"
-        title="Start Your Inquiry"
-        description="Share your pearl type preference, budget range, occasion, and preferred timeline. We will reply with clear next steps for collection purchase or custom design."
+        title="Start Your Custom Inquiry"
+        description="Use this form for bespoke pearl jewelry projects. Share your pearl preferences, budget, occasion, and timeline, and we&apos;ll reply with the next steps for a custom design."
       />
 
       {/* Form Section */}
@@ -135,6 +135,15 @@ I have reference photos to share!`
         margin: '0 auto',
         padding: `${spacing['2xl']} ${spacing.xl}`,
       }}>
+
+        <p style={{
+          color: colors.textSecondary,
+          lineHeight: typography.lineHeight.relaxed,
+          textAlign: 'center',
+          margin: `0 0 ${spacing.xl}`,
+        }}>
+          For ready-to-wear inquiries, pearl care questions, or redesign service, please use the general contact form.
+        </p>
         
         {/* What to Include */}
         <div style={{
@@ -153,7 +162,7 @@ I have reference photos to share!`
             color: colors.darkGray,
             letterSpacing: '0.01em',
           }}>
-            What to Include in Your Inquiry
+            What to Include in Your Custom Inquiry
           </h2>
           <ul style={{
             fontSize: typography.fontSize.base,
@@ -162,9 +171,9 @@ I have reference photos to share!`
             paddingLeft: '1.05rem',
             margin: 0,
           }}>
-            <li>Jewelry style and pearl preference</li>
-            <li>Metal type and timeline</li>
-            <li>Budget consideration</li>
+            <li>Desired jewelry style and pearl preference</li>
+            <li>Metal type, wear occasion, and timeline</li>
+            <li>Budget consideration and design priorities</li>
             <li>Reference photos (attach when sending)</li>
           </ul>
         </div>

@@ -150,7 +150,7 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
       <PageHero
         eyebrow="Collection"
         title="Collection"
-        description="Curated Pearl Jewelry Collection"
+        description="Explore hand-selected pearl jewelry designed for everyday elegance, from ready-to-wear pieces to styles that can inspire your custom inquiry."
       />
 
       <section style={{ padding: `clamp(1rem, 3vw, ${spacing['3xl']})` }}>
