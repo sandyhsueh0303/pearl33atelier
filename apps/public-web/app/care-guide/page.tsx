@@ -302,6 +302,39 @@ export default function CareGuidePage() {
       <section
         style={{
           padding: `${spacing['2xl']} ${spacing.xl}`,
+          backgroundColor: '#fcfbf8',
+          borderTop: `1px solid ${colors.lightGray}`,
+          borderBottom: `1px solid ${colors.lightGray}`,
+        }}
+      >
+        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+          <h2
+            style={{
+              fontSize: typography.fontSize['3xl'],
+              color: colors.darkGray,
+              marginBottom: spacing.md,
+              textAlign: 'center',
+            }}
+          >
+            Pearl Care & Lifetime Service
+          </h2>
+          <div style={{ display: 'grid', gap: spacing.md, color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, textAlign: 'center' }}>
+            <p>
+              This guide covers everyday pearl care, including how to wear, clean, store, and protect your jewelry over time.
+            </p>
+            <p>
+              For pieces purchased from 33 Pearl Atelier, pearl necklaces include complimentary lifetime restringing and cleaning, while earrings and other pieces receive complimentary cleaning and maintenance.
+            </p>
+            <p>
+              We also offer pearl redesign services to transform treasured pearls into new pieces. Please contact us for a service quote.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        style={{
+          padding: `${spacing['2xl']} ${spacing.xl}`,
           textAlign: 'center',
           borderTop: `1px solid ${colors.lightGray}`,
           background: 'linear-gradient(180deg, #fffefb 0%, #ffffff 100%)',

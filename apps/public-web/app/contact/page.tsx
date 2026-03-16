@@ -8,7 +8,7 @@ import ContactForm from './ContactForm'
 export const metadata: Metadata = {
   title: 'Contact Us | 33 Pearl Atelier',
   description:
-    'Get in touch with 33 Pearl Atelier. Questions about our pearl jewelry collection, shipping, or care? We typically respond within 24 hours.',
+    'Get in touch with 33 Pearl Atelier. Questions about our collection, shipping, pearl care, lifetime service, or redesign requests? We typically respond within 24 hours.',
   alternates: {
     canonical: '/contact',
   },
@@ -20,7 +20,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="Get in Touch"
-        description="Have a question about our collection, shipping, or pearl care? We&apos;re here to help. We typically respond within 24 hours."
+        description="Have a question about our collection, shipping, pearl care, lifetime service, or redesign requests? We&apos;re here to help. We typically respond within 24 hours."
       />
 
       <div style={{ marginTop: `-${spacing.lg}` }}>

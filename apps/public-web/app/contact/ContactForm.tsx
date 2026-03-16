@@ -8,18 +8,28 @@ export default function ContactForm() {
     name: '',
     email: '',
     phone: '',
+    inquiryType: '',
     subject: '',
     message: '',
   })
   const [status, setStatus] = useState<'idle' | 'submitting' | 'ready' | 'error'>('idle')
   const [copied, setCopied] = useState(false)
 
+  const inquiryTypeLabel =
+    {
+      general: 'General Inquiry',
+      custom_design: 'Custom Design',
+      pearl_care: 'Pearl Care',
+      redesign_service: 'Redesign Service',
+    }[formData.inquiryType] || 'Not selected'
+
   const buildMessage = () => `Hi 33 Pearl Atelier,
 
 Name: ${formData.name}
 Email: ${formData.email}
 Phone: ${formData.phone || 'Not provided'}
-Subject: ${formData.subject || 'General Inquiry'}
+Inquiry Type: ${inquiryTypeLabel}
+Subject: ${formData.subject || 'Not provided'}
 
 Message:
 ${formData.message}
@@ -49,7 +59,7 @@ ${formData.message}
   }
 
   const handleSendEmail = () => {
-    const subject = encodeURIComponent(formData.subject || 'Contact Inquiry')
+    const subject = encodeURIComponent(formData.subject || inquiryTypeLabel || 'Contact Inquiry')
     const body = encodeURIComponent(buildMessage())
     window.location.href = `mailto:33pearlatelier@gmail.com?subject=${subject}&body=${body}`
   }
@@ -326,14 +336,14 @@ ${formData.message}
           </div>
 
           <div style={{ marginBottom: spacing.lg }}>
-            <label htmlFor="subject" style={labelStyle}>
-              Subject
+            <label htmlFor="inquiryType" style={labelStyle}>
+              Inquiry Type
             </label>
             <div style={{ position: 'relative' }}>
               <select
-                id="subject"
-                name="subject"
-                value={formData.subject}
+                id="inquiryType"
+                name="inquiryType"
+                value={formData.inquiryType}
                 onChange={handleChange}
                 style={{
                   width: '100%',
@@ -358,13 +368,11 @@ ${formData.message}
                   e.target.style.borderColor = colors.lightGray
                 }}
               >
-                <option value="">Select a subject</option>
-                <option value="general">General Question</option>
-                <option value="product">Product Inquiry</option>
-                <option value="shipping">Shipping & Delivery</option>
-                <option value="care">Care & Maintenance</option>
-                <option value="order">Order Status</option>
-                <option value="other">Other</option>
+                <option value="">Select an inquiry type</option>
+                <option value="general">General Inquiry</option>
+                <option value="custom_design">Custom Design</option>
+                <option value="pearl_care">Pearl Care</option>
+                <option value="redesign_service">Redesign Service</option>
               </select>
               <span
                 aria-hidden="true"
@@ -381,6 +389,38 @@ ${formData.message}
               >
                 ▼
               </span>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: spacing.lg }}>
+            <label htmlFor="subject" style={labelStyle}>
+              Subject / Topic
+            </label>
+            <div style={{ position: 'relative' }}>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                style={{
+                  width: '100%',
+                  padding: `${spacing.sm} ${spacing.md}`,
+                  border: `1px solid ${colors.lightGray}`,
+                  borderRadius: '8px',
+                  backgroundColor: '#FFFEFC',
+                  fontSize: typography.fontSize.sm,
+                  color: colors.darkGray,
+                  transition: transitions.normal,
+                  outline: 'none',
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = colors.gold
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = colors.lightGray
+                }}
+              />
             </div>
           </div>
 

@@ -59,12 +59,12 @@ export default function FAQPage() {
     {
       id: 'returns-policy',
       q: 'Return policy?',
-      a: 'Because every pearl is individually chosen, we do not offer standard returns. Instead, we provide a lifetime restyling service for all pearl jewelry purchased from us — allowing your piece to be refreshed or redesigned as your style evolves.',
+      a: 'Because every pearl is individually chosen, we do not offer standard returns. We do, however, offer long-term aftercare for pieces purchased from us, including complimentary lifetime care for pearl necklaces and redesign support as your style evolves.',
     },
     {
       id: 'repairs-restringing',
-      q: 'Repairs / Restringing',
-      a: 'Yes — we offer restringing and selected repair services for pearl jewelry purchased from us. Because we personally select and match each pearl, this allows us to maintain consistent quality and design integrity. For pieces not originally from 33 Pearl Atelier, we may not be able to guarantee results, as pearls can vary in treatment, structure, and appearance. If you’re unsure, feel free to contact us with a photo and a brief description — we’re always happy to take a look and advise.',
+      q: 'Lifetime Care & Redesign',
+      a: 'Every pearl necklace purchased from 33 Pearl Atelier includes complimentary lifetime restringing and cleaning. Earrings and other pearl pieces receive complimentary cleaning and maintenance. We also provide pearl redesign services to transform treasured pearls into new pieces. Please contact us for a service quote.',
     },
     {
       id: 'daily-care',

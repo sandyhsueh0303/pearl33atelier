@@ -379,60 +379,150 @@ export default function HomePage() {
         >
           <span>GIA Certified Gemologist</span>
           <span style={{ color: colors.gold }}>•</span>
-          <span>Restringing &amp; Selected Repairs</span>
+          <span>Hand-Selected Pearls</span>
+          <span style={{ color: colors.gold }}>•</span>
+          <span>Made in Small Batches</span>
           <span style={{ color: colors.gold }}>•</span>
           <span>Personalized Consultation</span>
         </div>
       </section>
 
-      {/* Intent Section */}
       <section
         style={{
           padding: `${spacing['2xl']} ${spacing.xl}`,
-          background: 'linear-gradient(180deg, #fffefc 0%, #fbf8f2 100%)',
-          borderTop: `1px solid ${colors.lightGray}`,
+          background:
+            'radial-gradient(circle at top left, rgba(201, 169, 97, 0.14), transparent 28%), linear-gradient(180deg, #fffdf8 0%, #f8f2e8 100%)',
           borderBottom: `1px solid ${colors.lightGray}`,
-          textAlign: 'center',
         }}
       >
-        <div style={{ maxWidth: '980px', margin: '0 auto' }}>
-          <h2
+        <div
+          style={{
+            maxWidth: '1040px',
+            margin: '0 auto',
+            padding: `clamp(1.5rem, 3vw, 2.5rem)`,
+            background: 'rgba(255, 252, 246, 0.92)',
+            border: '1px solid rgba(201, 169, 97, 0.22)',
+            boxShadow: '0 28px 70px rgba(55, 46, 34, 0.08)',
+          }}
+        >
+          <div
             style={{
-              fontSize: typography.fontSize['3xl'],
-              color: colors.darkGray,
-              marginBottom: spacing.md,
-              lineHeight: typography.lineHeight.tight,
+              maxWidth: '680px',
+              margin: '0 auto',
+              textAlign: 'center',
             }}
           >
-            Pearls Chosen With Intention, Crafted for Everyday Elegance
-          </h2>
-          <p
-            style={{
-              fontSize: typography.fontSize.base,
-              color: colors.textSecondary,
-              lineHeight: typography.lineHeight.relaxed,
-              maxWidth: '760px',
-              margin: `0 auto ${spacing.lg}`,
-            }}
-          >
-            Handcrafted pearl jewelry and custom pearl design services.
-            Explore ready-to-wear pieces, request custom work, and learn through our pearl guides.
-          </p>
-          <p style={{ marginTop: spacing.xs }}>
-            <Link
-              href="/custom-services"
+            <div
               style={{
-                display: 'inline-block',
-                border: `1px solid ${colors.darkGray}`,
-                padding: `${spacing.xs} ${spacing.lg}`,
-                color: colors.darkGray,
-                textDecoration: 'none',
-                letterSpacing: '0.08em',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: spacing.xs,
+                padding: '0.35rem 0.75rem',
+                marginBottom: spacing.md,
+                backgroundColor: 'rgba(201, 169, 97, 0.12)',
+                color: colors.gold,
+                fontSize: typography.fontSize.xs,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                fontWeight: typography.fontWeight.medium,
               }}
             >
-              Start Custom Inquiry
-            </Link>
-          </p>
+              Pearl Care
+            </div>
+            <h2
+              style={{
+                margin: `0 0 ${spacing.sm} 0`,
+                color: colors.darkGray,
+                fontSize: 'clamp(2rem, 5vw, 3.4rem)',
+                lineHeight: typography.lineHeight.tight,
+                fontFamily: typography.fontFamily.serif,
+              }}
+            >
+              Lifetime Service
+            </h2>
+            <p
+              style={{
+                margin: `0 0 ${spacing.sm} 0`,
+                color: colors.textSecondary,
+                fontSize: 'clamp(1rem, 2vw, 1.05rem)',
+                lineHeight: 1.8,
+              }}
+            >
+              Every pearl necklace from 33 Pearl Atelier includes complimentary lifetime care.
+            </p>
+            <p
+              style={{
+                margin: 0,
+                color: colors.textSecondary,
+                fontSize: 'clamp(1rem, 2vw, 1.05rem)',
+                lineHeight: 1.8,
+              }}
+            >
+              Pearl necklaces include lifetime restringing and cleaning, while earrings and other pieces receive complimentary cleaning and maintenance to keep them in beautiful condition.
+            </p>
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gap: spacing.md,
+              marginTop: spacing.xl,
+            }}
+          >
+            {[
+              {
+                title: 'Complimentary Lifetime Care',
+                desc:
+                  'Pearl necklaces include lifetime restringing and cleaning. Earrings and other pearl pieces receive complimentary cleaning and maintenance.',
+              },
+              {
+                title: 'Pearl Redesign Service',
+                desc:
+                  'Transform treasured pearls into new pieces',
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                style={{
+                  padding: `clamp(1.25rem, 2vw, 1.75rem)`,
+                  border: '1px solid rgba(201, 169, 97, 0.18)',
+                  background:
+                    'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(250,245,236,0.98) 100%)',
+                  boxShadow: '0 18px 36px rgba(55, 46, 34, 0.05)',
+                  minHeight: '100%',
+                }}
+              >
+                <div
+                  style={{
+                    color: colors.darkGray,
+                    fontWeight: typography.fontWeight.medium,
+                    fontSize: 'clamp(1.2rem, 2.4vw, 1.5rem)',
+                    lineHeight: 1.35,
+                    marginBottom: spacing.sm,
+                  }}
+                >
+                  {item.title}
+                </div>
+                <div
+                  style={{
+                    width: '3.25rem',
+                    height: '2px',
+                    marginBottom: spacing.md,
+                    background: 'linear-gradient(90deg, rgba(201, 169, 97, 0.7), rgba(201, 169, 97, 0.12))',
+                  }}
+                />
+                <div
+                  style={{
+                    color: colors.textSecondary,
+                    lineHeight: typography.lineHeight.relaxed,
+                    fontSize: typography.fontSize.base,
+                  }}
+                >
+                  {item.desc}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -503,7 +593,7 @@ export default function HomePage() {
             </div>
 
             <div style={{ padding: `${spacing.lg} ${spacing.lg}`, borderBottom: `1px solid ${colors.lightGray}`, borderLeft: '3px solid #d4af37' }}>
-              <h3 style={{ color: colors.darkGray, marginBottom: spacing.xs }}>Aftercare & Support</h3>
+              <h3 style={{ color: colors.darkGray, marginBottom: spacing.xs }}>Lifetime Pearl Care & Support</h3>
               <ul
                 style={{
                   color: colors.textSecondary,
@@ -512,8 +602,8 @@ export default function HomePage() {
                   paddingLeft: spacing.md,
                 }}
               >
-                <li>Restringing service for pearl jewelry purchased from us.</li>
-                <li>Selected repair services available after purchase.</li>
+                <li>Complimentary lifetime care for pearl necklaces purchased from us.</li>
+                <li>Pearl redesign services are available by quote.</li>
               </ul>
             </div>
 
@@ -536,22 +626,51 @@ export default function HomePage() {
                 }}
               >
                 Contact us when you want help choosing between ready-to-wear options, need custom design advice,
-                or have timeline and aftercare questions before placing your order.
+                need restringing or redesign support, or have timeline and aftercare questions before placing your order.
               </p>
-              <Link
-                href="/contact"
-                style={{
-                  display: 'inline-block',
-                  border: `1px solid ${colors.darkGray}`,
-                  padding: `${spacing.xs} ${spacing.lg}`,
-                  color: colors.darkGray,
-                  textDecoration: 'none',
-                  letterSpacing: '0.08em',
-                  marginLeft: 'auto',
-                }}
-              >
-                Contact Us
-              </Link>
+              <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginLeft: 'auto' }}>
+                <Link
+                  href="/care-guide"
+                  style={{
+                    display: 'inline-block',
+                    border: `1px solid ${colors.lightGray}`,
+                    padding: `${spacing.xs} ${spacing.lg}`,
+                    color: colors.darkGray,
+                    textDecoration: 'none',
+                    letterSpacing: '0.08em',
+                    backgroundColor: colors.white,
+                  }}
+                >
+                  Pearl Care
+                </Link>
+                <Link
+                  href="/custom-services"
+                  style={{
+                    display: 'inline-block',
+                    border: `1px solid ${colors.lightGray}`,
+                    padding: `${spacing.xs} ${spacing.lg}`,
+                    color: colors.darkGray,
+                    textDecoration: 'none',
+                    letterSpacing: '0.08em',
+                    backgroundColor: colors.white,
+                  }}
+                >
+                  Redesign Service
+                </Link>
+                <Link
+                  href="/contact"
+                  style={{
+                    display: 'inline-block',
+                    border: `1px solid ${colors.darkGray}`,
+                    padding: `${spacing.xs} ${spacing.lg}`,
+                    color: colors.darkGray,
+                    textDecoration: 'none',
+                    letterSpacing: '0.08em',
+                  }}
+                >
+                  Contact Us
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -570,7 +689,7 @@ export default function HomePage() {
             Customer Care & FAQ
           </h2>
           <p style={{ color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.xl }}>
-            Answers and guidance to help you choose with confidence.
+            Complimentary lifetime care, redesign support, and pearl care guidance to help you choose with confidence.
           </p>
           <div style={{ textAlign: 'center' }}>
             <Link
@@ -587,6 +706,57 @@ export default function HomePage() {
               View FAQ
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Intent Section */}
+      <section
+        style={{
+          padding: `${spacing['2xl']} ${spacing.xl}`,
+          background: 'linear-gradient(180deg, #fffefc 0%, #fbf8f2 100%)',
+          borderTop: `1px solid ${colors.lightGray}`,
+          borderBottom: `1px solid ${colors.lightGray}`,
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ maxWidth: '980px', margin: '0 auto' }}>
+          <h2
+            style={{
+              fontSize: typography.fontSize['3xl'],
+              color: colors.darkGray,
+              marginBottom: spacing.md,
+              lineHeight: typography.lineHeight.tight,
+            }}
+          >
+            Pearls Chosen With Intention, Crafted for Everyday Elegance
+          </h2>
+          <p
+            style={{
+              fontSize: typography.fontSize.base,
+              color: colors.textSecondary,
+              lineHeight: typography.lineHeight.relaxed,
+              maxWidth: '760px',
+              margin: `0 auto ${spacing.lg}`,
+            }}
+          >
+            Handcrafted pearl jewelry and custom pearl design services.
+            Explore ready-to-wear pieces, request custom work, and learn through our pearl guides.
+          </p>
+          <p style={{ marginTop: spacing.xs }}>
+            <Link
+              href="/custom-services"
+              style={{
+                display: 'inline-block',
+                border: `1px solid ${colors.darkGray}`,
+                padding: `${spacing.xs} ${spacing.lg}`,
+                color: colors.darkGray,
+                textDecoration: 'none',
+                letterSpacing: '0.08em',
+              }}
+            >
+              Start Custom Inquiry
+            </Link>
+          </p>
         </div>
       </section>
 

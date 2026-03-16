@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
     console.log('[contact] New inquiry:', {
       name,
       email,
+      inquiryType: body?.inquiryType || null,
       subject: body?.subject || null,
       message,
       createdAt: new Date().toISOString(),

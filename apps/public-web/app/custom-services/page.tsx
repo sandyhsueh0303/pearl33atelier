@@ -194,6 +194,49 @@ export default function CustomServicesPage() {
 
       <section
         style={{
+          padding: `${spacing['2xl']} ${spacing.xl}`,
+          backgroundColor: '#fffdf9',
+          borderTop: `1px solid ${colors.lightGray}`,
+        }}
+      >
+        <div style={{ maxWidth: '980px', margin: '0 auto', display: 'grid', gap: spacing.md }}>
+          <h2
+            style={{
+              fontSize: typography.fontSize['3xl'],
+              color: colors.darkGray,
+              textAlign: 'center',
+              marginBottom: spacing.sm,
+            }}
+          >
+            Pearl Redesign Service
+          </h2>
+          <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, textAlign: 'center' }}>
+            Redesign may include shortening a necklace, adjusting proportions, or transforming treasured pearls into a new piece for everyday wear.
+          </p>
+          <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, textAlign: 'center' }}>
+            Every pearl necklace from 33 Pearl Atelier includes complimentary lifetime restringing and cleaning, while earrings and other pieces receive complimentary cleaning and maintenance.
+          </p>
+          <div style={{ textAlign: 'center', marginTop: spacing.sm }}>
+            <Link
+              href="/contact"
+              style={{
+                display: 'inline-block',
+                padding: `${spacing.sm} ${spacing.lg}`,
+                backgroundColor: colors.darkGray,
+                color: colors.white,
+                textDecoration: 'none',
+                border: `1px solid ${colors.darkGray}`,
+                letterSpacing: '0.08em',
+              }}
+            >
+              Request a Service Quote
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section
+        style={{
           padding: `${spacing['2xl']} ${spacing.xl} ${spacing['3xl']}`,
           backgroundColor: '#fcfbf8',
         }}
