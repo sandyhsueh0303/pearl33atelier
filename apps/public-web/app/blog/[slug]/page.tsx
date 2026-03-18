@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getPostBySlug, getAllPostSlugs } from '../../lib/blog'
+import { getPostBySlug, getAllPostSlugs, getAllPosts } from '../../lib/blog'
 import { colors, typography, spacing } from '../../constants/design'
 
 type Props = {
@@ -14,6 +14,27 @@ function toAbsoluteUrl(pathOrUrl?: string) {
   if (!pathOrUrl) return `${SITE_URL}/images/og-home.png`
   if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) return pathOrUrl
   return `${SITE_URL}${pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`}`
+}
+
+function stripManualRelatedReadingSection(contentHtml: string) {
+  return contentHtml.replace(/<h2>Related Reading<\/h2>\s*(<ul>[\s\S]*?<\/ul>)/i, '')
+}
+
+function getRelatedPosts(currentSlug: string, currentTags: string[]) {
+  const currentTagSet = new Set(currentTags)
+
+  return getAllPosts()
+    .filter((candidate) => candidate.slug !== currentSlug)
+    .map((candidate) => {
+      const sharedTagCount = candidate.tags.filter((tag) => currentTagSet.has(tag)).length
+      return { candidate, sharedTagCount }
+    })
+    .sort((a, b) => {
+      if (b.sharedTagCount !== a.sharedTagCount) return b.sharedTagCount - a.sharedTagCount
+      return a.candidate.publishedAt < b.candidate.publishedAt ? 1 : -1
+    })
+    .slice(0, 2)
+    .map(({ candidate }) => candidate)
 }
 
 export async function generateStaticParams() {
@@ -86,6 +107,8 @@ export default async function BlogPostPage({ params }: Props) {
   }
 
   const ogImageUrl = toAbsoluteUrl(post.ogImage)
+  const renderedContent = stripManualRelatedReadingSection(post.content)
+  const relatedPosts = getRelatedPosts(post.slug, post.tags)
   
   // ⭐ JSON-LD 結構化資料（給 Google）
   const jsonLd = {
@@ -279,8 +302,67 @@ export default async function BlogPostPage({ params }: Props) {
               maxWidth: '860px',
               margin: '0 auto',
             }}
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: renderedContent }}
           />
+
+          {relatedPosts.length > 0 && (
+            <section
+              style={{
+                maxWidth: '860px',
+                margin: `${spacing['2xl']} auto 0`,
+                padding: '1.5rem 1.6rem 1.35rem',
+                border: '1px solid rgba(212, 175, 55, 0.22)',
+                borderRadius: '20px',
+                background: 'linear-gradient(135deg, #fdf9f1 0%, #fffdfa 100%)',
+                boxShadow: '0 14px 32px rgba(44, 44, 44, 0.05)',
+              }}
+            >
+              <h2
+                style={{
+                  margin: 0,
+                  color: colors.darkGray,
+                  fontSize: 'clamp(1.35rem, 2.6vw, 1.7rem)',
+                  lineHeight: 1.3,
+                }}
+              >
+                Related Reading
+              </h2>
+              <div style={{ marginTop: spacing.lg }}>
+                {relatedPosts.map((relatedPost, index) => (
+                  <article
+                    key={relatedPost.slug}
+                    style={{
+                      padding: index === 0 ? '0 0 1rem' : '1rem 0',
+                      borderTop: index === 0 ? '0' : '1px solid rgba(212, 175, 55, 0.16)',
+                    }}
+                  >
+                    <Link
+                      href={`/blog/${relatedPost.slug}`}
+                      style={{
+                        color: '#3f3320',
+                        textDecoration: 'none',
+                        fontWeight: 500,
+                        fontSize: '1.02rem',
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      {relatedPost.title.replace('\n', ' ')}
+                    </Link>
+                    <p
+                      style={{
+                        margin: '0.45rem 0 0',
+                        color: colors.textSecondary,
+                        fontSize: typography.fontSize.sm,
+                        lineHeight: 1.8,
+                      }}
+                    >
+                      {relatedPost.excerpt}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* 更新日期（如果有） */}
           {post.updatedAt && post.updatedAt !== post.publishedAt && (
@@ -295,24 +377,6 @@ export default async function BlogPostPage({ params }: Props) {
               Last updated: <time dateTime={post.updatedAt}>{post.updatedAt}</time>
             </p>
           )}
-
-          <section style={{ marginTop: spacing['2xl'], textAlign: 'center' }}>
-            <Link
-              href="/contact"
-              style={{
-                display: 'inline-block',
-                padding: `${spacing.xs} ${spacing.md}`,
-                background: 'linear-gradient(135deg, #2c2c2c 0%, #4b463d 100%)',
-                color: colors.white,
-                textDecoration: 'none',
-                border: '1px solid rgba(212, 175, 55, 0.4)',
-                letterSpacing: '0.08em',
-                boxShadow: '0 10px 22px rgba(44, 44, 44, 0.2)',
-              }}
-            >
-              Start Custom Inquiry
-            </Link>
-          </section>
 
           <p style={{ marginTop: spacing.lg, textAlign: 'center' }}>
             <Link href="/blog" style={{ color: colors.textSecondary }}>

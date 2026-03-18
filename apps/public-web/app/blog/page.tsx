@@ -56,12 +56,12 @@ export default function JournalPage() {
       <PageHero
         eyebrow="Journal / Blog"
         title="Pearl Knowledge & Stories"
-        description="Educational blog content organized into topic clusters to help visitors and search engines understand your expertise."
+        description="Thoughtful guides on pearl types, quality, care, and custom design."
       />
 
       <section
         style={{
-          padding: `${spacing['3xl']} ${spacing.xl} ${spacing['4xl']}`,
+          padding: `${spacing.xl} ${spacing.xl} ${spacing['4xl']}`,
           background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(250, 246, 238, 0.76) 100%)',
         }}
       >

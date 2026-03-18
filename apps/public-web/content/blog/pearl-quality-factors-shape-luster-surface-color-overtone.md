@@ -95,8 +95,3 @@ At 33 Pearl Atelier, we do not evaluate these factors in isolation. We assess ba
 - overtone character and consistency across matched pieces
 
 A beautiful pearl is not only technically good on paper, but also visually right for the person wearing it.
-
-## Related Reading
-
-- [Pearl Types Guide: Akoya, South Sea and Tahitian](/blog/pearl-types-guide)
-- [How to Care for Pearl Jewelry in Daily Life](/blog/how-to-care-for-pearl-jewelry-daily)

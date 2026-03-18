@@ -40,8 +40,3 @@ No pearl type is universally better than another. The right choice depends on st
 We usually begin with how the piece will be worn: daily, occasionally, for gifting, bridal, or as a statement. From there, we compare size comfort, color tone, and silhouette.
 
 For custom projects, we often prepare a few options across pearl types or quality levels so they can be compared side by side before a final decision is made. Seeing the differences in person is often what makes the choice become clear.
-
-## Related Reading
-
-- [Pearl Quality Factors: Shape, Luster, Surface, Body Color, and Overtone](/blog/pearl-quality-factors-shape-luster-surface-color-overtone)
-- [How to Care for Pearl Jewelry in Daily Life](/blog/how-to-care-for-pearl-jewelry-daily)

@@ -36,13 +36,13 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
       <div
         style={{
           maxWidth: '980px',
-          margin: `0 auto ${spacing.xl}`,
-          padding: spacing.lg,
-          borderRadius: '18px',
+          margin: `0 auto ${spacing.lg}`,
+          padding: `${spacing.md} ${spacing.lg}`,
+          borderRadius: '16px',
           border: '1px solid rgba(212, 175, 55, 0.24)',
           background:
             'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(248, 246, 240, 0.98) 100%)',
-          boxShadow: '0 14px 32px rgba(96, 82, 48, 0.1)',
+          boxShadow: '0 10px 24px rgba(96, 82, 48, 0.08)',
         }}
       >
         <label
@@ -52,7 +52,7 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
             fontSize: typography.fontSize.sm,
             color: '#7e6a46',
             marginBottom: spacing.xs,
-            letterSpacing: '0.12em',
+            letterSpacing: '0.1em',
             textTransform: 'uppercase',
           }}
         >
@@ -100,7 +100,7 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
             margin: '0 auto',
             display: 'grid',
             gridTemplateColumns: '1fr',
-            gap: spacing.xl,
+            gap: spacing.lg,
           }}
         >
           {filteredPosts.map((post) => (
@@ -112,20 +112,21 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
                   'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(249, 245, 237, 0.94) 100%)',
                 border: '1px solid rgba(212, 175, 55, 0.22)',
                 borderRadius: '16px',
-                padding: spacing.lg,
+                padding: `${spacing.lg} ${spacing.lg} ${spacing.md}`,
                 boxShadow: '0 12px 28px rgba(44, 44, 44, 0.08)',
                 display: 'flex',
                 flexDirection: 'column',
+                gap: spacing.sm,
               }}
             >
-              <p style={{ color: '#8f7a53', fontSize: typography.fontSize.sm, marginBottom: spacing.xs }}>
+              <p style={{ color: '#8f7a53', fontSize: typography.fontSize.sm, margin: 0 }}>
                 {post.publishedAt} • {post.readingMinutes} min read
               </p>
               <h2
                 style={{
                   fontSize: typography.fontSize['2xl'],
                   color: colors.darkGray,
-                  marginBottom: spacing.sm,
+                  margin: 0,
                   lineHeight: typography.lineHeight.tight,
                 }}
               >
@@ -135,12 +136,13 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
                 style={{
                   color: colors.textSecondary,
                   lineHeight: typography.lineHeight.relaxed,
-                  marginBottom: spacing.md,
+                  margin: 0,
+                  maxWidth: '52rem',
                 }}
               >
                 {post.excerpt}
               </p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: spacing.md }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
@@ -158,25 +160,31 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
                   </span>
                 ))}
               </div>
-              <Link
-                href={`/blog/${post.slug}`}
+              <div
                 style={{
-                  display: 'inline-block',
-                  alignSelf: 'flex-end',
-                  marginTop: 'auto',
-                  padding: `${spacing.xs} ${spacing.md}`,
-                  borderRadius: '999px',
-                  border: '1px solid rgba(212, 175, 55, 0.45)',
-                  background: '#f7e7ce',
-                  color: '#473c26',
-                  textDecoration: 'none',
-                  letterSpacing: '0.08em',
-                  transition: transitions.fast,
-                  boxShadow: '0 6px 14px rgba(106, 85, 47, 0.14)',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  marginTop: spacing.xs,
                 }}
               >
-                Read Article
-              </Link>
+                <Link
+                  href={`/blog/${post.slug}`}
+                  style={{
+                    display: 'inline-block',
+                    padding: `${spacing.xs} ${spacing.md}`,
+                    borderRadius: '999px',
+                    border: '1px solid rgba(212, 175, 55, 0.45)',
+                    background: '#f7e7ce',
+                    color: '#473c26',
+                    textDecoration: 'none',
+                    letterSpacing: '0.08em',
+                    transition: transitions.fast,
+                    boxShadow: '0 6px 14px rgba(106, 85, 47, 0.14)',
+                  }}
+                >
+                  Read Article
+                </Link>
+              </div>
             </article>
           ))}
         </div>
