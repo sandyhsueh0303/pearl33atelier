@@ -10,47 +10,74 @@ readingMinutes: 7
 
 ## Why Pearl Quality Factors Matter
 
-When choosing pearl jewelry, most people focus on size first. Size is important, but quality factors are what determine how a pearl truly looks on the skin and how refined the final piece feels.
+When choosing pearl jewelry, size is often the first thing people notice.
+But beyond size, it is the quality factors that truly define how a pearl looks, feels, and wears.
 
-The five core factors used in daily pearl evaluation are shape, luster, surface quality, body color, and overtone.
+These elements determine the depth of luster, the softness of glow, and the overall refinement of a piece when worn on the skin.
+
+At 33 Pearl Atelier, we focus on five core factors in daily evaluation:
+shape, luster, surface quality, body color, and overtone.
 
 ## 1. Shape
 
+![Pearl Shape](/images/PearlTypesGuide_Shape.png)
+
 Shape describes the overall form of the pearl.
 
-Common shape categories include round, near-round, oval, drop, button, and baroque.
+Common categories include round, near-round, oval, drop, button, and baroque.
 
-Round pearls are usually preferred for classic designs and are often priced higher because matching them is more difficult. Baroque pearls can be highly attractive in modern, artistic designs where uniqueness is the goal.
+Round pearls are often associated with classic, timeless designs and are typically more difficult to match, which contributes to their higher value.
+
+Baroque pearls, on the other hand, offer a more organic and artistic feel. Their individuality makes them especially suited for modern, expressive designs where uniqueness is part of the beauty.
 
 ## 2. Luster
+![Pearl Luster](/images/PearlTypesGuide_Luster.png)
 
-Luster is the sharpness and brightness of light reflected from the pearl surface.
+Luster refers to the sharpness and brightness of light reflected from the pearl’s surface.
 
-High-luster pearls look crisp and lively, with stronger contrast and better visual depth. Lower-luster pearls appear softer or chalkier.
+High-luster pearls appear crisp, luminous, and full of life, with strong reflections and visual depth.
+Lower-luster pearls tend to look softer or slightly muted.
 
-In most cases, luster has the biggest visual impact and is one of the first things experts check.
+Among all quality factors, luster often has the most immediate visual impact.
+It is one of the first things we evaluate when selecting pearls.
 
 ## 3. Surface Quality
 
-Surface quality refers to visible marks such as spots, bumps, pits, or irregular texture.
+Surface quality refers to visible characteristics such as spots, bumps, pits, or natural texture.
 
-Perfectly clean surfaces are rare. Minor natural marks are normal, especially on larger pearls. The key is whether surface features are visible in normal wearing distance and whether they interrupt overall beauty.
+Perfectly clean surfaces are rare in natural pearls.
+Minor imperfections are normal—especially in larger pearls—and are part of their organic formation.
+
+What matters most is balance:
+whether these natural features are noticeable at a normal wearing distance, and whether they interrupt the overall beauty of the piece.
 
 ## 4. Body Color
 
 Body color is the primary base color of the pearl.
 
-Examples include white, cream, silver, gold, and darker gray tones (depending on type). Body color influences how well a pearl pairs with skin tone and metal color.
+Common tones include white, cream, silver, gold, and deeper gray hues, depending on the pearl type.
 
-Choosing the right body color can make the jewelry feel more flattering and easier to wear.
+Body color plays an important role in how a piece complements skin tone and pairs with different metal settings.
+
+Each pearl type has its own characteristic color range.
+For example, Akoya, South Sea, Tahitian, and Freshwater pearls are evaluated within different color expectations rather than a single standard.
+
+Choosing the right body color helps a piece feel more natural, flattering, and effortless to wear.
 
 ## 5. Overtone
 
-Overtone is the subtle secondary color visible on top of the body color.
+Overtone is the subtle secondary color that appears on top of the pearl’s body color.
 
-Common overtones include rose, silver, and green. Overtone can add depth and personality, and it often affects perceived value in side-by-side comparisons.
+Common overtones include rose, silver, and green.
 
-For example, a white pearl with a soft rose overtone may appear warmer and more romantic than one with a cool silver overtone.
+This delicate layer adds depth, dimension, and personality. It can significantly influence how a pearl is perceived when viewed side by side.
+
+For example,
+a white pearl with a soft rose overtone often feels warmer and more romantic,
+while a silver overtone creates a cooler, more modern look.
+
+Like body color, overtone varies by pearl type.
+Certain overtones are more characteristic—or more desirable—within specific varieties, so they should always be evaluated in context.
 
 ## How We Evaluate Pearls in Practice
 
@@ -63,12 +90,6 @@ At 33 Pearl Atelier, we do not evaluate these factors in isolation. We assess ba
 - overtone character and consistency across matched pieces
 
 A beautiful pearl is not only technically good on paper, but also visually right for the person wearing it.
-
-## Final Buying Tip
-
-If you are choosing between two pearls, prioritize luster and overall face-up beauty first, then compare surface and shape details.
-
-For custom projects, ask to compare a few options side by side. The right pearl usually becomes obvious when viewed in real lighting conditions.
 
 ## Related Reading
 

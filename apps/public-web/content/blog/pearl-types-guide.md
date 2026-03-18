@@ -16,6 +16,8 @@ When selecting pearls, focus on how they look in natural light, how they pair wi
 
 ## Meet the Three Main Types
 
+![Pearl type comparison](/images/WhyPearlTypeMatters.png)
+
 Before comparing details, it helps to understand the personality of each type:
 
 **Akoya** is often considered the classic pearl look. It is known for bright, mirror-like luster and clean, elegant styling. Akoya is a strong choice for timeless necklaces, studs, and formal pieces.

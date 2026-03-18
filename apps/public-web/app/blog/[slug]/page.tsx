@@ -341,6 +341,19 @@ export default async function BlogPostPage({ params }: Props) {
           line-height: 1.95;
         }
 
+        .markdown-content img {
+          display: block;
+          width: 100%;
+          max-width: 760px;
+          height: auto;
+          margin: 1.5rem auto 2rem;
+          border-radius: 18px;
+          border: 1px solid rgba(212, 175, 55, 0.18);
+          box-shadow: 0 16px 34px rgba(44, 44, 44, 0.08);
+          object-fit: cover;
+          background: #f8f6f0;
+        }
+
         .markdown-content ul,
         .markdown-content ol {
           margin: 0.35rem 0 1.35rem 1.3rem;
