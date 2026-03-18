@@ -10,6 +10,7 @@ export default function CartPage() {
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
   const [checkoutCancelled, setCheckoutCancelled] = useState(false)
+  const [isMobileLayout, setIsMobileLayout] = useState(false)
 
   const hasPricelessItem = items.some((item) => typeof item.price !== 'number' || item.price <= 0)
   const hasPreorderItem = items.some((item) => item.availability === 'PREORDER')
@@ -17,6 +18,16 @@ export default function CartPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     setCheckoutCancelled(params.get('checkout') === 'cancelled')
+  }, [])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)')
+    const updateLayout = () => setIsMobileLayout(mediaQuery.matches)
+
+    updateLayout()
+    mediaQuery.addEventListener('change', updateLayout)
+
+    return () => mediaQuery.removeEventListener('change', updateLayout)
   }, [])
 
   const getAvailabilityLabel = (availability: string) => {
@@ -185,7 +196,7 @@ export default function CartPage() {
                   key={item.id}
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: '96px minmax(0, 1fr) auto',
+                    gridTemplateColumns: isMobileLayout ? '84px minmax(0, 1fr)' : '96px minmax(0, 1fr) auto',
                     gap: spacing.md,
                     alignItems: 'center',
                     border: `1px solid ${colors.lightGray}`,
@@ -197,8 +208,8 @@ export default function CartPage() {
                   <div>
                     <div
                       style={{
-                        width: '96px',
-                        height: '128px',
+                        width: isMobileLayout ? '84px' : '96px',
+                        height: isMobileLayout ? '112px' : '128px',
                         backgroundColor: colors.pearl,
                         overflow: 'hidden',
                       }}
@@ -215,7 +226,13 @@ export default function CartPage() {
 
                   <div style={{ minWidth: 0 }}>
                     <Link href={`/products/${item.slug}`} style={{ color: colors.darkGray, textDecoration: 'none' }}>
-                      <div style={{ fontWeight: typography.fontWeight.medium, fontSize: typography.fontSize.lg, lineHeight: 1.45 }}>
+                      <div
+                        style={{
+                          fontWeight: typography.fontWeight.medium,
+                          fontSize: isMobileLayout ? typography.fontSize.base : typography.fontSize.lg,
+                          lineHeight: 1.45,
+                        }}
+                      >
                         {item.title}
                       </div>
                     </Link>
@@ -257,9 +274,12 @@ export default function CartPage() {
                       justifyContent: 'flex-end',
                       alignItems: 'center',
                       gap: spacing.md,
-                      flexWrap: 'nowrap',
+                      flexWrap: isMobileLayout ? 'wrap' : 'nowrap',
                       alignSelf: 'center',
                       whiteSpace: 'nowrap',
+                      gridColumn: isMobileLayout ? '1 / -1' : undefined,
+                      paddingTop: isMobileLayout ? spacing.sm : 0,
+                      borderTop: isMobileLayout ? `1px solid ${colors.lightGray}` : 'none',
                     }}
                   >
                     <button
