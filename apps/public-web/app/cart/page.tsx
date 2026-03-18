@@ -80,9 +80,64 @@ export default function CartPage() {
         <h1 style={{ fontSize: typography.fontSize['4xl'], marginBottom: spacing.md, color: colors.darkGray }}>
           Shopping Cart
         </h1>
-        <p style={{ color: colors.textSecondary, marginBottom: spacing.xl }}>
-          Your cart is saved in your browser. Review your pieces here, then continue to secure Stripe checkout to complete your order.
+        <p style={{ color: colors.textSecondary, marginBottom: spacing.lg, maxWidth: '760px', lineHeight: 1.8 }}>
+          Review your selected pieces here, then continue to secure Stripe checkout to place your order.
         </p>
+        <div
+          style={{
+            marginBottom: spacing.xl,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: spacing.md,
+          }}
+        >
+          <div
+            style={{
+              padding: spacing.md,
+              backgroundColor: '#fbf8f2',
+              border: `1px solid ${colors.lightGray}`,
+            }}
+          >
+            <div
+              style={{
+                color: colors.darkGray,
+                fontSize: typography.fontSize.sm,
+                fontWeight: typography.fontWeight.medium,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                marginBottom: spacing.xs,
+              }}
+            >
+              Checkout
+            </div>
+            <div style={{ color: colors.textSecondary, lineHeight: 1.7 }}>
+              U.S. checkout is currently available. International orders are handled by request.
+            </div>
+          </div>
+          <div
+            style={{
+              padding: spacing.md,
+              backgroundColor: '#fbf8f2',
+              border: `1px solid ${colors.lightGray}`,
+            }}
+          >
+            <div
+              style={{
+                color: colors.darkGray,
+                fontSize: typography.fontSize.sm,
+                fontWeight: typography.fontWeight.medium,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                marginBottom: spacing.xs,
+              }}
+            >
+              Shipping
+            </div>
+            <div style={{ color: colors.textSecondary, lineHeight: 1.7 }}>
+              Free U.S. shipping over $200 · $10 flat rate below
+            </div>
+          </div>
+        </div>
         {checkoutCancelled && (
           <div
             style={{
@@ -127,7 +182,7 @@ export default function CartPage() {
                   key={item.id}
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: '96px 1fr auto',
+                    gridTemplateColumns: '96px minmax(0, 1fr) auto',
                     gap: spacing.md,
                     alignItems: 'center',
                     border: `1px solid ${colors.lightGray}`,
@@ -136,28 +191,32 @@ export default function CartPage() {
                     boxShadow: shadows.subtle,
                   }}
                 >
-                  <div
-                    style={{
-                      width: '96px',
-                      height: '128px',
-                      backgroundColor: colors.pearl,
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {item.imageUrl ? (
-                      <img
-                        src={item.imageUrl}
-                        alt={item.title}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                    ) : null}
+                  <div>
+                    <div
+                      style={{
+                        width: '96px',
+                        height: '128px',
+                        backgroundColor: colors.pearl,
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.title}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : null}
+                    </div>
                   </div>
 
-                  <div>
+                  <div style={{ minWidth: 0 }}>
                     <Link href={`/products/${item.slug}`} style={{ color: colors.darkGray, textDecoration: 'none' }}>
-                      <div style={{ fontWeight: typography.fontWeight.medium }}>{item.title}</div>
+                      <div style={{ fontWeight: typography.fontWeight.medium, fontSize: typography.fontSize.lg, lineHeight: 1.45 }}>
+                        {item.title}
+                      </div>
                     </Link>
-                    <div style={{ marginTop: spacing.xs }}>
+                    <div style={{ marginTop: spacing.xs, display: 'flex', flexWrap: 'wrap', gap: spacing.xs }}>
                       <span
                         style={{
                           display: 'inline-flex',
@@ -171,49 +230,59 @@ export default function CartPage() {
                         {getAvailabilityLabel(item.availability)}
                       </span>
                     </div>
-                    <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
+                    <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs, lineHeight: 1.6 }}>
                       {[item.pearlType, item.sizeMm ? `${item.sizeMm}mm` : null].filter(Boolean).join(' · ')}
                     </div>
-                    <div style={{ color: colors.darkGray, marginTop: spacing.xs }}>
+                    <div style={{ color: colors.darkGray, marginTop: spacing.sm, fontSize: typography.fontSize.lg }}>
                       {typeof item.price === 'number' ? `$ ${item.price.toLocaleString()}` : 'Price on request'}
                     </div>
                     {typeof item.price !== 'number' || item.price <= 0 ? (
-                      <div style={{ color: '#9f1239', fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
+                      <div style={{ color: '#9f1239', fontSize: typography.fontSize.sm, marginTop: spacing.sm, lineHeight: 1.6 }}>
                         This item is not available for online checkout yet.
                       </div>
                     ) : null}
                     {item.availability === 'PREORDER' ? (
-                      <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
+                      <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.sm, lineHeight: 1.6 }}>
                         Pre-order items can proceed to checkout even when current material stock is limited.
                       </div>
                     ) : null}
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: spacing.xs }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      alignItems: 'center',
+                      gap: spacing.md,
+                      flexWrap: 'nowrap',
+                      alignSelf: 'center',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => removeItem(item.id)}
+                      style={{ border: 'none', background: 'transparent', color: '#b91c1c', cursor: 'pointer', fontSize: typography.fontSize.sm, padding: 0 }}
+                    >
+                      Remove
+                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, border: `1px solid ${colors.lightGray}`, padding: '6px' }}>
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        style={{ width: '28px', height: '28px', border: `1px solid ${colors.lightGray}`, background: colors.white, cursor: 'pointer' }}
+                        style={{ width: '30px', height: '30px', border: `1px solid ${colors.lightGray}`, background: colors.white, cursor: 'pointer', color: colors.textSecondary }}
                       >
                         −
                       </button>
-                      <span style={{ minWidth: '22px', textAlign: 'center' }}>{item.quantity}</span>
+                      <span style={{ minWidth: '28px', textAlign: 'center', color: colors.darkGray }}>{item.quantity}</span>
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        style={{ width: '28px', height: '28px', border: `1px solid ${colors.lightGray}`, background: colors.white, cursor: 'pointer' }}
+                        style={{ width: '30px', height: '30px', border: `1px solid ${colors.lightGray}`, background: colors.white, cursor: 'pointer', color: colors.textSecondary }}
                       >
                         +
                       </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => removeItem(item.id)}
-                      style={{ border: 'none', background: 'transparent', color: '#b91c1c', cursor: 'pointer', fontSize: typography.fontSize.sm }}
-                    >
-                      Remove
-                    </button>
                   </div>
                 </div>
               ))}
@@ -222,39 +291,38 @@ export default function CartPage() {
             <div
               style={{
                 marginTop: spacing.xl,
-                borderTop: `1px solid ${colors.lightGray}`,
-                paddingTop: spacing.lg,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
+                border: `1px solid ${colors.lightGray}`,
+                backgroundColor: '#fffdf9',
+                padding: spacing.xl,
+                display: 'grid',
+                gridTemplateColumns: 'minmax(0, 1fr)',
                 gap: spacing.md,
               }}
             >
               <div>
-                <div style={{ color: colors.textSecondary }}>Items: {itemCount}</div>
-                <div style={{ color: colors.darkGray, fontSize: typography.fontSize.xl, fontWeight: typography.fontWeight.medium }}>
+                <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: spacing.xs }}>
+                  Order Summary
+                </div>
+                <div style={{ color: colors.textSecondary, marginBottom: spacing.xs }}>Items: {itemCount}</div>
+                <div style={{ color: colors.darkGray, fontSize: typography.fontSize['2xl'], fontWeight: typography.fontWeight.medium }}>
                   Subtotal: $ {subtotal.toLocaleString()}
                 </div>
-                <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
-                  Taxes and shipping will be calculated during Stripe checkout before you place your order.
-                </div>
                 {hasPreorderItem && (
-                  <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
+                  <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs, lineHeight: 1.7 }}>
                     Your cart includes pre-order pieces. These can still proceed to checkout even when current material stock is limited.
                   </div>
                 )}
                 {hasPricelessItem && (
-                  <div style={{ color: '#9f1239', fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
+                  <div style={{ color: '#9f1239', fontSize: typography.fontSize.sm, marginTop: spacing.xs, lineHeight: 1.7 }}>
                     One or more items do not have a valid online checkout price yet.
                   </div>
                 )}
               </div>
-              <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', alignItems: 'end' }}>
                 <button
                   type="button"
                   onClick={clearCart}
-                  style={{ padding: `${spacing.sm} ${spacing.lg}`, border: `1px solid ${colors.lightGray}`, background: colors.white, cursor: 'pointer' }}
+                  style={{ padding: `${spacing.sm} ${spacing.lg}`, flex: '1 1 180px', border: `1px solid ${colors.lightGray}`, background: colors.white, cursor: 'pointer' }}
                 >
                   Clear Cart
                 </button>
@@ -264,6 +332,7 @@ export default function CartPage() {
                   disabled={checkoutLoading || hasPricelessItem}
                   style={{
                     padding: `${spacing.sm} ${spacing.lg}`,
+                    flex: '2 1 280px',
                     backgroundColor: colors.darkGray,
                     color: colors.white,
                     border: `1px solid ${colors.darkGray}`,

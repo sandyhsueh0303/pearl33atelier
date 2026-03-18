@@ -118,7 +118,7 @@ export default function HomePage() {
   }
 
   const promoBanner = {
-    text: 'March Only: Receive complimentary 18K Blue Rose stud earrings with your order over $500.',
+    text: 'March Only: Receive complimentary 18K Blue Rose stud earrings with your order over $1000.',
     linkLabel: 'Shop Now',
     linkHref: '/products',
   }
@@ -139,31 +139,6 @@ export default function HomePage() {
         display: 'flex',
         flexDirection: 'column',
       }}>
-      {/* Tax & Shipping Banner */}
-      <section
-        style={{
-          padding: `${spacing.xs} ${spacing.lg}`,
-          backgroundColor: '#fffdf8',
-          borderBottom: '1px solid #f1e7d1',
-          textAlign: 'center',
-        }}
-      >
-        <p
-          style={{
-            margin: 0,
-            color: colors.textSecondary,
-            fontSize: typography.fontSize.sm,
-            letterSpacing: '0.02em',
-          }}
-        >
-          Tax: California only
-          <span style={{ color: colors.gold, margin: `0 ${spacing.xs}` }}>•</span>
-          Shipping: Free over $200
-          <span style={{ color: colors.gold, margin: `0 ${spacing.xs}` }}>·</span>
-          Otherwise, a $10 flat rate
-        </p>
-      </section>
-
       {/* Promotional Banner */}
       <section
         style={{

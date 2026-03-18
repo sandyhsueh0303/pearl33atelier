@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
+import Stripe from 'stripe'
 import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
 import { computeProductInventorySummary, resolveProductAvailability } from '@pearl33atelier/shared'
 import { stripe } from '../../../lib/stripe'
@@ -21,6 +22,10 @@ interface ProductRow {
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
+const FREE_SHIPPING_THRESHOLD_CENTS = 20_000
+const US_FLAT_SHIPPING_RATE_CENTS = 1_000
+const SHIPPING_ALLOWED_COUNTRIES: Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[] =
+  ['US']
 
 export async function POST(request: NextRequest) {
   let createdOrderId: string | null = null
@@ -173,6 +178,7 @@ export async function POST(request: NextRequest) {
 
     const headersList = await headers()
     const origin = headersList.get('origin') || SITE_URL
+    const qualifiesForFreeShipping = subtotalAmount >= FREE_SHIPPING_THRESHOLD_CENTS
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -181,6 +187,21 @@ export async function POST(request: NextRequest) {
       cancel_url: `${origin}/cart?checkout=cancelled`,
       automatic_tax: { enabled: true },
       billing_address_collection: 'auto',
+      shipping_address_collection: {
+        allowed_countries: SHIPPING_ALLOWED_COUNTRIES,
+      },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            display_name: qualifiesForFreeShipping ? 'US Shipping (Free over $200)' : 'US Shipping',
+            type: 'fixed_amount',
+            fixed_amount: {
+              amount: qualifiesForFreeShipping ? 0 : US_FLAT_SHIPPING_RATE_CENTS,
+              currency: 'usd',
+            },
+          },
+        },
+      ],
       allow_promotion_codes: true,
       metadata: {
         source: 'public-web-cart',

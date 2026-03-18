@@ -59,7 +59,7 @@ export default function FAQPage() {
     {
       id: 'online-checkout',
       q: 'Can I check out online?',
-      a: 'Yes. Ready-to-wear pieces with an online price can be added to cart and completed through secure Stripe checkout. Taxes and shipping are calculated during checkout, while pre-order pieces may still proceed even when current material stock is limited.',
+      a: 'Yes. Ready-to-wear pieces with an online price can be added to cart and completed through secure Stripe checkout for U.S. orders. U.S. orders over $200 ship free, U.S. orders below $200 are charged a $10 flat shipping rate, and international orders are currently handled by request. Please contact us directly. Pre-order pieces may still proceed when current material stock is limited.',
     },
     {
       id: 'returns-policy',

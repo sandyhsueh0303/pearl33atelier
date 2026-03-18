@@ -362,6 +362,52 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                   {renderSpecRow('Product Code', product.slug, specCodeValueCellStyle)}
                 </tbody>
               </table>
+              <div
+                style={{
+                  marginTop: spacing.lg,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: spacing.md,
+                  flexWrap: 'wrap',
+                }}
+              >
+                <p
+                  style={{
+                    margin: 0,
+                    color: colors.textSecondary,
+                    fontSize: typography.fontSize.sm,
+                    lineHeight: 1.7,
+                    flex: '1 1 240px',
+                    textAlign: 'left',
+                  }}
+                >
+                  * Free shipping on orders over $200.
+                </p>
+                <button
+                  onClick={handleAddToCart}
+                  disabled={effectiveAvailability === 'OUT_OF_STOCK'}
+                  style={{
+                    marginLeft: 'auto',
+                    padding: `${spacing.md} ${spacing.xl}`,
+                    backgroundColor:
+                      effectiveAvailability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray,
+                    color: colors.white,
+                    border: `1px solid ${
+                      effectiveAvailability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray
+                    }`,
+                    borderRadius: '999px',
+                    fontWeight: typography.fontWeight.medium,
+                    fontSize: typography.fontSize.sm,
+                    letterSpacing: '0.04em',
+                    cursor: effectiveAvailability === 'OUT_OF_STOCK' ? 'not-allowed' : 'pointer',
+                    boxShadow: shadows.soft,
+                    transition: transitions.fast,
+                  }}
+                >
+                  {effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Add to Cart'}
+                </button>
+              </div>
             </div>
 
             {/* Preorder Note */}
@@ -446,7 +492,7 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                     textTransform: 'uppercase',
                   }}
                 >
-                  Interested in this item?
+                  Interested in this piece?
                 </p>
                 <p
                   style={{
@@ -455,32 +501,10 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                     lineHeight: 1.7,
                   }}
                 >
-                  Add this piece to your cart to continue to secure Stripe checkout, or contact us if you would like styling guidance, custom details, or help before placing your order.
+                  Add it to your cart to continue to secure checkout, or contact us for personal guidance before ordering.
                 </p>
               </div>
               <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
-                <button
-                  onClick={handleAddToCart}
-                  disabled={effectiveAvailability === 'OUT_OF_STOCK'}
-                  style={{
-                    padding: `${spacing.md} ${spacing.xl}`,
-                    backgroundColor:
-                      effectiveAvailability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray,
-                    color: colors.white,
-                    border: `1px solid ${
-                      effectiveAvailability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray
-                    }`,
-                    borderRadius: '999px',
-                    fontWeight: typography.fontWeight.medium,
-                    fontSize: typography.fontSize.sm,
-                    letterSpacing: '0.04em',
-                    cursor: effectiveAvailability === 'OUT_OF_STOCK' ? 'not-allowed' : 'pointer',
-                    boxShadow: shadows.soft,
-                    transition: transitions.fast,
-                  }}
-                >
-                  {effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Add to Cart'}
-                </button>
                 <button
                   onClick={() => setInquiryOpen(true)}
                   style={{

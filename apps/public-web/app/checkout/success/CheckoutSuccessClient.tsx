@@ -68,6 +68,17 @@ export default function CheckoutSuccessClient({ verified }: CheckoutSuccessClien
             ? "Your payment was confirmed successfully through Stripe. We'll email you with any shipping or order updates."
             : 'We could not verify this checkout session yet. Your cart has been kept in place, and you can try again or contact us if needed.'}
         </p>
+        {verified ? (
+          <p
+            style={{
+              color: colors.textSecondary,
+              lineHeight: 1.8,
+              marginBottom: spacing.xl,
+            }}
+          >
+            U.S. orders over $200 ship free, and U.S. orders below $200 are charged a $10 flat shipping rate.
+          </p>
+        ) : null}
         <div style={{ display: 'flex', justifyContent: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
           <Link
             href="/products"
