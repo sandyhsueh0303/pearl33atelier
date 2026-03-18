@@ -270,40 +270,71 @@ export default function HomePage() {
             letterSpacing: '0.02em',
             margin: `0 auto ${spacing['3xl']} auto`,
           }}>
-            Hand-selected pearl jewelry and custom design services
+            Pearls chosen with intention, designed to stay with you.
             <br />
             <span style={{ 
               fontSize: typography.fontSize.lg,
               fontStyle: 'italic',
               opacity: 0.95
             }}>
-              Crafted for everyday elegance
+              From hand-selected ready-to-wear pieces to custom design and lifetime care, each piece is shaped with balance, wearability, and lasting beauty in mind.
             </span>
           </p>
 
-          {/* CTA Button */}
-          <Link
-            href="/products"
-            prefetch
-            className="heroCta"
+          <div
             style={{
-              display: 'inline-block',
-              padding: `${spacing.md} ${spacing['2xl']}`,
-              backgroundColor: 'rgba(201, 169, 97, 0.15)',
-              color: colors.darkGray,
-              fontSize: typography.fontSize.base,
-              fontWeight: typography.fontWeight.semibold,
-              letterSpacing: '0.15em',
-              textDecoration: 'none',
-              transition: transitions.normal,
-              border: '2px solid #C9A961',
-              cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-              backdropFilter: 'blur(4px)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: spacing.md,
+              flexWrap: 'wrap',
             }}
           >
-            Shop Collection
-          </Link>
+            <Link
+              href="/products"
+              prefetch
+              className="heroCta"
+              style={{
+                display: 'inline-block',
+                padding: `${spacing.md} ${spacing['2xl']}`,
+                backgroundColor: 'rgba(201, 169, 97, 0.15)',
+                color: colors.darkGray,
+                fontSize: typography.fontSize.base,
+                fontWeight: typography.fontWeight.semibold,
+                letterSpacing: '0.15em',
+                textDecoration: 'none',
+                transition: transitions.normal,
+                border: '2px solid #C9A961',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+                backdropFilter: 'blur(4px)',
+              }}
+            >
+              Explore the Collection
+            </Link>
+
+            <Link
+              href="/custom/inquiry"
+              style={{
+                display: 'inline-block',
+                padding: `${spacing.md} ${spacing['2xl']}`,
+                backgroundColor: 'rgba(255,255,255,0.7)',
+                color: colors.darkGray,
+                fontSize: typography.fontSize.base,
+                fontWeight: typography.fontWeight.medium,
+                letterSpacing: '0.12em',
+                textDecoration: 'none',
+                transition: transitions.normal,
+                border: '1px solid rgba(201, 169, 97, 0.55)',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+                backdropFilter: 'blur(4px)',
+              }}
+            >
+              Begin a Custom Piece
+            </Link>
+          </div>
+
         </div>
 
         {/* Scroll Indicator */}
@@ -329,10 +360,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Trust Signal Bar */}
+      {/* Why 33 Pearl Atelier */}
       <section
         style={{
-          padding: `${spacing.sm} ${spacing.xl}`,
+          padding: `${spacing.lg} ${spacing.xl}`,
           borderTop: `1px solid ${colors.lightGray}`,
           borderBottom: `1px solid ${colors.lightGray}`,
           backgroundColor: '#fffdf9',
@@ -342,23 +373,51 @@ export default function HomePage() {
           style={{
             maxWidth: '1100px',
             margin: '0 auto',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: spacing.md,
-            flexWrap: 'wrap',
-            color: colors.textSecondary,
-            fontSize: typography.fontSize.sm,
-            letterSpacing: '0.03em',
+            textAlign: 'center',
           }}
         >
-          <span>GIA Certified Gemologist</span>
-          <span style={{ color: colors.gold }}>•</span>
-          <span>Hand-Selected Pearls</span>
-          <span style={{ color: colors.gold }}>•</span>
-          <span>Made in Small Batches</span>
-          <span style={{ color: colors.gold }}>•</span>
-          <span>Personalized Consultation</span>
+          <p
+            style={{
+              margin: 0,
+              color: colors.gold,
+              fontSize: typography.fontSize.sm,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Why 33 Pearl Atelier
+          </p>
+          <div
+            style={{
+              marginTop: spacing.md,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: spacing.md,
+              flexWrap: 'wrap',
+              color: colors.textSecondary,
+              fontSize: typography.fontSize.sm,
+              letterSpacing: '0.03em',
+            }}
+          >
+            <span>GIA-certified gemologist selection</span>
+            <span style={{ color: colors.gold }}>•</span>
+            <span>Individually matched pearls</span>
+            <span style={{ color: colors.gold }}>•</span>
+            <span>Small-batch, intentional production</span>
+            <span style={{ color: colors.gold }}>•</span>
+            <span>Lifetime care included</span>
+          </div>
+          <p
+            style={{
+              margin: `${spacing.sm} 0 0`,
+              color: colors.darkGray,
+              fontSize: typography.fontSize.base,
+              fontStyle: 'italic',
+            }}
+          >
+            Each piece is chosen, not produced.
+          </p>
         </div>
       </section>
 
@@ -636,58 +695,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Intent Section */}
-      <section
-        style={{
-          padding: `${spacing['2xl']} ${spacing.xl}`,
-          background: 'linear-gradient(180deg, #fffefc 0%, #fbf8f2 100%)',
-          borderTop: `1px solid ${colors.lightGray}`,
-          borderBottom: `1px solid ${colors.lightGray}`,
-          textAlign: 'center',
-        }}
-      >
-        <div style={{ maxWidth: '980px', margin: '0 auto' }}>
-          <h2
-            style={{
-              fontSize: typography.fontSize['3xl'],
-              color: colors.darkGray,
-              marginBottom: spacing.md,
-              lineHeight: typography.lineHeight.tight,
-            }}
-          >
-            Pearls Chosen With Intention, Crafted for Everyday Elegance
-          </h2>
-          <p
-            style={{
-              fontSize: typography.fontSize.base,
-              color: colors.textSecondary,
-              lineHeight: typography.lineHeight.relaxed,
-              maxWidth: '760px',
-              margin: `0 auto ${spacing.lg}`,
-            }}
-          >
-            Handcrafted pearl jewelry and custom pearl design services.
-            Explore ready-to-wear pieces, request custom work, and learn through our pearl guides.
-          </p>
-          <p style={{ marginTop: spacing.xs }}>
-            <Link
-              href="/custom-services"
-              style={{
-                display: 'inline-block',
-                border: `1px solid ${colors.darkGray}`,
-                padding: `${spacing.xs} ${spacing.lg}`,
-                color: colors.darkGray,
-                textDecoration: 'none',
-                letterSpacing: '0.08em',
-              }}
-            >
-              Start Custom Inquiry
-            </Link>
-          </p>
-        </div>
-      </section>
-
       {/* Journal Section */}
       <section style={{
         padding: `${spacing['3xl']} ${spacing.xl}`,

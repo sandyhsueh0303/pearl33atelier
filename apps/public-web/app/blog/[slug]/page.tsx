@@ -305,6 +305,117 @@ export default async function BlogPostPage({ params }: Props) {
             dangerouslySetInnerHTML={{ __html: renderedContent }}
           />
 
+          <section
+            style={{
+              maxWidth: '860px',
+              margin: `${spacing['2xl']} auto 0`,
+              padding: '1.5rem 1.6rem',
+              border: '1px solid rgba(212, 175, 55, 0.22)',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, #fffdf8 0%, #fbf7ef 100%)',
+              boxShadow: '0 14px 32px rgba(44, 44, 44, 0.05)',
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                color: colors.gold,
+                fontSize: typography.fontSize.xs,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Continue Exploring
+            </p>
+            <h2
+              style={{
+                margin: `${spacing.xs} 0 ${spacing.sm}`,
+                color: colors.darkGray,
+                fontSize: 'clamp(1.35rem, 2.6vw, 1.7rem)',
+                lineHeight: 1.3,
+              }}
+            >
+              Discover the pieces behind the story
+            </h2>
+            <p
+              style={{
+                margin: 0,
+                color: colors.textSecondary,
+                fontSize: typography.fontSize.base,
+                lineHeight: typography.lineHeight.relaxed,
+              }}
+            >
+              Explore ready-to-wear pearl jewelry, begin a custom piece, or contact us for personal guidance.
+            </p>
+
+            <div
+              style={{
+                marginTop: spacing.lg,
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                gap: spacing.md,
+              }}
+            >
+              <Link
+                href="/products"
+                style={{
+                  display: 'block',
+                  padding: '1rem 1.05rem',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(212, 175, 55, 0.24)',
+                  background: 'rgba(255,255,255,0.72)',
+                  color: colors.darkGray,
+                  textDecoration: 'none',
+                }}
+              >
+                <strong style={{ display: 'block', fontWeight: typography.fontWeight.medium }}>
+                  Shop the Collection
+                </strong>
+                <span style={{ display: 'block', marginTop: spacing.xs, color: colors.textSecondary, lineHeight: 1.7 }}>
+                  View hand-selected ready-to-wear pieces chosen for balance, luster, and wearability.
+                </span>
+              </Link>
+
+              <Link
+                href="/custom/inquiry"
+                style={{
+                  display: 'block',
+                  padding: '1rem 1.05rem',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(212, 175, 55, 0.24)',
+                  background: 'rgba(255,255,255,0.72)',
+                  color: colors.darkGray,
+                  textDecoration: 'none',
+                }}
+              >
+                <strong style={{ display: 'block', fontWeight: typography.fontWeight.medium }}>
+                  Begin a Custom Piece
+                </strong>
+                <span style={{ display: 'block', marginTop: spacing.xs, color: colors.textSecondary, lineHeight: 1.7 }}>
+                  Start a custom pearl design shaped around your style, occasion, and preferred pearl type.
+                </span>
+              </Link>
+            </div>
+
+            <div style={{ marginTop: spacing.lg, textAlign: 'center' }}>
+              <Link
+                href="/contact"
+                style={{
+                  display: 'inline-block',
+                  padding: `${spacing.xs} ${spacing.lg}`,
+                  background: 'linear-gradient(135deg, #2c2c2c 0%, #4b463d 100%)',
+                  color: colors.white,
+                  textDecoration: 'none',
+                  border: '1px solid rgba(212, 175, 55, 0.4)',
+                  letterSpacing: '0.08em',
+                  boxShadow: '0 10px 22px rgba(44, 44, 44, 0.16)',
+                }}
+              >
+                Contact Us
+              </Link>
+            </div>
+          </section>
+
           {relatedPosts.length > 0 && (
             <section
               style={{

@@ -13,12 +13,12 @@ export default function Navigation() {
 
   const navItems = [
     { label: 'Home', href: '/' },
-    { label: 'Collection', href: '/products' },
-    { label: 'About', href: '/about' },
-    { label: 'Care Guide', href: '/care-guide' },
+    { label: 'Shop', href: '/products' },
     { label: 'Custom', href: '/custom-services' },
+    { label: 'About', href: '/about' },
+    { label: 'Journal', href: '/blog' },
+    { label: 'Care', href: '/care-guide' },
     { label: 'FAQ', href: '/faq' },
-    { label: 'Blog', href: '/blog' },
     { label: 'Contact Us', href: '/contact' },
     { label: 'Cart', href: '/cart' },
   ]

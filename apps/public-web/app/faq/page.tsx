@@ -64,7 +64,7 @@ export default function FAQPage() {
     {
       id: 'returns-policy',
       q: 'Return policy?',
-      a: 'Because every pearl is individually chosen, we do not offer standard returns. We do, however, offer long-term aftercare for pieces purchased from us, including complimentary lifetime care for pearl necklaces and redesign support as your style evolves.',
+      a: 'Because each pearl is individually selected, we do not offer standard returns. However, we provide long-term care and redesign support to ensure your piece evolves with you.',
     },
     {
       id: 'repairs-restringing',

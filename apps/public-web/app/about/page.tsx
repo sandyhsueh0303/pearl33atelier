@@ -160,6 +160,17 @@ export default function AboutPage() {
                 maxWidth: '62ch',
               }}
             >
+              33 Pearl Atelier began with a simple idea — that pearls should feel personal, not traditional.
+            </p>
+            <p
+              style={{
+                fontSize: 'clamp(1.03rem, 1.6vw, 1.14rem)',
+                color: '#4a4338',
+                lineHeight: 1.72,
+                marginBottom: spacing.sm,
+                maxWidth: '62ch',
+              }}
+            >
               I founded 33 Pearl Atelier to offer pearl jewelry that feels personal, wearable, and quietly refined. Every pearl is selected with attention to luster, proportion, and how it will live with the wearer over time.
             </p>
             <p
