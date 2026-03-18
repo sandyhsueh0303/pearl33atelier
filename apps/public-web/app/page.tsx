@@ -159,8 +159,8 @@ export default function HomePage() {
           Tax: California only
           <span style={{ color: colors.gold, margin: `0 ${spacing.xs}` }}>•</span>
           Shipping: Free over $200
-          <span style={{ color: colors.gold, margin: `0 ${spacing.xs}` }}>•</span>
-          Otherwise $10 flat rate
+          <span style={{ color: colors.gold, margin: `0 ${spacing.xs}` }}>·</span>
+          Otherwise, a $10 flat rate
         </p>
       </section>
 
@@ -593,7 +593,7 @@ export default function HomePage() {
             </div>
 
             <div style={{ padding: `${spacing.lg} ${spacing.lg}`, borderBottom: `1px solid ${colors.lightGray}`, borderLeft: '3px solid #d4af37' }}>
-              <h3 style={{ color: colors.darkGray, marginBottom: spacing.xs }}>Availability & Inquiry</h3>
+              <h3 style={{ color: colors.darkGray, marginBottom: spacing.xs }}>Availability & Checkout</h3>
               <ul
                 style={{
                   color: colors.textSecondary,
@@ -602,8 +602,8 @@ export default function HomePage() {
                   paddingLeft: spacing.md,
                 }}
               >
-                <li>Use the cart or contact form to request availability, payment, and shipping details.</li>
-                <li>We confirm the next steps personally for ready-to-wear and custom orders.</li>
+                <li>Use the cart to continue to secure Stripe checkout for ready-to-wear pieces.</li>
+                <li>Use the contact form when you want custom design guidance, service support, or help before ordering.</li>
               </ul>
             </div>
 
@@ -626,7 +626,7 @@ export default function HomePage() {
                 }}
               >
                 Contact us when you want help choosing between ready-to-wear options, need custom design advice,
-                or want guidance on timing, availability, and the best next step for your order.
+                or want guidance on timing, pearl care, and the best next step for your order.
               </p>
               <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginLeft: 'auto' }}>
                 <Link

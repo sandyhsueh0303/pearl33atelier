@@ -54,7 +54,12 @@ export default function FAQPage() {
     {
       id: 'shipping-fee',
       q: 'How much is shipping?',
-      a: 'Shipping is free for orders over $200. For orders below $200, a flat $10 shipping fee applies.',
+      a: 'Shipping is free over $200. Otherwise, a $10 flat rate applies.',
+    },
+    {
+      id: 'online-checkout',
+      q: 'Can I check out online?',
+      a: 'Yes. Ready-to-wear pieces with an online price can be added to cart and completed through secure Stripe checkout. Taxes and shipping are calculated during checkout, while pre-order pieces may still proceed even when current material stock is limited.',
     },
     {
       id: 'returns-policy',
@@ -85,7 +90,7 @@ export default function FAQPage() {
     },
     {
       title: 'Ordering & Delivery',
-      ids: ['timeline-faq', 'shipping-policy', 'shipping-fee', 'tax-policy', 'returns-policy'],
+      ids: ['timeline-faq', 'shipping-policy', 'shipping-fee', 'tax-policy', 'online-checkout', 'returns-policy'],
     },
     {
       title: 'After Purchase',

@@ -1,11 +1,78 @@
 'use client'
 
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 import { useCart } from '../components/CartProvider'
 import { colors, spacing, typography, shadows } from '../constants/design'
 
 export default function CartPage() {
   const { items, itemCount, subtotal, hydrated, updateQuantity, removeItem, clearCart } = useCart()
+  const searchParams = useSearchParams()
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [checkoutError, setCheckoutError] = useState<string | null>(null)
+
+  const checkoutCancelled = searchParams.get('checkout') === 'cancelled'
+  const hasPricelessItem = items.some((item) => typeof item.price !== 'number' || item.price <= 0)
+  const hasPreorderItem = items.some((item) => item.availability === 'PREORDER')
+
+  const getAvailabilityLabel = (availability: string) => {
+    if (availability === 'PREORDER') return 'Pre-order'
+    if (availability === 'OUT_OF_STOCK') return 'Sold Out'
+    return 'In Stock'
+  }
+
+  const getAvailabilityStyles = (availability: string) => {
+    if (availability === 'PREORDER') {
+      return {
+        backgroundColor: colors.champagne,
+        color: colors.gold,
+      }
+    }
+
+    if (availability === 'OUT_OF_STOCK') {
+      return {
+        backgroundColor: '#fbe9e7',
+        color: '#b71c1c',
+      }
+    }
+
+    return {
+      backgroundColor: '#e8f5e9',
+      color: '#2e7d32',
+    }
+  }
+
+  const handleCheckout = async () => {
+    setCheckoutLoading(true)
+    setCheckoutError(null)
+
+    try {
+      const response = await fetch('/api/checkout/session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: items.map((item) => ({
+            id: item.id,
+            quantity: item.quantity,
+          })),
+        }),
+      })
+
+      const payload = (await response.json()) as { url?: string; error?: string }
+
+      if (!response.ok || !payload.url) {
+        throw new Error(payload.error || 'Unable to start checkout.')
+      }
+
+      window.location.href = payload.url
+    } catch (error) {
+      setCheckoutError(error instanceof Error ? error.message : 'Unable to start checkout.')
+      setCheckoutLoading(false)
+    }
+  }
 
   return (
     <main style={{ minHeight: '100vh', backgroundColor: colors.white, padding: `clamp(1rem, 3vw, ${spacing['3xl']})` }}>
@@ -14,8 +81,34 @@ export default function CartPage() {
           Shopping Cart
         </h1>
         <p style={{ color: colors.textSecondary, marginBottom: spacing.xl }}>
-          Your guest cart is saved in your browser. Submit an inquiry from this cart and we&apos;ll confirm availability, payment, and shipping details with you directly.
+          Your cart is saved in your browser. Review your pieces here, then continue to secure Stripe checkout to complete your order.
         </p>
+        {checkoutCancelled && (
+          <div
+            style={{
+              marginBottom: spacing.lg,
+              padding: spacing.md,
+              backgroundColor: '#fbf8f2',
+              border: `1px solid ${colors.lightGray}`,
+              color: colors.textSecondary,
+            }}
+          >
+            Your Stripe checkout was cancelled. Your cart is still saved here.
+          </div>
+        )}
+        {checkoutError && (
+          <div
+            style={{
+              marginBottom: spacing.lg,
+              padding: spacing.md,
+              backgroundColor: '#fff1f2',
+              border: '1px solid #fecdd3',
+              color: '#9f1239',
+            }}
+          >
+            {checkoutError}
+          </div>
+        )}
 
         {!hydrated ? (
           <p style={{ color: colors.textSecondary }}>Loading cart...</p>
@@ -64,12 +157,36 @@ export default function CartPage() {
                     <Link href={`/products/${item.slug}`} style={{ color: colors.darkGray, textDecoration: 'none' }}>
                       <div style={{ fontWeight: typography.fontWeight.medium }}>{item.title}</div>
                     </Link>
+                    <div style={{ marginTop: spacing.xs }}>
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          padding: '4px 10px',
+                          fontSize: typography.fontSize.xs,
+                          fontWeight: typography.fontWeight.medium,
+                          letterSpacing: '0.04em',
+                          ...getAvailabilityStyles(item.availability),
+                        }}
+                      >
+                        {getAvailabilityLabel(item.availability)}
+                      </span>
+                    </div>
                     <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
                       {[item.pearlType, item.sizeMm ? `${item.sizeMm}mm` : null].filter(Boolean).join(' · ')}
                     </div>
                     <div style={{ color: colors.darkGray, marginTop: spacing.xs }}>
                       {typeof item.price === 'number' ? `$ ${item.price.toLocaleString()}` : 'Price on request'}
                     </div>
+                    {typeof item.price !== 'number' || item.price <= 0 ? (
+                      <div style={{ color: '#9f1239', fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
+                        This item is not available for online checkout yet.
+                      </div>
+                    ) : null}
+                    {item.availability === 'PREORDER' ? (
+                      <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
+                        Pre-order items can proceed to checkout even when current material stock is limited.
+                      </div>
+                    ) : null}
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: spacing.xs }}>
@@ -120,8 +237,18 @@ export default function CartPage() {
                   Subtotal: $ {subtotal.toLocaleString()}
                 </div>
                 <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
-                  This cart does not check out online. Proceed to inquiry and we&apos;ll confirm availability, payment, and shipping details personally.
+                  Taxes and shipping will be calculated during Stripe checkout before you place your order.
                 </div>
+                {hasPreorderItem && (
+                  <div style={{ color: colors.textSecondary, fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
+                    Your cart includes pre-order pieces. These can still proceed to checkout even when current material stock is limited.
+                  </div>
+                )}
+                {hasPricelessItem && (
+                  <div style={{ color: '#9f1239', fontSize: typography.fontSize.sm, marginTop: spacing.xs }}>
+                    One or more items do not have a valid online checkout price yet.
+                  </div>
+                )}
               </div>
               <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
                 <button
@@ -131,18 +258,21 @@ export default function CartPage() {
                 >
                   Clear Cart
                 </button>
-                <Link
-                  href="/contact"
+                <button
+                  type="button"
+                  onClick={handleCheckout}
+                  disabled={checkoutLoading || hasPricelessItem}
                   style={{
-                    display: 'inline-block',
                     padding: `${spacing.sm} ${spacing.lg}`,
                     backgroundColor: colors.darkGray,
                     color: colors.white,
-                    textDecoration: 'none',
+                    border: `1px solid ${colors.darkGray}`,
+                    cursor: checkoutLoading || hasPricelessItem ? 'not-allowed' : 'pointer',
+                    opacity: checkoutLoading || hasPricelessItem ? 0.6 : 1,
                   }}
                 >
-                  Proceed to Inquiry
-                </Link>
+                  {checkoutLoading ? 'Redirecting…' : 'Checkout with Stripe'}
+                </button>
               </div>
             </div>
           </>

@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from 'react'
 
-const CART_STORAGE_KEY = 'pearl33_cart_v1'
+export const CART_STORAGE_KEY = 'pearl33_cart_v1'
 
 export interface CartItem {
   id: string
@@ -70,6 +70,15 @@ function safeReadCart(): CartItem[] {
   }
 }
 
+export function clearStoredCart() {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.removeItem(CART_STORAGE_KEY)
+  } catch {
+    // Ignore storage failures so cart state can still be cleared in memory.
+  }
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [hydrated, setHydrated] = useState(false)
@@ -110,6 +119,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const clearCart = useCallback(() => {
+    clearStoredCart()
     setItems([])
   }, [])
 

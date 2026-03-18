@@ -21,7 +21,8 @@
     "gray-matter": "^4.0.3",
     "papaparse": "^5.5.3",
     "remark": "^15.0.1",
-    "remark-html": "^16.0.1"
+    "remark-html": "^16.0.1",
+    "stripe": "^20.4.1"
   },
   "devDependencies": {
     "supabase": "^2.76.16"

@@ -455,7 +455,7 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                     lineHeight: 1.7,
                   }}
                 >
-                  Add this piece to your cart or send an inquiry and we&apos;ll confirm availability, payment, and shipping details with you directly.
+                  Add this piece to your cart to continue to secure Stripe checkout, or contact us if you would like styling guidance, custom details, or help before placing your order.
                 </p>
               </div>
               <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
