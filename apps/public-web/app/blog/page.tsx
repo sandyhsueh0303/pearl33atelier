@@ -6,12 +6,45 @@ import { getAllPosts } from '../lib/blog'
 import BlogSearch from './BlogSearch'
 import PageHero from '../components/PageHero'
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
+
 export const metadata: Metadata = {
-  title: 'Pearl Blog',
+  title: 'Pearl Blog | Guides, Care Tips, and Buying Advice',
   description:
-    'Pearl blog by 33 Pearl Atelier covering Pearl Types, Pearl Care, Buying Guide, and Custom Design insights.',
+    'Explore pearl guides, care tips, buying advice, and custom design insights from 33 Pearl Atelier.',
+  keywords: [
+    'pearl blog',
+    'pearl buying guide',
+    'pearl care tips',
+    'pearl types guide',
+    'custom pearl jewelry blog',
+    '33 Pearl Atelier blog',
+  ],
   alternates: {
     canonical: '/blog',
+  },
+  openGraph: {
+    title: 'Pearl Blog | Guides, Care Tips, and Buying Advice',
+    description:
+      'Explore pearl guides, care tips, buying advice, and custom design insights from 33 Pearl Atelier.',
+    url: `${SITE_URL}/blog`,
+    type: 'website',
+    siteName: '33 Pearl Atelier',
+    images: [
+      {
+        url: `${SITE_URL}/images/og-home.png`,
+        width: 1200,
+        height: 630,
+        alt: '33 Pearl Atelier Pearl Blog',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pearl Blog | Guides, Care Tips, and Buying Advice',
+    description:
+      'Explore pearl guides, care tips, buying advice, and custom design insights from 33 Pearl Atelier.',
+    images: [`${SITE_URL}/images/og-home.png`],
   },
 }
 

@@ -1,11 +1,14 @@
 ---
 title: "Pearl Quality Factors:\nShape, Luster, Surface, Body Color, and Overtone"
-excerpt: "A practical introduction to the five core pearl quality factors and how they affect beauty, value, and wearability."
-seoDescription: "Learn the 5 key pearl quality factors: shape, luster, surface quality, body color, and overtone. Understand how to evaluate pearls before you buy."
+excerpt: "Understand how shape, luster, surface, body color, and overtone influence the beauty, quality, and overall feel of pearl jewelry."
+seoDescription: "Learn how to evaluate pearl quality through shape, luster, surface quality, body color, and overtone, and understand what these factors mean when choosing pearl jewelry."
 publishedAt: "2026-02-14"
 author: "33 Pearl Atelier"
 tags: ["Buying Guide", "Pearl Types", "Pearl Quality", "Luster", "Overtone"]
 readingMinutes: 7
+keywords: ["pearl quality factors", "pearl luster", "pearl overtone", "pearl body color", "how to evaluate pearls"]
+ogImage: "/images/PearlTypesGuide_Luster.png"
+ogImageAlt: "Close-up example of pearl luster and reflected light on a pearl surface"
 ---
 
 ## Why Pearl Quality Factors Matter
@@ -78,6 +81,8 @@ while a silver overtone creates a cooler, more modern look.
 
 Like body color, overtone varies by pearl type.
 Certain overtones are more characteristic—or more desirable—within specific varieties, so they should always be evaluated in context.
+
+We will explore these differences in more detail when discussing each pearl type individually.
 
 ## How We Evaluate Pearls in Practice
 

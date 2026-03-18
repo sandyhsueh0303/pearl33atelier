@@ -13,6 +13,9 @@ export type BlogPost = {
   title: string
   excerpt: string
   seoDescription: string
+  keywords?: string[]
+  ogImage?: string
+  ogImageAlt?: string
   publishedAt: string
   updatedAt?: string
   author: string
@@ -50,6 +53,9 @@ export function getAllPosts(): BlogPost[] {
         title: data.title,
         excerpt: data.excerpt,
         seoDescription: data.seoDescription,
+        keywords: data.keywords || [],
+        ogImage: data.ogImage,
+        ogImageAlt: data.ogImageAlt,
         publishedAt: data.publishedAt,
         updatedAt: data.updatedAt,
         author: data.author,
@@ -91,6 +97,9 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
       title: data.title,
       excerpt: data.excerpt,
       seoDescription: data.seoDescription,
+      keywords: data.keywords || [],
+      ogImage: data.ogImage,
+      ogImageAlt: data.ogImageAlt,
       publishedAt: data.publishedAt,
       updatedAt: data.updatedAt,
       author: data.author,

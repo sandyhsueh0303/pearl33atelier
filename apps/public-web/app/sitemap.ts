@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
-import { getAllPostSlugs } from './lib/blog'
+import { getAllPosts } from './lib/blog'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
@@ -63,9 +63,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  const blogPages: MetadataRoute.Sitemap = getAllPostSlugs().map(({ slug }) => ({
-    url: `${baseUrl}/blog/${slug}`,
-    lastModified: now,
+  const blogPages: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: post.updatedAt || post.publishedAt || now,
     changeFrequency: 'monthly',
     priority: 0.7,
   }))

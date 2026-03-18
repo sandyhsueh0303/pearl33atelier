@@ -8,6 +8,14 @@ type Props = {
   params: Promise<{ slug: string }>
 }
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
+
+function toAbsoluteUrl(pathOrUrl?: string) {
+  if (!pathOrUrl) return `${SITE_URL}/images/og-home.png`
+  if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) return pathOrUrl
+  return `${SITE_URL}${pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`}`
+}
+
 export async function generateStaticParams() {
   const slugs = getAllPostSlugs()
   return slugs
@@ -22,13 +30,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Post Not Found' }
   }
 
-  const siteUrl = 'https://33pearlatelier.com'
-  const postUrl = `${siteUrl}/blog/${post.slug}`
+  const postUrl = `${SITE_URL}/blog/${post.slug}`
+  const ogImageUrl = toAbsoluteUrl(post.ogImage)
+  const ogImageAlt = post.ogImageAlt || post.title
   
   return {
     // 基本 SEO
     title: `${post.title} | 33 Pearl Atelier`,
     description: post.seoDescription,
+    keywords: post.keywords,
     
     // Open Graph（Facebook, LinkedIn）
     openGraph: {
@@ -38,10 +48,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: post.seoDescription,
       images: [
         {
-          url: `${siteUrl}/default-og.jpg`,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
-          alt: post.title,
+          alt: ogImageAlt,
         },
       ],
       publishedTime: post.publishedAt,
@@ -56,7 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: post.title,
       description: post.seoDescription,
-      images: [`${siteUrl}/default-og.jpg`],
+      images: [ogImageUrl],
     },
     
     // Canonical URL（避免重複內容）
@@ -75,35 +85,35 @@ export default async function BlogPostPage({ params }: Props) {
     notFound()
   }
 
-  const siteUrl = 'https://33pearlatelier.com'
+  const ogImageUrl = toAbsoluteUrl(post.ogImage)
   
   // ⭐ JSON-LD 結構化資料（給 Google）
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
-    '@id': `${siteUrl}/blog/${post.slug}`,
+    '@id': `${SITE_URL}/blog/${post.slug}`,
     headline: post.title,
     description: post.seoDescription,
-    image: `${siteUrl}/default-og.jpg`,
+    image: ogImageUrl,
     datePublished: post.publishedAt,
     dateModified: post.updatedAt || post.publishedAt,
     author: {
       '@type': 'Person',
       name: post.author,
-      url: `${siteUrl}/about`,
+      url: `${SITE_URL}/about`,
     },
     publisher: {
       '@type': 'Organization',
       name: '33 Pearl Atelier',
-      url: siteUrl,
+      url: SITE_URL,
       logo: {
         '@type': 'ImageObject',
-        url: `${siteUrl}/logo.png`,
+        url: `${SITE_URL}/images/og-home.png`,
       },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `${siteUrl}/blog/${post.slug}`,
+      '@id': `${SITE_URL}/blog/${post.slug}`,
     },
     wordCount: post.content.split(/\s+/).length,
   }
@@ -117,19 +127,19 @@ export default async function BlogPostPage({ params }: Props) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: siteUrl,
+        item: SITE_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Journal',
-        item: `${siteUrl}/blog`,
+        item: `${SITE_URL}/blog`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: post.title,
-        item: `${siteUrl}/blog/${post.slug}`,
+        item: `${SITE_URL}/blog/${post.slug}`,
       },
     ],
   }
