@@ -1,20 +1,23 @@
 'use client'
 
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCart } from '../components/CartProvider'
 import { colors, spacing, typography, shadows } from '../constants/design'
 
 export default function CartPage() {
   const { items, itemCount, subtotal, hydrated, updateQuantity, removeItem, clearCart } = useCart()
-  const searchParams = useSearchParams()
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
+  const [checkoutCancelled, setCheckoutCancelled] = useState(false)
 
-  const checkoutCancelled = searchParams.get('checkout') === 'cancelled'
   const hasPricelessItem = items.some((item) => typeof item.price !== 'number' || item.price <= 0)
   const hasPreorderItem = items.some((item) => item.availability === 'PREORDER')
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    setCheckoutCancelled(params.get('checkout') === 'cancelled')
+  }, [])
 
   const getAvailabilityLabel = (availability: string) => {
     if (availability === 'PREORDER') return 'Pre-order'
