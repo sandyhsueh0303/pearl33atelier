@@ -135,7 +135,7 @@ function buildEmailHtml(order: OrderRow, items: OrderItemRow[]) {
       </div>
 
       <p style="margin:0 0 12px;">We will email you again once your order is prepared for shipment.</p>
-      <p style="margin:0;color:#6f6758;">If you have any questions, just reply to this email or contact us at 33pearlatelier@gmail.com.</p>
+      <p style="margin:0;color:#6f6758;">If you have any questions, just reply to this email or contact us at hello@33pearlatelier.com.</p>
     </div>
   `
 }

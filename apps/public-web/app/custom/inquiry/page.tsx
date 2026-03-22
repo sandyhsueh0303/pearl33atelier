@@ -110,7 +110,7 @@ I have reference photos to share!`
   const openEmail = () => {
     const subject = encodeURIComponent('Pearl Jewelry Inquiry')
     const body = encodeURIComponent(generateMessage())
-    window.open(`mailto:33pearlatelier@gmail.com?subject=${subject}&body=${body}`, '_blank')
+    window.open(`mailto:hello@33pearlatelier.com?subject=${subject}&body=${body}`, '_blank')
   }
 
   const openLine = () => {
@@ -832,7 +832,7 @@ I have reference photos to share!`
                     fontSize: typography.fontSize.sm,
                     color: colors.textSecondary,
                   }}>
-                    33pearlatelier@gmail.com
+                    hello@33pearlatelier.com
                   </div>
                 </button>
               </div>

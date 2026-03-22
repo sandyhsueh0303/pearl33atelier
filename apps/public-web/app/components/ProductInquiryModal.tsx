@@ -67,7 +67,7 @@ ${message}
   const handleSendEmail = () => {
     const subject = encodeURIComponent(`Inquiry: ${productTitle} (${productSlug})`);
     const body = encodeURIComponent(inquiryContent);
-    window.location.href = `mailto:33pearlatelier@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:hello@33pearlatelier.com?subject=${subject}&body=${body}`;
   };
 
   const handleOpenInstagram = () => {

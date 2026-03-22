@@ -136,7 +136,7 @@ export default function Footer() {
           </svg>
         </a>
         <a
-          href="mailto:33pearlatelier@gmail.com"
+          href="mailto:hello@33pearlatelier.com"
           aria-label="Email"
           style={{
             display: 'inline-flex',

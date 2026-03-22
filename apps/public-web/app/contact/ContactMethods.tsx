@@ -47,7 +47,7 @@ export default function ContactMethods() {
       id: 'email',
       title: 'Email',
       description: 'Send us an email',
-      href: 'mailto:33pearlatelier@gmail.com',
+      href: 'mailto:hello@33pearlatelier.com',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path

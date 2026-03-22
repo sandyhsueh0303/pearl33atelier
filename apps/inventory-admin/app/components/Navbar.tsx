@@ -27,6 +27,9 @@ export default function Navbar() {
           <Link href="/admin/sales" className={styles.navLink}>
             Sales
           </Link>
+          <Link href="/admin/orders" className={styles.navLink}>
+            Orders
+          </Link>
         </div>
 
         <div className={styles.rightGroup}>
@@ -64,7 +67,10 @@ export default function Navbar() {
           <Link href="/admin/sales" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
             Sales
           </Link>
-          <div className={styles.mobileMetaRow}>
+          <Link href="/admin/orders" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+            Orders
+          </Link>
+        <div className={styles.mobileMetaRow}>
             <span className={styles.mobileUserName}>{user.name || user.email}</span>
             <button onClick={logout} className={styles.mobileLogoutButton}>
               Logout
