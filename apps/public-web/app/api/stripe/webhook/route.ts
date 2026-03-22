@@ -3,6 +3,10 @@ import Stripe from 'stripe'
 import { stripe } from '../../../lib/stripe'
 import { createSupabaseAdminClient } from '../../../lib/supabaseAdmin'
 import { syncPaidOrderToSales } from '../../../lib/orderSync'
+import {
+  isOrderConfirmationEmailConfigured,
+  sendOrderConfirmationEmail,
+} from '../../../lib/orderConfirmationEmail'
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
 
@@ -33,6 +37,8 @@ async function markOrderPaid(session: Stripe.Checkout.Session) {
     customerName: session.customer_details?.name ?? null,
     amountSubtotal: session.amount_subtotal,
     amountTotal: session.amount_total,
+    amountShipping: session.total_details?.amount_shipping ?? 0,
+    amountTax: session.total_details?.amount_tax ?? 0,
   })
 
   if (!orderId) {
@@ -53,6 +59,8 @@ async function markOrderPaid(session: Stripe.Checkout.Session) {
     customer_name: session.customer_details?.name ?? null,
     currency: session.currency || 'usd',
     subtotal_amount_cents: session.amount_subtotal ?? 0,
+    shipping_fee_cents: session.total_details?.amount_shipping ?? 0,
+    tax_amount_cents: session.total_details?.amount_tax ?? 0,
     total_amount_cents: session.amount_total ?? 0,
     shipping_address: session.customer_details?.address ?? null,
     metadata: {
@@ -97,6 +105,30 @@ async function markOrderPaid(session: Stripe.Checkout.Session) {
       error,
     })
     throw error
+  }
+
+  if (!isOrderConfirmationEmailConfigured()) {
+    console.warn('[stripe:webhook] order confirmation email skipped', {
+      orderId,
+      sessionId: session.id,
+      reason: 'missing_resend_config',
+    })
+    return
+  }
+
+  try {
+    const emailResult = await sendOrderConfirmationEmail(orderId)
+    console.log('[stripe:webhook] orderConfirmationEmail', {
+      orderId,
+      sessionId: session.id,
+      ...emailResult,
+    })
+  } catch (error) {
+    console.error('[stripe:webhook] sendOrderConfirmationEmail failed', {
+      orderId,
+      sessionId: session.id,
+      error,
+    })
   }
 }
 
@@ -161,7 +193,7 @@ export async function POST(request: NextRequest) {
         const orderId = session.metadata?.order_id
         if (orderId) {
           const adminSupabase = createSupabaseAdminClient()
-          await adminSupabase.from('orders').update({ status: 'canceled' }).eq('id', orderId)
+          await adminSupabase.from('orders').update({ status: 'cancelled' }).eq('id', orderId)
         }
         break
       }

@@ -27,6 +27,12 @@ const US_FLAT_SHIPPING_RATE_CENTS = 1_000
 const SHIPPING_ALLOWED_COUNTRIES: Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[] =
   ['US']
 
+function generateOrderNumber() {
+  const datePart = new Date().toISOString().slice(0, 10).replaceAll('-', '')
+  const uniquePart = crypto.randomUUID().slice(0, 8).toUpperCase()
+  return `WEB-${datePart}-${uniquePart}`
+}
+
 export async function POST(request: NextRequest) {
   let createdOrderId: string | null = null
 
@@ -142,13 +148,17 @@ export async function POST(request: NextRequest) {
 
     const subtotalAmount = normalizedItems.reduce((sum, item) => sum + item.lineTotalAmount, 0)
     const orderId = crypto.randomUUID()
+    const orderNumber = generateOrderNumber()
     createdOrderId = orderId
 
     const { error: orderError } = await adminSupabase.from('orders').insert({
       id: orderId,
+      order_number: orderNumber,
       status: 'pending',
       currency: 'usd',
       subtotal_amount_cents: subtotalAmount,
+      shipping_fee_cents: 0,
+      tax_amount_cents: 0,
       total_amount_cents: subtotalAmount,
       order_source: 'public_web',
       metadata: {
@@ -206,6 +216,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         source: 'public-web-cart',
         order_id: orderId,
+        order_number: orderNumber,
         cart_item_count: String(items.length),
       },
     })

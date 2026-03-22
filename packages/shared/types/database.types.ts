@@ -145,6 +145,139 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          line_total_amount_cents: number
+          order_id: string
+          product_id: string | null
+          product_slug_snapshot: string | null
+          product_title_snapshot: string
+          quantity: number
+          unit_price_amount_cents: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          line_total_amount_cents: number
+          order_id: string
+          product_id?: string | null
+          product_slug_snapshot?: string | null
+          product_title_snapshot: string
+          quantity: number
+          unit_price_amount_cents: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          line_total_amount_cents?: number
+          order_id?: string
+          product_id?: string | null
+          product_slug_snapshot?: string | null
+          product_title_snapshot?: string
+          quantity?: number
+          unit_price_amount_cents?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_sales_summary"
+            referencedColumns: ["product_id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          confirmation_email_sent_at: string | null
+          created_at: string
+          currency: string
+          customer_email: string | null
+          customer_name: string | null
+          id: string
+          metadata: Json
+          order_number: string | null
+          order_source: string
+          shipped_at: string | null
+          shipping_address: Json | null
+          shipping_carrier: string | null
+          shipping_email_sent_at: string | null
+          shipping_fee_cents: number
+          status: string
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
+          subtotal_amount_cents: number
+          tax_amount_cents: number
+          total_amount_cents: number
+          tracking_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          confirmation_email_sent_at?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          metadata?: Json
+          order_number?: string | null
+          order_source?: string
+          shipped_at?: string | null
+          shipping_address?: Json | null
+          shipping_carrier?: string | null
+          shipping_email_sent_at?: string | null
+          shipping_fee_cents?: number
+          status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          subtotal_amount_cents?: number
+          tax_amount_cents?: number
+          total_amount_cents?: number
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          confirmation_email_sent_at?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          metadata?: Json
+          order_number?: string | null
+          order_source?: string
+          shipped_at?: string | null
+          shipping_address?: Json | null
+          shipping_carrier?: string | null
+          shipping_email_sent_at?: string | null
+          shipping_fee_cents?: number
+          status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          subtotal_amount_cents?: number
+          tax_amount_cents?: number
+          total_amount_cents?: number
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       product_images: {
         Row: {
           created_at: string
@@ -261,6 +394,7 @@ export type Database = {
           profit_margin: number | null
           quantity: number
           sale_date: string
+          source_order_item_id: string | null
           total_cost: number
           total_price: number
           unit_cost: number
@@ -279,6 +413,7 @@ export type Database = {
           profit_margin?: number | null
           quantity?: number
           sale_date?: string
+          source_order_item_id?: string | null
           total_cost: number
           total_price: number
           unit_cost: number
@@ -297,6 +432,7 @@ export type Database = {
           profit_margin?: number | null
           quantity?: number
           sale_date?: string
+          source_order_item_id?: string | null
           total_cost?: number
           total_price?: number
           unit_cost?: number
@@ -317,6 +453,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "product_sales_summary"
             referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "sales_records_source_order_item_id_fkey"
+            columns: ["source_order_item_id"]
+            isOneToOne: true
+            referencedRelation: "order_items"
+            referencedColumns: ["id"]
           },
         ]
       }
