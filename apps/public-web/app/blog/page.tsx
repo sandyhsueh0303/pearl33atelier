@@ -56,7 +56,7 @@ export default function JournalPage() {
       <PageHero
         eyebrow="Journal / Blog"
         title="Pearl Knowledge & Stories"
-        description="Thoughtful guides on pearl types, quality, care, and custom design."
+        description="Thoughtful guides on pearl types, quality, care, and how to choose pieces for everyday wear."
       />
 
       <section
@@ -82,7 +82,7 @@ export default function JournalPage() {
             boxShadow: '0 10px 24px rgba(44, 44, 44, 0.2)',
           }}
         >
-          Shop Collection
+          Shop Ready-to-Wear Collection
         </Link>
       </section>
     </main>

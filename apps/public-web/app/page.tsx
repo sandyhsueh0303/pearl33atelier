@@ -312,27 +312,6 @@ export default function HomePage() {
             >
               Explore the Collection
             </Link>
-
-            <Link
-              href="/custom/inquiry"
-              style={{
-                display: 'inline-block',
-                padding: `${spacing.md} ${spacing['2xl']}`,
-                backgroundColor: 'rgba(255,255,255,0.7)',
-                color: colors.darkGray,
-                fontSize: typography.fontSize.base,
-                fontWeight: typography.fontWeight.medium,
-                letterSpacing: '0.12em',
-                textDecoration: 'none',
-                transition: transitions.normal,
-                border: '1px solid rgba(201, 169, 97, 0.55)',
-                cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-                backdropFilter: 'blur(4px)',
-              }}
-            >
-              Begin a Custom Piece
-            </Link>
           </div>
 
         </div>

@@ -5,6 +5,7 @@ import { colors, typography, spacing } from '../constants/design'
 
 interface FilterPanelProps {
   onFilterChange: (filters: ProductFilters) => void
+  initialFilters?: ProductFilters
 }
 
 export interface ProductFilters {
@@ -15,9 +16,14 @@ export interface ProductFilters {
   sortBy?: 'newest' | 'price-low' | 'price-high' | 'popular'
 }
 
-export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
-  const [filters, setFilters] = useState<ProductFilters>({})
-  const [searchInput, setSearchInput] = useState('')
+export default function FilterPanel({ onFilterChange, initialFilters }: FilterPanelProps) {
+  const [filters, setFilters] = useState<ProductFilters>(initialFilters || {})
+  const [searchInput, setSearchInput] = useState(initialFilters?.searchQuery || '')
+
+  useEffect(() => {
+    setFilters(initialFilters || {})
+    setSearchInput(initialFilters?.searchQuery || '')
+  }, [initialFilters])
 
   useEffect(() => {
     onFilterChange(filters)

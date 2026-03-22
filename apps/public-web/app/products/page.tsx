@@ -38,12 +38,16 @@ const DEFAULT_PRODUCT_IMAGE = `${SITE_URL}/images/default-product.jpg`
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams?: Promise<{ page?: string }> | { page?: string }
+  searchParams?: Promise<{ page?: string; category?: string }> | { page?: string; category?: string }
 }): Promise<Metadata> {
   const resolvedSearchParams = await Promise.resolve(searchParams)
   const parsedPage = Number(resolvedSearchParams?.page ?? '1')
   const page = Number.isFinite(parsedPage) && parsedPage > 0 ? Math.floor(parsedPage) : 1
-  const canonicalPath = page > 1 ? `/products?page=${page}` : '/products'
+  const category = resolvedSearchParams?.category
+  const canonicalParams = new URLSearchParams()
+  if (page > 1) canonicalParams.set('page', String(page))
+  if (category) canonicalParams.set('category', category)
+  const canonicalPath = canonicalParams.toString() ? `/products?${canonicalParams.toString()}` : '/products'
   const title = page > 1 ? `Collection (Page ${page})` : 'Collection'
   const description =
     'Explore handcrafted pearl jewelry by 33 Pearl Atelier, including necklaces, earrings, bracelets, rings, and bespoke-ready pieces.'
@@ -107,14 +111,15 @@ const PAGE_SIZE = 20
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ page?: string }> | { page?: string }
+  searchParams?: Promise<{ page?: string; category?: string }> | { page?: string; category?: string }
 }) {
   const resolvedSearchParams = await Promise.resolve(searchParams)
   const pageParam = resolvedSearchParams?.page
+  const categoryParam = resolvedSearchParams?.category
 
   // Canonical URL: page=1 should always resolve to /products
   if (pageParam === '1') {
-    redirect('/products')
+    redirect(categoryParam ? `/products?category=${encodeURIComponent(categoryParam)}` : '/products')
   }
 
   const parsedPage = Number(pageParam ?? '1')
@@ -245,7 +250,12 @@ export default async function ProductsPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
       />
-      <ProductList products={products} currentPage={page} hasNextPage={hasNextPage} />
+      <ProductList
+        products={products}
+        currentPage={page}
+        hasNextPage={hasNextPage}
+        initialFilters={categoryParam ? { category: categoryParam } : undefined}
+      />
     </>
   )
 }

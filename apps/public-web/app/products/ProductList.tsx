@@ -36,10 +36,11 @@ interface ProductListProps {
   products: ProductWithImages[]
   currentPage: number
   hasNextPage: boolean
+  initialFilters?: ProductFilters
 }
 
-export default function ProductList({ products, currentPage, hasNextPage }: ProductListProps) {
-  const [filters, setFilters] = useState<ProductFilters>({})
+export default function ProductList({ products, currentPage, hasNextPage, initialFilters }: ProductListProps) {
+  const [filters, setFilters] = useState<ProductFilters>(initialFilters || {})
   const deferredFilters = useDeferredValue(filters)
 
   const getCategoryLabel = (category: string | null | undefined) => {
@@ -155,8 +156,29 @@ export default function ProductList({ products, currentPage, hasNextPage }: Prod
 
       <section style={{ padding: `clamp(1rem, 3vw, ${spacing['3xl']})` }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div
+            style={{
+              margin: `0 auto ${spacing.xl}`,
+              maxWidth: '1100px',
+              padding: `${spacing.sm} ${spacing.lg}`,
+              border: '1px solid rgba(212, 175, 55, 0.22)',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(250,246,238,0.98) 100%)',
+              boxShadow: '0 10px 24px rgba(96, 82, 48, 0.08)',
+              textAlign: 'center',
+              color: colors.textSecondary,
+              fontSize: typography.fontSize.sm,
+              letterSpacing: '0.03em',
+              lineHeight: 1.8,
+            }}
+          >
+            <span>Hand-selected pearls</span>
+            <span style={{ color: colors.gold, margin: `0 ${spacing.sm}` }}>•</span>
+            <span>Exact piece shown</span>
+            <span style={{ color: colors.gold, margin: `0 ${spacing.sm}` }}>•</span>
+            <span>Small batch production</span>
+          </div>
 
-          <FilterPanel onFilterChange={setFilters} />
+          <FilterPanel onFilterChange={setFilters} initialFilters={initialFilters} />
 
         {filteredProducts.length === 0 ? (
           <div style={{ 

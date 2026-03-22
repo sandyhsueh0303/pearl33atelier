@@ -24,7 +24,7 @@ export default function AboutPage() {
   const values = [
     {
       title: 'Pearl Selection',
-      description: 'We hand-select pearls for luster, surface quality, and shape harmony before design begins.',
+      description: 'We select pearls not just for quality, but for how they feel when worn.',
     },
     {
       title: 'Craftsmanship',
@@ -41,7 +41,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="About Us"
         title="33 Pearl Atelier"
-        description="33 Pearl Atelier is dedicated to handcrafted pearl jewelry that blends quiet luxury, modern femininity, and artisanal precision."
+        description="33 Pearl Atelier was created from a simple belief — that pearl jewelry should feel natural to wear, not reserved for special occasions."
       />
 
       <section
@@ -171,7 +171,7 @@ export default function AboutPage() {
                 maxWidth: '62ch',
               }}
             >
-              I founded 33 Pearl Atelier to offer pearl jewelry that feels personal, wearable, and quietly refined. Every pearl is selected with attention to luster, proportion, and how it will live with the wearer over time.
+              I created the brand to offer pearl jewelry that feels effortless to wear and quietly refined. Each pearl is selected with attention to luster, proportion, and how it will live with the wearer over time.
             </p>
             <p
               style={{
@@ -182,7 +182,29 @@ export default function AboutPage() {
                 maxWidth: '62ch',
               }}
             >
-              Beyond technical grading, I focus on character, balance, and everyday elegance. My goal is to create pieces that feel timeless, modern, and easy to wear with confidence.
+              Beyond technical grading, I focus on character, balance, and everyday elegance — creating pieces that feel timeless, modern, and easy to wear with confidence.
+            </p>
+            <p
+              style={{
+                fontSize: 'clamp(1.03rem, 1.6vw, 1.14rem)',
+                color: '#4a4338',
+                lineHeight: 1.72,
+                marginBottom: spacing.sm,
+                maxWidth: '62ch',
+              }}
+            >
+              I&apos;m less interested in perfect pearls, and more in pieces that feel right when worn.
+            </p>
+            <p
+              style={{
+                fontSize: 'clamp(1.03rem, 1.6vw, 1.14rem)',
+                color: '#4a4338',
+                lineHeight: 1.72,
+                marginBottom: 0,
+                maxWidth: '62ch',
+              }}
+            >
+              Something you reach for without thinking — and continue to wear over time.
             </p>
           </article>
         </div>
@@ -365,7 +387,7 @@ export default function AboutPage() {
                 marginBottom: spacing.sm,
               }}
             >
-              We started in 2025 with one goal: create pearl jewelry that feels personal and wearable every day.
+              33 Pearl Atelier began with a simple idea — that pearl jewelry should feel personal, effortless, and part of everyday life.
             </p>
             <ul
               style={{
@@ -589,12 +611,12 @@ export default function AboutPage() {
               letterSpacing: '0.08em',
             }}
           >
-            Shop Collection
+            Shop Ready-to-Wear Collection
           </Link>
         </div>
         <p style={{ marginTop: spacing.sm }}>
           <Link href="/custom-services" style={{ color: colors.textSecondary }}>
-            Looking for bespoke work? Start custom inquiry.
+            Curated customization (limited availability)
           </Link>
         </p>
       </section>

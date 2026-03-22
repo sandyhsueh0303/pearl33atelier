@@ -5,7 +5,7 @@ import { colors, typography, spacing } from '../../constants/design'
 import { pageHeroStyles } from '../../constants/pageHero'
 import PageHero from '../../components/PageHero'
 
-export default function ContactPage() {
+export default function CustomInquiryPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -125,8 +125,8 @@ I have reference photos to share!`
       {/* Hero Section */}
       <PageHero
         eyebrow="INQUIRY"
-        title="Start Your Custom Inquiry"
-        description="Use this form for bespoke pearl jewelry projects. Share your pearl preferences, budget, occasion, and timeline, and we&apos;ll reply with the next steps for a custom design."
+        title="Request Custom Access"
+        description="Custom work is accepted on a limited basis. Each project is considered individually, with a focus on balance, proportion, and how the piece will be worn over time."
       />
 
       {/* Form Section */}
@@ -145,7 +145,7 @@ I have reference photos to share!`
           For ready-to-wear inquiries, pearl care questions, or redesign service, please use the general contact form.
         </p>
         
-        {/* What to Include */}
+        {/* What We Look For */}
         <div style={{
           background: '#fffdfa',
           padding: spacing.lg,
@@ -162,7 +162,7 @@ I have reference photos to share!`
             color: colors.darkGray,
             letterSpacing: '0.01em',
           }}>
-            What to Include in Your Custom Inquiry
+            What We Look For in a Custom Request
           </h2>
           <ul style={{
             fontSize: typography.fontSize.base,
@@ -171,10 +171,10 @@ I have reference photos to share!`
             paddingLeft: '1.05rem',
             margin: 0,
           }}>
-            <li>Desired jewelry style and pearl preference</li>
-            <li>Metal type, wear occasion, and timeline</li>
-            <li>Budget consideration and design priorities</li>
-            <li>Reference photos (attach when sending)</li>
+            <li>Your general idea or inspiration</li>
+            <li>Preferred pearl type or tone</li>
+            <li>Occasion or intended use</li>
+            <li>Budget range and priorities</li>
           </ul>
         </div>
 
@@ -186,7 +186,6 @@ I have reference photos to share!`
           border: '1px solid #E7E0D3',
           boxShadow: '0 8px 18px rgba(36, 28, 16, 0.05)',
         }}>
-          
           {/* Name */}
           <div style={{ marginBottom: spacing.lg }}>
             <label style={{
@@ -252,7 +251,7 @@ I have reference photos to share!`
               marginBottom: spacing.xs,
               color: colors.textPrimary,
             }}>
-              Phone (Optional)
+              Phone
             </label>
             <input 
               type="tel"
@@ -375,49 +374,27 @@ I have reference photos to share!`
             }}>
               Metal preference
             </label>
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: spacing.xs,
-            }}>
-              {[
-                '925 Silver with 18K Gold Vermeil',
-                '925 Silver with White Gold Vermeil',
-                '18K Yellow Gold',
-                '18K White Gold',
-                'PT900 Platinum',
-                'Not Sure / Open to Suggestions',
-              ].map((metal) => (
-                <label 
-                  key={metal}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: spacing.xs,
-                    cursor: 'pointer',
-                    fontSize: typography.fontSize.base,
-                    padding: `${spacing.xs} ${spacing.sm}`,
-                    border: '1px solid #E6DDCF',
-                    borderRadius: '10px',
-                    background: '#FFFEFC',
-                  }}
-                >
-                  <input
-                    type="radio"
-                    name="metalPreference"
-                    value={metal}
-                    checked={formData.metalPreference === metal}
-                    onChange={(e) => setFormData({ ...formData, metalPreference: e.target.value })}
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      cursor: 'pointer',
-                    }}
-                  />
-                  {metal}
-                </label>
-              ))}
-            </div>
+            <select
+              value={formData.metalPreference}
+              onChange={(e) => setFormData({ ...formData, metalPreference: e.target.value })}
+              style={{
+                width: '100%',
+                padding: spacing.sm,
+                border: '1px solid #DDD4C5',
+                borderRadius: '10px',
+                background: '#FFFEFC',
+                fontSize: typography.fontSize.base,
+                fontFamily: 'inherit',
+              }}
+            >
+              <option value="">Select a preference</option>
+              <option value="925 Silver with 18K Gold Vermeil">925 Silver with 18K Gold Vermeil</option>
+              <option value="925 Silver with White Gold Vermeil">925 Silver with White Gold Vermeil</option>
+              <option value="18K Yellow Gold">18K Yellow Gold</option>
+              <option value="18K White Gold">18K White Gold</option>
+              <option value="PT900 Platinum">PT900 Platinum</option>
+              <option value="Not Sure / Open to Suggestions">Not Sure / Open to Suggestions</option>
+            </select>
           </div>
 
           {/* Timeline */}
@@ -429,49 +406,27 @@ I have reference photos to share!`
               marginBottom: spacing.sm,
               color: colors.textPrimary,
             }}>
-              Timeline (Optional)
+              Timeline
             </label>
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: spacing.xs,
-            }}>
-              {[
-                'No rush - just browsing',
-                'Within 1 month',
-                '1-3 months',
-                'For a specific date',
-              ].map((timeline) => (
-                <label
-                  key={timeline}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: spacing.xs,
-                    cursor: 'pointer',
-                    fontSize: typography.fontSize.base,
-                    padding: `${spacing.xs} ${spacing.sm}`,
-                    border: '1px solid #E6DDCF',
-                    borderRadius: '10px',
-                    background: '#FFFEFC',
-                  }}
-                >
-                  <input
-                    type="radio"
-                    name="timeline"
-                    value={timeline}
-                    checked={formData.timeline === timeline}
-                    onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      cursor: 'pointer',
-                    }}
-                  />
-                  {timeline}
-                </label>
-              ))}
-            </div>
+            <select
+              value={formData.timeline}
+              onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
+              style={{
+                width: '100%',
+                padding: spacing.sm,
+                border: '1px solid #DDD4C5',
+                borderRadius: '10px',
+                background: '#FFFEFC',
+                fontSize: typography.fontSize.base,
+                fontFamily: 'inherit',
+              }}
+            >
+              <option value="">Select a timeline</option>
+              <option value="No rush - just browsing">No rush - just browsing</option>
+              <option value="Within 1 month">Within 1 month</option>
+              <option value="1-3 months">1-3 months</option>
+              <option value="For a specific date">For a specific date</option>
+            </select>
             {formData.timeline === 'For a specific date' && (
               <>
                 <input
@@ -517,15 +472,17 @@ I have reference photos to share!`
               color: colors.darkGray,
               marginBottom: spacing.sm,
             }}>
-              💡 Pearl & Jewelry Pricing
+              💡 Custom Pricing
             </p>
             <p style={{ fontSize: typography.fontSize.sm, color: colors.textSecondary, lineHeight: '1.6' }}>
-              Pearl and jewelry prices can vary significantly based on pearl quality, size, matching requirements, and metal selection.
-              We&apos;re always happy to recommend options that fit your budget while maintaining quality.
+              Most custom projects begin around $800–$1000, depending on pearl selection and design.
+            </p>
+            <p style={{ fontSize: typography.fontSize.sm, color: colors.textSecondary, lineHeight: '1.6', marginTop: spacing.sm }}>
+              We focus on pieces that balance quality, proportion, and long-term wear.
             </p>
           </div>
 
-          {/* Message */}
+          {/* Budget Range */}
           <div style={{ marginBottom: spacing.lg }}>
             <label style={{
               display: 'block',
@@ -534,49 +491,28 @@ I have reference photos to share!`
               marginBottom: spacing.sm,
               color: colors.textPrimary,
             }}>
-              Budget Consideration (Optional)
+              Budget Range
             </label>
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: spacing.xs,
-            }}>
-              {[
-                "I'm flexible - quality is my priority",
-                'Balanced - good quality within budget',
-                'Budget-conscious - best value important',
-                "Let's discuss options together",
-              ].map((option) => (
-                <label
-                  key={option}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: spacing.xs,
-                    cursor: 'pointer',
-                    fontSize: typography.fontSize.base,
-                    padding: `${spacing.xs} ${spacing.sm}`,
-                    border: '1px solid #E6DDCF',
-                    borderRadius: '10px',
-                    background: '#FFFEFC',
-                  }}
-                >
-                  <input
-                    type="radio"
-                    name="budgetConsideration"
-                    value={option}
-                    checked={formData.budgetConsideration === option}
-                    onChange={(e) => setFormData({ ...formData, budgetConsideration: e.target.value })}
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      cursor: 'pointer',
-                    }}
-                  />
-                  {option}
-                </label>
-              ))}
-            </div>
+            <select
+              value={formData.budgetConsideration}
+              onChange={(e) => setFormData({ ...formData, budgetConsideration: e.target.value })}
+              style={{
+                width: '100%',
+                padding: spacing.sm,
+                border: '1px solid #DDD4C5',
+                borderRadius: '10px',
+                background: '#FFFEFC',
+                fontSize: typography.fontSize.base,
+                fontFamily: 'inherit',
+                color: colors.textPrimary,
+              }}
+            >
+              <option value="">Select a range</option>
+              <option value="Under $500">Under $500</option>
+              <option value="$500–$1000">$500–$1000</option>
+              <option value="$1000–$3000">$1000–$3000</option>
+              <option value="$3000+">$3000+</option>
+            </select>
           </div>
 
           {/* Message */}
@@ -588,14 +524,14 @@ I have reference photos to share!`
               marginBottom: spacing.sm,
               color: colors.textPrimary,
             }}>
-              Message *
+              Tell us about your idea, preferred pearl type, or any references you have. *
             </label>
             <textarea 
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               required
               rows={5}
-              placeholder="Share your preferences, style inspirations, or any questions you have. We're here to help!"
+              placeholder={"If you’re unsure, feel free to share the occasion or general direction — we’ll guide you."}
               style={{
                 width: '100%',
                 padding: spacing.sm,
@@ -608,12 +544,12 @@ I have reference photos to share!`
               }}
             />
             <p style={{
-              marginTop: spacing.xs,
+              marginTop: spacing.sm,
               fontSize: typography.fontSize.sm,
               color: colors.textSecondary,
               lineHeight: '1.6',
             }}>
-              Hint: Mention pearl quality details like luster, surface, or color if you have preferences.
+              If you&apos;re unsure, feel free to share the occasion or general direction — we&apos;ll guide you.
             </p>
           </div>
           
@@ -634,15 +570,24 @@ I have reference photos to share!`
               transition: 'all 0.3s ease',
             }}
           >
-            Copy Inquiry Message
+            Copy & Send Your Inquiry
           </button>
+          <p style={{
+            fontSize: typography.fontSize.sm,
+            color: colors.textSecondary,
+            marginTop: spacing.md,
+            textAlign: 'center',
+            lineHeight: '1.6',
+          }}>
+            Send via Instagram, Email, or WeChat — whichever feels easiest.
+          </p>
           
           {/* Reminder before copying */}
           {!copied && (
             <p style={{
               fontSize: typography.fontSize.sm,
               color: colors.textSecondary,
-              marginTop: spacing.md,
+              marginTop: spacing.sm,
               textAlign: 'center',
               lineHeight: '1.6',
             }}>
@@ -674,10 +619,10 @@ I have reference photos to share!`
                 color: colors.darkGray,
                 marginBottom: spacing.xs,
               }}>
-                Inquiry copied successfully
+                Copied ✓
               </h3>
               <p style={{ color: colors.textSecondary, margin: 0 }}>
-                Choose your preferred channel below.
+                Copy and send this message via Instagram, Email, or WeChat — whichever feels easiest.
               </p>
             </div>
 
@@ -909,7 +854,7 @@ I have reference photos to share!`
             margin: 0,
           }}
         >
-          ✓ We typically respond within 24 hours
+          We review each inquiry carefully and will respond within 1–2 business days.
         </p>
       </section>
 

@@ -117,7 +117,7 @@ ${formData.message}
           letterSpacing: '0.01em',
         }}
       >
-        Quick Inquiry
+        Get in Touch
       </h2>
       <p
         style={{
@@ -128,9 +128,30 @@ ${formData.message}
           lineHeight: typography.lineHeight.relaxed,
         }}
       >
-        Use this form for ready-to-wear inquiries, custom design requests, pearl care questions, or redesign service.
+        We&apos;re happy to assist with product questions, styling guidance, and curated customization options.
+        {' '}
+        For most pieces, we recommend selecting from our ready-to-wear collection.
         <br />
         We&apos;ll get back to you within 24 hours. Prefer direct contact? Use Instagram, WeChat, or email links above.
+      </p>
+      <p
+        style={{
+          fontSize: typography.fontSize.base,
+          marginBottom: spacing.xl,
+          textAlign: 'center',
+        }}
+      >
+        <a
+          href="/products"
+          style={{
+            color: colors.darkGray,
+            textDecoration: 'none',
+            borderBottom: `1px solid rgba(44, 44, 44, 0.25)`,
+            paddingBottom: '2px',
+          }}
+        >
+          Looking for something now? Explore our ready-to-wear collection →
+        </a>
       </p>
 
       {status === 'ready' ? (
@@ -369,10 +390,10 @@ ${formData.message}
                 }}
               >
                 <option value="">Select an inquiry type</option>
-                <option value="general">General Inquiry</option>
-                <option value="custom_design">Custom Design</option>
-                <option value="pearl_care">Pearl Care</option>
-                <option value="redesign_service">Redesign Service</option>
+                <option value="product_question">Product Question</option>
+                <option value="styling_guidance">Styling Guidance</option>
+                <option value="curated_customization">Curated Customization</option>
+                <option value="order_support">Order Support</option>
               </select>
               <span
                 aria-hidden="true"

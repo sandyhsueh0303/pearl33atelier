@@ -19,40 +19,39 @@ export default function CustomServicesPage() {
       step: '01',
       title: 'Consultation',
       description:
-        'Share your style, occasion, and budget. We align pearl type, size range, and setting direction.',
+        'We begin with your style, occasion, and direction.',
     },
     {
       step: '02',
       title: 'Select Your Pearl',
       description:
-        'Choose pearl variety and quality level. We provide curated options for matching, metal tone, and silhouette.',
+        'We prepare options based on luster, tone, and proportion.',
     },
     {
       step: '03',
       title: 'Finalize the Artistry',
       description:
-        'Confirm measurements, clasp or setting style, and final finishing details before production.',
+        'Details are refined before production begins.',
     },
     {
       step: '04',
-      title: 'Handcraft & Delivery',
+      title: 'Handcrafting',
       description:
-        'Your piece is handcrafted, matched for symmetry, and quality-checked before delivery.',
+        'Each piece is completed with attention to balance and finish.',
     },
   ]
 
-  const customNote =
-    'From first pearl selection to final setting, our custom service is focused on precision, proportion, and long-term wearability.'
-  const customizableItems = ['Necklace', 'Earrings', 'Bracelet', 'Ring', 'Restringing']
-  const introTitle =
-    "Whether you envision a unique necklace, elegant earrings, or a statement piece, we'll bring your vision to life with the finest pearls and expert craftsmanship."
-
+  const customNote = [
+    'From the first pearl selection to the final setting, each custom piece is shaped around balance, proportion, and the natural character of the pearl.',
+    'Rather than adding complexity, our approach focuses on choosing the right pearl — so the final piece feels effortless, personal, and lasting over time.',
+    'Each project is approached individually, with attention to how the piece will be worn in everyday life.',
+  ]
   return (
     <main style={pageHeroStyles.main}>
       <PageHero
         eyebrow="Custom Services"
-        title="Design Your Dream Jewelry"
-        description={introTitle}
+        title="Custom, Designed with Intention"
+        description="For pieces that feel more personal than what can be found in a collection. At 33 Pearl Atelier, each custom design begins with the pearl — chosen for its luster, proportion, and quiet character."
       />
 
       <section style={{ padding: `${spacing['3xl']} ${spacing.xl}` }}>
@@ -95,28 +94,42 @@ export default function CustomServicesPage() {
             >
               What We Can Customize
             </h2>
+            {customNote.map((paragraph, index) => (
+              <p
+                key={paragraph}
+                style={{
+                  fontSize: typography.fontSize.base,
+                  color: colors.textSecondary,
+                  lineHeight: typography.lineHeight.relaxed,
+                  marginBottom: index === customNote.length - 1 ? spacing.md : spacing.sm,
+                }}
+              >
+                {paragraph}
+              </p>
+            ))}
             <p
               style={{
-                fontSize: typography.fontSize.base,
-                color: colors.textSecondary,
-                lineHeight: typography.lineHeight.relaxed,
-                marginBottom: spacing.md,
+                fontSize: typography.fontSize.sm,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: colors.gold,
+                marginBottom: spacing.xs,
               }}
             >
-              {customNote}
+              Best suited for
             </p>
             <ul
               style={{
-                margin: 0,
+                margin: `0 0 ${spacing.md}`,
                 paddingLeft: '1.1rem',
                 color: colors.textSecondary,
                 lineHeight: typography.lineHeight.relaxed,
-                marginBottom: 0,
               }}
             >
-              {customizableItems.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
+              <li>Meaningful gifts and milestone pieces</li>
+              <li>Bridal and wedding jewelry</li>
+              <li>Redesigning or resetting existing pearls</li>
+              <li>Those looking for something more personal, refined, and considered</li>
             </ul>
           </article>
 
@@ -152,8 +165,7 @@ export default function CustomServicesPage() {
               2-6 weeks
             </h3>
             <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed }}>
-              Most custom projects are completed within this window depending on complexity,
-              pearl availability, matching requirements, and revision rounds.
+              Most custom projects are completed within this window, depending on design complexity and pearl availability.
             </p>
             <p
               style={{
@@ -162,32 +174,54 @@ export default function CustomServicesPage() {
                 lineHeight: typography.lineHeight.relaxed,
               }}
             >
-              For event deadlines, we recommend contacting us as early as possible.
-              <br />
-              <span
+              For time-sensitive occasions, we recommend reaching out as early as possible.
+            </p>
+            <p
+              style={{
+                marginTop: spacing.md,
+                color: colors.textSecondary,
+                lineHeight: typography.lineHeight.relaxed,
+              }}
+            >
+              Rush inquiries are welcome when feasible.
+            </p>
+            <div
+              style={{
+                marginTop: spacing.lg,
+                paddingTop: spacing.md,
+                borderTop: `1px solid ${colors.lightGray}`,
+              }}
+            >
+              <p
                 style={{
-                  display: 'inline-block',
-                  marginTop: spacing.sm,
                   fontSize: typography.fontSize.sm,
-                  letterSpacing: '0.12em',
+                  letterSpacing: '0.16em',
                   textTransform: 'uppercase',
                   color: colors.gold,
+                  marginBottom: spacing.xs,
                 }}
               >
-                Need It Sooner?
-              </span>
-              <span
+                Custom Availability
+              </p>
+              <p
                 style={{
-                  display: 'block',
-                  marginTop: spacing.xs,
-                  fontSize: typography.fontSize.lg,
-                  fontWeight: typography.fontWeight.normal,
-                  color: colors.darkGray,
+                  color: colors.textSecondary,
+                  lineHeight: typography.lineHeight.relaxed,
+                  marginBottom: spacing.sm,
                 }}
               >
-                Rush inquiry welcome.
-              </span>
-            </p>
+                Custom pieces are accepted on a limited basis.
+              </p>
+              <p
+                style={{
+                  color: colors.textSecondary,
+                  lineHeight: typography.lineHeight.relaxed,
+                  marginBottom: 0,
+                }}
+              >
+                Priority is given to returning clients and projects with a clear design direction.
+              </p>
+            </div>
           </aside>
         </div>
       </section>
@@ -336,7 +370,7 @@ export default function CustomServicesPage() {
               transition: transitions.fast,
             }}
           >
-            Start Your Custom Design Journey 
+            Request Custom Access
           </Link>
         </div>
         <p style={{ marginTop: spacing.sm }}>

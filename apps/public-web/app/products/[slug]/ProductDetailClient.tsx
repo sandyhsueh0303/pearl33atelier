@@ -22,6 +22,15 @@ export default function ProductDetailClient({ product, images, inventorySummary 
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const { addItem } = useCart()
   const effectiveAvailability = inventorySummary.availability
+  const isEverydayPiece = product.title.toLowerCase().includes('stud earrings')
+  const descriptionParagraphs = (product.description || '')
+    .split(/\n+/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+  const shortDescription = descriptionParagraphs[0] || null
+  const valueLine = product.pearl_type
+    ? `Individually selected ${product.pearl_type} pearls, matched for tone and luster`
+    : 'Individually selected pearls, matched for tone and luster'
   const categoryLabels: Record<string, string> = {
     BRACELETS: 'Bracelets',
     NECKLACES: 'Necklaces',
@@ -127,6 +136,26 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                 backgroundColor: colors.pearl,
                 overflow: 'hidden'
               }}>
+                {isEverydayPiece && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: spacing.md,
+                      left: spacing.md,
+                      zIndex: 2,
+                      padding: `${spacing.xs} ${spacing.sm}`,
+                      background: 'rgba(255, 252, 246, 0.92)',
+                      border: '1px solid rgba(212, 175, 55, 0.34)',
+                      color: colors.darkGray,
+                      fontSize: typography.fontSize.xs,
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      boxShadow: shadows.soft,
+                    }}
+                  >
+                    Everyday Essential
+                  </div>
+                )}
                 {currentImage ? (
                     <div style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}}>
                       <ImageZoom
@@ -319,6 +348,16 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                   $ {product.sell_price.toLocaleString()}
                 </div>
               )}
+              <p
+                style={{
+                  margin: 0,
+                  color: colors.textSecondary,
+                  fontSize: typography.fontSize.sm,
+                  lineHeight: 1.7,
+                }}
+              >
+                {valueLine}
+              </p>
               {product.original_price && product.original_price > (product.sell_price || 0) && (
                 <div style={{ 
                   fontSize: typography.fontSize.lg,
@@ -329,6 +368,40 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                 </div>
               )}
             </div>
+
+            {shortDescription && (
+              <div
+                style={{
+                  marginBottom: spacing.lg,
+                  padding: `${spacing.md} ${spacing.lg}`,
+                  background: '#fbf8f2',
+                  border: '1px solid #e5dccb',
+                  borderRadius: '14px',
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: typography.fontSize.base,
+                    fontWeight: typography.fontWeight.medium,
+                    marginBottom: spacing.xs,
+                    color: colors.darkGray,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Why You&apos;ll Love It
+                </h3>
+                <p
+                  style={{
+                    margin: 0,
+                    color: colors.textSecondary,
+                    lineHeight: 1.8,
+                  }}
+                >
+                  {shortDescription}
+                </p>
+              </div>
+            )}
 
             {/* Product Details */}
             <div style={{ 
@@ -344,6 +417,16 @@ export default function ProductDetailClient({ product, images, inventorySummary 
               }}>
                 Specifications
               </h3>
+              <p
+                style={{
+                  margin: `0 0 ${spacing.sm}`,
+                  color: colors.textSecondary,
+                  fontSize: typography.fontSize.sm,
+                  lineHeight: 1.8,
+                }}
+              >
+                Each pair is carefully matched for luster, tone, and proportion — the details that define how pearls look on the skin.
+              </p>
               <table style={{ width: '100%' }}>
                 <tbody>
                   {renderSpecRow('Pearl Type', product.pearl_type)}
@@ -383,6 +466,8 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                   }}
                 >
                   * Free shipping on orders over $200.
+                  <br />
+                  * Need help choosing? We&apos;re happy to guide you.
                 </p>
                 <button
                   onClick={handleAddToCart}
@@ -391,10 +476,10 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                     marginLeft: 'auto',
                     padding: `${spacing.md} ${spacing.xl}`,
                     backgroundColor:
-                      effectiveAvailability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray,
+                      effectiveAvailability === 'OUT_OF_STOCK' ? '#8b8171' : colors.darkGray,
                     color: colors.white,
                     border: `1px solid ${
-                      effectiveAvailability === 'OUT_OF_STOCK' ? colors.lightGray : colors.darkGray
+                      effectiveAvailability === 'OUT_OF_STOCK' ? '#8b8171' : colors.darkGray
                     }`,
                     borderRadius: '999px',
                     fontWeight: typography.fontWeight.medium,
@@ -408,6 +493,42 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                   {effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Add to Cart'}
                 </button>
               </div>
+            </div>
+
+            <div
+              style={{
+                padding: `${spacing.lg} ${spacing.xl}`,
+                background: 'linear-gradient(135deg, #fffdf8 0%, #faf6ee 100%)',
+                border: '1px solid rgba(212, 175, 55, 0.22)',
+                borderRadius: '16px',
+                boxShadow: '0 10px 24px rgba(45, 36, 24, 0.05)',
+                marginBottom: spacing['2xl'],
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  color: colors.gold,
+                  fontSize: typography.fontSize.xs,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                The 33 Pearl Atelier Standard
+              </p>
+              <ul
+                style={{
+                  margin: `${spacing.md} 0 0`,
+                  paddingLeft: '1.2rem',
+                  color: colors.textSecondary,
+                  lineHeight: 1.9,
+                }}
+              >
+                <li>You receive the exact pair shown</li>
+                <li>Hand-selected by a GIA-certified gemologist</li>
+                <li>Small-batch production</li>
+                <li>Complimentary cleaning and maintenance</li>
+              </ul>
             </div>
 
             {/* Preorder Note */}

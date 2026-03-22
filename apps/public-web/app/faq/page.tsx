@@ -28,13 +28,13 @@ export default function FAQPage() {
     },
     {
       id: 'pearl-size-color',
-      q: 'Can I request size or tone?',
-      a: 'Yes. You’re welcome to share your preferred size range, color family, or overtone, and we will recommend the most suitable options available.',
+      q: 'Can I request pearl size?',
+      a: 'Yes. You’re welcome to share your preferred size range and we will recommend the most suitable options available.',
     },
     {
       id: 'matching-sets',
       q: 'Do you offer matching sets?',
-      a: 'Yes. We can create coordinated sets — such as necklace, earrings, or bracelets — with carefully matched pearl character and metal tone.',
+      a: 'Yes — matching sets are designed and selected as a complete set from the beginning. To ensure harmony in pearl character and metal tone, we do not recommend building sets separately over time. If you’re looking for a coordinated set, we suggest selecting all pieces together.',
     },
     {
       id: 'timeline-faq',
