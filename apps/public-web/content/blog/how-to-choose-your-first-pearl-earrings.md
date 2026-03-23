@@ -3,8 +3,8 @@ title: "How to Choose Your First Pearl Earrings"
 excerpt: "Learn how to choose your first pearl earrings by size, tone, and everyday wearability, with a practical guide to finding a pair that feels natural and refined."
 seoDescription: "Discover how to choose your first pearl earrings by understanding size, tone, and everyday wear, and find a pair that feels balanced, modern, and easy to wear."
 keywords: ["first pearl earrings", "how to choose pearl earrings", "pearl stud size guide", "everyday pearl earrings", "akoya pearl earrings"]
-ogImage: "/images/og-home.png"
-ogImageAlt: "Pearl earrings styled for everyday wear"
+ogImage: "/images/FirstPearl.png"
+ogImageAlt: "First pearl earrings styled for everyday wear"
 publishedAt: "2026-03-18"
 author: "33 Pearl Atelier"
 tags: ["Buying Guide", "Pearl Earrings", "Everyday Wear", "Akoya"]
@@ -35,5 +35,4 @@ Warmer tones offer softness and a more classic mood.
 ## 3. Everyday Wear Matters
 
 The best first pair is one you reach for without thinking — something that moves easily from daily wear to more refined moments.
-
 

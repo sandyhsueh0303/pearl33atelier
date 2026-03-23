@@ -118,7 +118,8 @@ export default function HomePage() {
   }
 
   const promoBanner = {
-    text: 'March Only: Receive complimentary 18K Blue Rose stud earrings with your order over $1000.',
+    eyebrow: '3/25-3/31 Only:',
+    text: 'Free 18K Blue Rose Studs ($199 value) with orders $1000+',
     linkLabel: 'Shop Now',
     linkHref: '/products',
   }
@@ -142,33 +143,47 @@ export default function HomePage() {
       {/* Promotional Banner */}
       <section
         style={{
-          padding: `${spacing.xs} ${spacing.lg}`,
-          backgroundColor: '#fdf7ea',
-          borderBottom: '1px solid #efe2c8',
+          padding: '12px 20px',
+          background: 'linear-gradient(90deg, #C9A961 0%, #D4B570 100%)',
+          color: '#fff',
           textAlign: 'center',
         }}
       >
-        <p
+        <div
           style={{
             margin: 0,
-            color: colors.darkGray,
-            fontSize: typography.fontSize.sm,
-            letterSpacing: '0.03em',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            fontSize: '14px',
+            fontWeight: typography.fontWeight.medium,
+            lineHeight: 1.5,
           }}
         >
-          <span style={{ color: colors.gold, fontWeight: typography.fontWeight.medium }}>✦ {promoBanner.text}</span>{' '}
+          <span aria-hidden="true">🎁</span>
+          <strong>{promoBanner.eyebrow}</strong>
+          <span>{promoBanner.text}</span>
           <Link
             href={promoBanner.linkHref}
             style={{
-              color: colors.darkGray,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: '4px',
+              padding: '2px 8px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '4px',
+              color: '#fff',
+              fontSize: '12px',
               fontWeight: typography.fontWeight.medium,
-              textDecoration: 'underline',
-              textUnderlineOffset: '3px',
+              textDecoration: 'none',
             }}
           >
             {promoBanner.linkLabel}
           </Link>
-        </p>
+        </div>
       </section>
 
       {/* Hero Section */}
@@ -377,6 +392,9 @@ export default function HomePage() {
               color: colors.textSecondary,
               fontSize: typography.fontSize.sm,
               letterSpacing: '0.03em',
+              maxWidth: '900px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
             }}
           >
             <span>GIA-certified gemologist selection</span>
@@ -386,6 +404,10 @@ export default function HomePage() {
             <span>Small-batch, intentional production</span>
             <span style={{ color: colors.gold }}>•</span>
             <span>Lifetime care included</span>
+            <span style={{ color: colors.gold }}>•</span>
+            <span>100+ satisfied customers</span>
+            <span style={{ color: colors.gold }}>•</span>
+            <span>4.9/5 rating</span>
           </div>
           <p
             style={{
@@ -461,7 +483,7 @@ export default function HomePage() {
                 lineHeight: 1.8,
               }}
             >
-              Every pearl necklace from 33 Pearl Atelier includes complimentary lifetime care.
+              Lifetime Care Included
             </p>
             <p
               style={{
@@ -471,7 +493,7 @@ export default function HomePage() {
                 lineHeight: 1.8,
               }}
             >
-              Pearl necklaces include lifetime restringing and cleaning, while earrings and other pieces receive complimentary cleaning and maintenance to keep them in beautiful condition.
+              Professional restringing, cleaning, and maintenance — always free.
             </p>
           </div>
           <div
@@ -563,7 +585,7 @@ export default function HomePage() {
               marginBottom: spacing['2xl'],
             }}
           >
-            The most important details customers ask before purchasing.
+            Choose the path that best fits your piece and timeline.
           </p>
 
           <div
@@ -575,49 +597,122 @@ export default function HomePage() {
               overflow: 'hidden',
             }}
           >
-            <div style={{ padding: `${spacing.lg} ${spacing.lg}`, borderBottom: `1px solid ${colors.lightGray}`, borderLeft: '3px solid #d4af37' }}>
-              <h3 style={{ color: colors.darkGray, marginBottom: spacing.xs }}>How Ordering Works</h3>
-              <ul
+            <div
+              style={{
+                padding: `${spacing.xl} ${spacing.lg}`,
+                borderBottom: `1px solid ${colors.lightGray}`,
+              }}
+            >
+              <div
                 style={{
-                  color: colors.textSecondary,
-                  lineHeight: typography.lineHeight.relaxed,
-                  margin: 0,
-                  paddingLeft: spacing.md,
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                  gap: spacing.lg,
                 }}
               >
-                <li>Ready-to-wear: choose from available pieces in the collection.</li>
-                <li>Custom: request a tailored design based on your style and budget.</li>
-              </ul>
-            </div>
-
-            <div style={{ padding: `${spacing.lg} ${spacing.lg}`, borderBottom: `1px solid ${colors.lightGray}`, borderLeft: '3px solid #d4af37' }}>
-              <h3 style={{ color: colors.darkGray, marginBottom: spacing.xs }}>Production & Timeline</h3>
-              <ul
-                style={{
-                  color: colors.textSecondary,
-                  lineHeight: typography.lineHeight.relaxed,
-                  margin: 0,
-                  paddingLeft: spacing.md,
-                }}
-              >
-                <li>In-stock: ships quickly after order confirmation.</li>
-                <li>Custom lead time: usually 2-6 weeks depending on complexity.</li>
-              </ul>
-            </div>
-
-            <div style={{ padding: `${spacing.lg} ${spacing.lg}`, borderBottom: `1px solid ${colors.lightGray}`, borderLeft: '3px solid #d4af37' }}>
-              <h3 style={{ color: colors.darkGray, marginBottom: spacing.xs }}>Availability & Checkout</h3>
-              <ul
-                style={{
-                  color: colors.textSecondary,
-                  lineHeight: typography.lineHeight.relaxed,
-                  margin: 0,
-                  paddingLeft: spacing.md,
-                }}
-              >
-                <li>Use the cart to continue to secure Stripe checkout for ready-to-wear pieces.</li>
-                <li>Use the contact form when you want custom design guidance, service support, or help before ordering.</li>
-              </ul>
+                {[
+                  {
+                    title: 'Ready-to-Wear',
+                    subtitle: 'For pieces available to purchase now',
+                    steps: ['Browse the collection', 'Add to cart', 'Secure checkout'],
+                    timeline: 'Ships in 3 days',
+                  },
+                  {
+                    title: 'Custom Design',
+                    subtitle: 'Accepted on a limited basis for more personal, considered projects',
+                    steps: ['Request access', 'Private consultation', 'Design development'],
+                    timeline: 'Limited availability',
+                  },
+                ].map((flow) => (
+                  <div
+                    key={flow.title}
+                    style={{
+                      border: `1px solid ${colors.lightGray}`,
+                      borderRadius: '12px',
+                      padding: spacing.lg,
+                      background: 'linear-gradient(180deg, #fff 0%, #fcf8ef 100%)',
+                      boxShadow: '0 12px 24px rgba(44, 44, 44, 0.04)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: spacing.md,
+                    }}
+                  >
+                    <h4
+                      style={{
+                        margin: 0,
+                        color: colors.darkGray,
+                        fontSize: typography.fontSize.lg,
+                      }}
+                    >
+                      {flow.title}
+                    </h4>
+                    <p
+                      style={{
+                        margin: 0,
+                        color: colors.textSecondary,
+                        fontSize: typography.fontSize.sm,
+                        lineHeight: 1.7,
+                      }}
+                    >
+                      {flow.subtitle}
+                    </p>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gap: spacing.sm,
+                      }}
+                    >
+                      {flow.steps.map((step, index) => (
+                        <div
+                          key={step}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: spacing.sm,
+                            color: colors.textSecondary,
+                            fontSize: typography.fontSize.sm,
+                          }}
+                        >
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: '22px',
+                              height: '22px',
+                              borderRadius: '999px',
+                              backgroundColor: 'rgba(201, 169, 97, 0.14)',
+                              color: colors.gold,
+                              fontSize: '12px',
+                              fontWeight: typography.fontWeight.medium,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {index + 1}
+                          </span>
+                          <span>{step}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 'auto',
+                        alignSelf: 'flex-start',
+                        padding: '6px 12px',
+                        borderRadius: '999px',
+                        backgroundColor: 'rgba(201, 169, 97, 0.12)',
+                        color: colors.darkGray,
+                        fontSize: typography.fontSize.xs,
+                        fontWeight: typography.fontWeight.medium,
+                        letterSpacing: '0.04em',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      {flow.timeline}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div
@@ -628,49 +723,49 @@ export default function HomePage() {
                 alignItems: 'flex-start',
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
-              }}
-            >
-              <p
-                style={{
-                  color: colors.textSecondary,
-                  marginBottom: 0,
-                  lineHeight: typography.lineHeight.relaxed,
-                  flex: '1 1 560px',
                 }}
               >
-                Contact us when you want help choosing between ready-to-wear options, need custom design advice,
-                or want guidance on timing, pearl care, and the best next step for your order.
-              </p>
-              <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginLeft: 'auto' }}>
-                <Link
-                  href="/custom-services"
+                <p
                   style={{
-                    display: 'inline-block',
-                    border: `1px solid ${colors.lightGray}`,
-                    padding: `${spacing.xs} ${spacing.lg}`,
-                    color: colors.darkGray,
-                    textDecoration: 'none',
-                    letterSpacing: '0.08em',
-                    backgroundColor: colors.white,
+                    color: colors.textSecondary,
+                    marginBottom: 0,
+                    lineHeight: typography.lineHeight.relaxed,
+                    flex: '1 1 560px',
                   }}
                 >
-                  Redesign Service
-                </Link>
-                <Link
-                  href="/contact"
-                  style={{
-                    display: 'inline-block',
-                    border: `1px solid ${colors.darkGray}`,
-                    padding: `${spacing.xs} ${spacing.lg}`,
-                    color: colors.darkGray,
-                    textDecoration: 'none',
-                    letterSpacing: '0.08em',
-                  }}
-                >
-                  Contact Us
-                </Link>
+                  Need help choosing between ready-to-wear and custom? We’re happy to guide you on timing,
+                  pearl care, and the best next step for your order.
+                </p>
+                <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginLeft: 'auto' }}>
+                  <Link
+                    href="/custom-services"
+                    style={{
+                      display: 'inline-block',
+                      border: `1px solid ${colors.lightGray}`,
+                      padding: `${spacing.xs} ${spacing.lg}`,
+                      color: colors.darkGray,
+                      textDecoration: 'none',
+                      letterSpacing: '0.08em',
+                      backgroundColor: colors.white,
+                    }}
+                  >
+                    Custom Services
+                  </Link>
+                  <Link
+                    href="/contact"
+                    style={{
+                      display: 'inline-block',
+                      border: `1px solid ${colors.darkGray}`,
+                      padding: `${spacing.xs} ${spacing.lg}`,
+                      color: colors.darkGray,
+                      textDecoration: 'none',
+                      letterSpacing: '0.08em',
+                    }}
+                  >
+                    Contact Us
+                  </Link>
+                </div>
               </div>
-            </div>
           </div>
         </div>
       </section>

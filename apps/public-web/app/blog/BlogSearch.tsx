@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { colors, typography, spacing, transitions } from '../constants/design'
 import type { BlogPost } from '../lib/blog'
 
@@ -114,76 +115,111 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
                   borderRadius: '16px',
                   padding: `${spacing.lg} ${spacing.lg} ${spacing.md}`,
                   boxShadow: '0 12px 28px rgba(44, 44, 44, 0.08)',
-                  display: 'flex',
-                  flexDirection: 'column',
+                  display: 'grid',
+                  gridTemplateColumns: post.ogImage ? '140px minmax(0, 1fr)' : '1fr',
                   gap: spacing.sm,
+                  alignItems: 'start',
                 }}
               >
-                <p style={{ color: '#8f7a53', fontSize: typography.fontSize.sm, margin: 0 }}>
-                  {post.publishedAt} • {post.readingMinutes} min read
-                </p>
-                <h2
-                  style={{
-                    fontSize: typography.fontSize['2xl'],
-                    color: colors.darkGray,
-                    margin: 0,
-                    lineHeight: typography.lineHeight.tight,
-                  }}
-                >
-                  {post.title}
-                </h2>
-                <p
-                  style={{
-                    color: colors.textSecondary,
-                    lineHeight: typography.lineHeight.relaxed,
-                    margin: 0,
-                    maxWidth: '52rem',
-                  }}
-                >
-                  {post.excerpt}
-                </p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      style={{
-                        fontSize: typography.fontSize.xs,
-                        color: '#5a4a2a',
-                        backgroundColor: '#f8ecd7',
-                        border: '1px solid rgba(212, 175, 55, 0.35)',
-                        borderRadius: '999px',
-                        padding: '4px 10px',
-                        letterSpacing: '0.04em',
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    marginTop: spacing.xs,
-                  }}
-                >
+                {post.ogImage ? (
                   <Link
                     href={`/blog/${post.slug}`}
                     style={{
-                      display: 'inline-block',
-                      padding: `${spacing.xs} ${spacing.md}`,
-                      borderRadius: '999px',
-                      border: '1px solid rgba(212, 175, 55, 0.45)',
-                      background: '#f7e7ce',
-                      color: '#473c26',
+                      display: 'block',
                       textDecoration: 'none',
-                      letterSpacing: '0.08em',
-                      transition: transitions.fast,
-                      boxShadow: '0 6px 14px rgba(106, 85, 47, 0.14)',
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      width: '140px',
+                      height: '104px',
+                      backgroundColor: '#f6f1e8',
+                      flexShrink: 0,
+                      marginTop: '28px',
                     }}
                   >
-                    Read Article
+                    <Image
+                      src={post.ogImage}
+                      alt={post.ogImageAlt || post.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 980px"
+                      style={{ objectFit: 'cover' }}
+                    />
                   </Link>
+                ) : null}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: spacing.sm,
+                    minWidth: 0,
+                  }}
+                >
+                  <p style={{ color: '#8f7a53', fontSize: typography.fontSize.sm, margin: 0 }}>
+                    {post.publishedAt} • {post.readingMinutes} min read
+                  </p>
+                  <h2
+                    style={{
+                      fontSize: typography.fontSize['2xl'],
+                      color: colors.darkGray,
+                      margin: 0,
+                      lineHeight: typography.lineHeight.tight,
+                    }}
+                  >
+                    {post.title}
+                  </h2>
+                  <p
+                    style={{
+                      color: colors.textSecondary,
+                      lineHeight: typography.lineHeight.relaxed,
+                      margin: 0,
+                      maxWidth: '52rem',
+                    }}
+                  >
+                    {post.excerpt}
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        style={{
+                          fontSize: typography.fontSize.xs,
+                          color: '#5a4a2a',
+                          backgroundColor: '#f8ecd7',
+                          border: '1px solid rgba(212, 175, 55, 0.35)',
+                          borderRadius: '999px',
+                          padding: '4px 10px',
+                          letterSpacing: '0.04em',
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      marginTop: spacing.xs,
+                    }}
+                  >
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      style={{
+                        display: 'inline-block',
+                        padding: `${spacing.xs} ${spacing.md}`,
+                        borderRadius: '999px',
+                        border: '1px solid rgba(212, 175, 55, 0.45)',
+                        background: '#f7e7ce',
+                        color: '#473c26',
+                        textDecoration: 'none',
+                        letterSpacing: '0.08em',
+                        transition: transitions.fast,
+                        boxShadow: '0 6px 14px rgba(106, 85, 47, 0.14)',
+                      }}
+                    >
+                      Read Article
+                    </Link>
+                  </div>
                 </div>
               </article>
 

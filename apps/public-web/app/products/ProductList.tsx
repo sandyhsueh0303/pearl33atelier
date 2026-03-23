@@ -9,6 +9,7 @@ import { colors, typography, spacing, transitions, shadows } from '../constants/
 import { pageHeroStyles } from '../constants/pageHero'
 import PageHero from '../components/PageHero'
 import FilterPanel, { type ProductFilters } from '../components/FilterPanel'
+import { useCart } from '../components/CartProvider'
 
 export interface ProductListItem {
   id: string
@@ -42,6 +43,7 @@ interface ProductListProps {
 export default function ProductList({ products, currentPage, hasNextPage, initialFilters }: ProductListProps) {
   const [filters, setFilters] = useState<ProductFilters>(initialFilters || {})
   const deferredFilters = useDeferredValue(filters)
+  const { addItem } = useCart()
 
   const getCategoryLabel = (category: string | null | undefined) => {
     const labels: Record<string, string> = {
@@ -180,6 +182,29 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
 
           <FilterPanel onFilterChange={setFilters} initialFilters={initialFilters} />
 
+          <div
+            style={{
+              margin: `${spacing.lg} 0 ${spacing.xl}`,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: spacing.md,
+              flexWrap: 'wrap',
+              color: colors.textSecondary,
+              fontSize: typography.fontSize.sm,
+              letterSpacing: '0.02em',
+            }}
+          >
+            <span>
+              {filteredProducts.length} {filteredProducts.length === 1 ? 'result' : 'results'}
+            </span>
+            {hasActiveFilters ? (
+              <span style={{ color: colors.textLight }}>Showing filtered products</span>
+            ) : (
+              <span style={{ color: colors.textLight }}>Showing the full collection</span>
+            )}
+          </div>
+
         {filteredProducts.length === 0 ? (
           <div style={{ 
             padding: spacing['4xl'],
@@ -209,13 +234,9 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
             }}
           >
             {filteredProducts.map((product, index) => (
-              <Link
+              <div
                 key={product.id}
-                href={`/products/${product.slug}`}
                 style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  display: 'block',
                   height: '100%',
                 }}
               >
@@ -231,117 +252,183 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
                 }}
                 className="productCard"
                 >
-                  {/* Image */}
-                  <div style={{
-                    width: '100%',
-                    paddingBottom: '133.333%',
-                    position: 'relative',
-                    backgroundColor: colors.pearl
-                  }}>
-                    {product.primaryImage ? (
-                      <Image
-                        src={getProductImageUrl(product.primaryImage.storage_path)}
-                        alt={`${product.pearl_type || 'Pearl'} ${getCategoryLabel(product.category) || 'Jewelry'} - ${product.title}`}
-                        fill
-                        priority={index < 2}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                        style={{
-                          objectFit: 'cover'
-                        }}
-                      />
-                    ) : (
-                      <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: '#ffffff',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#C9A961'
+                  <Link
+                    href={`/products/${product.slug}`}
+                    style={{
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flex: 1,
+                    }}
+                  >
+                    {/* Image */}
+                    <div style={{
+                      width: '100%',
+                      paddingBottom: '133.333%',
+                      position: 'relative',
+                      backgroundColor: colors.pearl
+                    }}>
+                      {product.primaryImage ? (
+                        <Image
+                          src={getProductImageUrl(product.primaryImage.storage_path)}
+                          alt={`${product.pearl_type || 'Pearl'} ${getCategoryLabel(product.category) || 'Jewelry'} - ${product.title}`}
+                          fill
+                          priority={index < 2}
+                          sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                          style={{
+                            objectFit: 'cover'
+                          }}
+                        />
+                      ) : (
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          background: '#ffffff',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#C9A961'
+                        }}>
+                          <span style={{ fontSize: '3rem' }}>✦</span>
+                          <div style={{ fontSize: '0.875rem', marginTop: '1rem' }}>
+                            Photo Coming Soon
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Product Info */}
+                    <div style={{ padding: spacing.lg, display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <h2 style={{ 
+                        fontSize: typography.fontSize.lg,
+                        fontWeight: typography.fontWeight.medium,
+                        marginBottom: spacing.xs,
+                        color: colors.darkGray,
+                        lineHeight: 1.4,
+                        wordBreak: 'break-word',
                       }}>
-                        <span style={{ fontSize: '3rem' }}>✦</span>
-                        <div style={{ fontSize: '0.875rem', marginTop: '1rem' }}>
-                          Photo Coming Soon
+                        {product.title}
+                      </h2>
+
+                      <div style={{ 
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginTop: 'auto',
+                        gap: spacing.sm,
+                      }}>
+                        <div>
+                          {product.sell_price && (
+                            <div style={{ 
+                              fontSize: typography.fontSize.xl,
+                              fontWeight: typography.fontWeight.semibold,
+                              color: colors.darkGray
+                            }}>
+                              $ {product.sell_price.toLocaleString()}
+                            </div>
+                          )}
+                          {product.original_price && product.original_price > (product.sell_price || 0) && (
+                            <div style={{ 
+                              fontSize: typography.fontSize.sm,
+                              color: colors.textLight,
+                              textDecoration: 'line-through'
+                            }}>
+                              $ {product.original_price.toLocaleString()}
+                            </div>
+                          )}
+                        </div>
+
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: spacing.xs,
+                            flexShrink: 0,
+                          }}
+                        >
+                          <span
+                            style={{
+                              padding: '6px 12px',
+                              backgroundColor:
+                                product.availability === 'IN_STOCK'
+                                  ? '#e8f5e9'
+                                  : product.availability === 'OUT_OF_STOCK'
+                                  ? '#fbe9e7'
+                                  : colors.champagne,
+                              color:
+                                product.availability === 'IN_STOCK'
+                                  ? '#2e7d32'
+                                  : product.availability === 'OUT_OF_STOCK'
+                                  ? '#b71c1c'
+                                  : colors.gold,
+                              fontSize: typography.fontSize.xs,
+                              fontWeight: typography.fontWeight.medium,
+                            }}
+                          >
+                            {product.availability === 'IN_STOCK'
+                              ? 'In Stock'
+                              : product.availability === 'OUT_OF_STOCK'
+                              ? 'Sold'
+                              : 'Pre-order'}
+                          </span>
+                          <button
+                            type="button"
+                            aria-label={`Add ${product.title} to cart`}
+                            onClick={(event) => {
+                              event.preventDefault()
+                              event.stopPropagation()
+                              addItem({
+                                id: product.id,
+                                slug: product.slug,
+                                title: product.title,
+                                imageUrl: product.primaryImage
+                                  ? getProductImageUrl(product.primaryImage.storage_path)
+                                  : null,
+                                pearlType: product.pearl_type || null,
+                                sizeMm: product.size_mm || null,
+                                price: typeof product.sell_price === 'number' ? product.sell_price : null,
+                                availability: product.availability,
+                              })
+                            }}
+                            disabled={product.availability === 'OUT_OF_STOCK'}
+                            style={{
+                              width: '30px',
+                              height: '30px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              border:
+                                product.availability === 'OUT_OF_STOCK'
+                                  ? '1px solid rgba(154, 143, 132, 0.65)'
+                                  : `1px solid ${colors.gold}`,
+                              backgroundColor:
+                                product.availability === 'OUT_OF_STOCK'
+                                  ? 'rgba(154, 143, 132, 0.12)'
+                                  : 'rgba(201, 169, 97, 0.08)',
+                              color:
+                                product.availability === 'OUT_OF_STOCK'
+                                  ? '#9a8f84'
+                                  : colors.gold,
+                              fontSize: typography.fontSize.lg,
+                              lineHeight: 1,
+                              cursor:
+                                product.availability === 'OUT_OF_STOCK' ? 'not-allowed' : 'pointer',
+                              flexShrink: 0,
+                            }}
+                          >
+                            +
+                          </button>
                         </div>
                       </div>
-                    )}
-                  </div>
-
-                  {/* Product Info */}
-                  <div style={{ padding: spacing.lg, display: 'flex', flexDirection: 'column', flex: 1 }}>
-                    <h2 style={{ 
-                      fontSize: typography.fontSize.lg,
-                      fontWeight: typography.fontWeight.medium,
-                      marginBottom: spacing.xs,
-                      color: colors.darkGray,
-                      lineHeight: 1.4,
-                      wordBreak: 'break-word',
-                    }}>
-                      {product.title}
-                    </h2>
-
-                    {/* Description removed from card view; only shown on detail page */}
-
-                    <div style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      marginTop: 'auto',
-                    }}>
-                      <div>
-                        {product.sell_price && (
-                          <div style={{ 
-                            fontSize: typography.fontSize.xl,
-                            fontWeight: typography.fontWeight.semibold,
-                            color: colors.darkGray
-                          }}>
-                            $ {product.sell_price.toLocaleString()}
-                          </div>
-                        )}
-                        {product.original_price && product.original_price > (product.sell_price || 0) && (
-                          <div style={{ 
-                            fontSize: typography.fontSize.sm,
-                            color: colors.textLight,
-                            textDecoration: 'line-through'
-                          }}>
-                            $ {product.original_price.toLocaleString()}
-                          </div>
-                        )}
-                      </div>
-
-                      <span
-                        style={{
-                          padding: '6px 12px',
-                          backgroundColor:
-                            product.availability === 'IN_STOCK'
-                              ? '#e8f5e9'
-                              : product.availability === 'OUT_OF_STOCK'
-                              ? '#fbe9e7'
-                              : colors.champagne,
-                          color:
-                            product.availability === 'IN_STOCK'
-                              ? '#2e7d32'
-                              : product.availability === 'OUT_OF_STOCK'
-                              ? '#b71c1c'
-                              : colors.gold,
-                          fontSize: typography.fontSize.xs,
-                          fontWeight: typography.fontWeight.medium,
-                        }}
-                      >
-                        {product.availability === 'IN_STOCK'
-                          ? 'In Stock'
-                          : product.availability === 'OUT_OF_STOCK'
-                          ? 'Sold'
-                          : 'Pre-order'}
-                      </span>
                     </div>
-                  </div>
+                  </Link>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}

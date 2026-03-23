@@ -201,6 +201,34 @@ export default function CustomServicesPage() {
                   marginBottom: spacing.xs,
                 }}
               >
+                Pricing Guide
+              </p>
+              <p
+                style={{
+                  color: colors.textSecondary,
+                  lineHeight: typography.lineHeight.relaxed,
+                  marginBottom: 0,
+                }}
+              >
+                Custom pieces typically start from $800.
+              </p>
+            </div>
+            <div
+              style={{
+                marginTop: spacing.lg,
+                paddingTop: spacing.md,
+                borderTop: `1px solid ${colors.lightGray}`,
+              }}
+            >
+              <p
+                style={{
+                  fontSize: typography.fontSize.sm,
+                  letterSpacing: '0.16em',
+                  textTransform: 'uppercase',
+                  color: colors.gold,
+                  marginBottom: spacing.xs,
+                }}
+              >
                 Custom Availability
               </p>
               <p
