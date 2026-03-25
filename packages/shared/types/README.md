@@ -1,205 +1,75 @@
-# Supabase TypeScript Types
+# Shared Database Types
 
-This directory contains TypeScript type definitions for the Supabase database schema.
+這個資料夾放的是專案使用的 shared database types。
 
-## Files
+## 這個資料夾的角色
 
-- **`database.types.ts`** - Auto-generated types from Supabase schema (DO NOT EDIT MANUALLY)
-- **`index.ts`** - Main types export file with type helpers and custom interfaces
+這裡放的是 Supabase schema 對應出來的 TypeScript 型別，以及少量人工整理過的 aliases，讓前後台都能用一致的資料結構寫程式。
 
-## Regenerating Types
+## 主要檔案
 
-When you change the database schema (add/remove tables, columns, etc.), you need to regenerate the types:
+- [database.types.ts](/Users/sandyhsueh/pearl33atelier/packages/shared/types/database.types.ts)
+  - 由 Supabase schema 自動產生
+  - 不要手動編輯
+- [index.ts](/Users/sandyhsueh/pearl33atelier/packages/shared/types/index.ts)
+  - 對 generated types 做 re-export
+  - 補上常用 row aliases 與 enum aliases
 
-### Prerequisites
+## 為什麼這層重要
 
-1. Install Supabase CLI (if not already installed):
-   ```bash
-   npm install -g supabase
-   ```
+這個專案同時有前台、後台、webhook、admin workflow。若沒有穩定的型別層，schema 一改就會出現多個 app 各自錯一點點的狀況。
 
-2. Login to Supabase:
-   ```bash
-   npx supabase login
-   ```
+型別層的目的就是：
 
-### Generate Types
+- 把 schema 變更的影響提早暴露在開發期
+- 讓 table / column 名稱錯誤盡量變成 TypeScript error
+- 讓 shared logic、public-web、inventory-admin 依賴同一套資料定義
 
-```bash
-# From project root
-npx supabase gen types typescript --project-id xjrnyynfzbrhmotepzyl --schema public > packages/shared/types/database.types.ts
-```
+## 重新生成方式
 
-Or use the npm script:
+從 repo root：
 
 ```bash
 npm run gen:types
 ```
 
-## Usage Examples
+輸出位置：
 
-### Basic Query with Type Safety
+- [database.types.ts](/Users/sandyhsueh/pearl33atelier/packages/shared/types/database.types.ts)
 
-```typescript
-import { createAdminClient } from '@/app/utils/supabase'
-import type { Database } from '@pearl33atelier/shared/types'
+## 常用型別
 
-const supabase = await createAdminClient()
+`index.ts` 目前整理出這些常用 helper：
 
-// ✅ Fully typed - no (as any) needed!
-const { data, error } = await supabase
-  .from('catalog_products')
-  .select('*')
-  .eq('published', true)
+- `AdminUserRow`
+- `InventoryItemRow`
+- `CatalogProductRow`
+- `ProductImageRow`
+- `PearlType`
+- `AvailabilityKind`
+- `ProductCategory`
 
-// data is typed as CatalogProductRow[]
-// TypeScript will catch typos in table/column names!
-```
+## Example
 
-### Insert with Type Safety
+```ts
+import type { Database, CatalogProductRow } from '@pearl33atelier/shared/types'
 
-```typescript
 type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
 
-const productData: ProductInsert = {
-  title: 'New Product',
-  slug: 'new-product',
+const product: ProductInsert = {
+  title: 'Akoya Pearl Necklace',
+  slug: 'akoya-pearl-necklace',
   pearl_type: 'WhiteAkoya',
-  // TypeScript will error if you forget required fields
-  // or use wrong types!
+  availability: 'IN_STOCK',
 }
 
-const { data, error } = await supabase
-  .from('catalog_products')
-  .insert(productData)
-  .select()
-  .single()
-```
-
-### Update with Type Safety
-
-```typescript
-type ProductUpdate = Database['public']['Tables']['catalog_products']['Update']
-
-const updates: ProductUpdate = {
-  title: 'Updated Title',
-  published: true,
-  published_at: new Date().toISOString()
-}
-
-const { data, error } = await supabase
-  .from('catalog_products')
-  .update(updates)
-  .eq('id', productId)
-  .select()
-  .single()
-```
-
-### Using Row Type Helpers
-
-```typescript
-import type { CatalogProductRow } from '@pearl33atelier/shared/types'
-
-function processProduct(product: CatalogProductRow) {
-  // product is fully typed
-  console.log(product.title, product.pearl_type)
+function renderProductCard(item: CatalogProductRow) {
+  return item.title
 }
 ```
 
-## Benefits
+## 維護原則
 
-### ✅ Before (with `as any`)
-
-```typescript
-// ❌ No type safety
-const { data, error } = await (supabase as any)
-  .from('catalog_products')
-  .insert({ tittle: 'Oops' }) // Typo not caught!
-  .select()
-```
-
-### ✅ After (with generated types)
-
-```typescript
-// ✅ Full type safety
-const { data, error } = await supabase
-  .from('catalog_products')
-  .insert({ tittle: 'Oops' }) // ❌ TypeScript error: 'tittle' doesn't exist
-  .select()
-```
-
-## Type Helpers
-
-The `index.ts` file exports helpful type aliases:
-
-```typescript
-// Row types (for query results)
-export type AdminUserRow = Tables['admin_users']['Row']
-export type InventoryItemRow = Tables['inventory_items']['Row']
-export type CatalogProductRow = Tables['catalog_products']['Row']
-export type ProductImageRow = Tables['product_images']['Row']
-
-// Usage
-import type { CatalogProductRow } from '@pearl33atelier/shared/types'
-
-const products: CatalogProductRow[] = await fetchProducts()
-```
-
-## Common Patterns
-
-### RPC Functions
-
-```typescript
-const { data, error} = await supabase
-  .rpc('publish_product', { product_id: id })
-
-// If RPC types are not generated correctly, you can still use as any for RPC only:
-// const { data, error } = await (supabase as any).rpc('publish_product', { product_id: id })
-```
-
-### Complex Queries with Joins
-
-```typescript
-const { data, error } = await supabase
-  .from('catalog_products')
-  .select(`
-    *,
-    product_images (*)
-  `)
-  .eq('published', true)
-
-// data is typed with nested product_images array
-```
-
-## Troubleshooting
-
-### Error: "Property does not exist on type"
-
-**Cause**: Database schema changed but types not regenerated.
-
-**Solution**: Run `npm run gen:types` to regenerate types.
-
-### Error: "Access token not provided"
-
-**Cause**: Not logged into Supabase CLI.
-
-**Solution**: Run `npx supabase login`.
-
-### RPC Function Types Missing
-
-**Cause**: Supabase type generation sometimes doesn't include RPC function parameter types.
-
-**Solution**: For RPC calls only, you can use `(supabase as any).rpc()` and add a comment explaining why.
-
-## Workflow
-
-1. **Make database schema changes** (in Supabase Dashboard or via migrations)
-2. **Regenerate types**: `npm run gen:types`
-3. **Fix TypeScript errors** that appear (these are good! They show where code needs updating)
-4. **Test your changes**
-5. **Commit both code and updated `database.types.ts`**
-
-## Additional Resources
-
-- [Supabase TypeScript Support](https://supabase.com/docs/guides/api/generating-types)
-- [Supabase CLI Reference](https://supabase.com/docs/reference/cli/introduction)
+- 不要手動改 `database.types.ts`
+- schema 變更後先重新生成型別，再修正程式
+- 若某個 alias 同時被前後台頻繁使用，再考慮把它放進 `index.ts`

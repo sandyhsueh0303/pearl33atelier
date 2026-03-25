@@ -1,26 +1,50 @@
 # 33 Pearl Atelier
 
-[中文說明 / Traditional Chinese](./README.zh-TW.md)
+[中文說明 / Traditional Chinese](/Users/sandyhsueh/pearl33atelier/README.zh-TW.md)
 
-## Overview
+Monorepo for the 33 Pearl Atelier digital system: a brand-led storefront, an operations-focused admin app, shared domain utilities, and Supabase-backed data workflows.
 
-This is the monorepo for 33 Pearl Atelier, including:
+## Why This Repo Exists
 
-- `apps/public-web` — the public storefront
-- `apps/inventory-admin` — the internal admin system
-- `packages/shared` — shared utilities and types
-- `supabase` — schema and migration-related files
+This project is not just a website plus a dashboard. It is designed as one connected operating system for a small jewelry brand:
 
-The current system includes:
+- `public-web` presents the brand, products, and checkout experience
+- `inventory-admin` supports daily operations, product publishing, inventory, sales, and shipping
+- `packages/shared` keeps both apps aligned on the same domain rules
+- `supabase` holds the database and persistence layer that both apps depend on
 
-- ready-to-wear product browsing and cart flow
-- Stripe Checkout
-- Stripe webhook order syncing
-- Resend order confirmation emails
-- inventory / BOM / sales / orders admin flows
-- blog / journal content system
+The goal is to keep the customer-facing experience calm and refined while making the internal workflow practical and reliable.
 
-## Project Structure
+## System Design Thinking
+
+The system follows a few consistent ideas:
+
+- Brand-first storefront: the public app is designed to feel editorial and trustworthy, not like a generic marketplace.
+- Operations-first admin: the back office is treated as a real working tool, not a demo CMS.
+- One source of truth: product, order, and inventory data live in Supabase and are shared across both apps.
+- Automation where it reduces manual work: checkout, payment confirmation, order sync, email sending, and availability calculations are handled by the system instead of by hand.
+- Shared domain rules: availability, slugs, image URLs, and typed database access are centralized so the two apps do not drift apart.
+
+## High-Level Architecture
+
+```text
+Customer
+  -> public-web
+  -> Stripe Checkout
+  -> Stripe webhook
+  -> Supabase orders / order_items / sales
+  -> confirmation email
+
+Admin
+  -> inventory-admin
+  -> Supabase catalog / inventory / sales / orders
+
+Both apps
+  -> packages/shared
+  -> shared types, utilities, availability logic, storage helpers
+```
+
+## Repository Structure
 
 ```text
 .
@@ -30,182 +54,115 @@ The current system includes:
 ├── packages/
 │   └── shared/
 ├── supabase/
-├── package.json
-└── README.md
+├── 33pearlatelier/
+└── package.json
 ```
 
-## Apps
+## Read The Right README
+
+- [apps/public-web/README.md](/Users/sandyhsueh/pearl33atelier/apps/public-web/README.md): storefront purpose, user flow, routes, env, integrations
+- [apps/inventory-admin/README.md](/Users/sandyhsueh/pearl33atelier/apps/inventory-admin/README.md): admin workflows, auth model, operational APIs
+- [packages/shared/README.md](/Users/sandyhsueh/pearl33atelier/packages/shared/README.md): shared domain layer and why it exists
+- [packages/shared/types/README.md](/Users/sandyhsueh/pearl33atelier/packages/shared/types/README.md): generated types workflow
+- [33pearlatelier/README.md](/Users/sandyhsueh/pearl33atelier/33pearlatelier/README.md): nested workspace notes and Notion inventory import script
+
+## Main Components
 
 ### `apps/public-web`
 
-The public site, running on port `3000` in development.
+Public storefront running on `http://localhost:3000`.
 
-Main features:
+Responsibility:
 
-- homepage, brand pages, FAQ, contact
-- product listing and product detail pages
-- cart / Stripe Checkout / success flow
-- custom services and custom inquiry
-- blog / journal
-- Stripe webhook handling
-- Resend order confirmation email flow
+- communicate brand and product value
+- show only published product data
+- support cart and checkout
+- trigger paid order lifecycle through Stripe
+- send customer-facing order confirmation email
 
 ### `apps/inventory-admin`
 
-The internal admin app, running on port `3001` in development.
+Internal admin running on `http://localhost:3001`.
 
-Main features:
+Responsibility:
 
-- admin auth
-- catalog product management
-- product image management
-- inventory management
-- BOM / product materials
-- sales records
-- order management
-- tracking and shipped status updates
+- manage products and publishing state
+- manage raw inventory and material allocation
+- review sales and orders
+- update shipping information
+- enforce admin-only operational access
 
 ### `packages/shared`
 
-Shared code for both apps, including:
+Shared domain package used by both apps.
 
-- Supabase / storage utilities
-- shared types
-- `database.types.ts`
+Responsibility:
 
-## Requirements
+- typed Supabase access
+- common storage and slug helpers
+- product availability logic based on material allocation
+- shared types so both apps read the same schema
 
-- Node.js 20+
-- npm 9+
-- a Supabase project
-- a Stripe account
-- a Resend account
+## Automated Behaviors
 
-## Install
+The system intentionally automates the repetitive parts of running the shop:
+
+- checkout creates `orders` and `order_items` before redirecting to Stripe
+- Stripe webhook marks orders as paid and syncs payment totals
+- paid orders are synced into downstream sales workflows
+- confirmation emails are sent after payment when email config is present
+- admin shipping emails can be triggered from admin flows
+- product availability can be derived from material inventory instead of only manual status toggles
+
+## Local Development
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-## Local Development
-
-### Start the public site
-
-```bash
-npm run dev:public-web
-```
-
-Open: `http://localhost:3000`
-
-### Start the admin app
-
-```bash
-npm run dev:inventory-admin
-```
-
-Open: `http://localhost:3001`
-
-### Run both apps
-
-```bash
-# terminal 1
-npm run dev:public-web
-
-# terminal 2
-npm run dev:inventory-admin
-```
-
-## Build
-
-```bash
-npm run build:public-web
-npm run build:inventory-admin
-```
-
-## Common Scripts
+Run both apps in separate terminals:
 
 ```bash
 npm run dev:public-web
 npm run dev:inventory-admin
+```
+
+## Build And Start
+
+```bash
 npm run build:public-web
 npm run build:inventory-admin
 npm run start:public-web
 npm run start:inventory-admin
-npm run gen:types
 ```
 
-## Environment Variables
+## Environment Overview
 
-### `apps/public-web/.env.local`
+The storefront and admin app each use their own `.env.local`.
 
-Required:
+Shared foundations:
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+Storefront-only operational keys:
 
-STRIPE_SECRET_KEY=
-STRIPE_WEBHOOK_SECRET=
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL`
+- `RESEND_REPLY_TO_EMAIL`
 
-RESEND_API_KEY=
-RESEND_FROM_EMAIL=
-RESEND_REPLY_TO_EMAIL=
-```
+Shared app URL setting:
 
-Optional:
+- `NEXT_PUBLIC_SITE_URL`
 
-```env
-NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=
-```
+See each app README for the exact env list and usage.
 
-### `apps/inventory-admin/.env.local`
-
-Required:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-NEXT_PUBLIC_SITE_URL=http://localhost:3001
-```
-
-If you want the admin app to send shipping emails:
-
-```env
-RESEND_API_KEY=
-RESEND_FROM_EMAIL=
-RESEND_REPLY_TO_EMAIL=
-```
-
-## Stripe Flow
-
-Current payment flow:
-
-1. The customer adds items to cart in `public-web`
-2. `/api/checkout/session` creates a Stripe Checkout Session
-3. The app also creates `orders` and `order_items`
-4. Stripe sends `checkout.session.completed`
-5. The webhook updates `orders.status = paid`
-6. Shipping and tax are synced back to the database
-7. The paid order is synced into sales records
-8. Resend sends the order confirmation email
-
-## Resend
-
-There are currently two email flows:
-
-- `public-web`
-  - order confirmation email
-- `inventory-admin`
-  - shipping email
-
-If your Resend account is still in testing mode, recipient delivery will be restricted. Before production, verify your sending domain and use a sender address on that verified domain.
-
-## Supabase
-
-### Regenerating Types
+## Schema And Type Workflow
 
 When the public schema changes:
 
@@ -215,77 +172,10 @@ npm run gen:types
 
 Generated file:
 
-- [packages/shared/types/database.types.ts](./packages/shared/types/database.types.ts)
-
-### Important Note
-
-- keep schema changes in sync with migrations whenever possible
-- avoid making remote DB-only changes without updating the repo
-
-## Key Data Model Notes
-
-Important tables include:
-
-- `catalog_products`
-- `product_images`
-- `inventory_items`
-- `product_materials`
-- `sales_records`
-- `orders`
-- `order_items`
-- `admin_users`
-
-`orders` currently supports fields such as:
-
-- `order_number`
-- `status`
-- `shipping_fee_cents`
-- `tax_amount_cents`
-- `tracking_number`
-- `shipping_carrier`
-- `shipped_at`
-- `confirmation_email_sent_at`
-- `shipping_email_sent_at`
+- [packages/shared/types/database.types.ts](/Users/sandyhsueh/pearl33atelier/packages/shared/types/database.types.ts)
 
 ## Notes
 
-- `apps/*/tsconfig.tsbuildinfo` are cache files and should not be committed
-- if a webhook succeeds but email does not send, check:
-  - Resend env vars
-  - Resend testing mode restrictions
-  - verified sending domain
-- `public-web` and `inventory-admin` are separate apps and each needs its own env setup
-
-## Recommended Testing
-
-### public-web
-
-- cart flow
-- Stripe Checkout
-- success page
-- webhook flow
-- order confirmation email
-- blog / product linking
-
-### inventory-admin
-
-- login
-- product CRUD
-- sales record flow
-- orders list
-- shipped status updates
-
-## Pre-deploy Checklist
-
-- Supabase schema is in sync
-- all required env vars are set
-- Stripe webhook endpoint points to the correct environment
-- Resend domain is verified
-- `NEXT_PUBLIC_SITE_URL` uses the correct production domain
-
-## Repository Notes
-
-- keep the root README focused on overall setup and deployment
-- keep app-specific implementation details close to each app
-- for longer route and testing notes, see:
-  - [TESTING_ROUTES.md](./TESTING_ROUTES.md)
+- `public-web` and `inventory-admin` are separate apps, but they are meant to behave like one coherent system.
+- Keep database schema changes and generated types in sync.
+- Keep operational logic in shared helpers when both apps depend on the same rule.
