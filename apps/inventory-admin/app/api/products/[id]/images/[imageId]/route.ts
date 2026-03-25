@@ -15,6 +15,14 @@ import { logger } from '@/app/utils/logger'
 import { STORAGE_BUCKET } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
 
+function getImageVariantPaths(storagePath: string): string[] {
+  const match = storagePath.match(/^(.*)-(thumb|medium|large)\.([^.]+)$/)
+  if (!match) return [storagePath]
+
+  const [, basePath, , extension] = match
+  return ['thumb', 'medium', 'large'].map((size) => `${basePath}-${size}.${extension}`)
+}
+
 // PATCH /api/products/[id]/images/[imageId] - Update image properties
 export async function PATCH(
   request: NextRequest,
@@ -79,11 +87,12 @@ export async function DELETE(
       .eq('id', imageId)
       .single()
 
-    // Step 1: Delete from storage first
+    // Step 1: Delete all size variants from storage first
     if (image?.storage_path) {
+      const pathsToDelete = getImageVariantPaths(image.storage_path)
       const { error: storageError } = await supabase.storage
         .from(STORAGE_BUCKET)
-        .remove([image.storage_path])
+        .remove(pathsToDelete)
       
       if (storageError) {
         logger.error('Failed to delete image from storage', storageError)

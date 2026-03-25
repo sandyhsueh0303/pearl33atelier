@@ -16,6 +16,14 @@ import type { Database } from '@pearl33atelier/shared/types'
 type ProductUpdate = Database['public']['Tables']['catalog_products']['Update']
 type ProductImage = Database['public']['Tables']['product_images']['Row']
 
+function getImageVariantPaths(storagePath: string): string[] {
+  const match = storagePath.match(/^(.*)-(thumb|medium|large)\.([^.]+)$/)
+  if (!match) return [storagePath]
+
+  const [, basePath, , extension] = match
+  return ['thumb', 'medium', 'large'].map((size) => `${basePath}-${size}.${extension}`)
+}
+
 function normalizeSizeRange(value: unknown): string | null {
   if (value == null) return null
   const size = String(value).trim()
@@ -167,9 +175,9 @@ export async function DELETE(
       .eq('product_id', id)
       .returns<Pick<ProductImage, 'storage_path'>[]>()
 
-    // Step 2: Delete images from storage
+    // Step 2: Delete all image variants from storage
     if (images && images.length > 0) {
-      const paths = images.map(img => img.storage_path)
+      const paths = [...new Set(images.flatMap((img) => getImageVariantPaths(img.storage_path)))]
       const { error: storageError } = await supabase
         .storage
         .from(STORAGE_BUCKET)
