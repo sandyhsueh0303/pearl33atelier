@@ -15,6 +15,7 @@ export interface ProductListItem {
   id: string
   title: string
   slug: string
+  editors_pick: boolean
   pearl_type: string
   size_mm: string | null
   sell_price: number | null
@@ -60,6 +61,20 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
   }
   const normalize = (value: string) => value.toLowerCase().replace(/\s+/g, '')
   const getTimestamp = (value?: string | null) => (value ? new Date(value).getTime() : 0)
+  const editorsPickBadgeStyle = {
+    position: 'absolute' as const,
+    top: spacing.md,
+    left: spacing.md,
+    zIndex: 2,
+    padding: `${spacing.xs} ${spacing.sm}`,
+    background: 'rgba(255, 252, 246, 0.94)',
+    border: '1px solid rgba(201, 169, 97, 0.34)',
+    color: colors.darkGray,
+    fontSize: typography.fontSize.xs,
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase' as const,
+    boxShadow: shadows.soft,
+  }
 
   const filteredProducts = useMemo(() => {
     let result = [...products]
@@ -107,6 +122,10 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
       }
     }
 
+    if (deferredFilters.editorsPick) {
+      result = result.filter((product) => product.editors_pick)
+    }
+
     if (deferredFilters.priceRange) {
       const { min, max } = deferredFilters.priceRange
       result = result.filter((product) => {
@@ -139,9 +158,10 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
     return result
   }, [products, deferredFilters])
   const hasActiveFilters = Boolean(
-    deferredFilters.searchQuery ||
+      deferredFilters.searchQuery ||
       deferredFilters.pearlType ||
       deferredFilters.category ||
+      deferredFilters.editorsPick ||
       deferredFilters.priceRange ||
       deferredFilters.sortBy
   )
@@ -269,6 +289,9 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
                       position: 'relative',
                       backgroundColor: colors.pearl
                     }}>
+                      {product.editors_pick && (
+                        <div style={editorsPickBadgeStyle}>Editor&apos;s Pick</div>
+                      )}
                       {product.primaryImage ? (
                         <Image
                           src={getProductImageUrl(product.primaryImage.storage_path)}

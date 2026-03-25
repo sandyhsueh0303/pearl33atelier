@@ -35,12 +35,13 @@ export type Database = {
           category: Database["public"]["Enums"]["product_category"] | null
           created_at: string
           description: string | null
+          editors_pick: boolean
           id: string
           inventory_item_id: string | null
           material: string | null
           note: string | null
           original_price: number | null
-          pearl_type: Database["public"]["Enums"]["pearl_type"]
+          pearl_type: string
           preorder_note: string | null
           published: boolean
           published_at: string | null
@@ -57,12 +58,13 @@ export type Database = {
           category?: Database["public"]["Enums"]["product_category"] | null
           created_at?: string
           description?: string | null
+          editors_pick?: boolean
           id?: string
           inventory_item_id?: string | null
           material?: string | null
           note?: string | null
           original_price?: number | null
-          pearl_type: Database["public"]["Enums"]["pearl_type"]
+          pearl_type: string
           preorder_note?: string | null
           published?: boolean
           published_at?: string | null
@@ -79,12 +81,13 @@ export type Database = {
           category?: Database["public"]["Enums"]["product_category"] | null
           created_at?: string
           description?: string | null
+          editors_pick?: boolean
           id?: string
           inventory_item_id?: string | null
           material?: string | null
           note?: string | null
           original_price?: number | null
-          pearl_type?: Database["public"]["Enums"]["pearl_type"]
+          pearl_type?: string
           preorder_note?: string | null
           published?: boolean
           published_at?: string | null
@@ -526,12 +529,13 @@ export type Database = {
           category: Database["public"]["Enums"]["product_category"] | null
           created_at: string
           description: string | null
+          editors_pick: boolean
           id: string
           inventory_item_id: string | null
           material: string | null
           note: string | null
           original_price: number | null
-          pearl_type: Database["public"]["Enums"]["pearl_type"]
+          pearl_type: string
           preorder_note: string | null
           published: boolean
           published_at: string | null
@@ -561,12 +565,13 @@ export type Database = {
           category: Database["public"]["Enums"]["product_category"] | null
           created_at: string
           description: string | null
+          editors_pick: boolean
           id: string
           inventory_item_id: string | null
           material: string | null
           note: string | null
           original_price: number | null
-          pearl_type: Database["public"]["Enums"]["pearl_type"]
+          pearl_type: string
           preorder_note: string | null
           published: boolean
           published_at: string | null

@@ -12,6 +12,7 @@ export interface ProductFilters {
   searchQuery?: string
   pearlType?: string
   category?: string
+  editorsPick?: boolean
   priceRange?: { min: number; max: number }
   sortBy?: 'newest' | 'price-low' | 'price-high' | 'popular'
 }
@@ -60,6 +61,13 @@ export default function FilterPanel({ onFilterChange, initialFilters }: FilterPa
     }))
   }
 
+  const handleEditorsPickChange = (checked: boolean) => {
+    updateFilters((prev) => ({
+      ...prev,
+      editorsPick: checked || undefined,
+    }))
+  }
+
   const handleSortChange = (sort: ProductFilters['sortBy']) => {
     updateFilters((prev) => ({
       ...prev,
@@ -68,7 +76,12 @@ export default function FilterPanel({ onFilterChange, initialFilters }: FilterPa
   }
 
   const hasActiveFilters = Boolean(
-    filters.searchQuery || filters.pearlType || filters.category || filters.priceRange || filters.sortBy
+    filters.searchQuery ||
+      filters.pearlType ||
+      filters.category ||
+      filters.editorsPick ||
+      filters.priceRange ||
+      filters.sortBy
   )
 
   return (
@@ -87,6 +100,43 @@ export default function FilterPanel({ onFilterChange, initialFilters }: FilterPa
           gap: spacing.lg,
         }}
       >
+        <div>
+          <h3
+            style={{
+              fontSize: typography.fontSize.sm,
+              fontWeight: typography.fontWeight.semibold,
+              marginBottom: spacing.sm,
+              color: colors.darkGray,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
+            Curation
+          </h3>
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: spacing.sm,
+              padding: spacing.sm,
+              backgroundColor: colors.white,
+              border: `1px solid ${colors.lightGray}`,
+              borderRadius: 4,
+              cursor: 'pointer',
+              fontSize: typography.fontSize.sm,
+              color: colors.darkGray,
+              minHeight: '42px',
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={Boolean(filters.editorsPick)}
+              onChange={(e) => handleEditorsPickChange(e.target.checked)}
+            />
+            <span>Editor&apos;s Pick only</span>
+          </label>
+        </div>
+
         <div>
           <h3
             style={{

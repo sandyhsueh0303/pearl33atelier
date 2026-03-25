@@ -86,8 +86,9 @@ export interface CatalogProduct {
   title: string
   slug: string // UNIQUE - public identifier for URLs
   description: string | null
+  editors_pick: boolean
   note: string | null // internal notes for admin
-  pearl_type: PearlType
+  pearl_type: string
   size_mm: string | null // text, supports ranges like "7-7.5"
   shape: string | null
   material: string | null

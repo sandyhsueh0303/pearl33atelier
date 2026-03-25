@@ -16,6 +16,16 @@ import type { Database } from '@pearl33atelier/shared/types'
 type ProductUpdate = Database['public']['Tables']['catalog_products']['Update']
 type ProductImage = Database['public']['Tables']['product_images']['Row']
 
+const PEARL_TYPES = [
+  'WhiteAkoya',
+  'GreyAkoya',
+  'WhiteSouthSea',
+  'GoldenSouthSea',
+  'Tahitian',
+  'Freshwater',
+  'Other',
+] as const
+
 function getImageVariantPaths(storagePath: string): string[] {
   const match = storagePath.match(/^(.*)-(thumb|medium|large)\.([^.]+)$/)
   if (!match) return [storagePath]
@@ -43,6 +53,35 @@ function normalizeSku(value: unknown): string | null {
     throw new Error('sku must match format PA0001')
   }
   return sku
+}
+
+function splitPearlTypes(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item || '').trim())
+      .filter(Boolean)
+  }
+
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
+function normalizePearlTypeValue(value: unknown): string {
+  const selectedTypes = splitPearlTypes(value)
+  if (selectedTypes.length === 0) {
+    throw new Error('pearl_type is invalid or missing')
+  }
+
+  const invalidType = selectedTypes.find(
+    (type) => !(PEARL_TYPES as readonly string[]).includes(type)
+  )
+  if (invalidType) {
+    throw new Error(`Invalid pearl_type value: ${invalidType}`)
+  }
+
+  return Array.from(new Set(selectedTypes)).join(', ')
 }
 
 // GET /api/products/[id] - Get single product with images
@@ -127,9 +166,19 @@ export async function PATCH(
       }
       updates.slug = nextSlug
     }
-    if ('pearl_type' in body) updates.pearl_type = body.pearl_type
+    if ('pearl_type' in body) {
+      try {
+        updates.pearl_type = normalizePearlTypeValue(body.pearl_type)
+      } catch (error) {
+        return NextResponse.json(
+          { error: error instanceof Error ? error.message : 'Invalid pearl_type format' },
+          { status: 400 }
+        )
+      }
+    }
     if ('category' in body) updates.category = body.category ?? null
     if ('description' in body) updates.description = body.description ?? null
+    if ('editors_pick' in body) updates.editors_pick = Boolean(body.editors_pick)
     if ('note' in body) updates.note = body.note ?? null
     if ('size_mm' in body) updates.size_mm = normalizedSize
     if ('shape' in body) updates.shape = body.shape ?? null

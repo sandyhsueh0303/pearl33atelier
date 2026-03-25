@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { slugify, getProductImageUrl } from '@pearl33atelier/shared'
-import type { CatalogProduct, PearlType, AvailabilityKind, ProductCategory, ProductImage } from '@pearl33atelier/shared/types'
+import type { CatalogProduct, AvailabilityKind, ProductCategory, ProductImage } from '@pearl33atelier/shared/types'
 
 interface ProductFormProps {
   productId?: string
@@ -18,6 +18,16 @@ const MATERIAL_OPTIONS = [
   'Natural Diamond',
   'Lab-Grown Diamond',
   'Cubic Zirconia',
+] as const
+
+const PEARL_TYPE_OPTIONS = [
+  'WhiteAkoya',
+  'GreyAkoya',
+  'WhiteSouthSea',
+  'GoldenSouthSea',
+  'Tahitian',
+  'Freshwater',
+  'Other',
 ] as const
 
 const SHAPE_OPTIONS = [
@@ -93,8 +103,9 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
   const [slug, setSlug] = useState('')
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
   const [description, setDescription] = useState('')
+  const [editorsPick, setEditorsPick] = useState(false)
   const [note, setNote] = useState('')
-  const [pearlType, setPearlType] = useState<PearlType>('WhiteAkoya')
+  const [selectedPearlTypes, setSelectedPearlTypes] = useState<string[]>(['WhiteAkoya'])
   const [category, setCategory] = useState<ProductCategory | ''>('')
   const [sizeMm, setSizeMm] = useState('')
   const [shape, setShape] = useState('')
@@ -116,11 +127,21 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     return all.join(', ')
   }, [selectedMaterials, customMaterials])
 
+  const pearlTypeValue = useMemo(() => {
+    return Array.from(new Set(selectedPearlTypes)).join(', ')
+  }, [selectedPearlTypes])
+
   const buildDefaultSlug = () => {
-    const parts = [pearlType, sizeMm.trim(), shape.trim(), materialValue.trim(), category]
+    const parts = [pearlTypeValue, sizeMm.trim(), shape.trim(), materialValue.trim(), category]
       .map((value) => String(value || '').trim())
       .filter(Boolean)
     return slugify(parts.join('-'))
+  }
+
+  const togglePearlType = (option: string) => {
+    setSelectedPearlTypes((prev) =>
+      prev.includes(option) ? prev.filter((item) => item !== option) : [...prev, option]
+    )
   }
 
   // Keep title editing separate from slug generation
@@ -145,7 +166,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     if (isEditMode || slugManuallyEdited) return
     const nextSlug = buildDefaultSlug()
     setSlug(nextSlug)
-  }, [isEditMode, slugManuallyEdited, pearlType, sizeMm, shape, materialValue, category])
+  }, [isEditMode, slugManuallyEdited, pearlTypeValue, sizeMm, shape, materialValue, category])
 
   // Load product data if editing
   useEffect(() => {
@@ -188,8 +209,14 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
       setSlug(product.slug)
       setSlugManuallyEdited(true)
       setDescription(product.description || '')
+      setEditorsPick(product.editors_pick || false)
       setNote(product.note || '')
-      setPearlType(product.pearl_type)
+      setSelectedPearlTypes(
+        product.pearl_type
+          .split(',')
+          .map((item) => item.trim())
+          .filter(Boolean)
+      )
       setCategory(product.category || '')
       setSizeMm(product.size_mm || '')
       setShape(product.shape || '')
@@ -235,8 +262,9 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
         title,
         sku: sku.trim() || null,
         description: description || null,
+        editors_pick: editorsPick,
         note: note || null,
-        pearl_type: pearlType,
+        pearl_type: selectedPearlTypes,
         category: category || null,
         size_mm: sizeMm.trim() || null,
         shape: shape || null,
@@ -538,26 +566,39 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Pearl Type <span style={{ color: 'red' }}>*</span>
             </label>
-            <select
-              value={pearlType}
-              onChange={(e) => setPearlType(e.target.value as PearlType)}
-              required
+            <div
               style={{
-                width: '100%',
-                padding: '0.75rem',
                 border: '1px solid #ddd',
                 borderRadius: '4px',
-                fontSize: '1rem'
+                padding: '0.75rem',
+                backgroundColor: '#fff',
+                display: 'grid',
+                gap: '0.5rem',
               }}
             >
-              <option value="WhiteAkoya">White Akoya</option>
-              <option value="GreyAkoya">Grey Akoya</option>
-              <option value="WhiteSouthSea">White South Sea</option>
-              <option value="GoldenSouthSea">Golden South Sea</option>
-              <option value="Tahitian">Tahitian</option>
-              <option value="Freshwater">Freshwater</option>
-              <option value="Other">Other</option>
-            </select>
+              {PEARL_TYPE_OPTIONS.map((option) => (
+                <label
+                  key={option}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    fontSize: '0.95rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedPearlTypes.includes(option)}
+                    onChange={() => togglePearlType(option)}
+                  />
+                  <span>{option}</span>
+                </label>
+              ))}
+            </div>
+            <small style={{ color: '#666', display: 'block', marginTop: '0.35rem' }}>
+              Multiple selection supported
+            </small>
           </div>
 
           <div>
@@ -766,6 +807,33 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
               />
             </div>
           )}
+
+          <div style={{ gridColumn: '1 / -1' }}>
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                padding: '0.9rem 1rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                backgroundColor: '#fffaf2',
+                cursor: 'pointer',
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={editorsPick}
+                onChange={(e) => setEditorsPick(e.target.checked)}
+              />
+              <div>
+                <div style={{ fontWeight: 'bold', color: '#333' }}>Editor&apos;s Pick</div>
+                <div style={{ color: '#666', fontSize: '0.875rem', marginTop: '0.15rem' }}>
+                  Add an Editor&apos;s Pick badge to the public product card and feature this product on the homepage.
+                </div>
+              </div>
+            </label>
+          </div>
 
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>

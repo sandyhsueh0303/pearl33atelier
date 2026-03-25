@@ -17,7 +17,6 @@ import {
 import type { Database } from '@pearl33atelier/shared/types'
 
 type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
-type PearlType = Database['public']['Enums']['pearl_type']
 type ProductCategory = Database['public']['Enums']['product_category']
 
 function parseSkuNumber(sku: string): number | null {
@@ -84,7 +83,7 @@ function buildDefaultSlugFromFields(body: any, normalizedSize: string | null): s
   return slugify(parts.join('-'))
 }
 
-const PEARL_TYPES: readonly PearlType[] = [
+const PEARL_TYPES = [
   'WhiteAkoya',
   'GreyAkoya',
   'WhiteSouthSea',
@@ -92,7 +91,36 @@ const PEARL_TYPES: readonly PearlType[] = [
   'Tahitian',
   'Freshwater',
   'Other',
-]
+] as const
+
+function splitPearlTypes(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item || '').trim())
+      .filter(Boolean)
+  }
+
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
+function normalizePearlTypeValue(value: unknown): string {
+  const selectedTypes = splitPearlTypes(value)
+  if (selectedTypes.length === 0) {
+    throw new Error('pearl_type is invalid or missing')
+  }
+
+  const invalidType = selectedTypes.find(
+    (type) => !(PEARL_TYPES as readonly string[]).includes(type)
+  )
+  if (invalidType) {
+    throw new Error(`Invalid pearl_type value: ${invalidType}`)
+  }
+
+  return Array.from(new Set(selectedTypes)).join(', ')
+}
 
 const PRODUCT_CATEGORIES: readonly ProductCategory[] = [
   'BRACELETS',
@@ -119,8 +147,8 @@ export async function GET(request: NextRequest) {
     const pearlTypeParam = searchParams.get('pearlType') || 'all'
     const categoryParam = searchParams.get('category') || 'all'
     const pearlType =
-      pearlTypeParam !== 'all' && PEARL_TYPES.includes(pearlTypeParam as PearlType)
-        ? (pearlTypeParam as PearlType)
+      pearlTypeParam !== 'all' && (PEARL_TYPES as readonly string[]).includes(pearlTypeParam)
+        ? pearlTypeParam
         : null
     const category =
       categoryParam !== 'all' && PRODUCT_CATEGORIES.includes(categoryParam as ProductCategory)
@@ -137,7 +165,7 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('catalog_products')
       .select(
-        'id, inventory_item_id, sku, title, slug, description, note, pearl_type, size_mm, shape, material, sell_price, original_price, category, availability, preorder_note, published, published_at, created_at, updated_at',
+        'id, inventory_item_id, sku, title, slug, description, editors_pick, note, pearl_type, size_mm, shape, material, sell_price, original_price, category, availability, preorder_note, published, published_at, created_at, updated_at',
         { count: 'exact' }
       )
 
@@ -149,7 +177,7 @@ export async function GET(request: NextRequest) {
     if (status === 'published') query = query.eq('published', true)
     if (status === 'draft') query = query.eq('published', false)
     if (status === 'preorder') query = query.eq('availability', 'PREORDER')
-    if (pearlType) query = query.eq('pearl_type', pearlType)
+    if (pearlType) query = query.ilike('pearl_type', `%${pearlType}%`)
     if (category) query = query.eq('category', category)
 
     if (sortBy === 'title') {
@@ -240,7 +268,13 @@ export async function GET(request: NextRequest) {
       return true
     })
 
-    const pearlTypes = Array.from(new Set((filterRows || []).map((r) => r.pearl_type).filter(Boolean)))
+    const pearlTypes = Array.from(
+      new Set(
+        (filterRows || [])
+          .flatMap((r) => splitPearlTypes(r.pearl_type))
+          .filter(Boolean)
+      )
+    ).sort((a, b) => a.localeCompare(b))
     const categories = Array.from(new Set((filterRows || []).map((r) => r.category).filter(Boolean)))
     const paginatedProducts = usesComputedAvailabilityFilter
       ? productsWithStats.slice(from, to + 1)
@@ -287,8 +321,14 @@ export async function POST(request: NextRequest) {
     if (!body?.title || !String(body.title).trim()) {
       return NextResponse.json({ error: 'title is required' }, { status: 400 })
     }
-    if (!body?.pearl_type || !PEARL_TYPES.includes(body.pearl_type as PearlType)) {
-      return NextResponse.json({ error: 'pearl_type is invalid or missing' }, { status: 400 })
+    let normalizedPearlType = ''
+    try {
+      normalizedPearlType = normalizePearlTypeValue(body?.pearl_type)
+    } catch (error) {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : 'pearl_type is invalid or missing' },
+        { status: 400 }
+      )
     }
     if (!body?.availability || !['IN_STOCK', 'PREORDER', 'OUT_OF_STOCK'].includes(String(body.availability))) {
       return NextResponse.json({ error: 'availability is invalid or missing' }, { status: 400 })
@@ -311,7 +351,8 @@ export async function POST(request: NextRequest) {
       sku: normalizedSku,
       note: body.note ?? null,
       description: body.description ?? null,
-      pearl_type: body.pearl_type,
+      editors_pick: Boolean(body.editors_pick),
+      pearl_type: normalizedPearlType,
       category: body.category ?? null,
       size_mm: normalizedSize,
       shape: body.shape ?? null,

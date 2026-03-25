@@ -69,14 +69,21 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
   };
 
   const pearlTypeOptions = useMemo(() => {
-    const uniqueTypes = Array.from(new Set(products.map((p) => p.pearl_type).filter(Boolean)));
+    const uniqueTypes = Array.from(
+      new Set(
+        products
+          .flatMap((p) => p.pearl_type.split(',').map((item) => item.trim()))
+          .filter(Boolean)
+      )
+    );
     return uniqueTypes.sort((a, b) => a.localeCompare(b));
   }, [products]);
 
   const filteredProducts = useMemo(() => {
     const q = productSearch.trim().toLowerCase();
     return products.filter((product) => {
-      const pearlTypeMatched = pearlTypeFilter === 'all' || product.pearl_type === pearlTypeFilter;
+      const pearlTypeMatched =
+        pearlTypeFilter === 'all' || product.pearl_type.includes(pearlTypeFilter);
       const searchMatched =
         q.length === 0 ||
         product.title.toLowerCase().includes(q) ||

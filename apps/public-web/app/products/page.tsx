@@ -135,7 +135,7 @@ export default async function ProductsPage({
   // Get published products
   const { data: productsData, error: productsError } = await supabase
     .from('catalog_products')
-    .select('id, title, slug, pearl_type, size_mm, sell_price, original_price, category, availability, published_at')
+    .select('id, title, slug, editors_pick, pearl_type, size_mm, sell_price, original_price, category, availability, published_at')
     .eq('published', true)
     .order('published_at', { ascending: false })
     .range(from, to)

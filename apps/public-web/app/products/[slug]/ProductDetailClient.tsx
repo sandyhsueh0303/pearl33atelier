@@ -28,9 +28,6 @@ export default function ProductDetailClient({ product, images, inventorySummary 
     .map((paragraph) => paragraph.trim())
     .filter(Boolean)
   const shortDescription = descriptionParagraphs[0] || null
-  const valueLine = product.pearl_type
-    ? `Individually selected ${product.pearl_type} pearls, matched for tone and luster`
-    : 'Individually selected pearls, matched for tone and luster'
   const categoryLabels: Record<string, string> = {
     BRACELETS: 'Bracelets',
     NECKLACES: 'Necklaces',
@@ -96,6 +93,20 @@ export default function ProductDetailClient({ product, images, inventorySummary 
       <td style={valueStyle}>{value}</td>
     </tr>
   )
+  const editorsPickBadgeStyle: CSSProperties = {
+    position: 'absolute',
+    top: spacing.md,
+    left: spacing.md,
+    zIndex: 2,
+    padding: `${spacing.xs} ${spacing.sm}`,
+    background: 'rgba(255, 252, 246, 0.94)',
+    border: '1px solid rgba(201, 169, 97, 0.34)',
+    color: colors.darkGray,
+    fontSize: typography.fontSize.xs,
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
+    boxShadow: shadows.soft,
+  }
 
   return (
     <main style={{ 
@@ -136,6 +147,9 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                 backgroundColor: colors.pearl,
                 overflow: 'hidden'
               }}>
+                {product.editors_pick && (
+                  <div style={editorsPickBadgeStyle}>Editor&apos;s Pick</div>
+                )}
                 {isEverydayPiece && (
                   <div
                     style={{
@@ -348,16 +362,6 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                   $ {product.sell_price.toLocaleString()}
                 </div>
               )}
-              <p
-                style={{
-                  margin: 0,
-                  color: colors.textSecondary,
-                  fontSize: typography.fontSize.sm,
-                  lineHeight: 1.7,
-                }}
-              >
-                {valueLine}
-              </p>
               {product.original_price && product.original_price > (product.sell_price || 0) && (
                 <div style={{ 
                   fontSize: typography.fontSize.lg,
@@ -389,7 +393,7 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                     textTransform: 'uppercase',
                   }}
                 >
-                  Why You&apos;ll Love It
+                  At a Glance
                 </h3>
                 <p
                   style={{
