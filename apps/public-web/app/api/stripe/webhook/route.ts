@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { stripe } from '../../../lib/stripe'
 import { createSupabaseAdminClient } from '../../../lib/supabaseAdmin'
-import { syncPaidOrderToSales } from '../../../lib/orderSync'
+import { ensureOrderItemsForPaidOrder, syncPaidOrderToSales } from '../../../lib/orderSync'
 import {
   isOrderConfirmationEmailConfigured,
   sendOrderConfirmationEmail,
@@ -96,7 +96,20 @@ async function markOrderPaid(session: Stripe.Checkout.Session) {
     updatedRows: data,
   })
 
+  const { error: checkoutDraftUpdateError } = await (adminSupabase as any)
+    .from('checkout_drafts')
+    .update({
+      status: 'converted',
+      stripe_checkout_session_id: session.id,
+    })
+    .eq('order_id', orderId)
+
+  if (checkoutDraftUpdateError) {
+    throw new Error(`Failed to update checkout draft ${orderId}: ${checkoutDraftUpdateError.message}`)
+  }
+
   try {
+    await ensureOrderItemsForPaidOrder(orderId)
     await syncPaidOrderToSales(orderId)
   } catch (error) {
     console.error('[stripe:webhook] syncPaidOrderToSales failed', {
@@ -194,6 +207,10 @@ export async function POST(request: NextRequest) {
         if (orderId) {
           const adminSupabase = createSupabaseAdminClient()
           await adminSupabase.from('orders').update({ status: 'cancelled' }).eq('id', orderId)
+          await (adminSupabase as any)
+            .from('checkout_drafts')
+            .update({ status: 'expired' })
+            .eq('order_id', orderId)
         }
         break
       }

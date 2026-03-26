@@ -5,6 +5,7 @@ interface OrderRow {
   id: string
   customer_name: string | null
   created_at: string
+  metadata: unknown
 }
 
 interface OrderItemRow {
@@ -15,6 +16,107 @@ interface OrderItemRow {
   unit_price_amount_cents: number
   quantity: number
   line_total_amount_cents: number
+}
+
+interface PendingCheckoutItem {
+  product_id: string
+  product_slug_snapshot: string | null
+  product_title_snapshot: string
+  unit_price_amount_cents: number
+  quantity: number
+  line_total_amount_cents: number
+}
+
+interface CheckoutDraftRow {
+  id: string
+  order_id: string
+  items_json: unknown
+}
+
+function extractPendingCheckoutItems(metadata: unknown): PendingCheckoutItem[] {
+  if (!metadata || typeof metadata !== 'object') {
+    return []
+  }
+
+  const checkoutItems = (metadata as { checkout_items?: unknown }).checkout_items
+
+  if (!Array.isArray(checkoutItems)) {
+    return []
+  }
+
+  return checkoutItems
+    .map((item): PendingCheckoutItem | null => {
+      if (!item || typeof item !== 'object') {
+        return null
+      }
+
+      const candidate = item as Partial<PendingCheckoutItem>
+
+      if (
+        typeof candidate.product_id !== 'string' ||
+        typeof candidate.product_title_snapshot !== 'string' ||
+        typeof candidate.unit_price_amount_cents !== 'number' ||
+        typeof candidate.quantity !== 'number' ||
+        typeof candidate.line_total_amount_cents !== 'number'
+      ) {
+        return null
+      }
+
+      return {
+        product_id: candidate.product_id,
+        product_slug_snapshot:
+          typeof candidate.product_slug_snapshot === 'string'
+            ? candidate.product_slug_snapshot
+            : null,
+        product_title_snapshot: candidate.product_title_snapshot,
+        unit_price_amount_cents: candidate.unit_price_amount_cents,
+        quantity: candidate.quantity,
+        line_total_amount_cents: candidate.line_total_amount_cents,
+      }
+    })
+    .filter((item): item is PendingCheckoutItem => Boolean(item))
+}
+
+async function loadPendingCheckoutItems(orderId: string) {
+  const supabase = createSupabaseAdminClient()
+
+  const { data: checkoutDraft, error: draftError } = await (supabase as any)
+    .from('checkout_drafts')
+    .select('id, order_id, items_json')
+    .eq('order_id', orderId)
+    .maybeSingle()
+
+  if (draftError) {
+    throw new Error(`Failed to load checkout draft for ${orderId}: ${draftError.message}`)
+  }
+
+  if (checkoutDraft) {
+    const checkoutItems = extractPendingCheckoutItems((checkoutDraft as CheckoutDraftRow).items_json)
+
+    if (checkoutItems.length === 0) {
+      throw new Error(`Checkout draft for order ${orderId} is missing item snapshots`)
+    }
+
+    return checkoutItems
+  }
+
+  const { data: order, error: orderError } = await supabase
+    .from('orders')
+    .select('id, metadata')
+    .eq('id', orderId)
+    .single()
+
+  if (orderError || !order) {
+    throw new Error(`Order ${orderId} not found for item sync: ${orderError?.message || 'unknown error'}`)
+  }
+
+  const checkoutItems = extractPendingCheckoutItems(order.metadata)
+
+  if (checkoutItems.length === 0) {
+    throw new Error(`Order ${orderId} is missing checkout item snapshots`)
+  }
+
+  return checkoutItems
 }
 
 async function getUnitCost(productId: string) {
@@ -34,12 +136,48 @@ async function getUnitCost(productId: string) {
     }, 0)
 }
 
+export async function ensureOrderItemsForPaidOrder(orderId: string) {
+  const supabase = createSupabaseAdminClient()
+
+  const { data: existingItems, error: existingItemsError } = await supabase
+    .from('order_items')
+    .select('id')
+    .eq('order_id', orderId)
+    .limit(1)
+
+  if (existingItemsError) {
+    throw new Error(`Failed to check existing order items for ${orderId}: ${existingItemsError.message}`)
+  }
+
+  if ((existingItems || []).length > 0) {
+    return
+  }
+
+  const checkoutItems = await loadPendingCheckoutItems(orderId)
+
+  const { error: insertError } = await supabase.from('order_items').insert(
+    checkoutItems.map((item) => ({
+      order_id: orderId,
+      product_id: item.product_id,
+      product_slug_snapshot: item.product_slug_snapshot,
+      product_title_snapshot: item.product_title_snapshot,
+      unit_price_amount_cents: item.unit_price_amount_cents,
+      quantity: item.quantity,
+      line_total_amount_cents: item.line_total_amount_cents,
+    }))
+  )
+
+  if (insertError) {
+    throw new Error(`Failed to create paid order items for ${orderId}: ${insertError.message}`)
+  }
+}
+
 export async function syncPaidOrderToSales(orderId: string) {
   const supabase = createSupabaseAdminClient()
 
   const { data: order, error: orderError } = await supabase
     .from('orders')
-    .select('id, customer_name, created_at')
+    .select('id, customer_name, created_at, metadata')
     .eq('id', orderId)
     .single()
 

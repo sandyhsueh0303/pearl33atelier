@@ -374,78 +374,57 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
                             flexShrink: 0,
                           }}
                         >
-                          <span
-                            style={{
-                              padding: '6px 12px',
-                              backgroundColor:
-                                product.availability === 'IN_STOCK'
-                                  ? '#e8f5e9'
-                                  : product.availability === 'OUT_OF_STOCK'
-                                  ? '#fbe9e7'
-                                  : colors.champagne,
-                              color:
-                                product.availability === 'IN_STOCK'
-                                  ? '#2e7d32'
-                                  : product.availability === 'OUT_OF_STOCK'
-                                  ? '#b71c1c'
-                                  : colors.gold,
-                              fontSize: typography.fontSize.xs,
-                              fontWeight: typography.fontWeight.medium,
-                            }}
-                          >
-                            {product.availability === 'IN_STOCK'
-                              ? 'In Stock'
-                              : product.availability === 'OUT_OF_STOCK'
-                              ? 'Sold'
-                              : 'Pre-order'}
-                          </span>
-                          <button
-                            type="button"
-                            aria-label={`Add ${product.title} to cart`}
-                            onClick={(event) => {
-                              event.preventDefault()
-                              event.stopPropagation()
-                              addItem({
-                                id: product.id,
-                                slug: product.slug,
-                                title: product.title,
-                                imageUrl: product.primaryImage
-                                  ? getProductImageUrl(product.primaryImage.storage_path)
-                                  : null,
-                                pearlType: product.pearl_type || null,
-                                sizeMm: product.size_mm || null,
-                                price: typeof product.sell_price === 'number' ? product.sell_price : null,
-                                availability: product.availability,
-                              })
-                            }}
-                            disabled={product.availability === 'OUT_OF_STOCK'}
-                            style={{
-                              width: '30px',
-                              height: '30px',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              border:
-                                product.availability === 'OUT_OF_STOCK'
-                                  ? '1px solid rgba(154, 143, 132, 0.65)'
-                                  : `1px solid ${colors.gold}`,
-                              backgroundColor:
-                                product.availability === 'OUT_OF_STOCK'
-                                  ? 'rgba(154, 143, 132, 0.12)'
-                                  : 'rgba(201, 169, 97, 0.08)',
-                              color:
-                                product.availability === 'OUT_OF_STOCK'
-                                  ? '#9a8f84'
-                                  : colors.gold,
-                              fontSize: typography.fontSize.lg,
-                              lineHeight: 1,
-                              cursor:
-                                product.availability === 'OUT_OF_STOCK' ? 'not-allowed' : 'pointer',
-                              flexShrink: 0,
-                            }}
-                          >
-                            +
-                          </button>
+                          {product.availability === 'OUT_OF_STOCK' && (
+                            <span
+                              style={{
+                                padding: '6px 12px',
+                                backgroundColor: '#fbe9e7',
+                                color: '#b71c1c',
+                                fontSize: typography.fontSize.xs,
+                                fontWeight: typography.fontWeight.medium,
+                              }}
+                            >
+                              Sold
+                            </span>
+                          )}
+                          {product.availability !== 'OUT_OF_STOCK' && (
+                            <button
+                              type="button"
+                              aria-label={`Add ${product.title} to cart`}
+                              onClick={(event) => {
+                                event.preventDefault()
+                                event.stopPropagation()
+                                addItem({
+                                  id: product.id,
+                                  slug: product.slug,
+                                  title: product.title,
+                                  imageUrl: product.primaryImage
+                                    ? getProductImageUrl(product.primaryImage.storage_path)
+                                    : null,
+                                  pearlType: product.pearl_type || null,
+                                  sizeMm: product.size_mm || null,
+                                  price: typeof product.sell_price === 'number' ? product.sell_price : null,
+                                  availability: product.availability,
+                                })
+                              }}
+                              style={{
+                                width: '30px',
+                                height: '30px',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                border: `1px solid ${colors.gold}`,
+                                backgroundColor: 'rgba(201, 169, 97, 0.08)',
+                                color: colors.gold,
+                                fontSize: typography.fontSize.lg,
+                                lineHeight: 1,
+                                cursor: 'pointer',
+                                flexShrink: 0,
+                              }}
+                            >
+                              +
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
