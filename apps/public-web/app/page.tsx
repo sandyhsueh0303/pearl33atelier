@@ -119,7 +119,7 @@ export default function HomePage() {
 
   const promoBanner = {
     eyebrow: '3/25-3/31 Only:',
-    text: 'Free 18K Blue Rose Studs ($199 value) with orders $1000+',
+    text: 'Free 18K Blue Rose Studs ($149 value) with orders $1000+',
     linkLabel: 'Shop Now',
     linkHref: '/products',
   }
