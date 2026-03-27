@@ -6,7 +6,7 @@ import {
   type MaterialInventoryInput,
   type ProductInventorySummary,
 } from '@pearl33atelier/shared'
-import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
+import type { CatalogProduct, ProductImage, ProductVideo } from '@pearl33atelier/shared/types'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { cache } from 'react'
@@ -98,7 +98,21 @@ const getPublishedProductBySlug = cache(async (slug: string) => {
     (productData as CatalogProduct).availability
   )
 
-  return { product: productData as CatalogProduct, images: images as ProductImage[], inventorySummary }
+  const { data: videosData, error: videosError } = await (supabase as any)
+    .from('product_videos')
+    .select('*')
+    .eq('product_id', productData.id)
+    .eq('published', true)
+    .order('sort_order', { ascending: true })
+
+  const videos = !videosError && videosData ? videosData : []
+
+  return {
+    product: productData as CatalogProduct,
+    images: images as ProductImage[],
+    videos: videos as ProductVideo[],
+    inventorySummary,
+  }
 })
 
 function buildProductDescription(product: CatalogProduct) {
@@ -253,6 +267,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   }
   const product: CatalogProduct = result.product
   const images: ProductImage[] = result.images
+  const videos: ProductVideo[] = result.videos
   const inventorySummary: ProductInventorySummary = result.inventorySummary
   const effectiveAvailability = resolveProductAvailability(product.availability, inventorySummary)
 
@@ -339,6 +354,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       <ProductDetailClient
         product={{ ...product, availability: effectiveAvailability }}
         images={images}
+        videos={videos}
         inventorySummary={inventorySummary}
       />
     </>

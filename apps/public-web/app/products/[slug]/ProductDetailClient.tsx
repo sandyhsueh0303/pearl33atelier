@@ -4,22 +4,27 @@ import { useState, type CSSProperties, type ReactNode } from 'react'
 import ImageZoom from '../../components/ImageZoom'
 import ProductInquiryModal from '../../components/ProductInquiryModal'
 import { useCart } from '../../components/CartProvider'
-import { getProductImageUrl } from '@pearl33atelier/shared'
+import { getProductImageUrl, getProductVideoUrl } from '@pearl33atelier/shared'
 import type { ProductInventorySummary } from '@pearl33atelier/shared'
-import type { CatalogProduct, ProductImage } from '@pearl33atelier/shared/types'
+import type { CatalogProduct, ProductImage, ProductVideo } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions, shadows } from '../../constants/design'
 
 interface ProductDetailClientProps {
   product: CatalogProduct
   images: ProductImage[]
+  videos: ProductVideo[]
   inventorySummary: ProductInventorySummary
 }
 
-export default function ProductDetailClient({ product, images, inventorySummary }: ProductDetailClientProps) {
+type GalleryItem =
+  | { kind: 'image'; id: string; image: ProductImage }
+  | { kind: 'video'; id: string; video: ProductVideo }
+
+export default function ProductDetailClient({ product, images, videos, inventorySummary }: ProductDetailClientProps) {
   const [inquiryOpen, setInquiryOpen] = useState(false)
   const [cartNotice, setCartNotice] = useState<string | null>(null)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0)
   const { addItem } = useCart()
   const effectiveAvailability = inventorySummary.availability
   const isEverydayPiece = product.title.toLowerCase().includes('stud earrings')
@@ -38,19 +43,32 @@ export default function ProductDetailClient({ product, images, inventorySummary 
     LOOSE_PEARLS: 'Loose Pearls',
     BROOCHES: 'Brooches',
   }
-  const hasImages = images.length > 0
-  const currentImage = hasImages
-    ? images[currentImageIndex] || images.find((img) => img.is_primary) || images[0]
-    : null
+  const orderedImages = images.length > 0
+    ? [...images].sort((a, b) => {
+        if (a.is_primary === b.is_primary) return 0
+        return a.is_primary ? -1 : 1
+      })
+    : []
+  const galleryItems: GalleryItem[] = [
+    ...orderedImages.map((image) => ({ kind: 'image' as const, id: image.id, image })),
+    ...videos.map((video) => ({ kind: 'video' as const, id: video.id, video })),
+  ]
+  const hasGallery = galleryItems.length > 0
+  const currentGalleryItem = hasGallery ? galleryItems[currentGalleryIndex] || galleryItems[0] : null
+  const currentImage =
+    currentGalleryItem?.kind === 'image'
+      ? currentGalleryItem.image
+      : orderedImages[0] || null
+  const firstImage = orderedImages[0] || null
 
   const nextImage = () => {
-    if (!hasImages) return
-    setCurrentImageIndex((prev) => (prev + 1) % images.length)
+    if (!hasGallery) return
+    setCurrentGalleryIndex((prev) => (prev + 1) % galleryItems.length)
   }
 
   const prevImage = () => {
-    if (!hasImages) return
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
+    if (!hasGallery) return
+    setCurrentGalleryIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length)
   }
 
   const handleAddToCart = () => {
@@ -170,7 +188,22 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                     Everyday Essential
                   </div>
                 )}
-                {currentImage ? (
+                {currentGalleryItem?.kind === 'video' ? (
+                  <video
+                    src={getProductVideoUrl(currentGalleryItem.video.storage_path)}
+                    controls
+                    preload="metadata"
+                    poster={firstImage ? getProductImageUrl(firstImage.storage_path) : undefined}
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      backgroundColor: colors.pearl,
+                    }}
+                  />
+                ) : currentImage ? (
                     <div style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}}>
                       <ImageZoom
                         src={getProductImageUrl(currentImage.storage_path)}
@@ -197,7 +230,7 @@ export default function ProductDetailClient({ product, images, inventorySummary 
               </div>
 
               {/* Navigation Arrows */}
-              {images.length > 1 && (
+              {galleryItems.length > 1 && (
                 <>
                   <button
                     onClick={prevImage}
@@ -255,55 +288,89 @@ export default function ProductDetailClient({ product, images, inventorySummary 
                     fontSize: typography.fontSize.sm,
                     fontWeight: typography.fontWeight.medium
                   }}>
-                    {currentImageIndex + 1} / {images.length}
+                    {currentGalleryIndex + 1} / {galleryItems.length}
                   </div>
                 </>
               )}
             </div>
 
             {/* Image Thumbnails */}
-            {images.length > 1 && (
+            {galleryItems.length > 1 && (
               <div style={{ 
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
                 gap: spacing.xs
               }}>
-                {images.map((image, index) => (
+                {galleryItems.map((item, index) => (
                   <div
-                    key={image.id}
-                    onClick={() => setCurrentImageIndex(index)}
+                    key={item.id}
+                    onClick={() => setCurrentGalleryIndex(index)}
                     style={{
                       paddingBottom: '100%',
                       position: 'relative',
                       backgroundColor: colors.pearl,
-                      border: index === currentImageIndex ? `2px solid ${colors.gold}` : `1px solid ${colors.lightGray}`,
+                      border: index === currentGalleryIndex ? `2px solid ${colors.gold}` : `1px solid ${colors.lightGray}`,
                       cursor: 'pointer',
                       overflow: 'hidden',
                       transition: transitions.fast
                     }}
                     onMouseEnter={(e) => {
-                      if (index !== currentImageIndex) {
+                      if (index !== currentGalleryIndex) {
                         e.currentTarget.style.borderColor = colors.gold
                       }
                     }}
                     onMouseLeave={(e) => {
-                      if (index !== currentImageIndex) {
+                      if (index !== currentGalleryIndex) {
                         e.currentTarget.style.borderColor = colors.lightGray
                       }
                     }}
                   >
-                    <img 
-                      src={getProductImageUrl(image.storage_path)}
-                      alt={`${product.pearl_type || 'Pearl'} ${categoryLabels[product.category || ''] || 'Jewelry'} detail view ${index + 1} - ${product.title}`}
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
-                    />
+                    {item.kind === 'image' ? (
+                      <img 
+                        src={getProductImageUrl(item.image.storage_path)}
+                        alt={`${product.pearl_type || 'Pearl'} ${categoryLabels[product.category || ''] || 'Jewelry'} detail view ${index + 1} - ${product.title}`}
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    ) : (
+                      <>
+                        <video
+                          src={getProductVideoUrl(item.video.storage_path)}
+                          preload="metadata"
+                          muted
+                          playsInline
+                          poster={firstImage ? getProductImageUrl(firstImage.storage_path) : undefined}
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                          }}
+                        />
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: 'rgba(20, 20, 20, 0.18)',
+                            color: colors.white,
+                            fontSize: '1.5rem',
+                          }}
+                        >
+                          ▶
+                        </div>
+                      </>
+                    )}
                   </div>
                 ))}
               </div>
