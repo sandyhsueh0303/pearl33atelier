@@ -27,7 +27,6 @@ export default function ProductDetailClient({ product, images, videos, inventory
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0)
   const { addItem } = useCart()
   const effectiveAvailability = inventorySummary.availability
-  const isEverydayPiece = product.title.toLowerCase().includes('stud earrings')
   const descriptionParagraphs = (product.description || '')
     .split(/\n+/)
     .map((paragraph) => paragraph.trim())
@@ -167,26 +166,6 @@ export default function ProductDetailClient({ product, images, videos, inventory
               }}>
                 {product.editors_pick && (
                   <div style={editorsPickBadgeStyle}>Editor&apos;s Pick</div>
-                )}
-                {isEverydayPiece && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: spacing.md,
-                      left: spacing.md,
-                      zIndex: 2,
-                      padding: `${spacing.xs} ${spacing.sm}`,
-                      background: 'rgba(255, 252, 246, 0.92)',
-                      border: '1px solid rgba(212, 175, 55, 0.34)',
-                      color: colors.darkGray,
-                      fontSize: typography.fontSize.xs,
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      boxShadow: shadows.soft,
-                    }}
-                  >
-                    Everyday Essential
-                  </div>
                 )}
                 {currentGalleryItem?.kind === 'video' ? (
                   <video
