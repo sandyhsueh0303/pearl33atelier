@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { slugify, getProductImageUrl } from '@pearl33atelier/shared'
-import type { CatalogProduct, AvailabilityKind, ProductCategory, ProductImage } from '@pearl33atelier/shared/types'
+import { slugify, getProductImageUrl, getProductVideoUrl } from '@pearl33atelier/shared'
+import type { CatalogProduct, AvailabilityKind, ProductCategory, ProductImage, ProductVideo } from '@pearl33atelier/shared/types'
+import ProductMaterials from './ProductMaterials'
+import QuickSaleButton from './QuickSaleButton'
 
 interface ProductFormProps {
   productId?: string
-  onSaved?: () => void
 }
 
 const MATERIAL_OPTIONS = [
@@ -85,12 +86,14 @@ const normalizeImageOrientation = async (file: File): Promise<File> => {
   })
 }
 
-export default function ProductForm({ productId, onSaved }: ProductFormProps) {
+export default function ProductForm({ productId }: ProductFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const isEditMode = !!productId
+  const [currentProductId, setCurrentProductId] = useState(productId || '')
+  const isEditMode = !!currentProductId
   const returnTo = searchParams.get('returnTo') || ''
   const backToListPath = returnTo.startsWith('/admin/products') ? returnTo : '/admin/products'
+  const [costAnalysisRefreshToken, setCostAnalysisRefreshToken] = useState(0)
   
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -120,6 +123,8 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
   // Images
   const [images, setImages] = useState<ProductImage[]>([])
   const [uploadingImages, setUploadingImages] = useState(false)
+  const [videos, setVideos] = useState<ProductVideo[]>([])
+  const [uploadingVideos, setUploadingVideos] = useState(false)
 
   const materialValue = useMemo(() => {
     const custom = splitMaterialValues(customMaterials)
@@ -173,7 +178,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     if (isEditMode) {
       loadProduct()
     }
-  }, [productId])
+  }, [currentProductId])
 
   useEffect(() => {
     if (isEditMode || skuManuallyEdited || sku) return
@@ -197,7 +202,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     setError(null)
     
     try {
-      const response = await fetch(`/api/products/${productId}`)
+      const response = await fetch(`/api/products/${currentProductId}`)
       if (!response.ok) throw new Error('Failed to load product')
       
       const data = await response.json()
@@ -244,6 +249,9 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
       if (data.images) {
         setImages(data.images)
       }
+      if (data.videos) {
+        setVideos(data.videos)
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load product')
     } finally {
@@ -277,7 +285,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
         inventory_item_id: null // Can be connected later
       }
 
-      const url = isEditMode ? `/api/products/${productId}` : '/api/products'
+      const url = isEditMode ? `/api/products/${currentProductId}` : '/api/products'
       const method = isEditMode ? 'PATCH' : 'POST'
 
       const response = await fetch(url, {
@@ -292,11 +300,18 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
       }
 
       const data = await response.json()
-      onSaved?.()
       if (isEditMode) {
+        setCostAnalysisRefreshToken((prev) => prev + 1)
         return
       } else {
-        router.push(`/admin/products/${data.product.id}?returnTo=${encodeURIComponent(backToListPath)}`)
+        const nextProductId = data.product.id as string
+        setCurrentProductId(nextProductId)
+        setCostAnalysisRefreshToken((prev) => prev + 1)
+        window.history.replaceState(
+          null,
+          '',
+          `/admin/products/${nextProductId}?returnTo=${encodeURIComponent(backToListPath)}`
+        )
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to save product')
@@ -314,7 +329,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-    if (!files || files.length === 0 || !productId) return
+    if (!files || files.length === 0 || !currentProductId) return
 
     setUploadingImages(true)
     setError(null)
@@ -335,7 +350,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
         formData.append('images', file)
       })
 
-      const response = await fetch(`/api/products/${productId}/images`, {
+      const response = await fetch(`/api/products/${currentProductId}/images`, {
         method: 'POST',
         body: formData
       })
@@ -354,9 +369,42 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     }
   }
 
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0 || !currentProductId) return
+
+    setUploadingVideos(true)
+    setError(null)
+
+    try {
+      const formData = new FormData()
+      Array.from(files).forEach((file) => {
+        formData.append('videos', file)
+      })
+
+      const response = await fetch(`/api/products/${currentProductId}/videos`, {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to upload videos')
+      }
+
+      const data = await response.json()
+      setVideos((prev) => [...prev, ...(data.videos || [])])
+      e.target.value = ''
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to upload videos')
+    } finally {
+      setUploadingVideos(false)
+    }
+  }
+
   const toggleImagePublish = async (imageId: string, currentState: boolean) => {
     try {
-      const response = await fetch(`/api/products/${productId}/images/${imageId}`, {
+      const response = await fetch(`/api/products/${currentProductId}/images/${imageId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ published: !currentState })
@@ -374,7 +422,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
 
   const setPrimaryImage = async (imageId: string) => {
     try {
-      const response = await fetch(`/api/products/${productId}/images/${imageId}`, {
+      const response = await fetch(`/api/products/${currentProductId}/images/${imageId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_primary: true })
@@ -395,7 +443,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     if (!confirm('Delete this image? This action cannot be undone.')) return
 
     try {
-      const response = await fetch(`/api/products/${productId}/images/${imageId}`, {
+      const response = await fetch(`/api/products/${currentProductId}/images/${imageId}`, {
         method: 'DELETE'
       })
 
@@ -410,14 +458,49 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     }
   }
 
-  const handlePublish = async () => {
-    if (!confirm('Publish this product? It will become visible on the public site.')) return
+  const toggleVideoPublish = async (videoId: string, currentState: boolean) => {
+    try {
+      const response = await fetch(`/api/products/${currentProductId}/videos/${videoId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ published: !currentState }),
+      })
 
+      if (!response.ok) throw new Error('Failed to update video')
+
+      setVideos((prev) =>
+        prev.map((video) => (video.id === videoId ? { ...video, published: !currentState } : video))
+      )
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to update video')
+    }
+  }
+
+  const deleteVideo = async (videoId: string) => {
+    if (!confirm('Delete this video? This action cannot be undone.')) return
+
+    try {
+      const response = await fetch(`/api/products/${currentProductId}/videos/${videoId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload?.error || 'Failed to delete video')
+      }
+
+      setVideos((prev) => prev.filter((video) => video.id !== videoId))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to delete video')
+    }
+  }
+
+  const handlePublish = async () => {
     setSaving(true)
     setError(null)
 
     try {
-      const response = await fetch(`/api/products/${productId}/publish`, {
+      const response = await fetch(`/api/products/${currentProductId}/publish`, {
         method: 'POST'
       })
 
@@ -436,13 +519,11 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
   }
 
   const handleUnpublish = async () => {
-    if (!confirm('Unpublish this product? It will be hidden from the public site.')) return
-
     setSaving(true)
     setError(null)
 
     try {
-      const response = await fetch(`/api/products/${productId}/publish`, {
+      const response = await fetch(`/api/products/${currentProductId}/publish`, {
         method: 'DELETE'
       })
 
@@ -468,18 +549,21 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' }}>
       <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>{isEditMode ? 'Edit Product' : 'Add Product'}</h1>
-        <button
-          onClick={() => router.push(backToListPath)}
-          style={{
-            padding: '0.5rem 1rem',
-            backgroundColor: '#f5f5f5',
-            border: '1px solid #ddd',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Back to list
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {isEditMode && <QuickSaleButton productId={currentProductId} />}
+          <button
+            onClick={() => router.push(backToListPath)}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: '#f5f5f5',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Back to list
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -829,7 +913,7 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
               <div>
                 <div style={{ fontWeight: 'bold', color: '#333' }}>Editor&apos;s Pick</div>
                 <div style={{ color: '#666', fontSize: '0.875rem', marginTop: '0.15rem' }}>
-                  Add an Editor&apos;s Pick badge to the public product card and feature this product on the homepage.
+                  Add an Editor&apos;s Pick badge to the public product card.
                 </div>
               </div>
             </label>
@@ -894,22 +978,6 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
             }}
           >
             {saving ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Create Product (Draft)')}
-          </button>
-          
-          <button
-            type="button"
-            onClick={() => router.push(backToListPath)}
-            style={{
-              padding: '0.75rem 2rem',
-              backgroundColor: 'white',
-              color: '#333',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '1rem',
-              cursor: 'pointer'
-            }}
-          >
-            Cancel
           </button>
         </div>
       </form>
@@ -1098,6 +1166,119 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
         </div>
       )}
 
+      {isEditMode && (
+        <div
+          style={{
+            marginTop: '2rem',
+            backgroundColor: 'white',
+            padding: '2rem',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          }}
+        >
+          <h2 style={{ marginBottom: '1rem' }}>Product Videos</h2>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <input
+              type="file"
+              multiple
+              accept="video/mp4,video/webm,video/quicktime"
+              onChange={handleVideoUpload}
+              disabled={uploadingVideos}
+              style={{ display: 'none' }}
+              id="video-upload"
+            />
+            <label
+              htmlFor="video-upload"
+              style={{
+                display: 'inline-block',
+                padding: '0.75rem 1.5rem',
+                backgroundColor: uploadingVideos ? '#ccc' : '#6B7280',
+                color: 'white',
+                borderRadius: '4px',
+                cursor: uploadingVideos ? 'not-allowed' : 'pointer',
+                fontWeight: 'bold',
+              }}
+            >
+              {uploadingVideos ? 'Uploading...' : '+ Upload Videos'}
+            </label>
+            <small style={{ marginLeft: '1rem', color: '#666' }}>
+              Product page only. Use compressed MP4/WebM videos under 25MB.
+            </small>
+          </div>
+
+          {videos.length === 0 ? (
+            <p style={{ color: '#666', fontStyle: 'italic' }}>No videos yet</p>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
+              {videos.map((video) => (
+                <div
+                  key={video.id}
+                  style={{
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    padding: '0.75rem',
+                  }}
+                >
+                  <video
+                    src={getProductVideoUrl(video.storage_path)}
+                    controls
+                    preload="metadata"
+                    style={{
+                      width: '100%',
+                      height: '180px',
+                      backgroundColor: '#f5f5f5',
+                      borderRadius: '4px',
+                      marginBottom: '0.75rem',
+                    }}
+                  />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => toggleVideoPublish(video.id, video.published)}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        backgroundColor: video.published ? '#fff3e0' : '#e8f5e9',
+                        color: video.published ? '#F59E0B' : '#10B981',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {video.published ? 'Unpublish' : 'Publish'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => deleteVideo(video.id)}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        backgroundColor: '#FEE2E2',
+                        color: '#B91C1C',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                  <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#666', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Sort: {video.sort_order}</span>
+                    <span>{video.published ? 'Published' : 'Draft'}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Publish Section - Only show in edit mode */}
       {isEditMode && (
         <div style={{ 
@@ -1156,6 +1337,27 @@ export default function ProductForm({ productId, onSaved }: ProductFormProps) {
           )}
         </div>
       )}
+
+      <div style={{ marginTop: '2rem' }}>
+        {isEditMode ? (
+          <ProductMaterials
+            productId={currentProductId}
+            refreshToken={costAnalysisRefreshToken}
+          />
+        ) : (
+          <div
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              padding: '1.5rem',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              color: '#666',
+            }}
+          >
+            Save the product first to manage BOM materials.
+          </div>
+        )}
+      </div>
     </div>
   )
 }

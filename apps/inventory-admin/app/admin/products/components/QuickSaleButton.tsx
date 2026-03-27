@@ -5,10 +5,9 @@ import { useRouter } from 'next/navigation';
 
 interface QuickSaleButtonProps {
   productId: string;
-  productTitle?: string;
 }
 
-export default function QuickSaleButton({ productId, productTitle }: QuickSaleButtonProps) {
+export default function QuickSaleButton({ productId }: QuickSaleButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 

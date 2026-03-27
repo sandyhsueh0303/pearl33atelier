@@ -15,9 +15,8 @@ interface ProductSummaryStats {
   total: number
   published: number
   draft: number
-  totalCost: number
-  totalRevenue: number
-  totalProfit: number
+  sold: number
+  preorder: number
 }
 
 export default function ProductsPage() {
@@ -75,9 +74,8 @@ function ProductsPageContent() {
     total: 0,
     published: 0,
     draft: 0,
-    totalCost: 0,
-    totalRevenue: 0,
-    totalProfit: 0,
+    sold: 0,
+    preorder: 0,
   })
 
   const returnToParams = new URLSearchParams()
@@ -220,17 +218,15 @@ function ProductsPageContent() {
       const total = allFilteredProducts.length
       const published = allFilteredProducts.filter((p) => p.published).length
       const draft = total - published
-      const totalCost = allFilteredProducts.reduce((sum, p) => sum + (p.total_cost || 0), 0)
-      const totalRevenue = allFilteredProducts.reduce((sum, p) => sum + (p.sell_price || 0), 0)
-      const totalProfit = allFilteredProducts.reduce((sum, p) => sum + (p.profit || 0), 0)
+      const sold = allFilteredProducts.filter((p) => p.availability === 'OUT_OF_STOCK').length
+      const preorder = allFilteredProducts.filter((p) => p.availability === 'PREORDER').length
 
       setSummaryStats({
         total,
         published,
         draft,
-        totalCost,
-        totalRevenue,
-        totalProfit,
+        sold,
+        preorder,
       })
     } catch (e) {
       // Keep previous summary values if loading summary fails.
@@ -276,13 +272,16 @@ function ProductsPageContent() {
 
   const publishedCount = summaryStats.published
   const draftCount = summaryStats.draft
-
-  // Calculate totals from all filtered products across pages
-  const totalCost = summaryStats.totalCost
-  const totalRevenue = summaryStats.totalRevenue
-  const totalProfit = summaryStats.totalProfit
-  const totalProfitMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0
+  const soldCount = summaryStats.sold
+  const preorderCount = summaryStats.preorder
   const paginatedProducts = filteredProducts
+  const statCards = [
+    { label: 'Total', value: summaryStats.total, accent: '#C9A961' },
+    { label: 'Published', value: publishedCount, accent: '#10B981' },
+    { label: 'Draft', value: draftCount, accent: '#F59E0B' },
+    { label: 'Preorder', value: preorderCount, accent: '#A162F7' },
+    { label: 'Sold', value: soldCount, accent: '#EF4444' },
+  ]
 
   useEffect(() => {
     if (loading) return
@@ -499,77 +498,36 @@ function ProductsPageContent() {
       </div>
 
       <div className="admin-stats-row">
-        {/* Small Stats */}
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <div className="admin-stat-card" style={{ 
-            padding: '1rem', 
-            minWidth: '100px'
-          }}>
-            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Total</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#C9A961', margin: 0 }}>
-              {summaryStats.total}
-            </p>
-          </div>
-          <div className="admin-stat-card" style={{ 
-            padding: '1rem', 
-            minWidth: '100px'
-          }}>
-            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Published</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#10B981', margin: 0 }}>
-              {publishedCount}
-            </p>
-          </div>
-          <div className="admin-stat-card" style={{ 
-            padding: '1rem', 
-            minWidth: '100px'
-          }}>
-            <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Draft</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#F59E0B', margin: 0 }}>
-              {draftCount}
-            </p>
-          </div>
-        </div>
-        
-        {/* Large Financial Stats */}
-        <div className="admin-stat-card" style={{ 
-          flex: 1,
-          padding: '1.5rem', 
-        }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Cost</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#EF4444', margin: 0 }}>
-            $ {totalCost.toLocaleString()}
-          </p>
-        </div>
-        <div className="admin-stat-card" style={{ 
-          flex: 1,
-          padding: '1.5rem', 
-        }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Selling Price</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961', margin: 0 }}>
-            $ {totalRevenue.toLocaleString()}
-          </p>
-        </div>
-        <div className="admin-stat-card" style={{ 
-          flex: 1,
-          padding: '1.5rem', 
-        }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Profit</p>
-          <p style={{ 
-            fontSize: '2rem', 
-            fontWeight: 'bold', 
-            color: totalProfit >= 0 ? '#10B981' : '#EF4444', 
-            margin: 0 
-          }}>
-            {totalProfit >= 0 ? '+' : ''}$ {totalProfit.toLocaleString()}
-          </p>
-          <p style={{ 
-            fontSize: '0.875rem', 
-            fontWeight: '600',
-            color: totalProfit >= 0 ? '#10B981' : '#EF4444', 
-            margin: '0.5rem 0 0 0'
-          }}>
-            {totalProfitMargin.toFixed(1)}% Profit Margin
-          </p>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: '0.75rem',
+            width: '100%',
+          }}
+        >
+          {statCards.map((card) => (
+            <div
+              key={card.label}
+              className="admin-stat-card"
+              style={{
+                padding: '1rem 1rem 1rem 1.1rem',
+                borderLeft: `4px solid ${card.accent}`,
+                backgroundColor: '#fffdf9',
+                minHeight: '88px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <p style={{ fontSize: '0.75rem', color: '#777', margin: '0 0 0.35rem 0', letterSpacing: '0.02em' }}>
+                {card.label}
+              </p>
+              <p style={{ fontSize: '1.6rem', fontWeight: 700, color: '#1f2937', margin: 0 }}>
+                {card.value}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 
