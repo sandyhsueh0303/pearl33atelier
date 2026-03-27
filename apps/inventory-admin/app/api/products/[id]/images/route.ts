@@ -13,7 +13,7 @@ import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
 
 import sharp from 'sharp'
-import { STORAGE_BUCKET, STORAGE_FOLDER } from '@pearl33atelier/shared'
+import { PRODUCT_IMAGE_BUCKET, STORAGE_FOLDER } from '@pearl33atelier/shared'
 
 // POST /api/products/[id]/images - Upload images
 export async function POST(
@@ -69,7 +69,7 @@ export async function POST(
         const resized = await sharp(buffer).resize({ width: size.width }).toBuffer()
         const filePath = `${STORAGE_FOLDER}/${baseName}-${size.name}.${fileExt}`
         const { error: uploadError } = await supabase.storage
-          .from(STORAGE_BUCKET)
+          .from(PRODUCT_IMAGE_BUCKET)
           .upload(filePath, resized)
         if (uploadError) {
           logger.error(`Image upload failed (${size.name})`, uploadError)

@@ -115,3 +115,16 @@ export interface ProductImage {
   sort_order: number // >= 0
   created_at: string // timestamptz
 }
+
+// ============================================
+// Table: product_videos (videos in Supabase Storage)
+// Note: maintained manually until generated DB types include this table
+// ============================================
+export interface ProductVideo {
+  id: string
+  product_id: string
+  published: boolean
+  storage_path: string
+  sort_order: number
+  created_at: string
+}

@@ -12,7 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
-import { STORAGE_BUCKET } from '@pearl33atelier/shared'
+import { PRODUCT_IMAGE_BUCKET } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
 
 function getImageVariantPaths(storagePath: string): string[] {
@@ -91,7 +91,7 @@ export async function DELETE(
     if (image?.storage_path) {
       const pathsToDelete = getImageVariantPaths(image.storage_path)
       const { error: storageError } = await supabase.storage
-        .from(STORAGE_BUCKET)
+        .from(PRODUCT_IMAGE_BUCKET)
         .remove(pathsToDelete)
       
       if (storageError) {

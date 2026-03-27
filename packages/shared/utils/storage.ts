@@ -1,7 +1,8 @@
 /**
  * Storage configuration
  */
-export const STORAGE_BUCKET = 'product-images' as const
+export const PRODUCT_IMAGE_BUCKET = 'product-images' as const
+export const PRODUCT_VIDEO_BUCKET = 'product-videos' as const
 export const STORAGE_FOLDER = 'uploads' as const
 
 /**
@@ -55,8 +56,16 @@ export function getSupabaseUrl(): string {
  * // Testing with mock URL
  * const testUrl = getImageUrl('http://localhost:54321', 'product-images/test/mock.jpg')
  */
+export function getStorageUrl(
+  supabaseUrl: string,
+  bucket: string,
+  storagePath: string
+): string {
+  return `${supabaseUrl}/storage/v1/object/public/${bucket}/${storagePath}`
+}
+
 export function getImageUrl(supabaseUrl: string, storagePath: string): string {
-  return `${supabaseUrl}/storage/v1/object/public/${STORAGE_BUCKET}/${storagePath}`
+  return getStorageUrl(supabaseUrl, PRODUCT_IMAGE_BUCKET, storagePath)
 }
 
 /**
@@ -82,4 +91,13 @@ export function getImageUrl(supabaseUrl: string, storagePath: string): string {
 export function getProductImageUrl(storagePath: string): string {
   const supabaseUrl = getSupabaseUrl()
   return getImageUrl(supabaseUrl, storagePath)
+}
+
+export function getVideoUrl(supabaseUrl: string, storagePath: string): string {
+  return getStorageUrl(supabaseUrl, PRODUCT_VIDEO_BUCKET, storagePath)
+}
+
+export function getProductVideoUrl(storagePath: string): string {
+  const supabaseUrl = getSupabaseUrl()
+  return getVideoUrl(supabaseUrl, storagePath)
 }

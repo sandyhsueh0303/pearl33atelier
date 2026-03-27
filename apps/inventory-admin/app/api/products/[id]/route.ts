@@ -10,7 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
-import { STORAGE_BUCKET, slugify } from '@pearl33atelier/shared'
+import { PRODUCT_IMAGE_BUCKET, PRODUCT_VIDEO_BUCKET, slugify } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
 
 type ProductUpdate = Database['public']['Tables']['catalog_products']['Update']
@@ -110,7 +110,15 @@ export async function GET(
 
     if (imagesError) throw imagesError
 
-    return NextResponse.json({ product, images })
+    const { data: videos, error: videosError } = await (supabase as any)
+      .from('product_videos')
+      .select('*')
+      .eq('product_id', id)
+      .order('sort_order', { ascending: true })
+
+    if (videosError) throw videosError
+
+    return NextResponse.json({ product, images, videos })
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch product' },
@@ -229,7 +237,7 @@ export async function DELETE(
       const paths = [...new Set(images.flatMap((img) => getImageVariantPaths(img.storage_path)))]
       const { error: storageError } = await supabase
         .storage
-        .from(STORAGE_BUCKET)
+        .from(PRODUCT_IMAGE_BUCKET)
         .remove(paths)
       
       if (storageError) {
@@ -250,6 +258,32 @@ export async function DELETE(
     }
 
     // Step 4: Delete product
+    const { data: videos } = await (supabase as any)
+      .from('product_videos')
+      .select('storage_path')
+      .eq('product_id', id)
+
+    if (videos && videos.length > 0) {
+      const { error: storageError } = await supabase
+        .storage
+        .from(PRODUCT_VIDEO_BUCKET)
+        .remove(videos.map((video: { storage_path: string }) => video.storage_path))
+
+      if (storageError) {
+        logger.error('Failed to delete videos from storage', storageError)
+      }
+    }
+
+    const { error: videosError } = await (supabase as any)
+      .from('product_videos')
+      .delete()
+      .eq('product_id', id)
+
+    if (videosError) {
+      logger.error('Failed to delete video records', videosError)
+    }
+
+    // Step 5: Delete product
     const { error } = await supabase
       .from('catalog_products')
       .delete()
@@ -259,7 +293,7 @@ export async function DELETE(
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Product and all related images deleted successfully' 
+      message: 'Product and all related media deleted successfully' 
     })
   } catch (error) {
     return NextResponse.json(

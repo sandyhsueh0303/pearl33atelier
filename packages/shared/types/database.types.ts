@@ -384,6 +384,48 @@ export type Database = {
           },
         ]
       }
+      product_videos: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          published: boolean
+          sort_order: number
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          published?: boolean
+          sort_order?: number
+          storage_path: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          published?: boolean
+          sort_order?: number
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_videos_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_videos_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_sales_summary"
+            referencedColumns: ["product_id"]
+          },
+        ]
+      }
       sales_records: {
         Row: {
           created_at: string | null
