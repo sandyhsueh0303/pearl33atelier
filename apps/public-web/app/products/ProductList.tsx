@@ -75,7 +75,6 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
     textTransform: 'uppercase' as const,
     boxShadow: shadows.soft,
   }
-
   const filteredProducts = useMemo(() => {
     let result = [...products]
 
@@ -269,6 +268,7 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
                   display: 'flex',
                   flexDirection: 'column',
                   height: '100%',
+                  opacity: product.availability === 'OUT_OF_STOCK' ? 0.72 : 1,
                 }}
                 className="productCard"
                 >
@@ -289,9 +289,9 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
                       position: 'relative',
                       backgroundColor: colors.pearl
                     }}>
-                      {product.editors_pick && (
+                      {product.editors_pick && product.availability !== 'OUT_OF_STOCK' ? (
                         <div style={editorsPickBadgeStyle}>Editor&apos;s Pick</div>
-                      )}
+                      ) : null}
                       {product.primaryImage ? (
                         <Image
                           src={getProductImageUrl(product.primaryImage.storage_path)}
@@ -322,6 +322,17 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
                             Photo Coming Soon
                           </div>
                         </div>
+                      )}
+                      {product.availability === 'OUT_OF_STOCK' && (
+                        <div
+                          aria-hidden="true"
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: 'rgba(255, 255, 255, 0.22)',
+                            pointerEvents: 'none',
+                          }}
+                        />
                       )}
                     </div>
 
@@ -380,8 +391,8 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
                                 padding: '6px 12px',
                                 backgroundColor: '#fbe9e7',
                                 color: '#b71c1c',
-                                fontSize: typography.fontSize.xs,
-                                fontWeight: typography.fontWeight.medium,
+                                fontSize: typography.fontSize.sm,
+                                fontWeight: typography.fontWeight.semibold,
                               }}
                             >
                               Sold
