@@ -10,7 +10,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
-import { PRODUCT_IMAGE_BUCKET, PRODUCT_VIDEO_BUCKET, slugify } from '@pearl33atelier/shared'
+import {
+  PRODUCT_IMAGE_BUCKET,
+  PRODUCT_VIDEO_BUCKET,
+  slugify,
+  syncProductAvailabilitySnapshots,
+} from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
 
 type ProductUpdate = Database['public']['Tables']['catalog_products']['Update']
@@ -205,6 +210,8 @@ export async function PATCH(
       .single()
 
     if (error) throw error
+
+    await syncProductAvailabilitySnapshots(supabase, [id])
 
     return NextResponse.json({ product: data })
   } catch (error) {

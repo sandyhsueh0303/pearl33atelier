@@ -10,8 +10,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import {
   computeProductInventorySummary,
+  materialValueToSlugPart,
+  pearlTypeValueToSlugPart,
   resolveProductAvailability,
   slugify,
+  syncProductAvailabilitySnapshots,
   type MaterialInventoryInput,
 } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
@@ -72,10 +75,10 @@ function normalizeSku(value: unknown): string | null {
 
 function buildDefaultSlugFromFields(body: any, normalizedSize: string | null): string {
   const parts = [
-    body?.pearl_type,
+    pearlTypeValueToSlugPart(String(body?.pearl_type || '')),
     normalizedSize,
     body?.shape,
-    body?.material,
+    materialValueToSlugPart(String(body?.material || '')),
     body?.category,
   ]
     .map((value) => String(value || '').trim())
@@ -143,7 +146,7 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, Number(searchParams.get('page') || '1'))
     const pageSize = Math.max(1, Math.min(100, Number(searchParams.get('pageSize') || '30')))
     const search = (searchParams.get('search') || '').trim()
-    const status = searchParams.get('status') || 'all'
+    const status = searchParams.get('status') || 'active'
     const pearlTypeParam = searchParams.get('pearlType') || 'all'
     const categoryParam = searchParams.get('category') || 'all'
     const pearlType =
@@ -160,7 +163,7 @@ export async function GET(request: NextRequest) {
 
     const from = (page - 1) * pageSize
     const to = from + pageSize - 1
-    const usesComputedAvailabilityFilter = status === 'in_stock' || status === 'sold'
+    const usesComputedAvailabilityFilter = status === 'active' || status === 'in_stock' || status === 'sold'
 
     let query = supabase
       .from('catalog_products')
@@ -263,6 +266,7 @@ export async function GET(request: NextRequest) {
         profit: profit
       }
     }) || []).filter((product) => {
+      if (status === 'active') return product.availability !== 'OUT_OF_STOCK'
       if (status === 'in_stock') return product.availability === 'IN_STOCK'
       if (status === 'sold') return product.availability === 'OUT_OF_STOCK'
       return true
@@ -381,6 +385,8 @@ export async function POST(request: NextRequest) {
       }
       throw error
     }
+
+    await syncProductAvailabilitySnapshots(supabase, [data.id])
 
     return NextResponse.json({ product: data }, { status: 201 })
   } catch (error) {

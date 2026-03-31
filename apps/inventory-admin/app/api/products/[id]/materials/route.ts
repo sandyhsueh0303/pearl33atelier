@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
+import { syncProductAvailabilitySnapshots } from '@pearl33atelier/shared'
 
 /**
  * GET /api/products/[id]/materials
@@ -92,6 +93,8 @@ export async function POST(
       .single()
     
     if (error) throw error
+
+    await syncProductAvailabilitySnapshots(supabase, [productId])
     
     return NextResponse.json(material, { status: 201 })
     
@@ -133,6 +136,8 @@ export async function DELETE(
       .eq('id', materialId)
     
     if (error) throw error
+
+    await syncProductAvailabilitySnapshots(supabase, [id])
     
     return NextResponse.json({ success: true })
     

@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import ImageZoom from '../../components/ImageZoom'
 import ProductInquiryModal from '../../components/ProductInquiryModal'
 import { useCart } from '../../components/CartProvider'
 import { getProductImageUrl, getProductVideoUrl } from '@pearl33atelier/shared'
-import type { ProductInventorySummary } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage, ProductVideo } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 import { colors, typography, spacing, transitions, shadows } from '../../constants/design'
@@ -14,19 +13,19 @@ interface ProductDetailClientProps {
   product: CatalogProduct
   images: ProductImage[]
   videos: ProductVideo[]
-  inventorySummary: ProductInventorySummary
 }
 
 type GalleryItem =
   | { kind: 'image'; id: string; image: ProductImage }
   | { kind: 'video'; id: string; video: ProductVideo }
 
-export default function ProductDetailClient({ product, images, videos, inventorySummary }: ProductDetailClientProps) {
+export default function ProductDetailClient({ product, images, videos }: ProductDetailClientProps) {
   const [inquiryOpen, setInquiryOpen] = useState(false)
   const [cartNotice, setCartNotice] = useState<string | null>(null)
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0)
+  const [liveAvailability, setLiveAvailability] = useState(product.availability)
   const { addItem } = useCart()
-  const effectiveAvailability = inventorySummary.availability
+  const effectiveAvailability = liveAvailability
   const descriptionParagraphs = (product.description || '')
     .split(/\n+/)
     .map((paragraph) => paragraph.trim())
@@ -59,6 +58,31 @@ export default function ProductDetailClient({ product, images, videos, inventory
       ? currentGalleryItem.image
       : orderedImages[0] || null
   const firstImage = orderedImages[0] || null
+
+  useEffect(() => {
+    let cancelled = false
+
+    const loadAvailability = async () => {
+      try {
+        const response = await fetch(`/api/products/${product.id}/availability`, {
+          cache: 'no-store',
+        })
+        if (!response.ok) return
+        const data = await response.json()
+        if (!cancelled && data?.availability) {
+          setLiveAvailability(data.availability)
+        }
+      } catch {
+        // Keep server-rendered availability if live refresh fails.
+      }
+    }
+
+    void loadAvailability()
+
+    return () => {
+      cancelled = true
+    }
+  }, [product.id])
 
   const nextImage = () => {
     if (!hasGallery) return
@@ -387,9 +411,10 @@ export default function ProductDetailClient({ product, images, videos, inventory
               <span style={{
                 padding: `${spacing.xs} ${spacing.md}`,
                 backgroundColor:
-                  effectiveAvailability === 'IN_STOCK' ? '#e8f5e9' : effectiveAvailability === 'OUT_OF_STOCK' ? '#fbe9e7' : colors.champagne,
+                  effectiveAvailability === 'IN_STOCK' ? '#e8f5e9' : effectiveAvailability === 'OUT_OF_STOCK' ? '#f5efe6' : colors.champagne,
                 color:
-                  effectiveAvailability === 'IN_STOCK' ? '#2e7d32' : effectiveAvailability === 'OUT_OF_STOCK' ? '#b71c1c' : colors.gold,
+                  effectiveAvailability === 'IN_STOCK' ? '#2e7d32' : effectiveAvailability === 'OUT_OF_STOCK' ? '#76624c' : colors.gold,
+                border: effectiveAvailability === 'OUT_OF_STOCK' ? '1px solid rgba(196, 173, 145, 0.4)' : 'none',
                 fontSize: typography.fontSize.sm,
                 fontWeight: typography.fontWeight.medium,
               }}>
@@ -526,10 +551,10 @@ export default function ProductDetailClient({ product, images, videos, inventory
                     marginLeft: 'auto',
                     padding: `${spacing.md} ${spacing.xl}`,
                     backgroundColor:
-                      effectiveAvailability === 'OUT_OF_STOCK' ? '#8b8171' : colors.darkGray,
+                      effectiveAvailability === 'OUT_OF_STOCK' ? '#b4a28e' : colors.darkGray,
                     color: colors.white,
                     border: `1px solid ${
-                      effectiveAvailability === 'OUT_OF_STOCK' ? '#8b8171' : colors.darkGray
+                      effectiveAvailability === 'OUT_OF_STOCK' ? '#b4a28e' : colors.darkGray
                     }`,
                     borderRadius: '999px',
                     fontWeight: typography.fontWeight.medium,

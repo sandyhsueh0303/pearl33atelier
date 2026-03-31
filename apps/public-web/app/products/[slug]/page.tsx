@@ -9,7 +9,6 @@ import {
 import type { CatalogProduct, ProductImage, ProductVideo } from '@pearl33atelier/shared/types'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { cache } from 'react'
 import ProductDetailClient from './ProductDetailClient'
 
 // Disable caching for this page to always show latest data
@@ -37,7 +36,7 @@ function getAvailabilitySchemaUrl(availability: CatalogProduct['availability']) 
   return 'https://schema.org/OutOfStock'
 }
 
-const getPublishedProductBySlug = cache(async (slug: string) => {
+const getPublishedProductBySlug = async (slug: string) => {
   const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -113,7 +112,7 @@ const getPublishedProductBySlug = cache(async (slug: string) => {
     videos: videos as ProductVideo[],
     inventorySummary,
   }
-})
+}
 
 function buildProductDescription(product: CatalogProduct) {
   const availabilityText = getAvailabilityText(product.availability)
@@ -355,7 +354,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         product={{ ...product, availability: effectiveAvailability }}
         images={images}
         videos={videos}
-        inventorySummary={inventorySummary}
       />
     </>
   )

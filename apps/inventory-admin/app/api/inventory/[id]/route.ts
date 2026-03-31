@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
+import { syncProductAvailabilityForInventoryItems } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
 
 type InventoryUpdate = Database['public']['Tables']['inventory_items']['Update']
@@ -132,6 +133,8 @@ export async function PATCH(
       .single()
     
     if (error) throw error
+
+    await syncProductAvailabilityForInventoryItems(supabase, [id])
     
     return NextResponse.json(data)
     

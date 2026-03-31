@@ -7,4 +7,5 @@ export * from './supabase'
 // Utils
 export * from './utils/slugify'
 export * from './utils/materialInventory'
+export * from './utils/productAvailabilitySnapshot'
 export * from './utils/storage'
