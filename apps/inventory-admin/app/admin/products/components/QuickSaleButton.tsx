@@ -20,6 +20,7 @@ export default function QuickSaleButton({ productId }: QuickSaleButtonProps) {
     <button
       onClick={handleQuickSale}
       disabled={loading}
+      className="admin-product-form-quick-sale-button"
       style={{
         padding: '0.75rem 1.5rem',
         backgroundColor: '#2b8a3e',
@@ -35,8 +36,8 @@ export default function QuickSaleButton({ productId }: QuickSaleButtonProps) {
       }}
       title="Record a sale for this product"
     >
-      <span>💰</span>
-      <span>Record Sale</span>
+      <span className="admin-product-form-quick-sale-icon">💰</span>
+      <span className="admin-product-form-quick-sale-label">Record Sale</span>
     </button>
   );
 }

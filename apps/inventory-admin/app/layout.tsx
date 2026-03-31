@@ -1,4 +1,5 @@
 import './globals.css'
+import './admin/products/products.css'
 import type { Metadata } from 'next'
 import { AuthProvider } from './components/AuthProvider'
 import ConditionalNavbar from './components/ConditionalNavbar'

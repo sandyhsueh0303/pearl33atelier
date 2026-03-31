@@ -2,7 +2,13 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { slugify, getProductImageUrl, getProductVideoUrl } from '@pearl33atelier/shared'
+import {
+  slugify,
+  materialValueToSlugPart,
+  pearlTypeValueToSlugPart,
+  getProductImageUrl,
+  getProductVideoUrl,
+} from '@pearl33atelier/shared'
 import type { CatalogProduct, AvailabilityKind, ProductCategory, ProductImage, ProductVideo } from '@pearl33atelier/shared/types'
 import ProductMaterials from './ProductMaterials'
 import QuickSaleButton from './QuickSaleButton'
@@ -137,7 +143,13 @@ export default function ProductForm({ productId }: ProductFormProps) {
   }, [selectedPearlTypes])
 
   const buildDefaultSlug = () => {
-    const parts = [pearlTypeValue, sizeMm.trim(), shape.trim(), materialValue.trim(), category]
+    const parts = [
+      pearlTypeValueToSlugPart(pearlTypeValue),
+      sizeMm.trim(),
+      shape.trim(),
+      materialValueToSlugPart(materialValue),
+      category,
+    ]
       .map((value) => String(value || '').trim())
       .filter(Boolean)
     return slugify(parts.join('-'))
@@ -402,43 +414,6 @@ export default function ProductForm({ productId }: ProductFormProps) {
     }
   }
 
-  const toggleImagePublish = async (imageId: string, currentState: boolean) => {
-    try {
-      const response = await fetch(`/api/products/${currentProductId}/images/${imageId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ published: !currentState })
-      })
-
-      if (!response.ok) throw new Error('Failed to update image')
-
-      setImages(prev => prev.map(img => 
-        img.id === imageId ? { ...img, published: !currentState } : img
-      ))
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to update image')
-    }
-  }
-
-  const setPrimaryImage = async (imageId: string) => {
-    try {
-      const response = await fetch(`/api/products/${currentProductId}/images/${imageId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_primary: true })
-      })
-
-      if (!response.ok) throw new Error('Failed to set primary image')
-
-      setImages(prev => prev.map(img => ({
-        ...img,
-        is_primary: img.id === imageId
-      })))
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to set primary image')
-    }
-  }
-
   const deleteImage = async (imageId: string) => {
     if (!confirm('Delete this image? This action cannot be undone.')) return
 
@@ -458,21 +433,22 @@ export default function ProductForm({ productId }: ProductFormProps) {
     }
   }
 
-  const toggleVideoPublish = async (videoId: string, currentState: boolean) => {
+  const setPrimaryImage = async (imageId: string) => {
     try {
-      const response = await fetch(`/api/products/${currentProductId}/videos/${videoId}`, {
+      const response = await fetch(`/api/products/${currentProductId}/images/${imageId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ published: !currentState }),
+        body: JSON.stringify({ is_primary: true })
       })
 
-      if (!response.ok) throw new Error('Failed to update video')
+      if (!response.ok) throw new Error('Failed to set primary image')
 
-      setVideos((prev) =>
-        prev.map((video) => (video.id === videoId ? { ...video, published: !currentState } : video))
-      )
+      setImages(prev => prev.map(img => ({
+        ...img,
+        is_primary: img.id === imageId
+      })))
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to update video')
+      setError(e instanceof Error ? e.message : 'Failed to set primary image')
     }
   }
 
@@ -546,13 +522,14 @@ export default function ProductForm({ productId }: ProductFormProps) {
   }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>{isEditMode ? 'Edit Product' : 'Add Product'}</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+    <div className="admin-product-form-page" style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' }}>
+      <div className="admin-product-form-header" style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 className="admin-product-form-title">{isEditMode ? 'Edit Product' : 'Add Product'}</h1>
+        <div className="admin-product-form-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {isEditMode && <QuickSaleButton productId={currentProductId} />}
           <button
             onClick={() => router.push(backToListPath)}
+            className="admin-product-form-back-button"
             style={{
               padding: '0.5rem 1rem',
               backgroundColor: '#f5f5f5',
@@ -578,9 +555,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-          <div style={{ gridColumn: '1 / -1' }}>
+      <form onSubmit={handleSubmit} className="admin-product-form-card" style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+        <div className="admin-product-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="admin-product-form-full">
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Title <span style={{ color: 'red' }}>*</span>
             </label>
@@ -757,7 +734,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             </select>
           </div>
 
-          <div style={{ gridColumn: '1 / -1' }}>
+          <div className="admin-product-form-full">
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Material
             </label>
@@ -872,7 +849,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
           </div>
 
           {availability === 'PREORDER' && (
-            <div style={{ gridColumn: '1 / -1' }}>
+            <div className="admin-product-form-full">
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
                 Preorder Note
               </label>
@@ -892,8 +869,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
             </div>
           )}
 
-          <div style={{ gridColumn: '1 / -1' }}>
+          <div className="admin-product-form-full">
             <label
+              className="admin-product-form-toggle-card"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -919,7 +897,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             </label>
           </div>
 
-          <div style={{ gridColumn: '1 / -1' }}>
+          <div className="admin-product-form-full">
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Product Description
             </label>
@@ -939,7 +917,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             />
           </div>
 
-          <div style={{ gridColumn: '1 / -1' }}>
+          <div className="admin-product-form-full">
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Internal Notes (admin only)
             </label>
@@ -962,10 +940,11 @@ export default function ProductForm({ productId }: ProductFormProps) {
           </div>
         </div>
 
-        <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
+        <div className="admin-product-form-submit-row" style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
           <button
             type="submit"
             disabled={saving}
+            className="admin-product-form-primary-button"
             style={{
               padding: '0.75rem 2rem',
               backgroundColor: saving ? '#ccc' : '#1976d2',
@@ -982,192 +961,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
         </div>
       </form>
 
-      {/* Images Section - Only show in edit mode */}
-      {isEditMode && (
-        <div style={{ 
-          marginTop: '2rem', 
-          backgroundColor: 'white', 
-          padding: '2rem', 
-          borderRadius: '8px', 
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
-        }}>
-          <h2 style={{ marginBottom: '1rem' }}>Product Images</h2>
-          
-          <div style={{ marginBottom: '1.5rem' }}>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageUpload}
-              disabled={uploadingImages}
-              style={{ display: 'none' }}
-              id="image-upload"
-            />
-            <label
-              htmlFor="image-upload"
-              style={{
-                display: 'inline-block',
-                padding: '0.75rem 1.5rem',
-                backgroundColor: uploadingImages ? '#ccc' : '#10B981',
-                color: 'white',
-                borderRadius: '4px',
-                cursor: uploadingImages ? 'not-allowed' : 'pointer',
-                fontWeight: 'bold'
-              }}
-            >
-              {uploadingImages ? 'Uploading...' : '+ Upload Images'}
-            </label>
-            <small style={{ marginLeft: '1rem', color: '#666' }}>
-              You can upload multiple images at once
-            </small>
-          </div>
-
-          {images.length === 0 ? (
-            <p style={{ color: '#666', fontStyle: 'italic' }}>No images yet</p>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
-              {images.map((image) => (
-                <div
-                  key={image.id}
-                  style={{
-                    border: '2px solid',
-                    borderColor: image.is_primary ? '#1976d2' : '#ddd',
-                    borderRadius: '8px',
-                    padding: '0.5rem',
-                    position: 'relative'
-                  }}
-                >
-                  <div style={{ 
-                    width: '100%', 
-                    height: '200px', 
-                    backgroundColor: '#f5f5f5',
-                    borderRadius: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '0.5rem',
-                    overflow: 'hidden'
-                  }}>
-                    <img 
-                      src={getProductImageUrl(image.storage_path)}
-                      alt={title}
-                      style={{ 
-                        width: '100%', 
-                        height: '100%', 
-                        objectFit: 'cover' 
-                      }}
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none'
-                        e.currentTarget.parentElement!.innerHTML += '<span style="color: #999">Image failed to load</span>'
-                      }}
-                    />
-                  </div>
-                  
-                  {image.is_primary && (
-                    <span style={{
-                      position: 'absolute',
-                      top: '1rem',
-                      left: '1rem',
-                      padding: '0.25rem 0.5rem',
-                      backgroundColor: '#1976d2',
-                      color: 'white',
-                      fontSize: '0.75rem',
-                      fontWeight: 'bold',
-                      borderRadius: '4px'
-                    }}>
-                      Primary
-                    </span>
-                  )}
-                  
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.5rem',
-                      marginTop: '0.5rem',
-                    }}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => toggleImagePublish(image.id, image.published)}
-                      style={{
-                        width: '100%',
-                        minWidth: 0,
-                        padding: '0.5rem',
-                        backgroundColor: image.published ? '#fff3e0' : '#e8f5e9',
-                        color: image.published ? '#F59E0B' : '#10B981',
-                        border: 'none',
-                        borderRadius: '4px',
-                        fontSize: '0.75rem',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {image.published ? 'Unpublish' : 'Publish'}
-                    </button>
-                    
-                    {!image.is_primary && (
-                      <button
-                        type="button"
-                        onClick={() => setPrimaryImage(image.id)}
-                        style={{
-                          width: '100%',
-                          minWidth: 0,
-                          padding: '0.5rem',
-                          backgroundColor: '#e3f2fd',
-                          color: '#1976d2',
-                          border: 'none',
-                          borderRadius: '4px',
-                          fontSize: '0.75rem',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        Set as primary
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => deleteImage(image.id)}
-                      style={{
-                        width: '100%',
-                        minWidth: 0,
-                        padding: '0.5rem',
-                        backgroundColor: '#FEE2E2',
-                        color: '#B91C1C',
-                        border: 'none',
-                        borderRadius: '4px',
-                        fontSize: '0.75rem',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                  
-                  <div style={{ 
-                    marginTop: '0.5rem',
-                    fontSize: '0.75rem',
-                    color: '#666',
-                    display: 'flex',
-                    justifyContent: 'space-between'
-                  }}>
-                    <span>Sort: {image.sort_order}</span>
-                    <span>{image.published ? 'Published' : 'Draft'}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
       {isEditMode && (
         <div
+          className="admin-product-form-section"
           style={{
             marginTop: '2rem',
             backgroundColor: 'white',
@@ -1176,112 +972,258 @@ export default function ProductForm({ productId }: ProductFormProps) {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           }}
         >
-          <h2 style={{ marginBottom: '1rem' }}>Product Videos</h2>
+          <h2 style={{ marginBottom: '1.25rem' }}>Product Media</h2>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <input
-              type="file"
-              multiple
-              accept="video/mp4,video/webm,video/quicktime"
-              onChange={handleVideoUpload}
-              disabled={uploadingVideos}
-              style={{ display: 'none' }}
-              id="video-upload"
-            />
-            <label
-              htmlFor="video-upload"
-              style={{
-                display: 'inline-block',
-                padding: '0.75rem 1.5rem',
-                backgroundColor: uploadingVideos ? '#ccc' : '#6B7280',
-                color: 'white',
-                borderRadius: '4px',
-                cursor: uploadingVideos ? 'not-allowed' : 'pointer',
-                fontWeight: 'bold',
-              }}
-            >
-              {uploadingVideos ? 'Uploading...' : '+ Upload Videos'}
-            </label>
-            <small style={{ marginLeft: '1rem', color: '#666' }}>
-              Product page only. Use compressed MP4/WebM videos under 25MB.
-            </small>
-          </div>
+          <div className="admin-product-form-media-subsection">
+            <h3 className="admin-product-form-media-subheading">Images</h3>
 
-          {videos.length === 0 ? (
-            <p style={{ color: '#666', fontStyle: 'italic' }}>No videos yet</p>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
-              {videos.map((video) => (
-                <div
-                  key={video.id}
-                  style={{
-                    border: '1px solid #ddd',
-                    borderRadius: '8px',
-                    padding: '0.75rem',
-                  }}
-                >
-                  <video
-                    src={getProductVideoUrl(video.storage_path)}
-                    controls
-                    preload="metadata"
+            <div className="admin-product-form-upload-row" style={{ marginBottom: '1.5rem' }}>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={uploadingImages}
+                style={{ display: 'none' }}
+                id="image-upload"
+              />
+              <label
+                htmlFor="image-upload"
+                className="admin-product-form-upload-button"
+                style={{
+                  display: 'inline-block',
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: uploadingImages ? '#ccc' : '#10B981',
+                  color: 'white',
+                  borderRadius: '4px',
+                  cursor: uploadingImages ? 'not-allowed' : 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                {uploadingImages ? 'Uploading...' : '+ Upload Images'}
+              </label>
+              <small className="admin-product-form-upload-help" style={{ marginLeft: '1rem', color: '#666' }}>
+                You can upload multiple images at once
+              </small>
+            </div>
+
+            {images.length === 0 ? (
+              <p style={{ color: '#666', fontStyle: 'italic' }}>No images yet</p>
+            ) : (
+              <div className="admin-product-form-media-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+                {images.map((image) => (
+                  <div
+                    key={image.id}
+                    className="admin-product-form-media-card"
                     style={{
-                      width: '100%',
-                      height: '180px',
+                      border: '2px solid',
+                      borderColor: image.is_primary ? '#1976d2' : '#ddd',
+                      borderRadius: '8px',
+                      padding: '0.5rem',
+                      position: 'relative'
+                    }}
+                  >
+                    <div className="admin-product-form-image-frame" style={{ 
+                      width: '100%', 
+                      height: '200px', 
                       backgroundColor: '#f5f5f5',
                       borderRadius: '4px',
-                      marginBottom: '0.75rem',
-                    }}
-                  />
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <button
-                      type="button"
-                      onClick={() => toggleVideoPublish(video.id, video.published)}
-                      style={{
-                        width: '100%',
-                        padding: '0.5rem',
-                        backgroundColor: video.published ? '#fff3e0' : '#e8f5e9',
-                        color: video.published ? '#F59E0B' : '#10B981',
-                        border: 'none',
-                        borderRadius: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '0.5rem',
+                      overflow: 'hidden'
+                    }}>
+                      <img 
+                        src={getProductImageUrl(image.storage_path)}
+                        alt={title}
+                        style={{ 
+                          width: '100%', 
+                          height: '100%', 
+                          objectFit: 'cover' 
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                          e.currentTarget.parentElement!.innerHTML += '<span style="color: #999">Image failed to load</span>'
+                        }}
+                      />
+                    </div>
+                    
+                    {image.is_primary && (
+                      <span style={{
+                        position: 'absolute',
+                        top: '1rem',
+                        left: '1rem',
+                        padding: '0.25rem 0.5rem',
+                        backgroundColor: '#1976d2',
+                        color: 'white',
                         fontSize: '0.75rem',
-                        cursor: 'pointer',
                         fontWeight: 'bold',
+                        borderRadius: '4px'
+                      }}>
+                        Primary
+                      </span>
+                    )}
+                    
+                    <div
+                      className="admin-product-form-media-actions"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.5rem',
+                        marginTop: '0.5rem',
                       }}
                     >
-                      {video.published ? 'Unpublish' : 'Publish'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => deleteVideo(video.id)}
-                      style={{
-                        width: '100%',
-                        padding: '0.5rem',
-                        backgroundColor: '#FEE2E2',
-                        color: '#B91C1C',
-                        border: 'none',
-                        borderRadius: '4px',
-                        fontSize: '0.75rem',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      Delete
-                    </button>
+                      {!image.is_primary && (
+                        <button
+                          type="button"
+                          onClick={() => setPrimaryImage(image.id)}
+                          style={{
+                            width: '100%',
+                            minWidth: 0,
+                            padding: '0.5rem',
+                            backgroundColor: '#e3f2fd',
+                            color: '#1976d2',
+                            border: 'none',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            fontWeight: 'bold',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          Set as primary
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => deleteImage(image.id)}
+                        style={{
+                          width: '100%',
+                          minWidth: 0,
+                          padding: '0.5rem',
+                          backgroundColor: '#FEE2E2',
+                          color: '#B91C1C',
+                          border: 'none',
+                          borderRadius: '4px',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                    
+                    <div style={{ 
+                      marginTop: '0.5rem',
+                      fontSize: '0.75rem',
+                      color: '#666',
+                      display: 'flex',
+                      justifyContent: 'flex-start'
+                    }}>
+                      <span>Sort: {image.sort_order}</span>
+                    </div>
                   </div>
-                  <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#666', display: 'flex', justifyContent: 'space-between' }}>
-                    <span>Sort: {video.sort_order}</span>
-                    <span>{video.published ? 'Published' : 'Draft'}</span>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="admin-product-form-media-subsection admin-product-form-media-subsection-divider">
+            <h3 className="admin-product-form-media-subheading">Videos</h3>
+
+            <div className="admin-product-form-upload-row" style={{ marginBottom: '1.5rem' }}>
+              <input
+                type="file"
+                multiple
+                accept="video/mp4,video/webm,video/quicktime"
+                onChange={handleVideoUpload}
+                disabled={uploadingVideos}
+                style={{ display: 'none' }}
+                id="video-upload"
+              />
+              <label
+                htmlFor="video-upload"
+                className="admin-product-form-upload-button"
+                style={{
+                  display: 'inline-block',
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: uploadingVideos ? '#ccc' : '#6B7280',
+                  color: 'white',
+                  borderRadius: '4px',
+                  cursor: uploadingVideos ? 'not-allowed' : 'pointer',
+                  fontWeight: 'bold',
+                }}
+              >
+                {uploadingVideos ? 'Uploading...' : '+ Upload Videos'}
+              </label>
+              <small className="admin-product-form-upload-help" style={{ marginLeft: '1rem', color: '#666' }}>
+                Product page only. Use compressed MP4/WebM videos under 25MB.
+              </small>
             </div>
-          )}
+
+            {videos.length === 0 ? (
+              <p style={{ color: '#666', fontStyle: 'italic' }}>No videos yet</p>
+            ) : (
+              <div className="admin-product-form-media-grid admin-product-form-video-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
+                {videos.map((video) => (
+                  <div
+                    key={video.id}
+                    className="admin-product-form-media-card"
+                    style={{
+                      border: '1px solid #ddd',
+                      borderRadius: '8px',
+                      padding: '0.75rem',
+                    }}
+                  >
+                    <video
+                      src={getProductVideoUrl(video.storage_path)}
+                      controls
+                      preload="metadata"
+                      className="admin-product-form-video-frame"
+                      style={{
+                        width: '100%',
+                        height: '180px',
+                        backgroundColor: '#f5f5f5',
+                        borderRadius: '4px',
+                        marginBottom: '0.75rem',
+                      }}
+                    />
+                    <div className="admin-product-form-media-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <button
+                        type="button"
+                        onClick={() => deleteVideo(video.id)}
+                        style={{
+                          width: '100%',
+                          padding: '0.5rem',
+                          backgroundColor: '#FEE2E2',
+                          color: '#B91C1C',
+                          border: 'none',
+                          borderRadius: '4px',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                    <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#666', display: 'flex', justifyContent: 'flex-start' }}>
+                      <span>Sort: {video.sort_order}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
       {/* Publish Section - Only show in edit mode */}
       {isEditMode && (
-        <div style={{ 
+        <div className="admin-product-form-section" style={{ 
           marginTop: '2rem', 
           backgroundColor: published ? '#e8f5e9' : '#fff3e0',
           padding: '2rem', 
@@ -1304,6 +1246,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             <button
               onClick={handlePublish}
               disabled={saving}
+              className="admin-product-form-primary-button"
               style={{
                 padding: '0.75rem 2rem',
                 backgroundColor: saving ? '#ccc' : '#10B981',
@@ -1321,6 +1264,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             <button
               onClick={handleUnpublish}
               disabled={saving}
+              className="admin-product-form-primary-button"
               style={{
                 padding: '0.75rem 2rem',
                 backgroundColor: saving ? '#ccc' : '#F59E0B',
@@ -1346,6 +1290,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
           />
         ) : (
           <div
+            className="admin-product-form-section"
             style={{
               backgroundColor: 'white',
               borderRadius: '8px',

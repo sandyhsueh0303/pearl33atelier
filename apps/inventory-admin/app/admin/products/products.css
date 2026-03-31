@@ -1,0 +1,443 @@
+.admin-products-mobile-list {
+  display: none;
+}
+
+.admin-products-mobile-card {
+  padding: 0.8rem 0.85rem;
+  margin-bottom: 0.65rem;
+}
+
+.admin-products-mobile-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin-bottom: 0.6rem;
+}
+
+.admin-products-mobile-title {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: #1f2937;
+}
+
+.admin-products-mobile-sku {
+  margin: 0.2rem 0 0;
+  font-size: 0.72rem;
+  color: #6b7280;
+  font-family: monospace;
+}
+
+.admin-products-mobile-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.admin-products-mobile-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 0.75rem;
+}
+
+.admin-products-mobile-price {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.admin-products-mobile-meta-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-products-mobile-inline-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  margin-top: 0.45rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.admin-products-mobile-actions {
+  margin-top: 0.65rem;
+  justify-content: stretch;
+}
+
+.admin-products-mobile-actions > * {
+  flex: 1 1 0;
+}
+
+.admin-products-pagination {
+  flex-wrap: wrap;
+}
+
+.admin-product-form-header-actions {
+  flex-wrap: wrap;
+}
+
+.admin-product-form-grid {
+  align-items: start;
+}
+
+.admin-product-form-full {
+  grid-column: 1 / -1;
+}
+
+.admin-product-form-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.admin-product-form-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.admin-product-form-video-grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.admin-product-form-media-subsection + .admin-product-form-media-subsection {
+  margin-top: 2rem;
+}
+
+.admin-product-form-media-subsection-divider {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 2rem;
+}
+
+.admin-product-form-media-subheading {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.admin-bom-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-bom-mobile-list {
+  display: none;
+}
+
+.admin-bom-mobile-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.9rem;
+  background: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.admin-bom-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.admin-bom-mobile-name {
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.35;
+}
+
+.admin-bom-mobile-remaining {
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.admin-bom-mobile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem 1rem;
+}
+
+.admin-bom-mobile-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.18rem;
+}
+
+.admin-bom-mobile-value,
+.admin-bom-mobile-note {
+  font-size: 0.9rem;
+  color: #1f2937;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.admin-bom-mobile-delete {
+  margin-top: 0.8rem;
+  width: 100%;
+}
+
+.admin-bom-mobile-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.admin-bom-add-grid {
+  display: grid;
+}
+
+.admin-bom-stat-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.admin-bom-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+@media (max-width: 1024px) {
+  .admin-product-form-page {
+    padding: 1.25rem !important;
+  }
+
+  .admin-product-form-header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 1rem;
+  }
+
+  .admin-product-form-header-actions > * {
+    flex: 1 1 220px;
+  }
+
+  .admin-product-form-card,
+  .admin-product-form-section {
+    padding: 1.5rem !important;
+  }
+
+  .admin-product-form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .admin-product-form-submit-row {
+    flex-direction: column;
+  }
+
+  .admin-product-form-primary-button,
+  .admin-product-form-back-button {
+    width: 100%;
+  }
+
+  .admin-bom-card {
+    padding: 1.25rem !important;
+  }
+
+  .admin-bom-add-card {
+    padding: 1.25rem !important;
+  }
+
+  .admin-bom-add-grid {
+    grid-template-columns: 1fr 1fr !important;
+    align-items: stretch !important;
+  }
+
+  .admin-bom-add-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-products-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-products-table-wrap {
+    display: none;
+  }
+
+  .admin-products-mobile-list {
+    display: block;
+  }
+
+  .admin-products-mobile-card-header {
+    flex-direction: column;
+  }
+
+  .admin-products-mobile-badges {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .admin-products-mobile-actions {
+    gap: 0.5rem;
+  }
+
+  .admin-products-pagination {
+    justify-content: stretch !important;
+  }
+
+  .admin-products-pagination > * {
+    width: 100%;
+    text-align: center;
+  }
+
+  .admin-product-form-page {
+    padding: 0.9rem !important;
+  }
+
+  .admin-product-form-title {
+    margin: 0;
+    font-size: 1.55rem;
+    line-height: 1.2;
+  }
+
+  .admin-product-form-header-actions {
+    flex-direction: row;
+    align-items: center !important;
+    justify-content: flex-end;
+    gap: 0.5rem !important;
+    flex-wrap: nowrap;
+  }
+
+  .admin-product-form-header-actions > * {
+    width: auto;
+    flex: 0 0 24%;
+    min-width: 0;
+  }
+
+  .admin-product-form-card,
+  .admin-product-form-section {
+    padding: 1rem !important;
+  }
+
+  .admin-product-form-toggle-card {
+    align-items: flex-start !important;
+  }
+
+  .admin-product-form-upload-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .admin-product-form-media-subsection + .admin-product-form-media-subsection {
+    margin-top: 1.5rem;
+  }
+
+  .admin-product-form-media-subsection-divider {
+    padding-top: 1.5rem;
+  }
+
+  .admin-product-form-upload-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .admin-product-form-upload-help {
+    margin-left: 0 !important;
+    display: block;
+  }
+
+  .admin-product-form-quick-sale-button,
+  .admin-product-form-back-button {
+    padding: 0.45rem 0.55rem !important;
+    font-size: 0.68rem !important;
+    line-height: 1.1;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .admin-product-form-quick-sale-button {
+    gap: 0.25rem !important;
+  }
+
+  .admin-product-form-quick-sale-label {
+    font-size: 0.68rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .admin-product-form-quick-sale-icon {
+    flex-shrink: 0;
+  }
+
+  .admin-product-form-media-grid,
+  .admin-product-form-video-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.85rem;
+  }
+
+  .admin-product-form-image-frame,
+  .admin-product-form-video-frame {
+    height: 220px !important;
+  }
+
+  .admin-product-form-media-actions {
+    gap: 0.4rem !important;
+  }
+
+  .admin-bom-card {
+    padding: 1rem !important;
+  }
+
+  .admin-bom-stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  .admin-bom-stats-grid > div {
+    padding: 1rem !important;
+  }
+
+  .admin-bom-stat-value {
+    font-size: 1.45rem !important;
+  }
+
+  .admin-bom-table-wrap {
+    display: none;
+  }
+
+  .admin-bom-mobile-list {
+    display: block;
+  }
+
+  .admin-bom-mobile-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-bom-add-card {
+    padding: 1rem !important;
+  }
+
+  .admin-bom-add-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.85rem !important;
+  }
+}

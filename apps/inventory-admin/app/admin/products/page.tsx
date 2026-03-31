@@ -48,13 +48,13 @@ function ProductsPageContent() {
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState(() => searchParams.get('search') || '')
   const [filterStatus, setFilterStatus] = useState<
-    'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold'
+    'active' | 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold'
   >(() => {
     const value = searchParams.get('status')
-    const allowed = ['all', 'published', 'draft', 'in_stock', 'preorder', 'sold'] as const
+    const allowed = ['active', 'all', 'published', 'draft', 'in_stock', 'preorder', 'sold'] as const
     return allowed.includes(value as (typeof allowed)[number])
-      ? (value as 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold')
-      : 'all'
+      ? (value as 'active' | 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold')
+      : 'active'
   })
   const [filterPearlType, setFilterPearlType] = useState<string>(
     () => searchParams.get('pearlType') || 'all'
@@ -80,7 +80,7 @@ function ProductsPageContent() {
 
   const returnToParams = new URLSearchParams()
   if (searchQuery.trim()) returnToParams.set('search', searchQuery.trim())
-  if (filterStatus !== 'all') returnToParams.set('status', filterStatus)
+  if (filterStatus !== 'active') returnToParams.set('status', filterStatus)
   if (filterPearlType !== 'all') returnToParams.set('pearlType', filterPearlType)
   if (filterCategory !== 'all') returnToParams.set('category', filterCategory)
   if (sortBy !== 'created') returnToParams.set('sortBy', sortBy)
@@ -99,7 +99,7 @@ function ProductsPageContent() {
   useEffect(() => {
     const params = new URLSearchParams()
     if (searchQuery.trim()) params.set('search', searchQuery.trim())
-    if (filterStatus !== 'all') params.set('status', filterStatus)
+    if (filterStatus !== 'active') params.set('status', filterStatus)
     if (filterPearlType !== 'all') params.set('pearlType', filterPearlType)
     if (filterCategory !== 'all') params.set('category', filterCategory)
     if (sortBy !== 'created') params.set('sortBy', sortBy)
@@ -132,6 +132,37 @@ function ProductsPageContent() {
       BROOCHES: 'Brooches',
     }
     return labels[category] || category
+  }
+
+  const formatMoney = (value?: number) => (
+    value !== undefined ? `$ ${value.toLocaleString()}` : '-'
+  )
+
+  const getAvailabilityMeta = (availability: ProductWithStats['availability']) => {
+    if (availability === 'IN_STOCK') {
+      return {
+        label: 'In Stock',
+        className: 'admin-pill admin-pill-success',
+        style: {},
+      }
+    }
+
+    if (availability === 'PREORDER') {
+      return {
+        label: 'Preorder',
+        className: 'admin-pill admin-pill-gold',
+        style: {},
+      }
+    }
+
+    return {
+      label: 'Sold',
+      className: 'admin-pill',
+      style: {
+        background: '#FEE2E2',
+        color: '#B91C1C',
+      },
+    }
   }
 
   useEffect(() => {
@@ -259,10 +290,10 @@ function ProductsPageContent() {
 
   const filteredProducts = products
 
-  const hasFilters = searchQuery !== '' || filterStatus !== 'all' || filterPearlType !== 'all' || filterCategory !== 'all'
+  const hasFilters = searchQuery !== '' || filterStatus !== 'active' || filterPearlType !== 'all' || filterCategory !== 'all'
   const resetFilters = () => {
     setSearchQuery('')
-    setFilterStatus('all')
+    setFilterStatus('active')
     setFilterPearlType('all')
     setFilterCategory('all')
     setSortBy('created')
@@ -372,12 +403,13 @@ function ProductsPageContent() {
               value={filterStatus}
               onChange={(e) => {
                 setFilterStatus(
-                  e.target.value as 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold'
+                  e.target.value as 'active' | 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold'
                 )
                 setCurrentPage(1)
               }}
               className="admin-control"
             >
+              <option value="active">Hide Sold</option>
               <option value="all">All</option>
               <option value="published">Published</option>
               <option value="draft">Draft</option>
@@ -480,9 +512,11 @@ function ProductsPageContent() {
         {/* Results Count */}
         <div className="admin-filter-results">
           Showing <strong>{filteredProducts.length}</strong> / {totalItems} products
-          {filterStatus !== 'all' &&
+          {filterStatus !== 'active' &&
             ` • ${
-              filterStatus === 'published'
+              filterStatus === 'all'
+                ? 'All'
+                : filterStatus === 'published'
                 ? 'Published'
                 : filterStatus === 'draft'
                 ? 'Draft'
@@ -499,6 +533,7 @@ function ProductsPageContent() {
 
       <div className="admin-stats-row">
         <div
+          className="admin-products-stats-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
@@ -569,109 +604,162 @@ function ProductsPageContent() {
           )}
         </div>
       ) : (
-        <div className="admin-card admin-table-card">
-          <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr className="admin-table-head-row">
-                <th>Status</th>
-                <th>SKU</th>
-                <th>Available</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Pearl Type</th>
-                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Total Cost</th>
-                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Sell Price</th>
-                <th className="admin-th-right" style={{ minWidth: '140px' }}>Profit</th>
-                <th className="admin-th-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedProducts.map((product) => (
-                <tr key={product.id} className="admin-row-divider">
-                  <td>
-                    <span className={`admin-pill ${product.published ? 'admin-pill-success' : 'admin-pill-warning'}`}>
-                      {product.published ? 'Published' : 'Draft'}
-                    </span>
-                  </td>
-                  <td className="admin-cell-mono">
-                    {product.sku || '-'}
-                  </td>
-                  <td>
-                    <span
-                      className={
-                        product.availability === 'IN_STOCK'
-                          ? 'admin-pill admin-pill-success'
-                          : product.availability === 'PREORDER'
-                          ? 'admin-pill admin-pill-gold'
-                          : 'admin-pill'
-                      }
-                      style={{
-                        fontSize: '0.875rem',
-                        ...(product.availability === 'OUT_OF_STOCK'
-                          ? { background: '#FEE2E2', color: '#B91C1C' }
-                          : {}),
-                      }}
-                    >
-                      {product.availability === 'IN_STOCK'
-                        ? 'In Stock'
-                        : product.availability === 'PREORDER'
-                        ? 'Preorder'
-                        : 'Sold'}
-                    </span>
-                  </td>
-                  <td style={{ fontWeight: '500' }}>
-                    {product.title}
-                  </td>
-                  <td>
-                    <span className="admin-pill admin-pill-lilac" style={{ fontSize: '0.875rem' }}>
-                      {product.category ? formatCategory(product.category) : '-'}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="admin-pill admin-pill-sky" style={{ fontSize: '0.875rem' }}>
-                      {product.pearl_type}
-                    </span>
-                  </td>
-                  <td className="admin-cell-right admin-money admin-money-danger">
-                    {product.total_cost !== undefined ? `$ ${product.total_cost.toLocaleString()}` : '-'}
-                  </td>
-                  <td className="admin-cell-right admin-money">
-                    {product.sell_price ? `$ ${product.sell_price.toLocaleString()}` : '-'}
-                  </td>
-                  <td style={{ minWidth: '140px' }} className="admin-cell-right admin-money">
-                    {product.profit !== undefined ? (
-                      <span style={{ 
-                        color: product.profit >= 0 ? '#10B981' : '#EF4444',
-                      }}>
-                        $ {product.profit.toLocaleString()}
-                      </span>
-                    ) : '-'}
-                  </td>
-                  <td className="admin-cell-center">
-                    <div className="admin-action-group">
-                      <Link
-                        href={`/admin/products/${product.id}?returnTo=${returnToParam}`}
-                        className="admin-btn admin-btn-edit admin-link-btn admin-btn-md"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(product.id, product.title)}
-                        className="admin-btn admin-btn-delete admin-btn-md"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
+        <>
+          <div className="admin-card admin-table-card admin-products-table-wrap">
+            <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr className="admin-table-head-row">
+                  <th>Status</th>
+                  <th>SKU</th>
+                  <th>Available</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Pearl Type</th>
+                  <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Total Cost</th>
+                  <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Sell Price</th>
+                  <th className="admin-th-right" style={{ minWidth: '140px' }}>Profit</th>
+                  <th className="admin-th-center">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {paginatedProducts.map((product) => {
+                  const availabilityMeta = getAvailabilityMeta(product.availability)
+
+                  return (
+                    <tr key={product.id} className="admin-row-divider">
+                      <td>
+                        <span className={`admin-pill ${product.published ? 'admin-pill-success' : 'admin-pill-warning'}`}>
+                          {product.published ? 'Published' : 'Draft'}
+                        </span>
+                      </td>
+                      <td className="admin-cell-mono">
+                        {product.sku || '-'}
+                      </td>
+                      <td>
+                        <span
+                          className={availabilityMeta.className}
+                          style={{
+                            fontSize: '0.875rem',
+                            ...availabilityMeta.style,
+                          }}
+                        >
+                          {availabilityMeta.label}
+                        </span>
+                      </td>
+                      <td style={{ fontWeight: '500' }}>
+                        {product.title}
+                      </td>
+                      <td>
+                        <span className="admin-pill admin-pill-lilac" style={{ fontSize: '0.875rem' }}>
+                          {product.category ? formatCategory(product.category) : '-'}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="admin-pill admin-pill-sky" style={{ fontSize: '0.875rem' }}>
+                          {product.pearl_type}
+                        </span>
+                      </td>
+                      <td className="admin-cell-right admin-money admin-money-danger">
+                        {formatMoney(product.total_cost)}
+                      </td>
+                      <td className="admin-cell-right admin-money">
+                        {product.sell_price ? formatMoney(product.sell_price) : '-'}
+                      </td>
+                      <td style={{ minWidth: '140px' }} className="admin-cell-right admin-money">
+                        {product.profit !== undefined ? (
+                          <span style={{
+                            color: product.profit >= 0 ? '#10B981' : '#EF4444',
+                          }}>
+                            {formatMoney(product.profit)}
+                          </span>
+                        ) : '-'}
+                      </td>
+                      <td className="admin-cell-center">
+                        <div className="admin-action-group">
+                          <Link
+                            href={`/admin/products/${product.id}?returnTo=${returnToParam}`}
+                            className="admin-btn admin-btn-edit admin-link-btn admin-btn-md"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(product.id, product.title)}
+                            className="admin-btn admin-btn-delete admin-btn-md"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="admin-products-mobile-list">
+            {paginatedProducts.map((product) => {
+              const availabilityMeta = getAvailabilityMeta(product.availability)
+              const profitColor = product.profit !== undefined && product.profit < 0 ? '#EF4444' : '#10B981'
+
+              return (
+                <article key={product.id} className="admin-card admin-products-mobile-card">
+                  <div className="admin-products-mobile-card-header">
+                    <div style={{ minWidth: 0 }}>
+                      <h2 className="admin-products-mobile-title">{product.title}</h2>
+                      <p className="admin-products-mobile-sku">{product.sku || 'No SKU'}</p>
+                    </div>
+                    <div className="admin-products-mobile-badges">
+                      <span className={`admin-pill ${product.published ? 'admin-pill-success' : 'admin-pill-warning'}`}>
+                        {product.published ? 'Published' : 'Draft'}
+                      </span>
+                      <span className={availabilityMeta.className} style={availabilityMeta.style}>
+                        {availabilityMeta.label}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="admin-products-mobile-summary">
+                    <div className="admin-products-mobile-price">
+                      <span className="admin-products-mobile-meta-label">Sell Price</span>
+                      <span className="admin-money">{product.sell_price ? formatMoney(product.sell_price) : '-'}</span>
+                    </div>
+                    <div className="admin-products-mobile-price">
+                      <span className="admin-products-mobile-meta-label">Profit</span>
+                      <span className="admin-money" style={{ color: profitColor }}>
+                        {product.profit !== undefined ? formatMoney(product.profit) : '-'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="admin-products-mobile-inline-meta">
+                    <span>{product.category ? formatCategory(product.category) : '-'}</span>
+                    <span>{product.pearl_type || '-'}</span>
+                  </div>
+
+                  <div className="admin-action-group admin-products-mobile-actions">
+                    <Link
+                      href={`/admin/products/${product.id}?returnTo=${returnToParam}`}
+                      className="admin-btn admin-btn-edit admin-link-btn admin-btn-sm"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(product.id, product.title)}
+                      className="admin-btn admin-btn-delete admin-btn-sm"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        </>
       )}
 
       {filteredProducts.length > 0 && totalPages > 1 && (
-        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', gap: '0.5rem', alignItems: 'center' }}>
+        <div className="admin-products-pagination" style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', gap: '0.5rem', alignItems: 'center' }}>
           <button
             type="button"
             className="admin-btn admin-btn-secondary admin-btn-sm"

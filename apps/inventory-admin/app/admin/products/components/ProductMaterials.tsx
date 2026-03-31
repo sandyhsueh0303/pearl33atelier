@@ -209,37 +209,37 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
   }
 
   return (
-    <div style={{ 
+    <div className="admin-bom-card" style={{ 
       backgroundColor: 'white',
       borderRadius: '8px',
       padding: '1.5rem',
       boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
       marginBottom: '2rem'
     }}>
-      <div style={{
+      <div className="admin-bom-stats-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
         gap: '1rem',
         marginBottom: '1.5rem',
       }}>
         <div style={{ padding: '1.25rem', backgroundColor: '#ffebee', borderRadius: '8px' }}>
-          <div style={{ fontSize: '0.875rem', color: '#EF4444', fontWeight: '500', marginBottom: '0.5rem' }}>Total Cost</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#EF4444' }}>${totalMaterialCost.toFixed(2)}</div>
+          <div className="admin-bom-stat-label" style={{ fontSize: '0.875rem', color: '#EF4444', fontWeight: '500', marginBottom: '0.5rem' }}>Total Cost</div>
+          <div className="admin-bom-stat-value" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#EF4444' }}>${totalMaterialCost.toFixed(2)}</div>
         </div>
         <div style={{ padding: '1.25rem', backgroundColor: '#e3f2fd', borderRadius: '8px' }}>
-          <div style={{ fontSize: '0.875rem', color: '#1565c0', fontWeight: '500', marginBottom: '0.5rem' }}>Sell Price</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2196f3' }}>${sellingPrice.toFixed(2)}</div>
+          <div className="admin-bom-stat-label" style={{ fontSize: '0.875rem', color: '#1565c0', fontWeight: '500', marginBottom: '0.5rem' }}>Sell Price</div>
+          <div className="admin-bom-stat-value" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2196f3' }}>${sellingPrice.toFixed(2)}</div>
         </div>
         <div style={{ padding: '1.25rem', backgroundColor: profit >= 0 ? '#e8f5e9' : '#ffebee', borderRadius: '8px' }}>
-          <div style={{ fontSize: '0.875rem', color: profit >= 0 ? '#10B981' : '#EF4444', fontWeight: '500', marginBottom: '0.5rem' }}>Profit</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: profit >= 0 ? '#10B981' : '#EF4444' }}>${profit.toFixed(2)}</div>
+          <div className="admin-bom-stat-label" style={{ fontSize: '0.875rem', color: profit >= 0 ? '#10B981' : '#EF4444', fontWeight: '500', marginBottom: '0.5rem' }}>Profit</div>
+          <div className="admin-bom-stat-value" style={{ fontSize: '2rem', fontWeight: 'bold', color: profit >= 0 ? '#10B981' : '#EF4444' }}>${profit.toFixed(2)}</div>
           <div style={{ fontSize: '0.875rem', color: profit >= 0 ? '#10B981' : '#EF4444', marginTop: '0.5rem', fontWeight: '600' }}>
             {profitMargin.toFixed(1)}% Profit Margin
           </div>
         </div>
         <div style={{ padding: '1.25rem', backgroundColor: '#fff8e1', borderRadius: '8px' }}>
-          <div style={{ fontSize: '0.875rem', color: '#b7791f', fontWeight: '500', marginBottom: '0.5rem' }}>Max Sellable Units</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#b7791f' }}>{inventorySummary.availableQuantity ?? '-'}</div>
+          <div className="admin-bom-stat-label" style={{ fontSize: '0.875rem', color: '#b7791f', fontWeight: '500', marginBottom: '0.5rem' }}>Max Sellable Units</div>
+          <div className="admin-bom-stat-value" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#b7791f' }}>{inventorySummary.availableQuantity ?? '-'}</div>
           <div style={{ fontSize: '0.875rem', color: '#8a6d1d', marginTop: '0.5rem' }}>
             {inventorySummary.limitingMaterialName
               ? `Limited by ${inventorySummary.limitingMaterialName}`
@@ -250,85 +250,132 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
       <h2 style={{ marginTop: 0, marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: 'bold' }}>
         🧾 BOM Materials List (BOM)
       </h2>
-      {materials.length > 0 ? (
-        <div style={{ marginBottom: '1rem', color: '#444', fontSize: '0.95rem' }}>
-          Max sellable units from current materials:{' '}
-          <strong>{inventorySummary.availableQuantity ?? 'Not tracked'}</strong>
-          {inventorySummary.limitingMaterialName ? ` (limited by ${inventorySummary.limitingMaterialName})` : ''}
-        </div>
-      ) : null}
 
       {/* Materials List */}
       {materials.length > 0 ? (
         <div style={{ marginBottom: '2rem' }}>
-          <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid #ddd', backgroundColor: '#f9f9f9' }}>
-                <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Name</th>
-                <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Qty/Unit</th>
-                <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Unit Cost</th>
-                <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Subtotal</th>
-                <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Remaining</th>
-                <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Notes</th>
-                <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: '600' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {materials.map((material) => (
-                <tr key={material.id} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '0.75rem' }}>
-                    {material.inventory_items.name || '-'}
-                  </td>
-                  <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '500' }}>
-                    {material.quantity_per_unit}
-                  </td>
-                  <td style={{ padding: '0.75rem', textAlign: 'right' }}>
-                    ${(material.unit_cost_snapshot || 0).toFixed(2)}
-                  </td>
-                  <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600', color: '#1976d2' }}>
-                    ${(material.quantity_per_unit * (material.unit_cost_snapshot || 0)).toFixed(2)}
-                  </td>
-                  <td style={{ padding: '0.75rem', textAlign: 'right' }}>
-                    <span style={{
-                      padding: '0.25rem 0.5rem',
-                      backgroundColor: material.inventory_items.remaining_quantity > 0 ? '#e8f5e9' : '#ffebee',
-                      color: material.inventory_items.remaining_quantity > 0 ? '#10B981' : '#EF4444',
-                      borderRadius: '4px',
-                      fontSize: '0.875rem',
-                      fontWeight: '500'
-                    }}>
-                      {material.inventory_items.remaining_quantity}
-                    </span>
-                  </td>
-                  <td style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#666' }}>
-                    {material.notes || material.inventory_items.internal_note || '-'}
-                  </td>
-                  <td style={{ padding: '0.75rem', textAlign: 'center' }}>
-                    <button
-                      onClick={() => handleDeleteMaterial(material.id)}
-                      className="admin-btn admin-btn-delete"
-                      style={{
-                        padding: '0.5rem 0.75rem',
+          <div className="admin-bom-table-wrap">
+            <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #ddd', backgroundColor: '#f9f9f9' }}>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Name</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Qty/Unit</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Unit Cost</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Subtotal</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Remaining</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Notes</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: '600' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {materials.map((material) => (
+                  <tr key={material.id} style={{ borderBottom: '1px solid #eee' }}>
+                    <td style={{ padding: '0.75rem' }}>
+                      {material.inventory_items.name || '-'}
+                    </td>
+                    <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '500' }}>
+                      {material.quantity_per_unit}
+                    </td>
+                    <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                      ${(material.unit_cost_snapshot || 0).toFixed(2)}
+                    </td>
+                    <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600', color: '#1976d2' }}>
+                      ${(material.quantity_per_unit * (material.unit_cost_snapshot || 0)).toFixed(2)}
+                    </td>
+                    <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                      <span style={{
+                        padding: '0.25rem 0.5rem',
+                        backgroundColor: material.inventory_items.remaining_quantity > 0 ? '#e8f5e9' : '#ffebee',
+                        color: material.inventory_items.remaining_quantity > 0 ? '#10B981' : '#EF4444',
+                        borderRadius: '4px',
                         fontSize: '0.875rem',
                         fontWeight: '500'
-                      }}
-                    >
-                      Delete
-                    </button>
+                      }}>
+                        {material.inventory_items.remaining_quantity}
+                      </span>
+                    </td>
+                    <td style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#666' }}>
+                      {material.notes || material.inventory_items.internal_note || '-'}
+                    </td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>
+                      <button
+                        onClick={() => handleDeleteMaterial(material.id)}
+                        className="admin-btn admin-btn-delete"
+                        style={{
+                          padding: '0.5rem 0.75rem',
+                          fontSize: '0.875rem',
+                          fontWeight: '500'
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                <tr style={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>
+                  <td colSpan={3} style={{ padding: '0.75rem', textAlign: 'right' }}>
+                    Total material cost:
                   </td>
+                  <td style={{ padding: '0.75rem', textAlign: 'right', color: '#1976d2', fontSize: '1.125rem' }}>
+                    ${totalMaterialCost.toFixed(2)}
+                  </td>
+                  <td colSpan={3}></td>
                 </tr>
-              ))}
-              <tr style={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>
-                <td colSpan={3} style={{ padding: '0.75rem', textAlign: 'right' }}>
-                  Total material cost:
-                </td>
-                <td style={{ padding: '0.75rem', textAlign: 'right', color: '#1976d2', fontSize: '1.125rem' }}>
-                  ${totalMaterialCost.toFixed(2)}
-                </td>
-                <td colSpan={3}></td>
-              </tr>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="admin-bom-mobile-list">
+            {materials.map((material) => (
+              <article key={material.id} className="admin-bom-mobile-card">
+                <div className="admin-bom-mobile-header">
+                  <div className="admin-bom-mobile-name">{material.inventory_items.name || '-'}</div>
+                  <span
+                    className="admin-bom-mobile-remaining"
+                    style={{
+                      backgroundColor: material.inventory_items.remaining_quantity > 0 ? '#e8f5e9' : '#ffebee',
+                      color: material.inventory_items.remaining_quantity > 0 ? '#10B981' : '#EF4444',
+                    }}
+                  >
+                    Rem: {material.inventory_items.remaining_quantity}
+                  </span>
+                </div>
+
+                <div className="admin-bom-mobile-grid">
+                  <div>
+                    <div className="admin-bom-mobile-label">Qty/Unit</div>
+                    <div className="admin-bom-mobile-value">{material.quantity_per_unit}</div>
+                  </div>
+                  <div>
+                    <div className="admin-bom-mobile-label">Unit Cost</div>
+                    <div className="admin-bom-mobile-value">${(material.unit_cost_snapshot || 0).toFixed(2)}</div>
+                  </div>
+                  <div>
+                    <div className="admin-bom-mobile-label">Subtotal</div>
+                    <div className="admin-bom-mobile-value" style={{ color: '#1976d2', fontWeight: 700 }}>
+                      ${(material.quantity_per_unit * (material.unit_cost_snapshot || 0)).toFixed(2)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="admin-bom-mobile-label">Notes</div>
+                    <div className="admin-bom-mobile-note">{material.notes || material.inventory_items.internal_note || '-'}</div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handleDeleteMaterial(material.id)}
+                  className="admin-btn admin-btn-delete admin-bom-mobile-delete"
+                >
+                  Delete
+                </button>
+              </article>
+            ))}
+
+            <div className="admin-bom-mobile-total">
+              <span>Total material cost</span>
+              <strong>${totalMaterialCost.toFixed(2)}</strong>
+            </div>
+          </div>
         </div>
       ) : (
         <div style={{ 
@@ -344,7 +391,7 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
       )}
 
       {/* Add Material Form */}
-      <div style={{ 
+      <div className="admin-bom-add-card" style={{ 
         padding: '1.5rem',
         backgroundColor: '#f9f9f9',
         borderRadius: '8px'
@@ -353,7 +400,7 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
           ➕ Add Material
         </h3>
         <form onSubmit={handleAddMaterial}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr 1fr 2fr auto', gap: '1rem', alignItems: 'end' }}>
+          <div className="admin-bom-add-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr 1fr 2fr auto', gap: '1rem', alignItems: 'end' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
                 Category
@@ -465,6 +512,7 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
             <button
               type="submit"
               disabled={adding || !selectedItemId}
+              className="admin-bom-add-button"
               style={{
                 padding: '0.75rem 1.5rem',
                 backgroundColor: adding ? '#ccc' : '#1976d2',

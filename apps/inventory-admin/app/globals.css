@@ -437,6 +437,7 @@ button {
   .admin-action-group {
     flex-wrap: wrap;
   }
+
 }
 
 @media (max-width: 640px) {
@@ -444,13 +445,17 @@ button {
     font-size: 1.5rem;
   }
 
+  .admin-page-title-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .admin-stats-row > * {
     flex: 1 1 100% !important;
   }
 
-  .admin-link-btn-primary,
-  .admin-btn-primary,
-  .admin-btn-secondary {
+  .admin-page-header .admin-link-btn-primary,
+  .admin-page-header .admin-btn-primary {
     width: 100%;
     text-align: center;
   }
