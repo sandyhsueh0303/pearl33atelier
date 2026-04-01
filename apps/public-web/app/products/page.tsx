@@ -63,12 +63,12 @@ function getCollectionContext(category?: string, pearlType?: string, sale?: stri
   const categoryLabel = category ? CATEGORY_LABELS[category] ?? category : null
   const pearlTypeLabel = pearlType ? PEARL_TYPE_LABELS[pearlType] ?? pearlType : null
   const isSaleCollection = sale === 'true'
+  const sharedDescription = 'Accessible luxury for everyday wear'
 
   if (isSaleCollection) {
     return {
       title: 'Sales',
-      description:
-        'Explore reduced-price pearl jewelry from 33 Pearl Atelier, including pieces currently marked below their original price.',
+      description: sharedDescription,
       schemaName: 'Pearl Jewelry Sales',
     }
   }
@@ -76,23 +76,22 @@ function getCollectionContext(category?: string, pearlType?: string, sale?: stri
   if (pearlTypeLabel) {
     return {
       title: `${pearlTypeLabel} Collection`,
-      description: `Explore ${pearlTypeLabel} pearl jewelry by 33 Pearl Atelier, including refined pieces selected for everyday elegance and gifting.`,
+      description: sharedDescription,
       schemaName: `${pearlTypeLabel} Pearl Collection`,
     }
   }
 
   if (categoryLabel) {
     return {
-      title: `${categoryLabel} Collection`,
-      description: `Explore handcrafted ${categoryLabel.toLowerCase()} by 33 Pearl Atelier, designed with a calm, brand-led approach to pearl jewelry.`,
-      schemaName: `${categoryLabel} Collection`,
+      title: categoryLabel,
+      description: sharedDescription,
+      schemaName: categoryLabel,
     }
   }
 
   return {
     title: 'Collection',
-    description:
-      'Explore handcrafted pearl jewelry by 33 Pearl Atelier, including necklaces, earrings, bracelets, rings, and bespoke-ready pieces.',
+    description: sharedDescription,
     schemaName: '33 Pearl Atelier Collection',
   }
 }
