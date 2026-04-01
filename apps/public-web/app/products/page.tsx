@@ -5,6 +5,15 @@ import type { ProductListImage, ProductListItem } from './ProductList'
 import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 
+type CollectionSortBy = 'price-low' | 'price-high' | 'date-old' | 'date-new'
+type ProductSearchParams = {
+  page?: string
+  category?: string
+  pearlType?: string
+  sortBy?: string
+  sale?: string
+}
+
 interface ProductWithImages extends ProductListItem {
   primaryImage?: ProductListImage
 }
@@ -12,22 +21,104 @@ interface ProductWithImages extends ProductListItem {
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
 const DEFAULT_PRODUCT_IMAGE = `${SITE_URL}/images/default-product.jpg`
 
+const CATEGORY_LABELS: Record<string, string> = {
+  Bracelets: 'Bracelets',
+  Necklaces: 'Necklaces',
+  Earrings: 'Earrings',
+  Studs: 'Studs',
+  Rings: 'Rings',
+  Pendants: 'Pendants',
+  'Loose Pearls': 'Loose Pearls',
+  Brooches: 'Brooches',
+  Others: 'Others',
+}
+
+const CATEGORY_QUERY_VALUES: Record<string, string[]> = {
+  Bracelets: ['BRACELETS'],
+  Necklaces: ['NECKLACES'],
+  Earrings: ['EARRINGS', 'STUDS'],
+  Studs: ['STUDS'],
+  Rings: ['RINGS'],
+  Pendants: ['PENDANTS'],
+  'Loose Pearls': ['LOOSE_PEARLS'],
+  Brooches: ['BROOCHES'],
+  Others: ['PENDANTS', 'LOOSE_PEARLS', 'BROOCHES'],
+}
+
+const PEARL_TYPE_LABELS: Record<string, string> = {
+  Akoya: 'Akoya Pearls',
+  'South Sea': 'South Sea Pearls',
+  Tahitian: 'Tahitian Pearls',
+  More: 'More',
+}
+
+const PEARL_TYPE_QUERY_MODES: Record<string, { mode: 'include' | 'exclude'; tokens: string[] }> = {
+  Akoya: { mode: 'include', tokens: ['Akoya'] },
+  'South Sea': { mode: 'include', tokens: ['SouthSea'] },
+  Tahitian: { mode: 'include', tokens: ['Tahitian'] },
+  More: { mode: 'exclude', tokens: ['Akoya', 'SouthSea', 'Tahitian'] },
+}
+
+function getCollectionContext(category?: string, pearlType?: string, sale?: string) {
+  const categoryLabel = category ? CATEGORY_LABELS[category] ?? category : null
+  const pearlTypeLabel = pearlType ? PEARL_TYPE_LABELS[pearlType] ?? pearlType : null
+  const isSaleCollection = sale === 'true'
+
+  if (isSaleCollection) {
+    return {
+      title: 'Sales',
+      description:
+        'Explore reduced-price pearl jewelry from 33 Pearl Atelier, including pieces currently marked below their original price.',
+      schemaName: 'Pearl Jewelry Sales',
+    }
+  }
+
+  if (pearlTypeLabel) {
+    return {
+      title: `${pearlTypeLabel} Collection`,
+      description: `Explore ${pearlTypeLabel} pearl jewelry by 33 Pearl Atelier, including refined pieces selected for everyday elegance and gifting.`,
+      schemaName: `${pearlTypeLabel} Pearl Collection`,
+    }
+  }
+
+  if (categoryLabel) {
+    return {
+      title: `${categoryLabel} Collection`,
+      description: `Explore handcrafted ${categoryLabel.toLowerCase()} by 33 Pearl Atelier, designed with a calm, brand-led approach to pearl jewelry.`,
+      schemaName: `${categoryLabel} Collection`,
+    }
+  }
+
+  return {
+    title: 'Collection',
+    description:
+      'Explore handcrafted pearl jewelry by 33 Pearl Atelier, including necklaces, earrings, bracelets, rings, and bespoke-ready pieces.',
+    schemaName: '33 Pearl Atelier Collection',
+  }
+}
+
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams?: Promise<{ page?: string; category?: string }> | { page?: string; category?: string }
+  searchParams?: Promise<ProductSearchParams> | ProductSearchParams
 }): Promise<Metadata> {
   const resolvedSearchParams = await Promise.resolve(searchParams)
   const parsedPage = Number(resolvedSearchParams?.page ?? '1')
   const page = Number.isFinite(parsedPage) && parsedPage > 0 ? Math.floor(parsedPage) : 1
   const category = resolvedSearchParams?.category
+  const pearlType = resolvedSearchParams?.pearlType
+  const sortBy = resolvedSearchParams?.sortBy
+  const sale = resolvedSearchParams?.sale
+  const collection = getCollectionContext(category, pearlType, sale)
   const canonicalParams = new URLSearchParams()
   if (page > 1) canonicalParams.set('page', String(page))
   if (category) canonicalParams.set('category', category)
+  if (pearlType) canonicalParams.set('pearlType', pearlType)
+  if (sortBy) canonicalParams.set('sortBy', sortBy)
+  if (sale === 'true') canonicalParams.set('sale', 'true')
   const canonicalPath = canonicalParams.toString() ? `/products?${canonicalParams.toString()}` : '/products'
-  const title = page > 1 ? `Collection (Page ${page})` : 'Collection'
-  const description =
-    'Explore handcrafted pearl jewelry by 33 Pearl Atelier, including necklaces, earrings, bracelets, rings, and bespoke-ready pieces.'
+  const title = page > 1 ? `${collection.title} (Page ${page})` : collection.title
+  const description = collection.description
   const ogUrl = `${SITE_URL}${canonicalPath}`
 
   return {
@@ -89,15 +180,25 @@ const PAGE_SIZE = 20
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ page?: string; category?: string }> | { page?: string; category?: string }
+  searchParams?: Promise<ProductSearchParams> | ProductSearchParams
 }) {
   const resolvedSearchParams = await Promise.resolve(searchParams)
   const pageParam = resolvedSearchParams?.page
   const categoryParam = resolvedSearchParams?.category
+  const pearlTypeParam = resolvedSearchParams?.pearlType
+  const sortByParam = resolvedSearchParams?.sortBy
+  const saleParam = resolvedSearchParams?.sale
+  const collection = getCollectionContext(categoryParam, pearlTypeParam, saleParam)
 
   // Canonical URL: page=1 should always resolve to /products
   if (pageParam === '1') {
-    redirect(categoryParam ? `/products?category=${encodeURIComponent(categoryParam)}` : '/products')
+    const canonicalParams = new URLSearchParams()
+    if (categoryParam) canonicalParams.set('category', categoryParam)
+    if (pearlTypeParam) canonicalParams.set('pearlType', pearlTypeParam)
+    if (sortByParam) canonicalParams.set('sortBy', sortByParam)
+    if (saleParam === 'true') canonicalParams.set('sale', 'true')
+    const canonicalQuery = canonicalParams.toString()
+    redirect(canonicalQuery ? `/products?${canonicalQuery}` : '/products')
   }
 
   const parsedPage = Number(pageParam ?? '1')
@@ -111,12 +212,52 @@ export default async function ProductsPage({
   )
 
   // Get published products
-  const { data: productsData, error: productsError } = await supabase
+  let productsQuery = supabase
     .from('catalog_products')
-    .select('id, title, slug, editors_pick, pearl_type, size_mm, sell_price, original_price, category, availability, published_at')
+    .select(
+      'id, title, slug, editors_pick, pearl_type, size_mm, sell_price, original_price, category, availability, published_at'
+    )
     .eq('published', true)
-    .order('published_at', { ascending: false })
-    .range(from, to)
+
+  if (categoryParam && CATEGORY_QUERY_VALUES[categoryParam]) {
+    const categoryValues = CATEGORY_QUERY_VALUES[categoryParam]
+    productsQuery =
+      categoryValues.length === 1
+        ? productsQuery.eq('category', categoryValues[0])
+        : productsQuery.in('category', categoryValues)
+  }
+
+  if (pearlTypeParam && PEARL_TYPE_QUERY_MODES[pearlTypeParam]) {
+    const pearlTypeMode = PEARL_TYPE_QUERY_MODES[pearlTypeParam]
+    if (pearlTypeMode.mode === 'include') {
+      productsQuery = productsQuery.ilike('pearl_type', `%${pearlTypeMode.tokens[0]}%`)
+    } else {
+      for (const token of pearlTypeMode.tokens) {
+        productsQuery = productsQuery.not('pearl_type', 'ilike', `%${token}%`)
+      }
+    }
+  }
+
+  let productsData: ProductListItem[] | null = null
+  let productsError: { message?: string } | null = null
+
+  if (saleParam === 'true') {
+    const saleQueryResult = await productsQuery.order('published_at', { ascending: false })
+    productsError = saleQueryResult.error
+    productsData = ((saleQueryResult.data || []) as ProductListItem[]).filter((product) => {
+      return (
+        typeof product.original_price === 'number' &&
+        typeof product.sell_price === 'number' &&
+        product.original_price !== product.sell_price
+      )
+    })
+  } else {
+    const pagedQueryResult = await productsQuery
+      .order('published_at', { ascending: false })
+      .range(from, to)
+    productsError = pagedQueryResult.error
+    productsData = (pagedQueryResult.data || []) as ProductListItem[]
+  }
 
   if (productsError) {
     // Server-side error, safe to log in development
@@ -147,8 +288,10 @@ export default async function ProductsPage({
 
   // Get primary images only for the current paged products (max 20)
   const productsListRaw = productsData || []
-  const hasNextPage = productsListRaw.length > PAGE_SIZE
-  const productsList = hasNextPage ? productsListRaw.slice(0, PAGE_SIZE) : productsListRaw
+  const saleFilteredProducts =
+    saleParam === 'true' ? productsListRaw.slice(from, from + PAGE_SIZE + 1) : productsListRaw
+  const hasNextPage = saleFilteredProducts.length > PAGE_SIZE
+  const productsList = hasNextPage ? saleFilteredProducts.slice(0, PAGE_SIZE) : saleFilteredProducts
   const pagedProductIds = productsList.map((p) => p.id)
   
   let imagesList: ProductListImage[] = []
@@ -173,7 +316,7 @@ export default async function ProductsPage({
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: '33 Pearl Atelier Collection',
+    name: collection.schemaName,
     itemListOrder: 'https://schema.org/ItemListOrderDescending',
     numberOfItems: products.length,
     itemListElement: products.map((product, index) => ({
@@ -197,7 +340,18 @@ export default async function ProductsPage({
         products={products}
         currentPage={page}
         hasNextPage={hasNextPage}
-        initialFilters={categoryParam ? { category: categoryParam } : undefined}
+        pageTitle={collection.title}
+        pageDescription={collection.description}
+        initialFilters={
+          categoryParam || pearlTypeParam || sortByParam || saleParam === 'true'
+            ? {
+                ...(categoryParam ? { category: categoryParam } : {}),
+                ...(pearlTypeParam ? { pearlType: pearlTypeParam } : {}),
+                ...(saleParam === 'true' ? { saleOnly: true } : {}),
+                ...(sortByParam ? { sortBy: sortByParam as CollectionSortBy } : {}),
+              }
+            : undefined
+        }
       />
     </>
   )

@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { colors, typography, spacing } from '../constants/design'
+import { useEffect, useMemo, useState } from 'react'
+import { colors, typography, spacing, shadows } from '../constants/design'
 
 interface FilterPanelProps {
   onFilterChange: (filters: ProductFilters) => void
@@ -12,14 +12,16 @@ export interface ProductFilters {
   searchQuery?: string
   pearlType?: string
   category?: string
+  saleOnly?: boolean
   editorsPick?: boolean
   priceRange?: { min: number; max: number }
-  sortBy?: 'newest' | 'price-low' | 'price-high' | 'popular'
+  sortBy?: 'price-low' | 'price-high' | 'date-old' | 'date-new'
 }
 
 export default function FilterPanel({ onFilterChange, initialFilters }: FilterPanelProps) {
   const [filters, setFilters] = useState<ProductFilters>(initialFilters || {})
   const [searchInput, setSearchInput] = useState(initialFilters?.searchQuery || '')
+  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     setFilters(initialFilters || {})
@@ -32,266 +34,181 @@ export default function FilterPanel({ onFilterChange, initialFilters }: FilterPa
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      setFilters((prev) => {
-        return {
-          ...prev,
-          searchQuery: searchInput || undefined,
-        }
-      })
+      setFilters((prev) => ({
+        ...prev,
+        searchQuery: searchInput || undefined,
+      }))
     }, 200)
 
     return () => window.clearTimeout(timer)
-  }, [searchInput, onFilterChange])
-
-  const updateFilters = (updater: (prev: ProductFilters) => ProductFilters) => {
-    setFilters((prev) => updater(prev))
-  }
-
-  const handlePearlTypeChange = (type: string) => {
-    updateFilters((prev) => ({
-      ...prev,
-      pearlType: type || undefined,
-    }))
-  }
-
-  const handleCategoryChange = (category: string) => {
-    updateFilters((prev) => ({
-      ...prev,
-      category: category || undefined,
-    }))
-  }
-
-  const handleEditorsPickChange = (checked: boolean) => {
-    updateFilters((prev) => ({
-      ...prev,
-      editorsPick: checked || undefined,
-    }))
-  }
-
-  const handleSortChange = (sort: ProductFilters['sortBy']) => {
-    updateFilters((prev) => ({
-      ...prev,
-      sortBy: sort === 'newest' ? undefined : sort,
-    }))
-  }
+  }, [searchInput])
 
   const hasActiveFilters = Boolean(
     filters.searchQuery ||
       filters.pearlType ||
       filters.category ||
+      filters.saleOnly ||
       filters.editorsPick ||
       filters.priceRange ||
       filters.sortBy
   )
 
+  const activeCount = useMemo(() => {
+    return [
+      filters.searchQuery,
+      filters.pearlType,
+      filters.category,
+      filters.saleOnly,
+      filters.editorsPick,
+      filters.sortBy,
+    ].filter(Boolean).length
+  }, [filters])
+
   return (
-    <div
-      style={{
-        marginBottom: spacing['2xl'],
-        padding: spacing.lg,
-        backgroundColor: colors.pearl,
-        borderRadius: 8,
-      }}
-    >
-      <div
+    <div style={{ position: 'relative' }}>
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-expanded={isOpen}
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: spacing.lg,
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: spacing.xs,
+          padding: `${spacing.xs} ${spacing.md}`,
+          border: `1px solid ${hasActiveFilters ? colors.gold : 'rgba(44, 44, 44, 0.14)'}`,
+          backgroundColor: colors.white,
+          color: colors.darkGray,
+          cursor: 'pointer',
+          fontSize: typography.fontSize.sm,
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          boxShadow: shadows.subtle,
         }}
       >
-        <div>
-          <h3
+        <span>Filter</span>
+        {activeCount > 0 ? (
+          <span
             style={{
-              fontSize: typography.fontSize.sm,
-              fontWeight: typography.fontWeight.semibold,
-              marginBottom: spacing.sm,
-              color: colors.darkGray,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}
-          >
-            Curation
-          </h3>
-          <label
-            style={{
-              display: 'flex',
+              display: 'inline-flex',
+              minWidth: '18px',
+              height: '18px',
+              padding: '0 5px',
+              borderRadius: '999px',
+              backgroundColor: colors.gold,
+              color: colors.white,
+              justifyContent: 'center',
               alignItems: 'center',
-              gap: spacing.sm,
-              padding: spacing.sm,
-              backgroundColor: colors.white,
-              border: `1px solid ${colors.lightGray}`,
-              borderRadius: 4,
-              cursor: 'pointer',
-              fontSize: typography.fontSize.sm,
-              color: colors.darkGray,
-              minHeight: '42px',
+              fontSize: typography.fontSize.xs,
             }}
           >
-            <input
-              type="checkbox"
-              checked={Boolean(filters.editorsPick)}
-              onChange={(e) => handleEditorsPickChange(e.target.checked)}
-            />
-            <span>Editor&apos;s Pick only</span>
-          </label>
-        </div>
+            {activeCount}
+          </span>
+        ) : null}
+        <span>{isOpen ? '▴' : '▾'}</span>
+      </button>
 
-        <div>
-          <h3
-            style={{
-              fontSize: typography.fontSize.sm,
-              fontWeight: typography.fontWeight.semibold,
-              marginBottom: spacing.sm,
-              color: colors.darkGray,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}
-          >
-            Search
-          </h3>
+      {isOpen && (
+        <div
+          style={{
+            position: 'absolute',
+            top: `calc(100% + ${spacing.sm})`,
+            right: 0,
+            width: 'min(92vw, 360px)',
+            padding: spacing.md,
+            border: '1px solid rgba(44, 44, 44, 0.12)',
+            backgroundColor: colors.white,
+            boxShadow: shadows.medium,
+            zIndex: 20,
+            display: 'grid',
+            gap: spacing.sm,
+          }}
+        >
           <input
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search title, slug, description..."
+            placeholder="Search"
             style={{
               width: '100%',
-              padding: spacing.sm,
-              backgroundColor: colors.white,
+              padding: `${spacing.xs} ${spacing.sm}`,
               border: `1px solid ${colors.lightGray}`,
-              borderRadius: 4,
+              backgroundColor: '#fffdf8',
               fontSize: typography.fontSize.sm,
             }}
           />
-        </div>
 
-        <div>
-          <h3
-            style={{
-              fontSize: typography.fontSize.sm,
-              fontWeight: typography.fontWeight.semibold,
-              marginBottom: spacing.sm,
-              color: colors.darkGray,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}
-          >
-            Category
-          </h3>
           <select
-            value={filters.category || ''}
-            onChange={(e) => handleCategoryChange(e.target.value)}
+            value={filters.editorsPick ? 'editors-picks' : filters.sortBy || ''}
+            onChange={(e) =>
+              setFilters((prev) => ({
+                ...prev,
+                editorsPick: e.target.value === 'editors-picks' ? true : undefined,
+                sortBy:
+                  e.target.value && e.target.value !== 'editors-picks'
+                    ? (e.target.value as ProductFilters['sortBy'])
+                    : undefined,
+              }))
+            }
             style={{
               width: '100%',
-              padding: spacing.sm,
-              backgroundColor: colors.white,
+              padding: `${spacing.xs} ${spacing.sm}`,
               border: `1px solid ${colors.lightGray}`,
-              borderRadius: 4,
+              backgroundColor: '#fffdf8',
               fontSize: typography.fontSize.sm,
               cursor: 'pointer',
             }}
           >
-            <option value="">All Categories</option>
-            <option value="Bracelets">Bracelets</option>
-            <option value="Necklaces">Necklaces</option>
-            <option value="Earrings">Earrings</option>
-            <option value="Studs">Studs</option>
-            <option value="Rings">Rings</option>
-            <option value="Pendants">Pendants</option>
-            <option value="Loose Pearls">Loose Pearls</option>
-            <option value="Brooches">Brooches</option>
-          </select>
-        </div>
-
-        <div>
-          <h3
-            style={{
-              fontSize: typography.fontSize.sm,
-              fontWeight: typography.fontWeight.semibold,
-              marginBottom: spacing.sm,
-              color: colors.darkGray,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}
-          >
-            Pearl Type
-          </h3>
-          <select
-            value={filters.pearlType || ''}
-            onChange={(e) => handlePearlTypeChange(e.target.value)}
-            style={{
-              width: '100%',
-              padding: spacing.sm,
-              backgroundColor: colors.white,
-              border: `1px solid ${colors.lightGray}`,
-              borderRadius: 4,
-              fontSize: typography.fontSize.sm,
-              cursor: 'pointer',
-            }}
-          >
-            <option value="">All Pearl Types</option>
-            <option value="Akoya">Akoya</option>
-            <option value="South Sea">South Sea</option>
-            <option value="Tahitian">Tahitian</option>
-            <option value="Freshwater">Freshwater</option>
-          </select>
-        </div>
-
-        <div>
-          <h3
-            style={{
-              fontSize: typography.fontSize.sm,
-              fontWeight: typography.fontWeight.semibold,
-              marginBottom: spacing.sm,
-              color: colors.darkGray,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}
-          >
-            Sort By
-          </h3>
-          <select
-            value={filters.sortBy || ''}
-            onChange={(e) => handleSortChange(e.target.value as ProductFilters['sortBy'])}
-            style={{
-              width: '100%',
-              padding: spacing.sm,
-              backgroundColor: colors.white,
-              border: `1px solid ${colors.lightGray}`,
-              borderRadius: 4,
-              fontSize: typography.fontSize.sm,
-              cursor: 'pointer',
-            }}
-          >
-            <option value="">Newest First</option>
+            <option value="">Sort By</option>
+            <option value="editors-picks">Editor Picks</option>
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
-            <option value="popular">Most Popular</option>
+            <option value="date-old">Oldest First</option>
+            <option value="date-new">Newest First</option>
           </select>
+
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: spacing.sm,
+              marginTop: spacing.xs,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setFilters({})
+                setSearchInput('')
+              }}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                color: colors.gold,
+                fontSize: typography.fontSize.sm,
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                padding: 0,
+              }}
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              style={{
+                border: `1px solid ${colors.lightGray}`,
+                background: colors.white,
+                color: colors.darkGray,
+                fontSize: typography.fontSize.sm,
+                cursor: 'pointer',
+                padding: `${spacing.xs} ${spacing.sm}`,
+              }}
+            >
+              Done
+            </button>
+          </div>
         </div>
-
-      </div>
-
-      {hasActiveFilters && (
-        <button
-          onClick={() => {
-            setFilters({})
-            setSearchInput('')
-          }}
-          style={{
-            marginTop: spacing.md,
-            padding: `${spacing.xs} ${spacing.md}`,
-            backgroundColor: 'transparent',
-            color: colors.gold,
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: typography.fontSize.sm,
-            textDecoration: 'underline',
-          }}
-        >
-          Clear All Filters
-        </button>
       )}
     </div>
   )

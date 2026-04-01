@@ -38,10 +38,19 @@ interface ProductListProps {
   products: ProductWithImages[]
   currentPage: number
   hasNextPage: boolean
+  pageTitle?: string
+  pageDescription?: string
   initialFilters?: ProductFilters
 }
 
-export default function ProductList({ products, currentPage, hasNextPage, initialFilters }: ProductListProps) {
+export default function ProductList({
+  products,
+  currentPage,
+  hasNextPage,
+  pageTitle,
+  pageDescription,
+  initialFilters,
+}: ProductListProps) {
   const [filters, setFilters] = useState<ProductFilters>(initialFilters || {})
   const deferredFilters = useDeferredValue(filters)
   const { addItem } = useCart()
@@ -100,24 +109,42 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
         const productType = normalize(String(product.pearl_type))
         if (selected === 'akoya') return productType.includes('akoya')
         if (selected === 'southsea') return productType.includes('southsea')
+        if (selected === 'more') {
+          return !productType.includes('akoya') &&
+            !productType.includes('southsea') &&
+            !productType.includes('tahitian')
+        }
         return productType.includes(selected)
       })
     }
 
+    if (deferredFilters.saleOnly) {
+      result = result.filter((product) => {
+        return (
+          typeof product.original_price === 'number' &&
+          typeof product.sell_price === 'number' &&
+          product.original_price !== product.sell_price
+        )
+      })
+    }
+
     if (deferredFilters.category) {
-      const categoryMap: Record<string, string> = {
-        Bracelets: 'BRACELETS',
-        Necklaces: 'NECKLACES',
-        Earrings: 'EARRINGS',
-        Studs: 'STUDS',
-        Rings: 'RINGS',
-        Pendants: 'PENDANTS',
-        'Loose Pearls': 'LOOSE_PEARLS',
-        Brooches: 'BROOCHES',
+      const categoryMap: Record<string, string[]> = {
+        Bracelets: ['BRACELETS'],
+        Necklaces: ['NECKLACES'],
+        Earrings: ['EARRINGS', 'STUDS'],
+        Studs: ['STUDS'],
+        Rings: ['RINGS'],
+        Pendants: ['PENDANTS'],
+        'Loose Pearls': ['LOOSE_PEARLS'],
+        Brooches: ['BROOCHES'],
+        Others: ['PENDANTS', 'LOOSE_PEARLS', 'BROOCHES'],
       }
-      const targetCategory = categoryMap[deferredFilters.category]
-      if (targetCategory) {
-        result = result.filter((product) => product.category === targetCategory)
+      const targetCategories = categoryMap[deferredFilters.category]
+      if (targetCategories) {
+        result = result.filter((product) =>
+          Boolean(product.category && targetCategories.includes(product.category))
+        )
       }
     }
 
@@ -133,7 +160,7 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
       })
     }
 
-    const sortBy = deferredFilters.sortBy || 'newest'
+    const sortBy = deferredFilters.sortBy || 'date-new'
     result.sort((a, b) => {
       if (sortBy === 'price-low') {
         const aPrice = typeof a.sell_price === 'number' ? a.sell_price : Number.POSITIVE_INFINITY
@@ -147,8 +174,8 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
         return bPrice - aPrice
       }
 
-      if (sortBy === 'popular') {
-        return getTimestamp(b.published_at) - getTimestamp(a.published_at)
+      if (sortBy === 'date-old') {
+        return getTimestamp(a.published_at) - getTimestamp(b.published_at)
       }
 
       return getTimestamp(b.published_at) - getTimestamp(a.published_at)
@@ -159,48 +186,43 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
   const hasActiveFilters = Boolean(
       deferredFilters.searchQuery ||
       deferredFilters.pearlType ||
+      deferredFilters.saleOnly ||
       deferredFilters.category ||
       deferredFilters.editorsPick ||
       deferredFilters.priceRange ||
       deferredFilters.sortBy
   )
-  const previousPageHref = currentPage <= 2 ? '/products' : `/products?page=${currentPage - 1}`
-  const nextPageHref = `/products?page=${currentPage + 1}`
+  const paginationParams = new URLSearchParams()
+  if (initialFilters?.category) paginationParams.set('category', initialFilters.category)
+  if (initialFilters?.pearlType) paginationParams.set('pearlType', initialFilters.pearlType)
+  if (initialFilters?.saleOnly) paginationParams.set('sale', 'true')
+  if (initialFilters?.sortBy) paginationParams.set('sortBy', initialFilters.sortBy)
+  const previousPageHref = (() => {
+    const params = new URLSearchParams(paginationParams)
+    if (currentPage > 2) params.set('page', String(currentPage - 1))
+    return params.toString() ? `/products?${params.toString()}` : '/products'
+  })()
+  const nextPageHref = (() => {
+    const params = new URLSearchParams(paginationParams)
+    params.set('page', String(currentPage + 1))
+    return `/products?${params.toString()}`
+  })()
 
   return (
     <main style={{ ...pageHeroStyles.main, minHeight: '100vh' }}>
       <PageHero
         eyebrow="Collection"
-        title="Collection"
-        description="Explore hand-selected pearl jewelry designed for everyday elegance, from ready-to-wear pieces to styles that can inspire your custom inquiry."
+        title={pageTitle || 'Collection'}
+        description={
+          `${
+            pageDescription ||
+            'Explore hand-selected pearl jewelry designed for everyday elegance, from ready-to-wear pieces to styles that can inspire your custom inquiry.'
+          } Hand-selected pearls. Exact piece shown. Small batch production.`
+        }
       />
 
       <section style={{ padding: `clamp(1rem, 3vw, ${spacing['3xl']})` }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div
-            style={{
-              margin: `0 auto ${spacing.xl}`,
-              maxWidth: '1100px',
-              padding: `${spacing.sm} ${spacing.lg}`,
-              border: '1px solid rgba(212, 175, 55, 0.22)',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(250,246,238,0.98) 100%)',
-              boxShadow: '0 10px 24px rgba(96, 82, 48, 0.08)',
-              textAlign: 'center',
-              color: colors.textSecondary,
-              fontSize: typography.fontSize.sm,
-              letterSpacing: '0.03em',
-              lineHeight: 1.8,
-            }}
-          >
-            <span>Hand-selected pearls</span>
-            <span style={{ color: colors.gold, margin: `0 ${spacing.sm}` }}>•</span>
-            <span>Exact piece shown</span>
-            <span style={{ color: colors.gold, margin: `0 ${spacing.sm}` }}>•</span>
-            <span>Small batch production</span>
-          </div>
-
-          <FilterPanel onFilterChange={setFilters} initialFilters={initialFilters} />
-
           <div
             style={{
               margin: `${spacing.lg} 0 ${spacing.xl}`,
@@ -217,11 +239,7 @@ export default function ProductList({ products, currentPage, hasNextPage, initia
             <span>
               {filteredProducts.length} {filteredProducts.length === 1 ? 'result' : 'results'}
             </span>
-            {hasActiveFilters ? (
-              <span style={{ color: colors.textLight }}>Showing filtered products</span>
-            ) : (
-              <span style={{ color: colors.textLight }}>Showing the full collection</span>
-            )}
+            <FilterPanel onFilterChange={setFilters} initialFilters={initialFilters} />
           </div>
 
         {filteredProducts.length === 0 ? (
