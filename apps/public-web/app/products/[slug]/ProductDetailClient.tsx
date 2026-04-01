@@ -297,6 +297,18 @@ export default function ProductDetailClient({ product, images, videos }: Product
               )}
             </div>
 
+            <p
+              style={{
+                margin: `0 0 ${spacing.md}`,
+                color: colors.textLight,
+                fontSize: typography.fontSize.sm,
+                lineHeight: 1.6,
+                letterSpacing: '0.02em',
+              }}
+            >
+              Shown in different lighting to reflect natural luster
+            </p>
+
             {/* Image Thumbnails */}
             {galleryItems.length > 1 && (
               <div style={{ 
