@@ -1,5 +1,6 @@
 import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
 import { getProductImageUrl } from '@pearl33atelier/shared'
+import type { ProductCategory } from '@pearl33atelier/shared/types'
 import ProductList from './ProductList'
 import type { ProductListImage, ProductListItem } from './ProductList'
 import { redirect } from 'next/navigation'
@@ -33,7 +34,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   Others: 'Others',
 }
 
-const CATEGORY_QUERY_VALUES: Record<string, string[]> = {
+const CATEGORY_QUERY_VALUES: Record<string, ProductCategory[]> = {
   Bracelets: ['BRACELETS'],
   Necklaces: ['NECKLACES'],
   Earrings: ['EARRINGS', 'STUDS'],
