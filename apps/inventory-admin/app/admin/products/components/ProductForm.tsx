@@ -48,18 +48,34 @@ const SHAPE_OPTIONS = [
 
 const LUSTER_OPTIONS = ['high', 'soft'] as const
 
-const OVERTONE_OPTIONS = [
-  'white',
-  'pink',
-  'silver-blue',
-  'iridescent',
-  'peacock',
-  'gold',
-  'purple',
-  'teal',
-  'blue',
-  'green',
-] as const
+const OVERTONE_GROUPS = {
+  'Warm Glow': ['white', 'cream', 'pink', 'rose', 'gold'],
+  'Cool Tone': [
+    'silver',
+    'silver-blue',
+    'peacock',
+    'green peacock',
+    'blue peacock',
+    'aubergine',
+    'charcoal',
+    'dark green',
+    'dark blue',
+    'graphite',
+  ],
+  Iridescent: [
+    'iridescent',
+    'pink iridescent',
+    'green iridescent',
+    'blue iridescent',
+    'gold iridescent',
+    'pink-green iridescent',
+    'pink-blue iridescent',
+    'green-blue iridescent',
+    'multi iridescent',
+  ],
+} as const
+
+const OVERTONE_OPTIONS = Object.values(OVERTONE_GROUPS).flat()
 
 const normalizeMaterial = (value: string) => value.trim().toLowerCase()
 const splitMultiValueInput = (value: string) =>
@@ -499,6 +515,26 @@ export default function ProductForm({ productId }: ProductFormProps) {
     }
   }
 
+  const toggleImagePublished = async (imageId: string, nextPublished: boolean) => {
+    try {
+      const response = await fetch(`/api/products/${currentProductId}/images/${imageId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ published: nextPublished }),
+      })
+
+      if (!response.ok) throw new Error('Failed to update image publish status')
+
+      setImages((prev) =>
+        prev.map((image) =>
+          image.id === imageId ? { ...image, published: nextPublished } : image
+        )
+      )
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to update image publish status')
+    }
+  }
+
   const deleteVideo = async (videoId: string) => {
     if (!confirm('Delete this video? This action cannot be undone.')) return
 
@@ -515,6 +551,26 @@ export default function ProductForm({ productId }: ProductFormProps) {
       setVideos((prev) => prev.filter((video) => video.id !== videoId))
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to delete video')
+    }
+  }
+
+  const toggleVideoPublished = async (videoId: string, nextPublished: boolean) => {
+    try {
+      const response = await fetch(`/api/products/${currentProductId}/videos/${videoId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ published: nextPublished }),
+      })
+
+      if (!response.ok) throw new Error('Failed to update video publish status')
+
+      setVideos((prev) =>
+        prev.map((video) =>
+          video.id === videoId ? { ...video, published: nextPublished } : video
+        )
+      )
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to update video publish status')
     }
   }
 
@@ -815,26 +871,50 @@ export default function ProductForm({ productId }: ProductFormProps) {
               padding: '0.75rem',
               backgroundColor: '#fff'
             }}>
-              <div style={{ display: 'grid', gap: '0.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))' }}>
-                {OVERTONE_OPTIONS.map((option) => (
-                  <label
-                    key={option}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      fontSize: '0.95rem',
-                      cursor: 'pointer',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedOvertones.includes(option)}
-                      onChange={() => toggleOvertone(option)}
-                    />
-                    <span>{option}</span>
-                  </label>
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                {Object.entries(OVERTONE_GROUPS).map(([groupLabel, options]) => (
+                  <div key={groupLabel}>
+                    <p
+                      style={{
+                        margin: '0 0 0.5rem',
+                        fontSize: '0.85rem',
+                        fontWeight: 700,
+                        color: '#7a6a50',
+                        letterSpacing: '0.04em',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      {groupLabel}
+                    </p>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gap: '0.5rem',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                      }}
+                    >
+                      {options.map((option) => (
+                        <label
+                          key={option}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            fontSize: '0.95rem',
+                            cursor: 'pointer',
+                            textTransform: 'capitalize',
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedOvertones.includes(option)}
+                            onChange={() => toggleOvertone(option)}
+                          />
+                          <span>{option}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
 
@@ -1188,6 +1268,23 @@ export default function ProductForm({ productId }: ProductFormProps) {
                         Primary
                       </span>
                     )}
+
+                    <span
+                      style={{
+                        position: 'absolute',
+                        top: '1rem',
+                        right: '1rem',
+                        padding: '0.25rem 0.5rem',
+                        backgroundColor: image.published ? '#e8f5e9' : '#f5efe6',
+                        color: image.published ? '#2e7d32' : '#76624c',
+                        fontSize: '0.75rem',
+                        fontWeight: 'bold',
+                        borderRadius: '4px',
+                        border: image.published ? '1px solid #c8e6c9' : '1px solid #e3d6c4',
+                      }}
+                    >
+                      {image.published ? 'Published' : 'Hidden'}
+                    </span>
                     
                     <div
                       className="admin-product-form-media-actions"
@@ -1219,6 +1316,25 @@ export default function ProductForm({ productId }: ProductFormProps) {
                           Set as primary
                         </button>
                       )}
+                      <button
+                        type="button"
+                        onClick={() => toggleImagePublished(image.id, !image.published)}
+                        style={{
+                          width: '100%',
+                          minWidth: 0,
+                          padding: '0.5rem',
+                          backgroundColor: image.published ? '#f5efe6' : '#e8f5e9',
+                          color: image.published ? '#76624c' : '#2e7d32',
+                          border: 'none',
+                          borderRadius: '4px',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {image.published ? 'Unpublish' : 'Publish'}
+                      </button>
                       <button
                         type="button"
                         onClick={() => deleteImage(image.id)}
@@ -1297,11 +1413,28 @@ export default function ProductForm({ productId }: ProductFormProps) {
                     key={video.id}
                     className="admin-product-form-media-card"
                     style={{
-                      border: '1px solid #ddd',
+                      border: `1px solid ${video.published ? '#c8e6c9' : '#ddd'}`,
                       borderRadius: '8px',
                       padding: '0.75rem',
+                      position: 'relative',
                     }}
                   >
+                    <span
+                      style={{
+                        position: 'absolute',
+                        top: '1rem',
+                        right: '1rem',
+                        padding: '0.25rem 0.5rem',
+                        backgroundColor: video.published ? '#e8f5e9' : '#f5efe6',
+                        color: video.published ? '#2e7d32' : '#76624c',
+                        fontSize: '0.75rem',
+                        fontWeight: 'bold',
+                        borderRadius: '4px',
+                        border: video.published ? '1px solid #c8e6c9' : '1px solid #e3d6c4',
+                      }}
+                    >
+                      {video.published ? 'Published' : 'Hidden'}
+                    </span>
                     <video
                       src={getProductVideoUrl(video.storage_path)}
                       controls
@@ -1316,6 +1449,23 @@ export default function ProductForm({ productId }: ProductFormProps) {
                       }}
                     />
                     <div className="admin-product-form-media-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <button
+                        type="button"
+                        onClick={() => toggleVideoPublished(video.id, !video.published)}
+                        style={{
+                          width: '100%',
+                          padding: '0.5rem',
+                          backgroundColor: video.published ? '#f5efe6' : '#e8f5e9',
+                          color: video.published ? '#76624c' : '#2e7d32',
+                          border: 'none',
+                          borderRadius: '4px',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {video.published ? 'Unpublish' : 'Publish'}
+                      </button>
                       <button
                         type="button"
                         onClick={() => deleteVideo(video.id)}

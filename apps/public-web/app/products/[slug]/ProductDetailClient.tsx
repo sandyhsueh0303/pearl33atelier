@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import ImageZoom from '../../components/ImageZoom'
 import ProductInquiryModal from '../../components/ProductInquiryModal'
 import { useCart } from '../../components/CartProvider'
@@ -30,6 +30,7 @@ export default function ProductDetailClient({ product, images, videos }: Product
   const [liveAvailability, setLiveAvailability] = useState(product.availability)
   const [isPearlDetailsOpen, setIsPearlDetailsOpen] = useState(false)
   const [isCareOpen, setIsCareOpen] = useState(false)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
   const { addItem } = useCart()
   const effectiveAvailability = liveAvailability
   const descriptionParagraphs = (product.description || '')
@@ -39,6 +40,40 @@ export default function ProductDetailClient({ product, images, videos }: Product
   const shortDescription = descriptionParagraphs[0] || null
   const lifestyleHook =
     'A soft, luminous glow that makes you look effortlessly put together.'
+  const normalizeSectionHeading = (value: string) =>
+    value.replace(/['’]/g, '').replace(/\s+/g, ' ').trim().toUpperCase()
+  const whyHeading = 'WHY YOULL LOVE IT'
+  const perfectForHeading = 'PERFECT FOR'
+  const whyHeadingIndex = descriptionParagraphs.findIndex(
+    (paragraph) => normalizeSectionHeading(paragraph) === whyHeading
+  )
+  const perfectForHeadingIndex = descriptionParagraphs.findIndex(
+    (paragraph) => normalizeSectionHeading(paragraph) === perfectForHeading
+  )
+  const explicitWhyLoveCopy =
+    whyHeadingIndex >= 0
+      ? descriptionParagraphs
+          .slice(
+            whyHeadingIndex + 1,
+            perfectForHeadingIndex > whyHeadingIndex ? perfectForHeadingIndex : undefined
+          )
+          .join('\n')
+      : ''
+  const explicitPerfectForCopy =
+    perfectForHeadingIndex >= 0
+      ? descriptionParagraphs.slice(perfectForHeadingIndex + 1).join('\n')
+      : ''
+  const fallbackWhyLoveCopy =
+    whyHeadingIndex === -1 && perfectForHeadingIndex === -1 ? descriptionParagraphs[0] || '' : ''
+  const fallbackPerfectForCopy =
+    whyHeadingIndex === -1 && perfectForHeadingIndex === -1
+      ? descriptionParagraphs.slice(1).join('\n\n')
+      : ''
+  const whyLoveCopy = explicitWhyLoveCopy || fallbackWhyLoveCopy || lifestyleHook
+  const perfectForCopy =
+    explicitPerfectForCopy ||
+    fallbackPerfectForCopy ||
+    '• Everyday office wear\n• An effortless polished look\n• Weddings, dinners, and special occasions'
   const careServiceCopy =
     effectiveAvailability === 'PREORDER' && product.preorder_note
       ? product.preorder_note
@@ -104,6 +139,19 @@ export default function ProductDetailClient({ product, images, videos }: Product
   const prevImage = () => {
     if (!hasGallery) return
     setCurrentGalleryIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length)
+  }
+
+  const selectGalleryItem = (index: number) => {
+    const item = galleryItems[index]
+    setCurrentGalleryIndex(index)
+
+    if (item?.kind === 'video') {
+      window.requestAnimationFrame(() => {
+        void videoRef.current?.play().catch(() => {
+          // Keep controls visible if autoplay is blocked for any reason.
+        })
+      })
+    }
   }
 
   const handleAddToCart = () => {
@@ -210,10 +258,10 @@ export default function ProductDetailClient({ product, images, videos }: Product
                 )}
                 {currentGalleryItem?.kind === 'video' ? (
                   <video
+                    ref={videoRef}
                     src={getProductVideoUrl(currentGalleryItem.video.storage_path)}
                     controls
                     preload="metadata"
-                    poster={firstImage ? getProductImageUrl(firstImage.storage_path) : undefined}
                     style={{
                       position: 'absolute',
                       inset: 0,
@@ -336,7 +384,7 @@ export default function ProductDetailClient({ product, images, videos }: Product
                 {galleryItems.map((item, index) => (
                   <div
                     key={item.id}
-                    onClick={() => setCurrentGalleryIndex(index)}
+                    onClick={() => selectGalleryItem(index)}
                     style={{
                       paddingBottom: '100%',
                       position: 'relative',
@@ -377,7 +425,6 @@ export default function ProductDetailClient({ product, images, videos }: Product
                           preload="metadata"
                           muted
                           playsInline
-                          poster={firstImage ? getProductImageUrl(firstImage.storage_path) : undefined}
                           style={{
                             position: 'absolute',
                             top: 0,
@@ -581,7 +628,7 @@ export default function ProductDetailClient({ product, images, videos }: Product
                   whiteSpace: 'pre-wrap',
                 }}
               >
-                {product.description || shortDescription || lifestyleHook}
+                {whyLoveCopy}
               </p>
               <div style={{ marginTop: spacing.md }}>
                 <p
@@ -601,10 +648,10 @@ export default function ProductDetailClient({ product, images, videos }: Product
                     margin: 0,
                     color: colors.textSecondary,
                     lineHeight: 1.9,
-                    whiteSpace: 'pre-line',
+                    whiteSpace: 'pre-wrap',
                   }}
                 >
-                  {'• Everyday office wear\n• An effortless polished look\n• Weddings, dinners, and special occasions'}
+                  {perfectForCopy}
                 </p>
               </div>
             </div>
@@ -627,7 +674,7 @@ export default function ProductDetailClient({ product, images, videos }: Product
                   gap: spacing.md,
                   background: 'transparent',
                   border: 'none',
-                  padding: `${spacing.sm} 0`,
+                  padding: `${spacing.xs} 0`,
                   cursor: 'pointer',
                   color: colors.darkGray,
                 }}
@@ -701,7 +748,7 @@ export default function ProductDetailClient({ product, images, videos }: Product
                   gap: spacing.md,
                   background: 'transparent',
                   border: 'none',
-                  padding: `${spacing.sm} 0`,
+                  padding: `${spacing.xs} 0`,
                   cursor: 'pointer',
                   textAlign: 'left',
                   margin: 0,
@@ -726,20 +773,30 @@ export default function ProductDetailClient({ product, images, videos }: Product
                   >
                     {careServiceCopy}
                   </p>
-                  <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginTop: spacing.md }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      gap: spacing.sm,
+                      flexWrap: 'wrap',
+                      marginTop: spacing.md,
+                    }}
+                  >
                     <button
                       onClick={() => setInquiryOpen(true)}
                       style={{
+                        minWidth: '168px',
                         padding: `${spacing.sm} ${spacing.lg}`,
-                        backgroundColor: colors.gold,
-                        color: colors.white,
-                        border: `1px solid ${colors.gold}`,
+                        backgroundColor: '#f6efe3',
+                        color: colors.darkGray,
+                        border: '1px solid #d8c7ae',
                         borderRadius: '999px',
                         fontWeight: typography.fontWeight.medium,
                         fontSize: typography.fontSize.sm,
-                        letterSpacing: '0.04em',
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
                         cursor: 'pointer',
-                        boxShadow: shadows.soft,
+                        boxShadow: '0 10px 24px rgba(110, 89, 52, 0.10)',
                         transition: transitions.fast,
                       }}
                     >
