@@ -7,8 +7,8 @@ import { getProductImageUrl } from '@pearl33atelier/shared'
 import type { AvailabilityKind, ProductCategory } from '@pearl33atelier/shared/types'
 import { colors, typography, spacing, transitions, shadows } from '../constants/design'
 import { pageHeroStyles } from '../constants/pageHero'
-import PageHero from '../components/PageHero'
 import FilterPanel, { type ProductFilters } from '../components/FilterPanel'
+import PageHero from '../components/PageHero'
 import { useCart } from '../components/CartProvider'
 
 export interface ProductListItem {
@@ -213,14 +213,8 @@ export default function ProductList({
       <PageHero
         eyebrow="Collection"
         title={pageTitle || 'Collection'}
-        description={
-          `${
-            pageDescription ||
-            'Explore hand-selected pearl jewelry designed for everyday elegance, from ready-to-wear pieces to styles that can inspire your custom inquiry.'
-          }\nHand-selected pearls • Exact piece shown • Small batch production`
-        }
+        description={`${pageDescription || 'Accessible luxury for everyday wear'}\nHand-selected pearls • Exact piece shown • Small batch production`}
       />
-
       <section style={{ padding: `clamp(1rem, 3vw, ${spacing['3xl']})` }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <div
@@ -267,7 +261,7 @@ export default function ProductList({
             className="productGrid"
             style={{
               display: 'grid',
-              gap: spacing['2xl'],
+              gap: spacing.lg,
             }}
           >
             {filteredProducts.map((product, index) => (
@@ -355,13 +349,13 @@ export default function ProductList({
                     </div>
 
                     {/* Product Info */}
-                    <div style={{ padding: spacing.lg, display: 'flex', flexDirection: 'column', flex: 1 }}>
+                    <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', flex: 1 }}>
                       <h2 style={{ 
                         fontSize: typography.fontSize.lg,
                         fontWeight: typography.fontWeight.medium,
-                        marginBottom: spacing.xs,
+                        marginBottom: '0.35rem',
                         color: colors.darkGray,
-                        lineHeight: 1.4,
+                        lineHeight: 1.32,
                         wordBreak: 'break-word',
                       }}>
                         {product.title}
@@ -372,7 +366,7 @@ export default function ProductList({
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         marginTop: 'auto',
-                        gap: spacing.sm,
+                        gap: spacing.xs,
                       }}>
                         <div>
                           {product.sell_price && (

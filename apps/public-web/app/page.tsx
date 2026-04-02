@@ -117,13 +117,6 @@ export default function HomePage() {
     },
   }
 
-  const promoBanner = {
-    eyebrow: '3/25-3/31 Only:',
-    text: 'Free 18K Blue Rose Studs ($149 value) with orders $1000+',
-    linkLabel: 'Shop Now',
-    linkHref: '/products',
-  }
-
   return (
     <>
       <script
@@ -140,52 +133,6 @@ export default function HomePage() {
         display: 'flex',
         flexDirection: 'column',
       }}>
-      {/* Promotional Banner */}
-      <section
-        style={{
-          padding: '12px 20px',
-          background: 'linear-gradient(90deg, #C9A961 0%, #D4B570 100%)',
-          color: '#fff',
-          textAlign: 'center',
-        }}
-      >
-        <div
-          style={{
-            margin: 0,
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            fontSize: '14px',
-            fontWeight: typography.fontWeight.medium,
-            lineHeight: 1.5,
-          }}
-        >
-          <span aria-hidden="true">🎁</span>
-          <strong>{promoBanner.eyebrow}</strong>
-          <span>{promoBanner.text}</span>
-          <Link
-            href={promoBanner.linkHref}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: '4px',
-              padding: '2px 8px',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              borderRadius: '4px',
-              color: '#fff',
-              fontSize: '12px',
-              fontWeight: typography.fontWeight.medium,
-              textDecoration: 'none',
-            }}
-          >
-            {promoBanner.linkLabel}
-          </Link>
-        </div>
-      </section>
-
       {/* Hero Section */}
       <section style={{
         minHeight: '75vh',
