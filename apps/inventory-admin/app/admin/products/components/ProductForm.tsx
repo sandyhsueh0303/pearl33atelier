@@ -46,8 +46,23 @@ const SHAPE_OPTIONS = [
   'baroque',
 ] as const
 
+const LUSTER_OPTIONS = ['high', 'soft'] as const
+
+const OVERTONE_OPTIONS = [
+  'white',
+  'pink',
+  'silver-blue',
+  'iridescent',
+  'peacock',
+  'gold',
+  'purple',
+  'teal',
+  'blue',
+  'green',
+] as const
+
 const normalizeMaterial = (value: string) => value.trim().toLowerCase()
-const splitMaterialValues = (value: string) =>
+const splitMultiValueInput = (value: string) =>
   value
     .split(/[,;/\n]+/)
     .map((part) => part.trim())
@@ -118,6 +133,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
   const [category, setCategory] = useState<ProductCategory | ''>('')
   const [sizeMm, setSizeMm] = useState('')
   const [shape, setShape] = useState('')
+  const [luster, setLuster] = useState('high')
+  const [selectedOvertones, setSelectedOvertones] = useState<string[]>([])
+  const [customOvertones, setCustomOvertones] = useState('')
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([])
   const [customMaterials, setCustomMaterials] = useState('')
   const [sellPrice, setSellPrice] = useState('')
@@ -133,10 +151,16 @@ export default function ProductForm({ productId }: ProductFormProps) {
   const [uploadingVideos, setUploadingVideos] = useState(false)
 
   const materialValue = useMemo(() => {
-    const custom = splitMaterialValues(customMaterials)
+    const custom = splitMultiValueInput(customMaterials)
     const all = [...selectedMaterials, ...custom]
     return all.join(', ')
   }, [selectedMaterials, customMaterials])
+
+  const overtoneValue = useMemo(() => {
+    const custom = splitMultiValueInput(customOvertones)
+    const all = [...selectedOvertones, ...custom]
+    return all.join(', ')
+  }, [selectedOvertones, customOvertones])
 
   const pearlTypeValue = useMemo(() => {
     return Array.from(new Set(selectedPearlTypes)).join(', ')
@@ -237,7 +261,21 @@ export default function ProductForm({ productId }: ProductFormProps) {
       setCategory(product.category || '')
       setSizeMm(product.size_mm || '')
       setShape(product.shape || '')
-      const rawMaterials = splitMaterialValues(product.material || '')
+      setLuster(product.luster || '')
+      const rawOvertones = splitMultiValueInput(product.overtone || '')
+      const matchedOvertones: string[] = []
+      const unmatchedOvertones: string[] = []
+      rawOvertones.forEach((item) => {
+        const found = OVERTONE_OPTIONS.find((option) => option === item.toLowerCase())
+        if (found) {
+          matchedOvertones.push(found)
+        } else {
+          unmatchedOvertones.push(item)
+        }
+      })
+      setSelectedOvertones(Array.from(new Set(matchedOvertones)))
+      setCustomOvertones(unmatchedOvertones.join(', '))
+      const rawMaterials = splitMultiValueInput(product.material || '')
       const matched: string[] = []
       const unmatched: string[] = []
       rawMaterials.forEach((item) => {
@@ -288,6 +326,8 @@ export default function ProductForm({ productId }: ProductFormProps) {
         category: category || null,
         size_mm: sizeMm.trim() || null,
         shape: shape || null,
+        luster: luster || null,
+        overtone: overtoneValue || null,
         material: materialValue || null,
         sell_price: sellPrice ? parseFloat(sellPrice) : null,
         original_price: originalPrice ? parseFloat(originalPrice) : null,
@@ -334,6 +374,13 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
   const toggleMaterial = (value: string) => {
     setSelectedMaterials((prev) => {
+      if (prev.includes(value)) return prev.filter((item) => item !== value)
+      return [...prev, value]
+    })
+  }
+
+  const toggleOvertone = (value: string) => {
+    setSelectedOvertones((prev) => {
       if (prev.includes(value)) return prev.filter((item) => item !== value)
       return [...prev, value]
     })
@@ -732,6 +779,83 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              Luster
+            </label>
+            <select
+              value={luster}
+              onChange={(e) => setLuster(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem'
+              }}
+            >
+              <option value="">Select luster</option>
+              {LUSTER_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="admin-product-form-full">
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+              Overtone
+            </label>
+            <div style={{
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              padding: '0.75rem',
+              backgroundColor: '#fff'
+            }}>
+              <div style={{ display: 'grid', gap: '0.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))' }}>
+                {OVERTONE_OPTIONS.map((option) => (
+                  <label
+                    key={option}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      fontSize: '0.95rem',
+                      cursor: 'pointer',
+                      textTransform: 'capitalize',
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedOvertones.includes(option)}
+                      onChange={() => toggleOvertone(option)}
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+
+              <input
+                type="text"
+                value={customOvertones}
+                onChange={(e) => setCustomOvertones(e.target.value)}
+                placeholder="Custom overtone (optional)"
+                style={{
+                  marginTop: '0.75rem',
+                  width: '100%',
+                  padding: '0.625rem',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '0.95rem'
+                }}
+              />
+            </div>
+            <small style={{ color: '#666', display: 'block', marginTop: '0.35rem' }}>
+              Select one or more overtones, or add your own custom value.
+            </small>
           </div>
 
           <div className="admin-product-form-full">

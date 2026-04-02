@@ -91,6 +91,8 @@ export interface CatalogProduct {
   pearl_type: string
   size_mm: string | null // text, supports ranges like "7-7.5"
   shape: string | null
+  luster: string | null
+  overtone: string | null
   material: string | null
   sell_price: number | null // numeric(12,2), >= 0
   original_price: number | null // numeric(12,2), >= 0

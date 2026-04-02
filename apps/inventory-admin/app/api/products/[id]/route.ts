@@ -195,6 +195,8 @@ export async function PATCH(
     if ('note' in body) updates.note = body.note ?? null
     if ('size_mm' in body) updates.size_mm = normalizedSize
     if ('shape' in body) updates.shape = body.shape ?? null
+    if ('luster' in body) updates.luster = body.luster ?? null
+    if ('overtone' in body) updates.overtone = body.overtone ?? null
     if ('material' in body) updates.material = body.material ?? null
     if ('sell_price' in body) updates.sell_price = body.sell_price ?? null
     if ('original_price' in body) updates.original_price = body.original_price ?? null

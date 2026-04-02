@@ -20,10 +20,16 @@ type GalleryItem =
   | { kind: 'video'; id: string; video: ProductVideo }
 
 export default function ProductDetailClient({ product, images, videos }: ProductDetailClientProps) {
+  const productWithPearlDetails = product as CatalogProduct & {
+    luster?: string | null
+    overtone?: string | null
+  }
   const [inquiryOpen, setInquiryOpen] = useState(false)
   const [cartNotice, setCartNotice] = useState<string | null>(null)
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0)
   const [liveAvailability, setLiveAvailability] = useState(product.availability)
+  const [isPearlDetailsOpen, setIsPearlDetailsOpen] = useState(false)
+  const [isCareOpen, setIsCareOpen] = useState(false)
   const { addItem } = useCart()
   const effectiveAvailability = liveAvailability
   const descriptionParagraphs = (product.description || '')
@@ -31,6 +37,12 @@ export default function ProductDetailClient({ product, images, videos }: Product
     .map((paragraph) => paragraph.trim())
     .filter(Boolean)
   const shortDescription = descriptionParagraphs[0] || null
+  const lifestyleHook =
+    'A soft, luminous glow that makes you look effortlessly put together.'
+  const careServiceCopy =
+    effectiveAvailability === 'PREORDER' && product.preorder_note
+      ? product.preorder_note
+      : 'Made for everyday wear, with care guidance whenever you need it.'
   const categoryLabels: Record<string, string> = {
     BRACELETS: 'Bracelets',
     NECKLACES: 'Necklaces',
@@ -134,6 +146,11 @@ export default function ProductDetailClient({ product, images, videos }: Product
       <td style={valueStyle}>{value}</td>
     </tr>
   )
+  const formatPearlTypeLabel = (value: string) =>
+    value
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/\s+/g, ' ')
+      .trim()
   const editorsPickBadgeStyle: CSSProperties = {
     position: 'absolute',
     top: spacing.md,
@@ -306,7 +323,7 @@ export default function ProductDetailClient({ product, images, videos }: Product
                 letterSpacing: '0.02em',
               }}
             >
-              Shown in different lighting to reflect natural luster
+              Shown in natural light to reveal the pearl&apos;s true luster.
             </p>
 
             {/* Image Thumbnails */}
@@ -397,29 +414,49 @@ export default function ProductDetailClient({ product, images, videos }: Product
             <h1 style={{ 
               fontSize: typography.fontSize['4xl'],
               fontWeight: typography.fontWeight.light,
-              marginBottom: spacing.md,
+              marginBottom: spacing.sm,
               color: colors.darkGray,
               letterSpacing: '0.02em',
             }}>
               {product.title}
             </h1>
 
+            <div style={{ marginBottom: spacing.lg }}>
+              <p
+                style={{
+                  margin: 0,
+                  color: colors.textSecondary,
+                  fontSize: typography.fontSize.sm,
+                  lineHeight: 1.8,
+                  letterSpacing: '0.02em',
+                }}
+              >
+                {[
+                  formatPearlTypeLabel(product.pearl_type),
+                  product.size_mm ? `${product.size_mm}mm` : null,
+                  productWithPearlDetails.luster ? `Luster: ${productWithPearlDetails.luster}` : null,
+                  productWithPearlDetails.overtone ? `overtone: ${productWithPearlDetails.overtone}` : null,
+                ]
+                  .filter(Boolean)
+                  .join('｜')}
+              </p>
+              <p
+                style={{
+                  margin: `${spacing.xs} 0 0`,
+                  color: colors.textSecondary,
+                  fontSize: typography.fontSize.base,
+                  lineHeight: 1.8,
+                }}
+              >
+                {lifestyleHook}
+              </p>
+            </div>
             <div style={{ 
               display: 'flex',
               gap: spacing.xs,
               marginBottom: spacing.lg,
               flexWrap: 'wrap'
             }}>
-              <span style={{
-                padding: `${spacing.xs} ${spacing.md}`,
-                backgroundColor: colors.pearl,
-                color: colors.gold,
-                fontSize: typography.fontSize.sm,
-                fontWeight: typography.fontWeight.medium,
-                letterSpacing: '0.05em',
-              }}>
-                {product.pearl_type}
-              </span>
               <span style={{
                 padding: `${spacing.xs} ${spacing.md}`,
                 backgroundColor:
@@ -433,62 +470,144 @@ export default function ProductDetailClient({ product, images, videos }: Product
                 {effectiveAvailability === 'IN_STOCK' ? 'In Stock' : effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Pre-order'}
               </span>
             </div>
-            {/* Price */}
-            <div style={{ marginBottom: spacing.md }}>
-              {product.sell_price && (
-                <div style={{ 
-                  fontSize: typography.fontSize['5xl'],
-                  fontWeight: typography.fontWeight.light,
-                  color: colors.darkGray,
-                  marginBottom: spacing.xs
-                }}>
-                  $ {product.sell_price.toLocaleString()}
-                </div>
-              )}
-              {product.original_price && product.original_price > (product.sell_price || 0) && (
-                <div style={{ 
-                  fontSize: typography.fontSize.lg,
-                  color: colors.textLight,
-                  textDecoration: 'line-through'
-                }}>
-                  Original Price $ {product.original_price.toLocaleString()}
-                </div>
-              )}
-            </div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: spacing.md,
+                flexWrap: 'wrap',
+                marginBottom: spacing.xl,
+              }}
+            >
+              <div style={{ display: 'grid', gap: '0.2rem' }}>
+                {product.sell_price && (
+                  <div style={{ 
+                    fontSize: typography.fontSize['5xl'],
+                    fontWeight: typography.fontWeight.light,
+                    color: colors.darkGray,
+                    lineHeight: 1
+                  }}>
+                    $ {product.sell_price.toLocaleString()}
+                  </div>
+                )}
+                {product.original_price && product.original_price > (product.sell_price || 0) && (
+                  <div style={{ 
+                    fontSize: typography.fontSize.lg,
+                    color: colors.textLight,
+                    textDecoration: 'line-through'
+                  }}>
+                    Original Price $ {product.original_price.toLocaleString()}
+                  </div>
+                )}
+              </div>
 
-            {shortDescription && (
-              <div
+              <button
+                onClick={handleAddToCart}
+                disabled={effectiveAvailability === 'OUT_OF_STOCK'}
                 style={{
-                  marginBottom: spacing.lg,
-                  padding: `${spacing.md} ${spacing.lg}`,
-                  background: '#fbf8f2',
-                  border: '1px solid #e5dccb',
-                  borderRadius: '14px',
+                  minWidth: '168px',
+                  padding: `${spacing.sm} ${spacing.lg}`,
+                  backgroundColor:
+                    effectiveAvailability === 'OUT_OF_STOCK' ? '#d7cbbd' : '#f6efe3',
+                  color: effectiveAvailability === 'OUT_OF_STOCK' ? '#7b6a58' : colors.darkGray,
+                  border: `1px solid ${
+                    effectiveAvailability === 'OUT_OF_STOCK' ? '#d7cbbd' : '#d8c7ae'
+                  }`,
+                  borderRadius: '999px',
+                  fontWeight: typography.fontWeight.medium,
+                  fontSize: typography.fontSize.sm,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  cursor: effectiveAvailability === 'OUT_OF_STOCK' ? 'not-allowed' : 'pointer',
+                  boxShadow: '0 10px 24px rgba(110, 89, 52, 0.10)',
+                  transition: transitions.fast,
                 }}
               >
-                <h3
+                {effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Add to Bag'}
+              </button>
+            </div>
+
+            {cartNotice && (
+              <div
+                style={{
+                  marginTop: `-${spacing.md}`,
+                  marginBottom: spacing.sm,
+                  color: '#2e7d32',
+                  fontSize: typography.fontSize.sm,
+                }}
+              >
+                {cartNotice}
+              </div>
+            )}
+
+            <p
+              style={{
+                margin: `0 0 ${spacing.lg}`,
+                color: colors.textLight,
+                fontSize: typography.fontSize.sm,
+                lineHeight: 1.7,
+              }}
+            >
+              Each pearl is naturally unique, and only a few pieces are available.
+            </p>
+
+            <div
+              style={{
+                marginBottom: spacing.lg,
+                padding: `${spacing.md} ${spacing.lg}`,
+                background: '#fbf8f2',
+                border: '1px solid #e5dccb',
+                borderRadius: '14px',
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: typography.fontSize.base,
+                  fontWeight: typography.fontWeight.medium,
+                  marginBottom: spacing.xs,
+                  color: colors.darkGray,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Why You&apos;ll Love It ⭐
+              </h3>
+              <p
+                style={{
+                  margin: 0,
+                  color: colors.textSecondary,
+                  lineHeight: 1.8,
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
+                {product.description || shortDescription || lifestyleHook}
+              </p>
+              <div style={{ marginTop: spacing.md }}>
+                <p
                   style={{
-                    fontSize: typography.fontSize.base,
-                    fontWeight: typography.fontWeight.medium,
-                    marginBottom: spacing.xs,
+                    margin: `0 0 ${spacing.xs}`,
                     color: colors.darkGray,
+                    fontSize: typography.fontSize.sm,
+                    fontWeight: typography.fontWeight.medium,
                     letterSpacing: '0.08em',
                     textTransform: 'uppercase',
                   }}
                 >
-                  At a Glance
-                </h3>
+                  Perfect For
+                </p>
                 <p
                   style={{
                     margin: 0,
                     color: colors.textSecondary,
-                    lineHeight: 1.8,
+                    lineHeight: 1.9,
+                    whiteSpace: 'pre-line',
                   }}
                 >
-                  {shortDescription}
+                  {'• Everyday office wear\n• An effortless polished look\n• Weddings, dinners, and special occasions'}
                 </p>
               </div>
-            )}
+            </div>
 
             {/* Product Details */}
             <div style={{ 
@@ -496,249 +615,142 @@ export default function ProductDetailClient({ product, images, videos }: Product
               paddingTop: spacing.xs,
               marginBottom: spacing.xl
             }}>
-              <h3 style={{ 
-                fontSize: typography.fontSize.lg,
-                fontWeight: typography.fontWeight.medium,
-                marginBottom: spacing.sm,
-                color: colors.darkGray
-              }}>
-                Specifications
-              </h3>
-              <p
+              <button
+                type="button"
+                onClick={() => setIsPearlDetailsOpen((prev) => !prev)}
+                aria-expanded={isPearlDetailsOpen}
                 style={{
-                  margin: `0 0 ${spacing.sm}`,
-                  color: colors.textSecondary,
-                  fontSize: typography.fontSize.sm,
-                  lineHeight: 1.8,
-                }}
-              >
-                Each pair is carefully matched for luster, tone, and proportion — the details that define how pearls look on the skin.
-              </p>
-              <table style={{ width: '100%' }}>
-                <tbody>
-                  {renderSpecRow('Pearl Type', product.pearl_type)}
-                  {product.category && (
-                    renderSpecRow('Category', categoryLabels[product.category] || product.category)
-                  )}
-                  {product.size_mm && (
-                    renderSpecRow('Size', `${product.size_mm}mm`)
-                  )}
-                  {product.shape && (
-                    renderSpecRow('Shape', product.shape)
-                  )}
-                  {product.material && (
-                    renderSpecRow('Material', product.material)
-                  )}
-                  {renderSpecRow('Product Code', product.slug, specCodeValueCellStyle)}
-                </tbody>
-              </table>
-              <div
-                style={{
-                  marginTop: spacing.lg,
+                  width: '100%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   gap: spacing.md,
-                  flexWrap: 'wrap',
+                  background: 'transparent',
+                  border: 'none',
+                  padding: `${spacing.sm} 0`,
+                  cursor: 'pointer',
+                  color: colors.darkGray,
                 }}
               >
-                <p
-                  style={{
-                    margin: 0,
-                    color: colors.textSecondary,
-                    fontSize: typography.fontSize.sm,
-                    lineHeight: 1.7,
-                    flex: '1 1 240px',
-                    textAlign: 'left',
-                  }}
-                >
-                  * Free shipping on orders over $200.
-                  <br />
-                  * Need help choosing? We&apos;re happy to guide you.
-                </p>
-                <button
-                  onClick={handleAddToCart}
-                  disabled={effectiveAvailability === 'OUT_OF_STOCK'}
-                  style={{
-                    marginLeft: 'auto',
-                    padding: `${spacing.md} ${spacing.xl}`,
-                    backgroundColor:
-                      effectiveAvailability === 'OUT_OF_STOCK' ? '#b4a28e' : colors.darkGray,
-                    color: colors.white,
-                    border: `1px solid ${
-                      effectiveAvailability === 'OUT_OF_STOCK' ? '#b4a28e' : colors.darkGray
-                    }`,
-                    borderRadius: '999px',
-                    fontWeight: typography.fontWeight.medium,
-                    fontSize: typography.fontSize.sm,
-                    letterSpacing: '0.04em',
-                    cursor: effectiveAvailability === 'OUT_OF_STOCK' ? 'not-allowed' : 'pointer',
-                    boxShadow: shadows.soft,
-                    transition: transitions.fast,
-                  }}
-                >
-                  {effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Add to Cart'}
-                </button>
-              </div>
+                <span style={{ 
+                  fontSize: typography.fontSize.lg,
+                  fontWeight: typography.fontWeight.medium,
+                }}>
+                  Product Details
+                </span>
+                <span style={{ fontSize: typography.fontSize.lg, color: colors.textLight }}>
+                  {isPearlDetailsOpen ? '−' : '+'}
+                </span>
+              </button>
+              {isPearlDetailsOpen && (
+                <>
+                  <p
+                    style={{
+                      margin: `0 0 ${spacing.sm}`,
+                      color: colors.textSecondary,
+                      fontSize: typography.fontSize.sm,
+                      lineHeight: 1.8,
+                    }}
+                  >
+                    Each pair is carefully matched for luster, tone, and proportion — the details that define how pearls look on the skin.
+                  </p>
+                  <table style={{ width: '100%' }}>
+                    <tbody>
+                      {renderSpecRow('Pearl Type', product.pearl_type)}
+                      {product.category && (
+                        renderSpecRow('Category', categoryLabels[product.category] || product.category)
+                      )}
+                      {product.size_mm && (
+                        renderSpecRow('Size', `${product.size_mm}mm`)
+                      )}
+                      {productWithPearlDetails.luster && (
+                        renderSpecRow('Luster', productWithPearlDetails.luster)
+                      )}
+                      {productWithPearlDetails.overtone && (
+                        renderSpecRow('Overtone', productWithPearlDetails.overtone)
+                      )}
+                      {product.shape && (
+                        renderSpecRow('Shape', product.shape)
+                      )}
+                      {product.material && (
+                        renderSpecRow('Material', product.material)
+                      )}
+                      {renderSpecRow('Product Code', product.slug, specCodeValueCellStyle)}
+                    </tbody>
+                  </table>
+                </>
+              )}
             </div>
 
             <div
               style={{
-                padding: `${spacing.lg} ${spacing.xl}`,
-                background: 'linear-gradient(135deg, #fffdf8 0%, #faf6ee 100%)',
-                border: '1px solid rgba(212, 175, 55, 0.22)',
-                borderRadius: '16px',
-                boxShadow: '0 10px 24px rgba(45, 36, 24, 0.05)',
+                borderTop: `1px solid ${colors.lightGray}`,
+                paddingTop: spacing.xs,
                 marginBottom: spacing['2xl'],
               }}
             >
-              <p
+              <button
+                type="button"
+                onClick={() => setIsCareOpen((prev) => !prev)}
+                aria-expanded={isCareOpen}
                 style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: spacing.md,
+                  background: 'transparent',
+                  border: 'none',
+                  padding: `${spacing.sm} 0`,
+                  cursor: 'pointer',
+                  textAlign: 'left',
                   margin: 0,
-                  color: colors.gold,
-                  fontSize: typography.fontSize.xs,
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
+                  color: colors.darkGray,
+                  fontSize: typography.fontSize.lg,
+                  fontWeight: typography.fontWeight.medium,
                 }}
               >
-                The 33 Pearl Atelier Standard
-              </p>
-              <ul
-                style={{
-                  margin: `${spacing.md} 0 0`,
-                  paddingLeft: '1.2rem',
-                  color: colors.textSecondary,
-                  lineHeight: 1.9,
-                }}
-              >
-                <li>You receive the exact pair shown</li>
-                <li>Hand-selected by a GIA-certified gemologist</li>
-                <li>Small-batch production</li>
-                <li>Complimentary cleaning and maintenance</li>
-              </ul>
-            </div>
-
-            {/* Preorder Note */}
-            {effectiveAvailability === 'PREORDER' && product.preorder_note && (
-              <div style={{ 
-                padding: spacing.md,
-                backgroundColor: colors.champagne,
-                border: `1px solid ${colors.gold}`,
-                marginBottom: spacing['2xl']
-              }}>
-                <strong style={{ color: colors.gold }}>Pre-order Note:</strong>
-                <span style={{ color: colors.textSecondary, marginLeft: spacing.xs }}>
-                  {product.preorder_note}
+                <span>Care</span>
+                <span style={{ fontSize: typography.fontSize.lg, color: colors.textLight }}>
+                  {isCareOpen ? '−' : '+'}
                 </span>
-              </div>
-            )}
+              </button>
+              {isCareOpen && (
+                <>
+                  <p
+                    style={{
+                      margin: `${spacing.sm} 0 0`,
+                      color: colors.textSecondary,
+                      lineHeight: 1.9,
+                    }}
+                  >
+                    {careServiceCopy}
+                  </p>
+                  <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginTop: spacing.md }}>
+                    <button
+                      onClick={() => setInquiryOpen(true)}
+                      style={{
+                        padding: `${spacing.sm} ${spacing.lg}`,
+                        backgroundColor: colors.gold,
+                        color: colors.white,
+                        border: `1px solid ${colors.gold}`,
+                        borderRadius: '999px',
+                        fontWeight: typography.fontWeight.medium,
+                        fontSize: typography.fontSize.sm,
+                        letterSpacing: '0.04em',
+                        cursor: 'pointer',
+                        boxShadow: shadows.soft,
+                        transition: transitions.fast,
+                      }}
+                    >
+                      Ask About This Piece
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
-
-        {/* Description and CTA below image/specifications */}
-        <section style={{ marginTop: spacing.lg }}>
-            {product.description && (
-              <div
-                style={{
-                  marginBottom: spacing['2xl'],
-                  padding: `${spacing.lg} ${spacing.xl}`,
-                  backgroundColor: '#fbf8f2',
-                  border: `1px solid #e5dccb`,
-                  borderRadius: '14px',
-                  boxShadow: '0 10px 24px rgba(45, 36, 24, 0.06)',
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: typography.fontSize.xl,
-                    fontWeight: typography.fontWeight.medium,
-                    marginBottom: spacing.sm,
-                    color: colors.darkGray,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                    fontFamily: '"Cormorant Garamond", "Times New Roman", serif',
-                  }}
-                >
-                  Description
-                </h3>
-                <p
-                  style={{
-                    color: colors.textSecondary,
-                    lineHeight: 1.9,
-                    whiteSpace: 'pre-wrap',
-                    fontSize: typography.fontSize.base,
-                    fontFamily: '"Cormorant Garamond", "Times New Roman", serif',
-                    letterSpacing: '0.02em',
-                  }}
-                >
-                  {product.description}
-                </p>
-              </div>
-            )}
-
-            <div
-              style={{
-                padding: `${spacing.lg} ${spacing.xl}`,
-                backgroundColor: '#fffdf9',
-                borderTop: `1px solid ${colors.lightGray}`,
-                borderBottom: `1px solid ${colors.lightGray}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: spacing.lg,
-                flexWrap: 'wrap',
-              }}
-            >
-              <div style={{ minWidth: '260px', flex: 1 }}>
-                <p
-                  style={{
-                    color: colors.darkGray,
-                    marginBottom: spacing.xs,
-                    fontWeight: typography.fontWeight.medium,
-                    fontSize: typography.fontSize.lg,
-                    letterSpacing: '0.04em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  Interested in this piece?
-                </p>
-                <p
-                  style={{
-                    color: colors.textSecondary,
-                    fontSize: typography.fontSize.base,
-                    lineHeight: 1.7,
-                  }}
-                >
-                  Add it to your cart to continue to secure checkout, or contact us for personal guidance before ordering.
-                </p>
-              </div>
-              <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
-                <button
-                  onClick={() => setInquiryOpen(true)}
-                  style={{
-                    padding: `${spacing.md} ${spacing.xl}`,
-                    backgroundColor: colors.gold,
-                    color: colors.white,
-                    border: `1px solid ${colors.gold}`,
-                    borderRadius: '999px',
-                    fontWeight: typography.fontWeight.medium,
-                    fontSize: typography.fontSize.sm,
-                    letterSpacing: '0.04em',
-                    cursor: 'pointer',
-                    boxShadow: shadows.soft,
-                    transition: transitions.fast,
-                  }}
-                >
-                  Inquire About This Product
-                </button>
-              </div>
-            </div>
-            {cartNotice && (
-              <div style={{ marginTop: spacing.sm, color: '#2e7d32', fontSize: typography.fontSize.sm }}>
-                {cartNotice}
-              </div>
-            )}
-        </section>
 
         <ProductInquiryModal
           open={inquiryOpen}

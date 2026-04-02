@@ -38,9 +38,11 @@ export type Database = {
           editors_pick: boolean
           id: string
           inventory_item_id: string | null
+          luster: string | null
           material: string | null
           note: string | null
           original_price: number | null
+          overtone: string | null
           pearl_type: string
           preorder_note: string | null
           published: boolean
@@ -61,9 +63,11 @@ export type Database = {
           editors_pick?: boolean
           id?: string
           inventory_item_id?: string | null
+          luster?: string | null
           material?: string | null
           note?: string | null
           original_price?: number | null
+          overtone?: string | null
           pearl_type: string
           preorder_note?: string | null
           published?: boolean
@@ -84,9 +88,11 @@ export type Database = {
           editors_pick?: boolean
           id?: string
           inventory_item_id?: string | null
+          luster?: string | null
           material?: string | null
           note?: string | null
           original_price?: number | null
+          overtone?: string | null
           pearl_type?: string
           preorder_note?: string | null
           published?: boolean
@@ -574,9 +580,11 @@ export type Database = {
           editors_pick: boolean
           id: string
           inventory_item_id: string | null
+          luster: string | null
           material: string | null
           note: string | null
           original_price: number | null
+          overtone: string | null
           pearl_type: string
           preorder_note: string | null
           published: boolean
@@ -610,9 +618,11 @@ export type Database = {
           editors_pick: boolean
           id: string
           inventory_item_id: string | null
+          luster: string | null
           material: string | null
           note: string | null
           original_price: number | null
+          overtone: string | null
           pearl_type: string
           preorder_note: string | null
           published: boolean

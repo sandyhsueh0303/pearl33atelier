@@ -360,6 +360,8 @@ export async function POST(request: NextRequest) {
       category: body.category ?? null,
       size_mm: normalizedSize,
       shape: body.shape ?? null,
+      luster: body.luster ?? null,
+      overtone: body.overtone ?? null,
       material: body.material ?? null,
       sell_price: body.sell_price ?? null,
       original_price: body.original_price ?? null,
