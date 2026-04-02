@@ -34,7 +34,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   Others: 'Others',
 }
 
-const CATEGORY_QUERY_VALUES: Record<string, ProductCategory[]> = {
+const CATEGORY_QUERY_VALUES = {
   Bracelets: ['BRACELETS'],
   Necklaces: ['NECKLACES'],
   Earrings: ['EARRINGS', 'STUDS'],
@@ -44,6 +44,10 @@ const CATEGORY_QUERY_VALUES: Record<string, ProductCategory[]> = {
   'Loose Pearls': ['LOOSE_PEARLS'],
   Brooches: ['BROOCHES'],
   Others: ['PENDANTS', 'LOOSE_PEARLS', 'BROOCHES'],
+} as const satisfies Record<string, readonly ProductCategory[]>
+
+function isCategoryFilterKey(value: string): value is keyof typeof CATEGORY_QUERY_VALUES {
+  return value in CATEGORY_QUERY_VALUES
 }
 
 const PEARL_TYPE_LABELS: Record<string, string> = {
@@ -219,12 +223,12 @@ export default async function ProductsPage({
     )
     .eq('published', true)
 
-  if (categoryParam && CATEGORY_QUERY_VALUES[categoryParam]) {
+  if (categoryParam && isCategoryFilterKey(categoryParam)) {
     const categoryValues = CATEGORY_QUERY_VALUES[categoryParam]
     productsQuery =
       categoryValues.length === 1
         ? productsQuery.eq('category', categoryValues[0])
-        : productsQuery.in('category', categoryValues)
+        : productsQuery.in('category', [...categoryValues])
   }
 
   if (pearlTypeParam && PEARL_TYPE_QUERY_MODES[pearlTypeParam]) {
