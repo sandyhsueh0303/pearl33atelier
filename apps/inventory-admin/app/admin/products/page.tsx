@@ -344,12 +344,35 @@ function ProductsPageContent() {
             {loading ? '⏳ Loading...' : '🔄 Refresh'}
           </button>
         </div>
-        <Link
-          href={`/admin/products/new?returnTo=${returnToParam}`}
-          className="admin-link-btn admin-link-btn-primary"
-        >
-          + Add Product
-        </Link>
+        <div className="admin-page-header-actions">
+          <Link
+            href={`/admin/products/ai-draft?returnTo=${returnToParam}`}
+            className="admin-link-btn"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.45rem',
+              padding: '0.78rem 1.15rem',
+              borderRadius: '999px',
+              background: 'linear-gradient(135deg, #f7ecd7 0%, #ead3a4 100%)',
+              color: '#4a3824',
+              border: '1px solid rgba(166, 126, 55, 0.28)',
+              boxShadow: '0 10px 24px rgba(161, 127, 59, 0.18)',
+              letterSpacing: '0.04em',
+              fontWeight: 700,
+            }}
+          >
+            <span aria-hidden="true">✦</span>
+            <span>Create with AI</span>
+          </Link>
+          <Link
+            href={`/admin/products/new?returnTo=${returnToParam}`}
+            className="admin-link-btn admin-link-btn-primary"
+          >
+            + Add Product
+          </Link>
+        </div>
       </div>
 
       {error && (
