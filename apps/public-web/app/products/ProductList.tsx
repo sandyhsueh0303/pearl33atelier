@@ -3,7 +3,7 @@
 import { useDeferredValue, useMemo, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { getProductImageUrl } from '@pearl33atelier/shared'
+import { getProductImageUrl, getProductImageVariantUrl } from '@pearl33atelier/shared'
 import type { AvailabilityKind, ProductCategory } from '@pearl33atelier/shared/types'
 import { colors, typography, spacing, transitions, shadows } from '../constants/design'
 import { pageHeroStyles } from '../constants/pageHero'
@@ -306,7 +306,7 @@ export default function ProductList({
                       ) : null}
                       {product.primaryImage ? (
                         <Image
-                          src={getProductImageUrl(product.primaryImage.storage_path)}
+                          src={getProductImageVariantUrl(product.primaryImage.storage_path, 'medium')}
                           alt={`${product.pearl_type || 'Pearl'} ${getCategoryLabel(product.category) || 'Jewelry'} - ${product.title}`}
                           fill
                           priority={index < 2}

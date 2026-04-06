@@ -93,6 +93,24 @@ export function getProductImageUrl(storagePath: string): string {
   return getImageUrl(supabaseUrl, storagePath)
 }
 
+export function getProductImageVariantPath(
+  storagePath: string,
+  variant: 'thumb' | 'medium' | 'large'
+): string {
+  const match = storagePath.match(/^(.*)-(thumb|medium|large)\.([^.]+)$/)
+  if (!match) return storagePath
+
+  const [, basePath, , extension] = match
+  return `${basePath}-${variant}.${extension}`
+}
+
+export function getProductImageVariantUrl(
+  storagePath: string,
+  variant: 'thumb' | 'medium' | 'large'
+): string {
+  return getProductImageUrl(getProductImageVariantPath(storagePath, variant))
+}
+
 export function getVideoUrl(supabaseUrl: string, storagePath: string): string {
   return getStorageUrl(supabaseUrl, PRODUCT_VIDEO_BUCKET, storagePath)
 }
