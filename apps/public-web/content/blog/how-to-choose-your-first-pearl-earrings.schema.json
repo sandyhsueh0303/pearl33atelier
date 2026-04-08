@@ -1,0 +1,33 @@
+{
+  "guide": "first_pearl_earrings",
+  "title": "How to Choose Your First Pearl Earrings",
+  "summary_paths": [
+    {
+      "intent": "daily_minimal",
+      "pearl_type": "Akoya",
+      "size_mm": "6.5-7.5",
+      "style": "round studs",
+      "metal_direction": "white gold",
+      "occasion": "daily wear",
+      "cta_path": "/products?category=Studs"
+    },
+    {
+      "intent": "soft_classic",
+      "pearl_type": "Akoya",
+      "size_mm": "7-8",
+      "style": "stud earrings",
+      "metal_direction": "yellow gold",
+      "occasion": "daily wear to occasion dressing",
+      "cta_path": "/products?category=Earrings"
+    },
+    {
+      "intent": "modern_distinctive",
+      "pearl_type": "Tahitian or Grey Akoya",
+      "size_mm": "7.5+",
+      "style": "studs or drops",
+      "metal_direction": "white gold",
+      "occasion": "statement or modern styling",
+      "cta_path": "/products?category=Earrings"
+    }
+  ]
+}
