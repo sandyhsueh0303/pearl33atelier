@@ -6,6 +6,7 @@ import {
   syncProductAvailabilitySnapshots,
 } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
+import { validateAiDraft, type AiDraft } from '../validation'
 
 type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
 
@@ -150,10 +151,21 @@ export async function POST(request: NextRequest) {
     if (errorResponse || !supabase) return errorResponse
 
     const body = await request.json()
-    const draft = body?.draft
+    const draft = body?.draft as AiDraft | undefined
 
     if (!draft?.title || !String(draft.title).trim()) {
       return NextResponse.json({ error: 'Draft title is required' }, { status: 400 })
+    }
+
+    const validation = validateAiDraft(draft)
+    if (!validation.canCreateDraft) {
+      return NextResponse.json(
+        {
+          error: 'Draft has validation errors and is not ready to create.',
+          validation,
+        },
+        { status: 400 }
+      )
     }
 
     const context = [

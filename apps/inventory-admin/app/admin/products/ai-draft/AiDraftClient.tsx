@@ -15,6 +15,19 @@ type DraftPreview = {
   description: string
 }
 
+type DraftValidationIssue = {
+  severity: 'error' | 'warning'
+  field: string
+  message: string
+}
+
+type DraftValidation = {
+  issues: DraftValidationIssue[]
+  errorCount: number
+  warningCount: number
+  canCreateDraft: boolean
+}
+
 async function fileToDataUrl(file: File): Promise<string> {
   return await new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -33,6 +46,7 @@ export default function AiDraftClient() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isCreatingDraft, setIsCreatingDraft] = useState(false)
   const [draftPreview, setDraftPreview] = useState<DraftPreview | null>(null)
+  const [draftValidation, setDraftValidation] = useState<DraftValidation | null>(null)
   const [draftSource, setDraftSource] = useState<'openai' | 'fallback' | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [debugMessage, setDebugMessage] = useState<string | null>(null)
@@ -41,6 +55,13 @@ export default function AiDraftClient() {
     () => files.map((file) => ({ file, url: URL.createObjectURL(file) })),
     [files]
   )
+  const groupedIssues = useMemo(() => {
+    const issues = draftValidation?.issues || []
+    return {
+      validation: issues.filter((issue) => (issue as DraftValidationIssue & { source?: string }).source !== 'consistency'),
+      consistency: issues.filter((issue) => (issue as DraftValidationIssue & { source?: string }).source === 'consistency'),
+    }
+  }, [draftValidation])
 
   useEffect(() => {
     return () => {
@@ -57,6 +78,7 @@ export default function AiDraftClient() {
     setIsGenerating(true)
     setError(null)
     setDebugMessage(null)
+    setDraftValidation(null)
 
     try {
       const imageDataUrls = await Promise.all(files.map((file) => fileToDataUrl(file)))
@@ -77,6 +99,7 @@ export default function AiDraftClient() {
       }
 
       setDraftPreview(data.draft)
+      setDraftValidation(data.validation || null)
       setDraftSource(data.source === 'openai' ? 'openai' : 'fallback')
       setDebugMessage(data.debug || null)
     } catch (err) {
@@ -263,6 +286,75 @@ export default function AiDraftClient() {
 
           {draftPreview ? (
             <div className="admin-ai-draft-preview-layout">
+              {draftValidation ? (
+                <div className="admin-ai-draft-validation-card">
+                  <div className="admin-ai-draft-validation-header">
+                    <div>
+                      <div className="admin-ai-draft-label">Validation</div>
+                      <div className="admin-ai-draft-validation-summary">
+                        {draftValidation.errorCount > 0
+                          ? `${draftValidation.errorCount} error${draftValidation.errorCount === 1 ? '' : 's'} to fix`
+                          : 'Ready to create draft'}
+                        {draftValidation.warningCount > 0
+                          ? ` · ${draftValidation.warningCount} warning${draftValidation.warningCount === 1 ? '' : 's'}`
+                          : ''}
+                      </div>
+                    </div>
+                    <span
+                      className={`admin-ai-draft-validation-badge ${
+                        draftValidation.canCreateDraft
+                          ? 'admin-ai-draft-validation-badge-ready'
+                          : 'admin-ai-draft-validation-badge-error'
+                      }`}
+                    >
+                      {draftValidation.canCreateDraft ? 'Ready' : 'Needs Review'}
+                    </span>
+                  </div>
+
+                  {draftValidation.issues.length > 0 ? (
+                    <div className="admin-ai-draft-validation-groups">
+                      {groupedIssues.validation.length > 0 ? (
+                        <div className="admin-ai-draft-validation-group">
+                          <div className="admin-ai-draft-validation-group-title">Validation</div>
+                          <div className="admin-ai-draft-validation-list">
+                            {groupedIssues.validation.map((issue, index) => (
+                              <div
+                                key={`validation-${issue.field}-${issue.message}-${index}`}
+                                className={`admin-ai-draft-validation-item admin-ai-draft-validation-item-${issue.severity}`}
+                              >
+                                <strong>{issue.field}</strong>
+                                <span>{issue.message}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {groupedIssues.consistency.length > 0 ? (
+                        <div className="admin-ai-draft-validation-group">
+                          <div className="admin-ai-draft-validation-group-title">Consistency Check</div>
+                          <div className="admin-ai-draft-validation-list">
+                            {groupedIssues.consistency.map((issue, index) => (
+                              <div
+                                key={`consistency-${issue.field}-${issue.message}-${index}`}
+                                className={`admin-ai-draft-validation-item admin-ai-draft-validation-item-${issue.severity}`}
+                              >
+                                <strong>{issue.field}</strong>
+                                <span>{issue.message}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <div className="admin-ai-draft-helper">
+                      This draft passed the first validation pass and is ready for product creation.
+                    </div>
+                  )}
+                </div>
+              ) : null}
+
               <div className="admin-ai-draft-meta-grid">
                 <div>
                   <div className="admin-ai-draft-label">Title</div>
@@ -304,16 +396,19 @@ export default function AiDraftClient() {
                   type="button"
                   className="admin-link-btn admin-link-btn-primary"
                   onClick={handleCreateDraftProduct}
-                  disabled={isCreatingDraft}
+                  disabled={isCreatingDraft || !draftValidation?.canCreateDraft}
                   style={{
-                    opacity: isCreatingDraft ? 0.65 : 1,
-                    pointerEvents: isCreatingDraft ? 'none' : 'auto',
+                    opacity: isCreatingDraft || !draftValidation?.canCreateDraft ? 0.65 : 1,
+                    pointerEvents:
+                      isCreatingDraft || !draftValidation?.canCreateDraft ? 'none' : 'auto',
                   }}
                 >
                   {isCreatingDraft ? 'Creating Draft...' : 'Create Draft Product'}
                 </button>
                 <span className="admin-ai-draft-helper">
-                  This will create a draft product and open the normal edit form for final review.
+                  {draftValidation?.canCreateDraft
+                    ? 'This will create a draft product and open the normal edit form for final review.'
+                    : 'Fix the validation errors above or regenerate before creating the draft product.'}
                 </span>
               </div>
             </div>

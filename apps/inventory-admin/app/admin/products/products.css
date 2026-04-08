@@ -266,6 +266,99 @@
   line-height: 1.5;
 }
 
+.admin-ai-draft-validation-card {
+  border: 1px solid #ece7dd;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fcfbf8;
+}
+
+.admin-ai-draft-validation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.admin-ai-draft-validation-summary {
+  color: #1f2937;
+  line-height: 1.5;
+}
+
+.admin-ai-draft-validation-badge {
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.admin-ai-draft-validation-badge-ready {
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.admin-ai-draft-validation-badge-error {
+  color: #9f1239;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+}
+
+.admin-ai-draft-validation-list {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+
+.admin-ai-draft-validation-groups {
+  display: grid;
+  gap: 0.95rem;
+  margin-top: 0.85rem;
+}
+
+.admin-ai-draft-validation-group {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.admin-ai-draft-validation-group-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8b7351;
+}
+
+.admin-ai-draft-validation-item {
+  display: grid;
+  gap: 0.2rem;
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem;
+}
+
+.admin-ai-draft-validation-item strong {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-ai-draft-validation-item span {
+  line-height: 1.55;
+}
+
+.admin-ai-draft-validation-item-error {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #9f1239;
+}
+
+.admin-ai-draft-validation-item-warning {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
 .admin-product-form-media-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

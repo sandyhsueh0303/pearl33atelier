@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
+import { validateAiDraft, type AiDraft } from './validation'
 
 type AiDraftRequest = {
   fileNames?: string[]
@@ -7,20 +8,7 @@ type AiDraftRequest = {
   notes?: string
 }
 
-type AiDraftResponse = {
-  draft: {
-    title: string
-    subtitle: string
-    category: string
-    pearlType: string
-    shape: string
-    luster: string
-    overtone: string
-    why_youll_love_it?: string[]
-    perfect_for?: string[]
-    description: string
-  }
-}
+type AiDraftResponse = { draft: AiDraft }
 
 type OpenAIDraftResult =
   | { draft: AiDraftResponse['draft']; error?: undefined }
@@ -390,9 +378,11 @@ export async function POST(request: NextRequest) {
     const aiDraft = openAIResult.draft
     const fallbackSource = [notes, ...fileNames].filter(Boolean).join(' ')
     const draft = aiDraft || (fallbackSource ? inferDraftFromText(fallbackSource) : DEFAULT_DRAFT)
+    const validation = validateAiDraft(draft)
 
     return NextResponse.json({
       draft,
+      validation,
       source: aiDraft ? 'openai' : 'fallback',
       debug: aiDraft ? null : openAIResult.error || 'OpenAI returned no usable draft.',
     })
