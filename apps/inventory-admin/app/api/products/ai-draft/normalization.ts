@@ -76,7 +76,6 @@ function normalizePearlType(extraction: ExtractedProductAttributes, warnings: st
   const color = normalizeLower(extraction.color)
 
   if (pearlType.includes('tahitian')) return 'Tahitian'
-  if (pearlType.includes('freshwater')) return 'Freshwater'
   if (pearlType.includes('golden south sea') || pearlType.includes('gold south sea')) {
     return 'GoldenSouthSea'
   }
@@ -97,7 +96,8 @@ function normalizePearlType(extraction: ExtractedProductAttributes, warnings: st
     warnings.push('Akoya pearl type normalized to WhiteAkoya by default.')
     return 'WhiteAkoya'
   }
-  return 'Other'
+  warnings.push('Pearl type normalized to WhiteAkoya because no supported pearl type cue matched.')
+  return 'WhiteAkoya'
 }
 
 function normalizeShape(shape: string) {

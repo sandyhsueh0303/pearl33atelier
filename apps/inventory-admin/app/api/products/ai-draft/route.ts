@@ -101,9 +101,7 @@ function inferDraftFromText(source: string): AiDraftResponse['draft'] {
       ? 'GoldenSouthSea'
       : normalized.includes('south sea') || normalized.includes('southsea')
         ? 'WhiteSouthSea'
-        : normalized.includes('freshwater')
-          ? 'Freshwater'
-          : 'WhiteAkoya'
+        : 'WhiteAkoya'
 
   const category = normalized.includes('ring')
     ? 'Rings'
@@ -260,7 +258,7 @@ async function generateDraftWithOpenAI(
             {
               type: 'input_text',
               text:
-                `You are a luxury jewelry copywriter for a modern pearl brand.
+                `You are a pearl jewelry expert for a modern pearl brand.
 
 Write product copy for a pearl jewelry piece in a refined, minimal, and editorial tone.
 The brand aesthetic is similar to Mejuri, Mikimoto modern line, and a soft luxury DTC brand.
@@ -279,6 +277,15 @@ Return these keys only:
 - overtone
 - why_youll_love_it
 - perfect_for
+
+PEARL TYPE RULES
+- pearlType must be exactly one of:
+  - WhiteAkoya
+  - GreyAkoya
+  - WhiteSouthSea
+  - GoldenSouthSea
+  - Tahitian
+- Do not return Freshwater, Other, Mixed, or a freeform pearl type.
 
 TITLE RULES
 - Format: [Pearl Type] [Design Name]
@@ -350,7 +357,10 @@ IMPORTANT
               title: { type: 'string' },
               subtitle: { type: 'string' },
               category: { type: 'string' },
-              pearlType: { type: 'string' },
+              pearlType: {
+                type: 'string',
+                enum: ['WhiteAkoya', 'GreyAkoya', 'WhiteSouthSea', 'GoldenSouthSea', 'Tahitian'],
+              },
               shape: { type: 'string' },
               luster: { type: 'string' },
               overtone: { type: 'string' },

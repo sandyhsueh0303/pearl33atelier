@@ -16,8 +16,6 @@ const VALID_PEARL_TYPES = [
   'WhiteSouthSea',
   'GoldenSouthSea',
   'Tahitian',
-  'Freshwater',
-  'Other',
 ] as const
 
 const CATEGORY_MAP: Record<string, Database['public']['Enums']['product_category']> = {
@@ -84,11 +82,7 @@ async function getNextProductSku(supabase: any): Promise<string> {
   return formatSku(max + 1)
 }
 
-function normalizePearlType(value: string): string {
-  return VALID_PEARL_TYPES.includes(value as (typeof VALID_PEARL_TYPES)[number]) ? value : 'Other'
-}
-
-function resolvePearlType(value: string, context: string): string {
+function resolvePearlType(value: string, context: string): string | null {
   const raw = value.trim()
   if (VALID_PEARL_TYPES.includes(raw as (typeof VALID_PEARL_TYPES)[number])) {
     return raw
@@ -104,8 +98,7 @@ function resolvePearlType(value: string, context: string): string {
     return 'WhiteSouthSea'
   }
   if (normalized.includes('tahitian')) return 'Tahitian'
-  if (normalized.includes('freshwater')) return 'Freshwater'
-  return 'Other'
+  return null
 }
 
 function normalizeCategory(value: string | null | undefined) {
@@ -175,6 +168,15 @@ export async function POST(request: NextRequest) {
       String(body?.notes || ''),
     ].join(' ')
     const pearlType = resolvePearlType(String(draft.pearlType || '').trim(), context)
+    if (!pearlType) {
+      return NextResponse.json(
+        {
+          error:
+            'Pearl type must be one of WhiteAkoya, GreyAkoya, WhiteSouthSea, GoldenSouthSea, or Tahitian.',
+        },
+        { status: 400 }
+      )
+    }
     const category = normalizeCategory(draft.category)
     const shape = normalizeShape(draft.shape)
     const luster = normalizeLuster(draft.luster)

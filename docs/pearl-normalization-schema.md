@@ -68,8 +68,6 @@ This layer should:
 - `WhiteSouthSea`
 - `GoldenSouthSea`
 - `Tahitian`
-- `Freshwater`
-- `Other`
 
 ### Category
 

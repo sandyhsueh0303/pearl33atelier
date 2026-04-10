@@ -48,15 +48,11 @@ const VALID_PEARL_TYPES = new Set([
   'whiteakoya',
   'greyakoya',
   'grayakoya',
-  'akoya',
   'whitesouthsea',
   'white south sea',
   'goldensouthsea',
   'golden south sea',
   'tahitian',
-  'freshwater',
-  'other',
-  'mixed',
 ])
 
 const VALID_SHAPES = new Set([
@@ -85,6 +81,16 @@ function normalize(value: string | null | undefined) {
   return String(value || '')
     .trim()
     .toLowerCase()
+}
+
+function normalizePearlTypeForValidation(value: string | null | undefined) {
+  const readable = normalize(value).replace(/\bpearls?\b/g, '').replace(/\s+/g, ' ').trim()
+
+  if (readable === 'whiteakoya') return 'whiteakoya'
+  if (readable === 'greyakoya' || readable === 'grayakoya') return 'greyakoya'
+  if (readable === 'whitesouthsea') return 'whitesouthsea'
+  if (readable === 'goldensouthsea') return 'goldensouthsea'
+  return readable
 }
 
 function hasThreeNonEmptyItems(values: string[] | undefined) {
@@ -295,7 +301,7 @@ export function validateAiDraft(draft: AiDraft): DraftValidationResult {
     .join(' ')
     .toLowerCase()
   const category = normalize(draft.category)
-  const pearlType = normalize(draft.pearlType)
+  const pearlType = normalizePearlTypeForValidation(draft.pearlType)
   const shape = normalize(draft.shape)
   const luster = normalize(draft.luster)
   const overtone = String(draft.overtone || '').trim()
@@ -323,18 +329,12 @@ export function validateAiDraft(draft: AiDraft): DraftValidationResult {
   }
 
   if (!VALID_PEARL_TYPES.has(pearlType)) {
-    pushIssue(issues, 'warning', 'pearlType', 'Pearl type may not map cleanly into the current product form.')
-  } else if (pearlType === 'akoya') {
-    const hasColorCue = includesAny(combinedText, ['white akoya', 'grey akoya', 'gray akoya'])
-    if (!hasColorCue) {
-      pushIssue(
-        issues,
-        'warning',
-        'pearlType',
-        'Akoya usually needs a more specific form value such as WhiteAkoya or GreyAkoya.',
-        'consistency'
-      )
-    }
+    pushIssue(
+      issues,
+      'error',
+      'pearlType',
+      'Pearl type must be one of WhiteAkoya, GreyAkoya, WhiteSouthSea, GoldenSouthSea, or Tahitian.'
+    )
   }
 
   if (!VALID_SHAPES.has(shape)) {

@@ -83,7 +83,7 @@ export async function extractProductAttributesWithOpenAI(
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) return { extraction: null, error: 'OPENAI_API_KEY is missing on the server.' }
 
-  const model = process.env.OPENAI_MODEL || 'gpt-4.1-mini'
+  const model = process.env.OPENAI_MODEL || 'gpt-5.4-mini'
   const userContent: Array<Record<string, unknown>> = [
     {
       type: 'input_text',

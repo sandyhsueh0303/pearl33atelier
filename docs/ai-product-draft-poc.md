@@ -183,7 +183,9 @@ Because Missing Data Policy was cancelled, missing size or uncertain pearl type 
 
 ## Current Known Limitations
 
-- The normalization layer still maps unknown or unrecognized pearl type to `Other`.
+- AI draft generation currently restricts pearl type to `WhiteAkoya`, `GreyAkoya`, `WhiteSouthSea`, `GoldenSouthSea`, and `Tahitian`.
+- The regular product form and product APIs still support `Freshwater` and `Other` for manual editing outside the AI draft flow.
+- The normalization layer falls back to `WhiteAkoya` with a warning if no supported pearl type cue matches.
 - `field_actions` are visible in normalized JSON but are not connected to blocking validation or retry.
 - Created AI draft products do not automatically attach uploaded images yet.
 - SKU behavior remains the existing sequential `PA0001` style and was not changed in this POC.
@@ -230,7 +232,6 @@ passes with no TypeScript errors
 
 ## Next Decisions
 
-- Decide whether `Other` should be allowed as a temporary pearl type or treated as review-only.
 - Decide whether size should block draft creation or remain an editable post-draft field.
 - Decide whether uploaded AI draft images should be attached automatically after product creation.
 - Decide whether slug auto-update should apply to all edited products or only AI-created drafts.
