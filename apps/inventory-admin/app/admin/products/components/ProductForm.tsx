@@ -142,6 +142,8 @@ export default function ProductForm({ productId }: ProductFormProps) {
   const [skuManuallyEdited, setSkuManuallyEdited] = useState(false)
   const [slug, setSlug] = useState('')
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
+  const [loadedSlug, setLoadedSlug] = useState('')
+  const [loadedSlugSource, setLoadedSlugSource] = useState('')
   const [description, setDescription] = useState('')
   const [editorsPick, setEditorsPick] = useState(false)
   const [note, setNote] = useState('')
@@ -182,18 +184,27 @@ export default function ProductForm({ productId }: ProductFormProps) {
     return Array.from(new Set(selectedPearlTypes)).join(', ')
   }, [selectedPearlTypes])
 
-  const buildDefaultSlug = () => {
+  const buildDefaultSlugFromValues = (
+    nextPearlType: string,
+    nextSizeMm: string | null | undefined,
+    nextShape: string | null | undefined,
+    nextMaterial: string | null | undefined,
+    nextCategory: string | null | undefined
+  ) => {
     const parts = [
-      pearlTypeValueToSlugPart(pearlTypeValue),
-      sizeMm.trim(),
-      shape.trim(),
-      materialValueToSlugPart(materialValue),
-      category,
+      pearlTypeValueToSlugPart(nextPearlType),
+      String(nextSizeMm || '').trim(),
+      String(nextShape || '').trim(),
+      materialValueToSlugPart(String(nextMaterial || '')),
+      nextCategory,
     ]
       .map((value) => String(value || '').trim())
       .filter(Boolean)
     return slugify(parts.join('-'))
   }
+
+  const buildDefaultSlug = () =>
+    buildDefaultSlugFromValues(pearlTypeValue, sizeMm, shape, materialValue, category)
 
   const togglePearlType = (option: string) => {
     setSelectedPearlTypes((prev) =>
@@ -218,12 +229,25 @@ export default function ProductForm({ productId }: ProductFormProps) {
     setSku(value.toUpperCase())
   }
 
-  // Auto-generate slug from pearl_type, size_mm, shape, material, category for new products
+  // Auto-generate slug from pearl_type, size_mm, shape, material, category until manually edited.
   useEffect(() => {
-    if (isEditMode || slugManuallyEdited) return
     const nextSlug = buildDefaultSlug()
+    if (slugManuallyEdited) return
+    if (isEditMode && !loadedSlugSource) return
+    if (isEditMode && slug === loadedSlug && nextSlug === loadedSlugSource) return
     setSlug(nextSlug)
-  }, [isEditMode, slugManuallyEdited, pearlTypeValue, sizeMm, shape, materialValue, category])
+  }, [
+    isEditMode,
+    slug,
+    loadedSlug,
+    loadedSlugSource,
+    slugManuallyEdited,
+    pearlTypeValue,
+    sizeMm,
+    shape,
+    materialValue,
+    category,
+  ])
 
   // Load product data if editing
   useEffect(() => {
@@ -264,7 +288,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
       setSku(product.sku || '')
       setSkuManuallyEdited(true)
       setSlug(product.slug)
-      setSlugManuallyEdited(true)
+      setLoadedSlug(product.slug)
       setDescription(product.description || '')
       setEditorsPick(product.editors_pick || false)
       setNote(product.note || '')
@@ -306,6 +330,16 @@ export default function ProductForm({ productId }: ProductFormProps) {
       })
       setSelectedMaterials(Array.from(new Set(matched)))
       setCustomMaterials(unmatched.join(', '))
+      setLoadedSlugSource(
+        buildDefaultSlugFromValues(
+          product.pearl_type,
+          product.size_mm,
+          product.shape,
+          product.material,
+          product.category
+        )
+      )
+      setSlugManuallyEdited(false)
       setSellPrice(product.sell_price?.toString() || '')
       setOriginalPrice(product.original_price?.toString() || '')
       setAvailability(product.availability === 'PREORDER' ? 'PREORDER' : 'IN_STOCK')
@@ -721,8 +755,8 @@ export default function ProductForm({ productId }: ProductFormProps) {
             />
             <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
               {isEditMode
-                ? 'Editable. URL will update after saving.'
-                : 'Auto-generated from title, but editable manually'}
+                ? 'Auto-updates when product details change until you edit it manually. URL will update after saving.'
+                : 'Auto-generated from product details, but editable manually'}
             </small>
           </div>
 

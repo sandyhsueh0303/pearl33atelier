@@ -1,6 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import { validateAiDraft, type AiDraft } from './validation'
+import {
+  extractProductAttributesWithOpenAI,
+  summarizeExtraction,
+  type ExtractedProductAttributes,
+} from './extraction'
+import {
+  normalizeExtractedProductAttributes,
+  summarizeNormalization,
+  type NormalizedProductAttributes,
+} from './normalization'
+import {
+  enrichNormalizedProductAttributes,
+  summarizeEnrichment,
+  type EnrichedProductAttributes,
+} from './enrichment'
 
 type AiDraftRequest = {
   fileNames?: string[]
@@ -167,7 +182,12 @@ function inferDraftFromText(source: string): AiDraftResponse['draft'] {
   }
 }
 
-async function generateDraftWithOpenAI(input: AiDraftRequest): Promise<OpenAIDraftResult> {
+async function generateDraftWithOpenAI(
+  input: AiDraftRequest,
+  extraction?: ExtractedProductAttributes | null,
+  normalized?: NormalizedProductAttributes | null,
+  enriched?: EnrichedProductAttributes | null
+): Promise<OpenAIDraftResult> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) return { draft: null, error: 'OPENAI_API_KEY is missing on the server.' }
   const model = process.env.OPENAI_MODEL || 'gpt-4.1-mini'
@@ -175,19 +195,48 @@ async function generateDraftWithOpenAI(input: AiDraftRequest): Promise<OpenAIDra
   const userContent: Array<Record<string, unknown>> = [
     {
       type: 'input_text',
-      text: [
-        'Review these product photos and generate a first-pass pearl jewelry draft.',
-        input.notes ? `Admin notes: ${input.notes}` : '',
-        ...(input.fileNames || []).map((name) => `Image filename: ${name}`),
-      ]
-        .filter(Boolean)
-        .join('\n'),
+      text: enriched
+        ? [
+            'Use this enriched product data as the source of truth for copy generation.',
+            summarizeEnrichment(enriched),
+            input.notes ? `Admin notes: ${input.notes}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n')
+        : normalized
+        ? [
+            'Use this normalized product data as the source of truth for copy generation.',
+            summarizeNormalization(normalized),
+            input.notes ? `Admin notes: ${input.notes}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n')
+        : extraction
+        ? [
+            'Use this structured product extraction as the source of truth for copy generation.',
+            summarizeExtraction(extraction),
+            input.notes ? `Admin notes: ${input.notes}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n')
+        : [
+            'Review these product photos and generate a first-pass pearl jewelry draft.',
+            input.notes ? `Admin notes: ${input.notes}` : '',
+            ...(input.fileNames || []).map((name) => `Image filename: ${name}`),
+          ]
+            .filter(Boolean)
+            .join('\n'),
     },
-    ...((input.imageDataUrls || []).map((url) => ({
-      type: 'input_image',
-      image_url: url,
-    })) as Array<Record<string, unknown>>),
   ]
+
+  if (!extraction && !normalized && !enriched) {
+    userContent.push(
+      ...((input.imageDataUrls || []).map((url) => ({
+        type: 'input_image',
+        image_url: url,
+      })) as Array<Record<string, unknown>>)
+    )
+  }
 
   if (userContent.length === 0) {
     userContent.push({
@@ -267,7 +316,7 @@ STYLE RULES
 - No exclamation marks
 
 IMPORTANT
-- Infer likely category, pearl type, shape, luster, and overtone from the images and notes when possible
+- Use the structured product attributes when provided. Infer from images only if structured attributes are not available.
 - Do not invent certifications, pricing, rarity claims, or unsupported material details
 - If uncertain, stay general rather than making strong factual claims
 - Return JSON only`,
@@ -374,17 +423,69 @@ export async function POST(request: NextRequest) {
       : []
     const notes = String(body.notes || '').trim()
 
-    const openAIResult = await generateDraftWithOpenAI({ fileNames, imageDataUrls, notes })
+    const extractionResult = imageDataUrls.length
+      ? await extractProductAttributesWithOpenAI({ fileNames, imageDataUrls, notes })
+      : { extraction: null as ExtractedProductAttributes | null, error: 'No images provided for extraction.' }
+
+    const normalized = extractionResult.extraction
+      ? normalizeExtractedProductAttributes(extractionResult.extraction)
+      : null
+    const enriched = normalized ? enrichNormalizedProductAttributes(normalized) : null
+
+    const openAIResult = await generateDraftWithOpenAI(
+      { fileNames, imageDataUrls, notes },
+      extractionResult.extraction,
+      normalized,
+      enriched
+    )
     const aiDraft = openAIResult.draft
-    const fallbackSource = [notes, ...fileNames].filter(Boolean).join(' ')
+    const fallbackSource = [
+      notes,
+      ...fileNames,
+      extractionResult.extraction ? summarizeExtraction(extractionResult.extraction) : '',
+    ]
+      .filter(Boolean)
+      .join(' ')
     const draft = aiDraft || (fallbackSource ? inferDraftFromText(fallbackSource) : DEFAULT_DRAFT)
     const validation = validateAiDraft(draft)
+    const pipelineDebug = {
+      extraction: extractionResult.extraction
+        ? { ok: true, message: 'Extraction completed.' }
+        : { ok: false, message: extractionResult.error || 'Extraction did not return data.' },
+      normalization: normalized
+        ? { ok: true, message: 'Normalization completed.' }
+        : {
+            ok: false,
+            message: extractionResult.extraction
+              ? 'Normalization did not return data.'
+              : 'Skipped because extraction did not return data.',
+          },
+      enrichment: enriched
+        ? { ok: true, message: 'Enrichment completed.' }
+        : {
+            ok: false,
+            message: normalized
+              ? 'Enrichment did not return data.'
+              : 'Skipped because normalization did not return data.',
+          },
+      generation: aiDraft
+        ? { ok: true, message: 'Draft generation completed.' }
+        : { ok: false, message: openAIResult.error || 'Draft generation did not return data.' },
+    }
 
     return NextResponse.json({
       draft,
+      extraction: extractionResult.extraction,
+      normalized,
+      enriched,
       validation,
+      pipelineDebug,
       source: aiDraft ? 'openai' : 'fallback',
-      debug: aiDraft ? null : openAIResult.error || 'OpenAI returned no usable draft.',
+      debug: aiDraft
+        ? extractionResult.extraction
+          ? null
+          : extractionResult.error || null
+        : openAIResult.error || extractionResult.error || 'OpenAI returned no usable draft.',
     })
   } catch (error) {
     return NextResponse.json(

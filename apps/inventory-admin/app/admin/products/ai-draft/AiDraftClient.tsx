@@ -28,6 +28,9 @@ type DraftValidation = {
   canCreateDraft: boolean
 }
 
+type PipelineArtifact = Record<string, unknown>
+type PipelineDebug = Record<string, { ok: boolean; message: string }>
+
 async function fileToDataUrl(file: File): Promise<string> {
   return await new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -46,6 +49,10 @@ export default function AiDraftClient() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isCreatingDraft, setIsCreatingDraft] = useState(false)
   const [draftPreview, setDraftPreview] = useState<DraftPreview | null>(null)
+  const [extraction, setExtraction] = useState<PipelineArtifact | null>(null)
+  const [normalized, setNormalized] = useState<PipelineArtifact | null>(null)
+  const [enriched, setEnriched] = useState<PipelineArtifact | null>(null)
+  const [pipelineDebug, setPipelineDebug] = useState<PipelineDebug | null>(null)
   const [draftValidation, setDraftValidation] = useState<DraftValidation | null>(null)
   const [draftSource, setDraftSource] = useState<'openai' | 'fallback' | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -79,6 +86,10 @@ export default function AiDraftClient() {
     setError(null)
     setDebugMessage(null)
     setDraftValidation(null)
+    setExtraction(null)
+    setNormalized(null)
+    setEnriched(null)
+    setPipelineDebug(null)
 
     try {
       const imageDataUrls = await Promise.all(files.map((file) => fileToDataUrl(file)))
@@ -99,6 +110,10 @@ export default function AiDraftClient() {
       }
 
       setDraftPreview(data.draft)
+      setExtraction(data.extraction || null)
+      setNormalized(data.normalized || null)
+      setEnriched(data.enriched || null)
+      setPipelineDebug(data.pipelineDebug || null)
       setDraftValidation(data.validation || null)
       setDraftSource(data.source === 'openai' ? 'openai' : 'fallback')
       setDebugMessage(data.debug || null)
@@ -286,6 +301,27 @@ export default function AiDraftClient() {
 
           {draftPreview ? (
             <div className="admin-ai-draft-preview-layout">
+              <div className="admin-ai-pipeline-grid">
+                <PipelineDebugCard
+                  title="Extraction"
+                  subtitle="Image -> raw product attributes"
+                  data={extraction}
+                  debug={pipelineDebug?.extraction || null}
+                />
+                <PipelineDebugCard
+                  title="Normalization"
+                  subtitle="Raw attributes -> canonical values"
+                  data={normalized}
+                  debug={pipelineDebug?.normalization || null}
+                />
+                <PipelineDebugCard
+                  title="Enrichment"
+                  subtitle="Canonical values -> domain intelligence"
+                  data={enriched}
+                  debug={pipelineDebug?.enrichment || null}
+                />
+              </div>
+
               {draftValidation ? (
                 <div className="admin-ai-draft-validation-card">
                   <div className="admin-ai-draft-validation-header">
@@ -420,5 +456,38 @@ export default function AiDraftClient() {
         </section>
       </div>
     </main>
+  )
+}
+
+function PipelineDebugCard({
+  title,
+  subtitle,
+  data,
+  debug,
+}: {
+  title: string
+  subtitle: string
+  data: PipelineArtifact | null
+  debug: { ok: boolean; message: string } | null
+}) {
+  return (
+    <details className="admin-ai-pipeline-card">
+      <summary className="admin-ai-pipeline-summary">
+        <span>
+          <strong>{title}</strong>
+          <small>{subtitle}</small>
+        </span>
+        <span className={`admin-ai-pipeline-status ${data ? 'admin-ai-pipeline-status-ready' : ''}`}>
+          {data ? 'Ready' : 'Not available'}
+        </span>
+      </summary>
+      {data ? (
+        <pre className="admin-ai-pipeline-json">{JSON.stringify(data, null, 2)}</pre>
+      ) : (
+        <div className="admin-ai-draft-helper">
+          {debug?.message || 'This stage did not return data. Check fallback reason or regenerate with clearer photos.'}
+        </div>
+      )}
+    </details>
   )
 }

@@ -91,12 +91,21 @@ function hasThreeNonEmptyItems(values: string[] | undefined) {
   return (values || []).filter((value) => String(value || '').trim()).length === 3
 }
 
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function includesPhrase(text: string, value: string) {
+  const pattern = new RegExp(`(^|[^a-z0-9])${escapeRegex(value)}($|[^a-z0-9])`, 'i')
+  return pattern.test(text)
+}
+
 function includesAny(text: string, values: string[]) {
-  return values.some((value) => text.includes(value))
+  return values.some((value) => includesPhrase(text, value))
 }
 
 function findFirstMatch(text: string, values: string[]) {
-  return values.find((value) => text.includes(value)) || null
+  return values.find((value) => includesPhrase(text, value)) || null
 }
 
 function getPearlTypeSignals(value: string) {

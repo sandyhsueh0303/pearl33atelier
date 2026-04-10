@@ -266,6 +266,68 @@
   line-height: 1.5;
 }
 
+.admin-ai-pipeline-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-ai-pipeline-card {
+  border: 1px solid #ece7dd;
+  border-radius: 12px;
+  background: #fffdf8;
+  overflow: hidden;
+}
+
+.admin-ai-pipeline-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  color: #1f2937;
+}
+
+.admin-ai-pipeline-summary span:first-child {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.admin-ai-pipeline-summary small {
+  color: #6b7280;
+  line-height: 1.45;
+}
+
+.admin-ai-pipeline-status {
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+
+.admin-ai-pipeline-status-ready {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.admin-ai-pipeline-json {
+  margin: 0;
+  padding: 0.9rem 1rem 1rem;
+  border-top: 1px solid #ece7dd;
+  background: #fcfbf8;
+  color: #374151;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
 .admin-ai-draft-validation-card {
   border: 1px solid #ece7dd;
   border-radius: 12px;
