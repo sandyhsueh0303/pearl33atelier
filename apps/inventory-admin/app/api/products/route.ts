@@ -73,6 +73,11 @@ function normalizeSku(value: unknown): string | null {
   return sku
 }
 
+function normalizeSeoValue(value: unknown): string | null {
+  const normalized = String(value ?? '').trim()
+  return normalized || null
+}
+
 function buildDefaultSlugFromFields(body: any, normalizedSize: string | null): string {
   const parts = [
     pearlTypeValueToSlugPart(String(body?.pearl_type || '')),
@@ -355,6 +360,10 @@ export async function POST(request: NextRequest) {
       sku: normalizedSku,
       note: body.note ?? null,
       description: body.description ?? null,
+      seo_title: normalizeSeoValue(body.seo_title),
+      seo_description: normalizeSeoValue(body.seo_description),
+      seo_keywords: normalizeSeoValue(body.seo_keywords),
+      og_image_alt: normalizeSeoValue(body.og_image_alt),
       editors_pick: Boolean(body.editors_pick),
       pearl_type: normalizedPearlType,
       category: body.category ?? null,

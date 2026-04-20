@@ -41,12 +41,16 @@ export type Database = {
           luster: string | null
           material: string | null
           note: string | null
+          og_image_alt: string | null
           original_price: number | null
           overtone: string | null
           pearl_type: string
           preorder_note: string | null
           published: boolean
           published_at: string | null
+          seo_description: string | null
+          seo_keywords: string | null
+          seo_title: string | null
           sell_price: number | null
           shape: string | null
           size_mm: string | null
@@ -66,12 +70,16 @@ export type Database = {
           luster?: string | null
           material?: string | null
           note?: string | null
+          og_image_alt?: string | null
           original_price?: number | null
           overtone?: string | null
           pearl_type: string
           preorder_note?: string | null
           published?: boolean
           published_at?: string | null
+          seo_description?: string | null
+          seo_keywords?: string | null
+          seo_title?: string | null
           sell_price?: number | null
           shape?: string | null
           size_mm?: string | null
@@ -91,12 +99,16 @@ export type Database = {
           luster?: string | null
           material?: string | null
           note?: string | null
+          og_image_alt?: string | null
           original_price?: number | null
           overtone?: string | null
           pearl_type?: string
           preorder_note?: string | null
           published?: boolean
           published_at?: string | null
+          seo_description?: string | null
+          seo_keywords?: string | null
+          seo_title?: string | null
           sell_price?: number | null
           shape?: string | null
           size_mm?: string | null

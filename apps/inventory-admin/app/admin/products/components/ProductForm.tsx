@@ -145,6 +145,11 @@ export default function ProductForm({ productId }: ProductFormProps) {
   const [loadedSlug, setLoadedSlug] = useState('')
   const [loadedSlugSource, setLoadedSlugSource] = useState('')
   const [description, setDescription] = useState('')
+  const [seoTitle, setSeoTitle] = useState('')
+  const [seoDescription, setSeoDescription] = useState('')
+  const [seoKeywords, setSeoKeywords] = useState('')
+  const [ogImageAlt, setOgImageAlt] = useState('')
+  const [generatingSeo, setGeneratingSeo] = useState(false)
   const [editorsPick, setEditorsPick] = useState(false)
   const [note, setNote] = useState('')
   const [selectedPearlTypes, setSelectedPearlTypes] = useState<string[]>(['WhiteAkoya'])
@@ -290,6 +295,10 @@ export default function ProductForm({ productId }: ProductFormProps) {
       setSlug(product.slug)
       setLoadedSlug(product.slug)
       setDescription(product.description || '')
+      setSeoTitle(product.seo_title || '')
+      setSeoDescription(product.seo_description || '')
+      setSeoKeywords(product.seo_keywords || '')
+      setOgImageAlt(product.og_image_alt || '')
       setEditorsPick(product.editors_pick || false)
       setNote(product.note || '')
       setSelectedPearlTypes(
@@ -370,6 +379,10 @@ export default function ProductForm({ productId }: ProductFormProps) {
         title,
         sku: sku.trim() || null,
         description: description || null,
+        seo_title: seoTitle || null,
+        seo_description: seoDescription || null,
+        seo_keywords: seoKeywords || null,
+        og_image_alt: ogImageAlt || null,
         editors_pick: editorsPick,
         note: note || null,
         pearl_type: selectedPearlTypes,
@@ -419,6 +432,47 @@ export default function ProductForm({ productId }: ProductFormProps) {
       setError(e instanceof Error ? e.message : 'Failed to save product')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleGenerateSeo = async () => {
+    if (!currentProductId) return
+
+    setGeneratingSeo(true)
+    setError(null)
+
+    try {
+      const response = await fetch(`/api/products/${currentProductId}/seo`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          description: description || null,
+          pearl_type: pearlTypeValue || null,
+          category: category || null,
+          size_mm: sizeMm.trim() || null,
+          shape: shape || null,
+          luster: luster || null,
+          overtone: overtoneValue || null,
+          material: materialValue || null,
+          availability,
+          sell_price: sellPrice ? parseFloat(sellPrice) : null,
+        }),
+      })
+
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate SEO')
+      }
+
+      setSeoTitle(data.seo?.seo_title || '')
+      setSeoDescription(data.seo?.seo_description || '')
+      setSeoKeywords(data.seo?.seo_keywords || '')
+      setOgImageAlt(data.seo?.og_image_alt || '')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to generate SEO')
+    } finally {
+      setGeneratingSeo(false)
     }
   }
 
@@ -1153,6 +1207,140 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 resize: 'vertical'
               }}
             />
+          </div>
+
+          <div className="admin-product-form-full">
+            <div
+              style={{
+                border: '1px solid #e5dccf',
+                borderRadius: '8px',
+                padding: '1rem',
+                backgroundColor: '#fffaf5',
+              }}
+            >
+              <div style={{ fontWeight: 'bold', marginBottom: '0.35rem' }}>SEO</div>
+              <div style={{ color: '#666', fontSize: '0.9rem', lineHeight: 1.5, marginBottom: '1rem' }}>
+                These fields power the product page metadata used by search engines and social sharing.
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1rem' }}>
+                <button
+                  type="button"
+                  onClick={handleGenerateSeo}
+                  disabled={!isEditMode || !currentProductId || generatingSeo || !title.trim()}
+                  style={{
+                    padding: '0.65rem 1rem',
+                    backgroundColor:
+                      !isEditMode || !currentProductId || generatingSeo || !title.trim()
+                        ? '#d6d3d1'
+                        : '#7c5c2b',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    fontWeight: 'bold',
+                    cursor:
+                      !isEditMode || !currentProductId || generatingSeo || !title.trim()
+                        ? 'not-allowed'
+                        : 'pointer',
+                  }}
+                >
+                  {generatingSeo ? 'Generating SEO...' : 'Generate SEO for this product'}
+                </button>
+                <small style={{ color: '#666' }}>
+                  Uses current form values and the product&apos;s existing images. Review before saving.
+                </small>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                    SEO Title
+                  </label>
+                  <input
+                    type="text"
+                    value={seoTitle}
+                    onChange={(e) => setSeoTitle(e.target.value)}
+                    placeholder="e.g. White South Sea Pearl Necklace | 33 Pearl Atelier"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      fontSize: '1rem',
+                    }}
+                  />
+                  <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+                    Recommended length: about 50-65 characters. Current: {seoTitle.trim().length}
+                  </small>
+                </div>
+
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                    SEO Description
+                  </label>
+                  <textarea
+                    value={seoDescription}
+                    onChange={(e) => setSeoDescription(e.target.value)}
+                    rows={3}
+                    placeholder="Short search result description for this product"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      fontSize: '1rem',
+                      fontFamily: 'inherit',
+                      resize: 'vertical',
+                    }}
+                  />
+                  <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+                    Recommended length: about 120-160 characters. Current: {seoDescription.trim().length}
+                  </small>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                    SEO Keywords
+                  </label>
+                  <textarea
+                    value={seoKeywords}
+                    onChange={(e) => setSeoKeywords(e.target.value)}
+                    rows={3}
+                    placeholder="Comma-separated keywords"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      fontSize: '1rem',
+                      fontFamily: 'inherit',
+                      resize: 'vertical',
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                    OG Image Alt Text
+                  </label>
+                  <textarea
+                    value={ogImageAlt}
+                    onChange={(e) => setOgImageAlt(e.target.value)}
+                    rows={3}
+                    placeholder="Describe the main product image for social sharing"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      fontSize: '1rem',
+                      fontFamily: 'inherit',
+                      resize: 'vertical',
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="admin-product-form-full">

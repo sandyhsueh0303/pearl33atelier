@@ -60,6 +60,11 @@ function normalizeSku(value: unknown): string | null {
   return sku
 }
 
+function normalizeSeoValue(value: unknown): string | null {
+  const normalized = String(value ?? '').trim()
+  return normalized || null
+}
+
 function splitPearlTypes(value: unknown): string[] {
   if (Array.isArray(value)) {
     return value
@@ -191,6 +196,10 @@ export async function PATCH(
     }
     if ('category' in body) updates.category = body.category ?? null
     if ('description' in body) updates.description = body.description ?? null
+    if ('seo_title' in body) updates.seo_title = normalizeSeoValue(body.seo_title)
+    if ('seo_description' in body) updates.seo_description = normalizeSeoValue(body.seo_description)
+    if ('seo_keywords' in body) updates.seo_keywords = normalizeSeoValue(body.seo_keywords)
+    if ('og_image_alt' in body) updates.og_image_alt = normalizeSeoValue(body.og_image_alt)
     if ('editors_pick' in body) updates.editors_pick = Boolean(body.editors_pick)
     if ('note' in body) updates.note = body.note ?? null
     if ('size_mm' in body) updates.size_mm = normalizedSize

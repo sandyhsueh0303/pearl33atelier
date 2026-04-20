@@ -9,6 +9,10 @@ export type AiDraft = {
   why_youll_love_it?: string[]
   perfect_for?: string[]
   description: string
+  seoTitle: string
+  seoDescription: string
+  seoKeywords?: string[]
+  ogImageAlt: string
 }
 
 export type DraftValidationIssue = {
@@ -95,6 +99,10 @@ function normalizePearlTypeForValidation(value: string | null | undefined) {
 
 function hasThreeNonEmptyItems(values: string[] | undefined) {
   return (values || []).filter((value) => String(value || '').trim()).length === 3
+}
+
+function hasAtLeastThreeNonEmptyItems(values: string[] | undefined) {
+  return (values || []).filter((value) => String(value || '').trim()).length >= 3
 }
 
 function escapeRegex(value: string) {
@@ -306,6 +314,10 @@ export function validateAiDraft(draft: AiDraft): DraftValidationResult {
   const luster = normalize(draft.luster)
   const overtone = String(draft.overtone || '').trim()
   const description = String(draft.description || '').trim()
+  const seoTitle = String(draft.seoTitle || '').trim()
+  const seoDescription = String(draft.seoDescription || '').trim()
+  const seoKeywords = (draft.seoKeywords || []).map((value) => String(value || '').trim()).filter(Boolean)
+  const ogImageAlt = String(draft.ogImageAlt || '').trim()
 
   if (!title) {
     pushIssue(issues, 'error', 'title', 'Title is required.')
@@ -379,6 +391,38 @@ export function validateAiDraft(draft: AiDraft): DraftValidationResult {
         'The draft does not explicitly mention pearl, which may make the copy feel too generic.'
       )
     }
+  }
+
+  if (!seoTitle) {
+    pushIssue(issues, 'error', 'seoTitle', 'SEO title is required.')
+  } else {
+    if (seoTitle.length < 30) {
+      pushIssue(issues, 'warning', 'seoTitle', 'SEO title looks short. Aim for a clearer search result title.')
+    }
+    if (seoTitle.length > 70) {
+      pushIssue(issues, 'warning', 'seoTitle', 'SEO title is long and may be truncated in search results.')
+    }
+  }
+
+  if (!seoDescription) {
+    pushIssue(issues, 'error', 'seoDescription', 'SEO description is required.')
+  } else {
+    if (seoDescription.length < 110) {
+      pushIssue(issues, 'warning', 'seoDescription', 'SEO description looks short. Aim for roughly 120-160 characters.')
+    }
+    if (seoDescription.length > 170) {
+      pushIssue(issues, 'warning', 'seoDescription', 'SEO description is long and may be truncated in search results.')
+    }
+  }
+
+  if (!hasAtLeastThreeNonEmptyItems(draft.seoKeywords)) {
+    pushIssue(issues, 'warning', 'seoKeywords', 'Add at least 3 SEO keywords to improve targeting coverage.')
+  }
+
+  if (!ogImageAlt) {
+    pushIssue(issues, 'error', 'ogImageAlt', 'Open Graph image alt text is required.')
+  } else if (ogImageAlt.length < 20) {
+    pushIssue(issues, 'warning', 'ogImageAlt', 'Open Graph image alt text looks short. Add more descriptive detail.')
   }
 
   runConsistencyChecks(draft, issues)

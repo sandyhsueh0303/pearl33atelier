@@ -131,6 +131,17 @@ function buildProductDescription(product: CatalogProduct) {
   return `${product.title} by 33 Pearl Atelier${parts.length ? ` - ${parts.join(', ')}` : ''}. ${availabilityText}`.slice(0, 160)
 }
 
+function buildProductTitle(product: CatalogProduct) {
+  return product.size_mm ? `${product.title} ${product.size_mm}mm` : product.title
+}
+
+function parseSeoKeywords(value: string | null | undefined) {
+  return String(value || '')
+    .split(/[,;\n]+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
 function getCategoryName(category: string | null | undefined): string {
   const names: Record<string, string> = {
     NECKLACES: 'Necklace',
@@ -171,24 +182,30 @@ export async function generateMetadata({
   const { product, images } = result
   const effectiveAvailability = resolveProductAvailability(product.availability, result.inventorySummary)
   const productWithEffectiveAvailability = { ...product, availability: effectiveAvailability }
-  const description = buildProductDescription(productWithEffectiveAvailability)
+  const fallbackTitle = buildProductTitle(product)
+  const title = product.seo_title?.trim() || fallbackTitle
+  const description =
+    product.seo_description?.trim() || buildProductDescription(productWithEffectiveAvailability)
   const primaryImage = images.find((img) => img.is_primary) || images[0]
   const imageUrl = primaryImage ? getProductImageUrl(primaryImage.storage_path) : DEFAULT_IMAGE_URL
   const productUrl = `${SITE_URL}/products/${slug}`
-  const title = product.size_mm ? `${product.title} ${product.size_mm}mm` : product.title
+  const keywords = parseSeoKeywords(product.seo_keywords)
 
   return {
     title,
     description,
-    keywords: [
-      product.title,
-      product.pearl_type || '',
-      getCategoryName(product.category),
-      product.material || '',
-      'pearl jewelry',
-      'fine jewelry',
-      '33 Pearl Atelier',
-    ].filter(Boolean),
+    keywords:
+      keywords.length > 0
+        ? keywords
+        : [
+            product.title,
+            product.pearl_type || '',
+            getCategoryName(product.category),
+            product.material || '',
+            'pearl jewelry',
+            'fine jewelry',
+            '33 Pearl Atelier',
+          ].filter(Boolean),
     alternates: {
       canonical: productUrl,
     },
@@ -204,7 +221,7 @@ export async function generateMetadata({
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: title,
+          alt: product.og_image_alt?.trim() || fallbackTitle,
         },
       ],
     },

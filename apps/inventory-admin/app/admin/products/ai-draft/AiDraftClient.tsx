@@ -13,6 +13,10 @@ type DraftPreview = {
   luster: string
   overtone: string
   description: string
+  seoTitle: string
+  seoDescription: string
+  seoKeywords?: string[]
+  ogImageAlt: string
 }
 
 type DraftValidationIssue = {
@@ -425,6 +429,35 @@ export default function AiDraftClient() {
               <div className="admin-ai-draft-description-card">
                 <div className="admin-ai-draft-label">Generated Description</div>
                 <pre className="admin-ai-draft-description">{draftPreview.description}</pre>
+              </div>
+
+              <div className="admin-ai-draft-description-card">
+                <div className="admin-ai-draft-label">SEO</div>
+                <div
+                  style={{
+                    display: 'grid',
+                    gap: '0.85rem',
+                    color: '#5a4630',
+                    lineHeight: 1.6,
+                  }}
+                >
+                  <div>
+                    <strong>SEO Title</strong>
+                    <div>{draftPreview.seoTitle}</div>
+                  </div>
+                  <div>
+                    <strong>SEO Description</strong>
+                    <div>{draftPreview.seoDescription}</div>
+                  </div>
+                  <div>
+                    <strong>SEO Keywords</strong>
+                    <div>{(draftPreview.seoKeywords || []).join(', ') || 'None'}</div>
+                  </div>
+                  <div>
+                    <strong>OG Image Alt</strong>
+                    <div>{draftPreview.ogImageAlt}</div>
+                  </div>
+                </div>
               </div>
 
               <div className="admin-ai-draft-actions">

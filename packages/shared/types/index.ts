@@ -94,6 +94,10 @@ export interface CatalogProduct {
   luster: string | null
   overtone: string | null
   material: string | null
+  seo_title: string | null
+  seo_description: string | null
+  seo_keywords: string | null
+  og_image_alt: string | null
   sell_price: number | null // numeric(12,2), >= 0
   original_price: number | null // numeric(12,2), >= 0
   category: ProductCategory | null

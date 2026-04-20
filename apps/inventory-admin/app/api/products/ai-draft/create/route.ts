@@ -126,6 +126,26 @@ function normalizeOvertone(value: string | null | undefined) {
     .replace(/\s+/g, ' ')
 }
 
+function normalizeSeoText(value: string | null | undefined) {
+  const normalized = String(value || '').trim()
+  return normalized || null
+}
+
+function normalizeSeoKeywords(value: string[] | string | null | undefined) {
+  if (Array.isArray(value)) {
+    const normalized = value
+      .map((item) => String(item || '').trim())
+      .filter(Boolean)
+    return normalized.length > 0 ? normalized.join(', ') : null
+  }
+
+  const normalized = String(value || '')
+    .split(/[,;\n]+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+  return normalized.length > 0 ? normalized.join(', ') : null
+}
+
 function extractSizeMm(subtitle: string | null | undefined, description: string | null | undefined) {
   const source = `${subtitle || ''} ${description || ''}`
   const match = source.match(/(\d+(?:\.\d+)?(?:\s*-\s*\d+(?:\.\d+)?)?)\s*mm\b/i)
@@ -197,6 +217,10 @@ export async function POST(request: NextRequest) {
       shape,
       luster,
       overtone,
+      seo_title: normalizeSeoText(draft.seoTitle),
+      seo_description: normalizeSeoText(draft.seoDescription),
+      seo_keywords: normalizeSeoKeywords(draft.seoKeywords),
+      og_image_alt: normalizeSeoText(draft.ogImageAlt),
       material: null,
       sell_price: null,
       original_price: null,

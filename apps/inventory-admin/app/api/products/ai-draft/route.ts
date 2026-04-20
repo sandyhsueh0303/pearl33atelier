@@ -16,6 +16,14 @@ import {
   summarizeEnrichment,
   type EnrichedProductAttributes,
 } from './enrichment'
+import { extractOutputText } from '../openaiOutput'
+import {
+  buildOgImageAlt,
+  buildSeoDescription,
+  buildSeoKeywords,
+  buildSeoTitle,
+  normalizeSeoTitle,
+} from '../seoHelpers'
 
 type AiDraftRequest = {
   fileNames?: string[]
@@ -29,38 +37,6 @@ type OpenAIDraftResult =
   | { draft: AiDraftResponse['draft']; error?: undefined }
   | { draft: null; error: string }
 
-function extractOutputText(data: any): string | null {
-  if (typeof data?.output_text === 'string' && data.output_text.trim()) {
-    return data.output_text.trim()
-  }
-
-  const outputItems = Array.isArray(data?.output) ? data.output : []
-
-  for (const item of outputItems) {
-    const contents = Array.isArray(item?.content) ? item.content : []
-
-    for (const content of contents) {
-      if (typeof content?.text === 'string' && content.text.trim()) {
-        return content.text.trim()
-      }
-
-      if (typeof content?.output_text === 'string' && content.output_text.trim()) {
-        return content.output_text.trim()
-      }
-
-      if (typeof content?.value === 'string' && content.value.trim()) {
-        return content.value.trim()
-      }
-
-      if (typeof content?.json === 'string' && content.json.trim()) {
-        return content.json.trim()
-      }
-    }
-  }
-
-  return null
-}
-
 const DEFAULT_DRAFT: AiDraftResponse['draft'] = {
   title: 'White South Sea Pearl Necklace',
   subtitle: 'White South Sea | 10-11mm | Luster: high | overtone: silver-blue',
@@ -71,6 +47,16 @@ const DEFAULT_DRAFT: AiDraftResponse['draft'] = {
   overtone: 'silver-blue',
   description:
     'WHY YOU’LL LOVE IT\n• A luminous pearl presence that feels polished without feeling formal\n• Refined proportions designed for everyday elegance\n• Easy to wear on its own or layered with fine pieces\n\nPERFECT FOR\n• Daily wear\n• A soft, elevated look\n• Gifting and special occasions',
+  seoTitle: 'White South Sea Pearl Necklace | 33 Pearl Atelier',
+  seoDescription:
+    'White South Sea pearl necklace with high luster and a silver-blue overtone. Discover refined pearl jewelry for modern, everyday elegance.',
+  seoKeywords: [
+    'White South Sea pearl necklace',
+    'South Sea pearl jewelry',
+    'silver-blue overtone pearls',
+    '33 Pearl Atelier',
+  ],
+  ogImageAlt: 'White South Sea pearl necklace with high luster and a silver-blue overtone',
 }
 
 function toTitleCase(value: string) {
@@ -154,6 +140,14 @@ function inferDraftFromText(source: string): AiDraftResponse['draft'] {
     hintedTitle && hintedTitle.length > 5
       ? toTitleCase(hintedTitle)
       : `${readablePearlType} Pearl ${category.slice(0, -1)}`
+  const seoTitle = buildSeoTitle(title, category, readablePearlType, '10-11')
+  const seoDescription = buildSeoDescription(
+    title,
+    readablePearlType,
+    category,
+    overtone,
+    luster
+  )
 
   return {
     title,
@@ -177,6 +171,10 @@ function inferDraftFromText(source: string): AiDraftResponse['draft'] {
       ],
       ['Everyday wear', 'A soft, effortless look', 'Layering or gifting']
     ),
+    seoTitle,
+    seoDescription,
+    seoKeywords: buildSeoKeywords(title, readablePearlType, category, overtone),
+    ogImageAlt: buildOgImageAlt(title, readablePearlType, shape),
   }
 }
 
@@ -277,6 +275,10 @@ Return these keys only:
 - overtone
 - why_youll_love_it
 - perfect_for
+- seoTitle
+- seoDescription
+- seoKeywords
+- ogImageAlt
 
 PEARL TYPE RULES
 - pearlType must be exactly one of:
@@ -313,6 +315,13 @@ PERFECT FOR RULES
   - styling
   - user intent
 - Keep each bullet concise and one line
+
+SEO RULES
+- seoTitle should be 50-65 characters when possible
+- seoDescription should be 120-160 characters when possible
+- seoKeywords should contain 4-8 concise keyword phrases
+- ogImageAlt should describe the product image clearly and accurately
+- Keep SEO aligned with the product facts only
 
 STYLE RULES
 - Tone: calm, refined, editorial, not salesy
@@ -352,6 +361,10 @@ IMPORTANT
               'overtone',
               'why_youll_love_it',
               'perfect_for',
+              'seoTitle',
+              'seoDescription',
+              'seoKeywords',
+              'ogImageAlt',
             ],
             properties: {
               title: { type: 'string' },
@@ -376,6 +389,15 @@ IMPORTANT
                 minItems: 3,
                 maxItems: 3,
               },
+              seoTitle: { type: 'string' },
+              seoDescription: { type: 'string' },
+              seoKeywords: {
+                type: 'array',
+                items: { type: 'string' },
+                minItems: 3,
+                maxItems: 8,
+              },
+              ogImageAlt: { type: 'string' },
             },
           },
         },
@@ -402,6 +424,17 @@ IMPORTANT
 
   try {
     const parsed = JSON.parse(outputText) as AiDraftResponse['draft']
+    const title = String(parsed.title || '').trim()
+    const category = String(parsed.category || '').trim()
+    const pearlType = String(parsed.pearlType || '').trim()
+    const shape = String(parsed.shape || '').trim()
+    const luster = String(parsed.luster || '').trim()
+    const overtone = String(parsed.overtone || '').trim()
+    const subtitle = String(parsed.subtitle || '').trim()
+    const sizeHint = subtitle.match(/(\d+(?:\.\d+)?(?:\s*-\s*\d+(?:\.\d+)?)?)\s*mm\b/i)?.[1] || null
+    const normalizedSeoKeywords = (parsed.seoKeywords || [])
+      .map((value) => String(value || '').trim())
+      .filter(Boolean)
     return {
       draft: {
         ...parsed,
@@ -409,6 +442,20 @@ IMPORTANT
           parsed.why_youll_love_it,
           parsed.perfect_for
         ),
+        seoTitle:
+          normalizeSeoTitle(
+            String(parsed.seoTitle || '').trim(),
+            buildSeoTitle(title, category, pearlType, sizeHint)
+          ),
+        seoDescription:
+          String(parsed.seoDescription || '').trim() ||
+          buildSeoDescription(title, pearlType, category, overtone, luster),
+        seoKeywords:
+          normalizedSeoKeywords.length > 0
+            ? normalizedSeoKeywords
+            : buildSeoKeywords(title, pearlType, category, overtone),
+        ogImageAlt:
+          String(parsed.ogImageAlt || '').trim() || buildOgImageAlt(title, pearlType, shape),
       },
     }
   } catch (error) {
