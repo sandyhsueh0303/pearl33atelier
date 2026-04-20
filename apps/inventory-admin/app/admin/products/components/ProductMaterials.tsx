@@ -218,29 +218,29 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
     }}>
       <div className="admin-bom-stats-grid" style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '1rem',
-        marginBottom: '1.5rem',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gap: '0.75rem',
+        marginBottom: '1.25rem',
       }}>
-        <div style={{ padding: '1.25rem', backgroundColor: '#ffebee', borderRadius: '8px' }}>
-          <div className="admin-bom-stat-label" style={{ fontSize: '0.875rem', color: '#EF4444', fontWeight: '500', marginBottom: '0.5rem' }}>Total Cost</div>
-          <div className="admin-bom-stat-value" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#EF4444' }}>${totalMaterialCost.toFixed(2)}</div>
+        <div style={{ padding: '0.9rem 1rem', backgroundColor: '#ffebee', borderRadius: '8px' }}>
+          <div className="admin-bom-stat-label" style={{ fontSize: '0.8rem', color: '#EF4444', fontWeight: '500', marginBottom: '0.35rem' }}>Total Cost</div>
+          <div className="admin-bom-stat-value" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#EF4444', lineHeight: 1.15 }}>${totalMaterialCost.toFixed(2)}</div>
         </div>
-        <div style={{ padding: '1.25rem', backgroundColor: '#e3f2fd', borderRadius: '8px' }}>
-          <div className="admin-bom-stat-label" style={{ fontSize: '0.875rem', color: '#1565c0', fontWeight: '500', marginBottom: '0.5rem' }}>Sell Price</div>
-          <div className="admin-bom-stat-value" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2196f3' }}>${sellingPrice.toFixed(2)}</div>
+        <div style={{ padding: '0.9rem 1rem', backgroundColor: '#e3f2fd', borderRadius: '8px' }}>
+          <div className="admin-bom-stat-label" style={{ fontSize: '0.8rem', color: '#1565c0', fontWeight: '500', marginBottom: '0.35rem' }}>Sell Price</div>
+          <div className="admin-bom-stat-value" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2196f3', lineHeight: 1.15 }}>${sellingPrice.toFixed(2)}</div>
         </div>
-        <div style={{ padding: '1.25rem', backgroundColor: profit >= 0 ? '#e8f5e9' : '#ffebee', borderRadius: '8px' }}>
-          <div className="admin-bom-stat-label" style={{ fontSize: '0.875rem', color: profit >= 0 ? '#10B981' : '#EF4444', fontWeight: '500', marginBottom: '0.5rem' }}>Profit</div>
-          <div className="admin-bom-stat-value" style={{ fontSize: '2rem', fontWeight: 'bold', color: profit >= 0 ? '#10B981' : '#EF4444' }}>${profit.toFixed(2)}</div>
-          <div style={{ fontSize: '0.875rem', color: profit >= 0 ? '#10B981' : '#EF4444', marginTop: '0.5rem', fontWeight: '600' }}>
+        <div style={{ padding: '0.9rem 1rem', backgroundColor: profit >= 0 ? '#e8f5e9' : '#ffebee', borderRadius: '8px' }}>
+          <div className="admin-bom-stat-label" style={{ fontSize: '0.8rem', color: profit >= 0 ? '#10B981' : '#EF4444', fontWeight: '500', marginBottom: '0.35rem' }}>Profit</div>
+          <div className="admin-bom-stat-value" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: profit >= 0 ? '#10B981' : '#EF4444', lineHeight: 1.15 }}>${profit.toFixed(2)}</div>
+          <div style={{ fontSize: '0.8rem', color: profit >= 0 ? '#10B981' : '#EF4444', marginTop: '0.35rem', fontWeight: '600' }}>
             {profitMargin.toFixed(1)}% Profit Margin
           </div>
         </div>
-        <div style={{ padding: '1.25rem', backgroundColor: '#fff8e1', borderRadius: '8px' }}>
-          <div className="admin-bom-stat-label" style={{ fontSize: '0.875rem', color: '#b7791f', fontWeight: '500', marginBottom: '0.5rem' }}>Max Sellable Units</div>
-          <div className="admin-bom-stat-value" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#b7791f' }}>{inventorySummary.availableQuantity ?? '-'}</div>
-          <div style={{ fontSize: '0.875rem', color: '#8a6d1d', marginTop: '0.5rem' }}>
+        <div style={{ padding: '0.9rem 1rem', backgroundColor: '#fff8e1', borderRadius: '8px' }}>
+          <div className="admin-bom-stat-label" style={{ fontSize: '0.8rem', color: '#b7791f', fontWeight: '500', marginBottom: '0.35rem' }}>Available Units</div>
+          <div className="admin-bom-stat-value" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#b7791f', lineHeight: 1.15 }}>{inventorySummary.availableQuantity ?? '-'}</div>
+          <div style={{ fontSize: '0.8rem', color: '#8a6d1d', marginTop: '0.35rem', lineHeight: 1.35 }}>
             {inventorySummary.limitingMaterialName
               ? `Limited by ${inventorySummary.limitingMaterialName}`
               : 'Based on current material inventory'}
