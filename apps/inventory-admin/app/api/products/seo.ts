@@ -1,5 +1,6 @@
 import { getProductImageUrl } from '@pearl33atelier/shared'
 import { extractOutputText } from './openaiOutput'
+import { getDefaultOpenAIModel } from '@/app/lib/openaiModel'
 import {
   buildSeoTitle,
   normalizeSeoTitle,
@@ -63,7 +64,7 @@ export async function generateProductSeo(
     throw new Error('OPENAI_API_KEY is missing on the server.')
   }
 
-  const model = process.env.OPENAI_MODEL || 'gpt-4.1-mini'
+  const model = getDefaultOpenAIModel()
   const userContent: Array<Record<string, unknown>> = [
     {
       type: 'input_text',

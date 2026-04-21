@@ -219,7 +219,8 @@ Current AI draft flow expects:
 
 Suggested default:
 
-- `OPENAI_MODEL=gpt-4.1-mini`
+- `OPENAI_MODEL=gpt-5.4-mini`
+- If unset, server routes fall back through `apps/inventory-admin/app/lib/openaiModel.ts`
 
 Current behavior:
 

@@ -1,4 +1,5 @@
 import { extractOutputText } from '../openaiOutput'
+import { getDefaultOpenAIModel } from '@/app/lib/openaiModel'
 
 type AiDraftRequest = {
   fileNames?: string[]
@@ -64,7 +65,7 @@ export async function extractProductAttributesWithOpenAI(
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) return { extraction: null, error: 'OPENAI_API_KEY is missing on the server.' }
 
-  const model = process.env.OPENAI_MODEL || 'gpt-5.4-mini'
+  const model = getDefaultOpenAIModel()
   const userContent: Array<Record<string, unknown>> = [
     {
       type: 'input_text',

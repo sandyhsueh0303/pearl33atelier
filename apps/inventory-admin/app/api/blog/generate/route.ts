@@ -3,6 +3,7 @@ import path from 'path'
 import { NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import { extractOutputText } from '@/app/api/products/openaiOutput'
+import { getDefaultOpenAIModel } from '@/app/lib/openaiModel'
 import {
   buildFallbackPlannerOutput,
   buildFallbackReviewerOutput,
@@ -88,7 +89,7 @@ async function runPlanner(brief: ArticleBrief): Promise<{ output: PlannerOutput;
     readReferenceFile('article-package.schema.json'),
   ])
 
-  const model = process.env.OPENAI_MODEL || 'gpt-4.1-mini'
+  const model = getDefaultOpenAIModel()
 
   const response = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
@@ -170,7 +171,7 @@ async function runPromptStage<T>({
     readReferenceFile(promptFile),
     ...refs.map((ref) => readReferenceFile(ref)),
   ])
-  const model = process.env.OPENAI_MODEL || 'gpt-4.1-mini'
+  const model = getDefaultOpenAIModel()
 
   const userText = [
     ...refs.map((ref, index) => [`Required reference: ${ref}`, referenceContents[index]].join('\n')),

@@ -303,6 +303,22 @@ button {
   flex: 1 1 300px;
 }
 
+.admin-filter-item-sm {
+  flex: 0 1 150px;
+}
+
+.admin-filter-item-md {
+  flex: 0 1 180px;
+}
+
+.admin-filter-item-lg {
+  flex: 0 1 220px;
+}
+
+.admin-filter-item-auto {
+  flex: 0 0 auto;
+}
+
 .admin-filter-label {
   display: block;
   font-size: 0.875rem;
@@ -376,6 +392,12 @@ button {
   font-size: 1.25rem;
   color: #666;
   margin-bottom: 1rem;
+}
+
+.admin-empty-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .admin-table-card {
@@ -661,6 +683,20 @@ button {
 .admin-section-meta {
   color: #666;
   font-size: 0.875rem;
+}
+
+.admin-pagination {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-pagination-label {
+  font-size: 0.875rem;
+  color: #666;
 }
 
 @media (max-width: 1024px) {

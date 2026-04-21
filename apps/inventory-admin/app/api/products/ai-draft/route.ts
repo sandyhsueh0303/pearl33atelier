@@ -24,6 +24,7 @@ import {
   buildSeoTitle,
   normalizeSeoTitle,
 } from '../seoHelpers'
+import { getDefaultOpenAIModel } from '@/app/lib/openaiModel'
 
 type AiDraftRequest = {
   fileNames?: string[]
@@ -186,7 +187,7 @@ async function generateDraftWithOpenAI(
 ): Promise<OpenAIDraftResult> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) return { draft: null, error: 'OPENAI_API_KEY is missing on the server.' }
-  const model = process.env.OPENAI_MODEL || 'gpt-4.1-mini'
+  const model = getDefaultOpenAIModel()
 
   const userContent: Array<Record<string, unknown>> = [
     {

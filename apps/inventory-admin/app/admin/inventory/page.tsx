@@ -238,19 +238,7 @@ function InventoryPageContent() {
       )}
 
       {notice && (
-        <div
-          style={{
-            marginBottom: '1rem',
-            padding: '0.75rem 1rem',
-            borderRadius: '8px',
-            border: '1px solid #A7F3D0',
-            backgroundColor: '#ECFDF5',
-            color: '#065F46',
-            fontWeight: 600,
-          }}
-        >
-          {notice}
-        </div>
+        <div className="admin-banner admin-banner-success">{notice}</div>
       )}
 
       {/* Search and Filter Controls */}
@@ -274,7 +262,7 @@ function InventoryPageContent() {
           </div>
 
           {/* Category Filter */}
-          <div style={{ flex: '0 1 220px' }}>
+          <div className="admin-filter-item-lg">
             <label className="admin-filter-label">
               🏷️ Category
             </label>
@@ -294,7 +282,7 @@ function InventoryPageContent() {
           </div>
 
           {/* Sort By */}
-          <div style={{ flex: '0 1 180px' }}>
+          <div className="admin-filter-item-md">
             <label className="admin-filter-label">
               📦 Status
             </label>
@@ -332,7 +320,7 @@ function InventoryPageContent() {
           </div>
 
           {/* Sort Order */}
-          <div style={{ flex: '0 1 150px' }}>
+          <div className="admin-filter-item-sm">
             <label className="admin-filter-label">
               ↕️ Order
             </label>
@@ -351,7 +339,7 @@ function InventoryPageContent() {
 
           {/* Reset Button */}
           {hasFilters && (
-            <div style={{ flex: '0 0 auto', marginTop: 'auto' }}>
+            <div className="admin-filter-item-auto" style={{ marginTop: 'auto' }}>
               <label className="admin-filter-label" style={{ visibility: 'hidden' }}>
                 &nbsp;
               </label>
@@ -373,50 +361,37 @@ function InventoryPageContent() {
       </div>
 
       <div className="admin-stats-row">
-        <div className="admin-stat-card" style={{ 
-          flex: 1,
-          padding: '1.5rem', 
-        }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Items</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961', margin: 0 }}>
-            {summary.total_items}
-          </p>
-        </div>
-        <div className="admin-stat-card" style={{ 
-          flex: 1,
-          padding: '1.5rem', 
-        }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Quantity</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10B981', margin: 0 }}>
-            {summary.total_quantity}
-          </p>
-        </div>
-        <div className="admin-stat-card" style={{ 
-          flex: 1,
-          padding: '1.5rem', 
-        }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Available Quantity</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10B981', margin: 0 }}>
-            {summary.available_quantity}
-          </p>
-        </div>
-        <div className="admin-stat-card" style={{ 
-          flex: 1,
-          padding: '1.5rem', 
-        }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Total Value</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#F59E0B', margin: 0 }}>
-            ${summary.total_value.toFixed(2)}
-          </p>
-        </div>
-        <div className="admin-stat-card" style={{ 
-          flex: 1,
-          padding: '1.5rem', 
-        }}>
-          <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>Remaining Value</p>
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961', margin: 0 }}>
-            ${summary.remaining_value.toFixed(2)}
-          </p>
+        <div className="admin-stats-grid">
+          <div className="admin-stat-card admin-stat-card-body">
+            <p className="admin-stat-label">Total Items</p>
+            <p className="admin-stat-value" style={{ color: '#C9A961' }}>
+              {summary.total_items}
+            </p>
+          </div>
+          <div className="admin-stat-card admin-stat-card-body">
+            <p className="admin-stat-label">Total Quantity</p>
+            <p className="admin-stat-value" style={{ color: '#10B981' }}>
+              {summary.total_quantity}
+            </p>
+          </div>
+          <div className="admin-stat-card admin-stat-card-body">
+            <p className="admin-stat-label">Available Quantity</p>
+            <p className="admin-stat-value" style={{ color: '#10B981' }}>
+              {summary.available_quantity}
+            </p>
+          </div>
+          <div className="admin-stat-card admin-stat-card-body">
+            <p className="admin-stat-label">Total Value</p>
+            <p className="admin-stat-value" style={{ color: '#F59E0B' }}>
+              ${summary.total_value.toFixed(2)}
+            </p>
+          </div>
+          <div className="admin-stat-card admin-stat-card-body">
+            <p className="admin-stat-label">Remaining Value</p>
+            <p className="admin-stat-value" style={{ color: '#C9A961' }}>
+              ${summary.remaining_value.toFixed(2)}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -428,30 +403,14 @@ function InventoryPageContent() {
           {items.length === 0 ? (
             <Link
               href={`/admin/inventory/new?returnTo=${returnToParam}`}
-              style={{
-                display: 'inline-block',
-                padding: '0.75rem 1.5rem',
-                backgroundColor: '#C9A961',
-                color: 'white',
-                borderRadius: '4px',
-                textDecoration: 'none',
-                fontWeight: 'bold'
-              }}
+              className="admin-link-btn admin-link-btn-primary admin-empty-action"
             >
               Create first inventory item
             </Link>
           ) : (
             <button
               onClick={resetFilters}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: '#C9A961',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontWeight: 'bold'
-              }}
+              className="admin-btn admin-btn-primary"
             >
               Clear filters
             </button>
@@ -556,7 +515,7 @@ function InventoryPageContent() {
       )}
 
       {filteredItems.length > 0 && totalPages > 1 && (
-        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', gap: '0.5rem', alignItems: 'center' }}>
+        <div className="admin-pagination">
           <button
             type="button"
             className="admin-btn admin-btn-secondary admin-btn-sm"
@@ -566,7 +525,7 @@ function InventoryPageContent() {
           >
             Previous
           </button>
-          <span style={{ fontSize: '0.875rem', color: '#666' }}>
+          <span className="admin-pagination-label">
             Page {currentPage} / {totalPages}
           </span>
           <button
