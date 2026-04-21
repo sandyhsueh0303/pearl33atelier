@@ -1,33 +1,37 @@
 {
-  "guide": "first_pearl_earrings",
-  "title": "How to Choose Your First Pearl Earrings",
-  "summary_paths": [
-    {
-      "intent": "daily_minimal",
-      "pearl_type": "Akoya",
-      "size_mm": "6.5-7.5",
-      "style": "round studs",
-      "metal_direction": "white gold",
-      "occasion": "daily wear",
-      "cta_path": "/products?category=Studs"
-    },
-    {
-      "intent": "soft_classic",
-      "pearl_type": "Akoya",
-      "size_mm": "7-8",
-      "style": "stud earrings",
-      "metal_direction": "yellow gold",
-      "occasion": "daily wear to occasion dressing",
-      "cta_path": "/products?category=Earrings"
-    },
-    {
-      "intent": "modern_distinctive",
-      "pearl_type": "Tahitian or Grey Akoya",
-      "size_mm": "7.5+",
-      "style": "studs or drops",
-      "metal_direction": "white gold",
-      "occasion": "statement or modern styling",
-      "cta_path": "/products?category=Earrings"
-    }
-  ]
+  "slug": "how-to-choose-your-first-pearl-earrings",
+  "frontmatter": {
+    "title": "How to Choose Your First Pearl Earrings",
+    "excerpt": "A calm, practical guide for first-time buyers choosing pearl earrings, with a clear look at why pearl studs are often the easiest starting point and how Akoya fits in.",
+    "seoDescription": "Learn how to choose your first pearl earrings, with a practical focus on pearl stud earrings and why Akoya pearls are a natural starting point.",
+    "keywords": [
+      "pearl earrings",
+      "pearl stud earrings",
+      "Akoya pearls",
+      "first pearl earrings",
+      "how to choose pearl earrings"
+    ],
+    "ogImage": "/images/blog/how-to-choose-your-first-pearl-earrings.jpg",
+    "ogImageAlt": "A pair of pearl stud earrings on a clean editorial background",
+    "publishedAt": "2026-04-21",
+    "author": "33 Pearl Atelier",
+    "tags": [
+      "Pearl Earrings",
+      "Buying Guide",
+      "Akoya Pearls",
+      "Studs"
+    ],
+    "readingMinutes": 6
+  },
+  "bodyMarkdown": "If you are choosing your first pearl earrings, the easiest decision is usually the most wearable one. A first pair should work with your wardrobe, feel comfortable on the ear, and look appropriate for more than one occasion. That is why pearl stud earrings are such a common starting point, especially for readers who want something classic without having to sort through every pearl style at once.\n\n## Why pearl stud earrings are a smart starting point\n\nPearl stud earrings are simple by design: a single pearl sits close to the ear on a post backing. That restraint is part of their appeal. They read as polished without feeling formal, which makes them easy to wear with everyday clothes, work looks, and occasion dressing alike.\n\nFor a first purchase, that versatility matters. A style that can move between settings is easier to reach for, easier to style, and less likely to sit unworn in a jewelry box. Studs also keep the focus on the pearl itself, which is helpful when you are still learning what you personally prefer.\n\n## What to look for in your first pair\n\nOnce you know you want studs, the next step is narrowing the details that affect wearability.\n\n- **Size:** Choose a pearl size that feels balanced with your face and how much presence you want the earrings to have.\n- **Color and surface look:** Look for a tone that feels natural to your wardrobe and a finish that matches the level of polish you want.\n- **Setting and backing:** Pay attention to comfort, security, and how the earrings sit on the ear.\n\nIf this is your first pair, it is usually better to choose something that feels easy to wear than something that feels dramatic on paper. The most useful pearl earrings are the ones you can picture wearing often.\n\n## Why Akoya pearls are a strong first choice\n\nAkoya pearls are often associated with a classic, refined look, which is part of why they make sense as a starting point for first-time buyers. If you are looking for pearl earrings that feel timeless and polished, Akoya is a natural reference point.\n\nThat does not mean Akoya is the only good choice. It does mean that when someone wants a first pair with a traditional pearl feel, Akoya pearl stud earrings are often where the conversation begins. They offer a clean, familiar look that is easy to understand and easy to style.\n\n## How to decide if Akoya is right for you\n\nThe simplest way to decide is to think about how you plan to wear the earrings.\n\nIf you want something you can wear often, pair easily with everyday clothes, and keep in rotation for work or events, pearl studs are a strong place to start. If you want a more classic pearl look, Akoya is especially worth considering.\n\nAsk yourself three practical questions:\n\n1. Will I wear these regularly, or only for special occasions?\n2. Do I want the earrings to feel subtle or more noticeable?\n3. Does my style lean toward clean, minimal pieces or more decorative ones?\n\nIf your answers point toward simplicity and versatility, Akoya pearl studs are likely a good fit. If you want something more expressive, you may prefer to keep exploring after understanding what makes a first pair feel right.\n\n## A simple first-purchase takeaway\n\nFor a first pair of pearl earrings, start with the style you are most likely to wear. In many cases, that means pearl stud earrings. If you want a classic starting point, Akoya is a thoughtful place to look.\n\nThe goal is not to choose the most complicated option. It is to choose the pair that feels clear, calm, and easy to live with. From there, everything else becomes easier to compare.",
+  "internalLinks": [],
+  "qa": {
+    "primaryKeywordUsed": true,
+    "relatedReadingSectionIncluded": false,
+    "notes": [
+      "Heading language softened to avoid unsupported superlatives.",
+      "Akoya remains framed as a starting point, not a universal recommendation."
+    ]
+  },
+  "markdownDocument": "---\ntitle: \"How to Choose Your First Pearl Earrings\"\nexcerpt: \"A calm, practical guide for first-time buyers choosing pearl earrings, with a clear look at why pearl studs are often the easiest starting point and how Akoya fits in.\"\nseoDescription: \"Learn how to choose your first pearl earrings, with a practical focus on pearl stud earrings and why Akoya pearls are a natural starting point.\"\nkeywords: [\"pearl earrings\", \"pearl stud earrings\", \"Akoya pearls\", \"first pearl earrings\", \"how to choose pearl earrings\"]\nogImage: \"/images/blog/how-to-choose-your-first-pearl-earrings.jpg\"\nogImageAlt: \"A pair of pearl stud earrings on a clean editorial background\"\npublishedAt: \"2026-04-21\"\nauthor: \"33 Pearl Atelier\"\ntags: [\"Pearl Earrings\", \"Buying Guide\", \"Akoya Pearls\", \"Studs\"]\nreadingMinutes: 6\n---\n\nIf you are choosing your first pearl earrings, the easiest decision is usually the most wearable one. A first pair should work with your wardrobe, feel comfortable on the ear, and look appropriate for more than one occasion. That is why pearl stud earrings are such a common starting point, especially for readers who want something classic without having to sort through every pearl style at once.\n\n## Why pearl stud earrings are a smart starting point\n\nPearl stud earrings are simple by design: a single pearl sits close to the ear on a post backing. That restraint is part of their appeal. They read as polished without feeling formal, which makes them easy to wear with everyday clothes, work looks, and occasion dressing alike.\n\nFor a first purchase, that versatility matters. A style that can move between settings is easier to reach for, easier to style, and less likely to sit unworn in a jewelry box. Studs also keep the focus on the pearl itself, which is helpful when you are still learning what you personally prefer.\n\n## What to look for in your first pair\n\nOnce you know you want studs, the next step is narrowing the details that affect wearability.\n\n- **Size:** Choose a pearl size that feels balanced with your face and how much presence you want the earrings to have.\n- **Color and surface look:** Look for a tone that feels natural to your wardrobe and a finish that matches the level of polish you want.\n- **Setting and backing:** Pay attention to comfort, security, and how the earrings sit on the ear.\n\nIf this is your first pair, it is usually better to choose something that feels easy to wear than something that feels dramatic on paper. The most useful pearl earrings are the ones you can picture wearing often.\n\n## Why Akoya pearls are a strong first choice\n\nAkoya pearls are often associated with a classic, refined look, which is part of why they make sense as a starting point for first-time buyers. If you are looking for pearl earrings that feel timeless and polished, Akoya is a natural reference point.\n\nThat does not mean Akoya is the only good choice. It does mean that when someone wants a first pair with a traditional pearl feel, Akoya pearl stud earrings are often where the conversation begins. They offer a clean, familiar look that is easy to understand and easy to style.\n\n## How to decide if Akoya is right for you\n\nThe simplest way to decide is to think about how you plan to wear the earrings.\n\nIf you want something you can wear often, pair easily with everyday clothes, and keep in rotation for work or events, pearl studs are a strong place to start. If you want a more classic pearl look, Akoya is especially worth considering.\n\nAsk yourself three practical questions:\n\n1. Will I wear these regularly, or only for special occasions?\n2. Do I want the earrings to feel subtle or more noticeable?\n3. Does my style lean toward clean, minimal pieces or more decorative ones?\n\nIf your answers point toward simplicity and versatility, Akoya pearl studs are likely a good fit. If you want something more expressive, you may prefer to keep exploring after understanding what makes a first pair feel right.\n\n## A simple first-purchase takeaway\n\nFor a first pair of pearl earrings, start with the style you are most likely to wear. In many cases, that means pearl stud earrings. If you want a classic starting point, Akoya is a thoughtful place to look.\n\nThe goal is not to choose the most complicated option. It is to choose the pair that feels clear, calm, and easy to live with. From there, everything else becomes easier to compare."
 }

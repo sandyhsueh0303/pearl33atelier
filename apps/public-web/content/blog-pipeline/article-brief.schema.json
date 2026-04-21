@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://33pearlatelier.com/schemas/article-brief.schema.json",
+  "title": "33 Pearl Atelier Article Brief",
+  "description": "Input brief for the blog content pipeline. This is the human-authored planning input and should remain stable once adopted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "slug",
+    "workingTitle",
+    "primaryIntent",
+    "primaryKeyword",
+    "audience",
+    "articleType",
+    "goal",
+    "mustCover",
+    "cta"
+  ],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "description": "URL-safe blog slug without /blog/ prefix and without file extension.",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "workingTitle": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Human working title for planning. The final title may be refined by the pipeline."
+    },
+    "primaryIntent": {
+      "type": "string",
+      "enum": [
+        "educational",
+        "comparison",
+        "buying-guide",
+        "care-guide",
+        "styling-guide",
+        "process-explainer"
+      ]
+    },
+    "primaryKeyword": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Main search phrase the article should satisfy."
+    },
+    "secondaryKeywords": {
+      "type": "array",
+      "description": "Optional supporting search phrases.",
+      "items": {
+        "type": "string",
+        "minLength": 2
+      },
+      "maxItems": 12,
+      "default": []
+    },
+    "audience": {
+      "type": "string",
+      "description": "Who the article is for, e.g. first-time pearl buyer, gifting shopper, custom client."
+    },
+    "articleType": {
+      "type": "string",
+      "enum": [
+        "evergreen-guide",
+        "comparison-guide",
+        "faq-style-guide",
+        "brand-education",
+        "editorial-story"
+      ]
+    },
+    "goal": {
+      "type": "string",
+      "description": "One-sentence statement of what the reader should understand or be able to decide after reading."
+    },
+    "mustCover": {
+      "type": "array",
+      "description": "Required subtopics that must appear in the article body.",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 3
+      }
+    },
+    "niceToCover": {
+      "type": "array",
+      "description": "Optional subtopics that may appear if they improve the article.",
+      "items": {
+        "type": "string",
+        "minLength": 3
+      },
+      "default": []
+    },
+    "brandContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "relevantCollections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "customServiceRelevant": {
+          "type": "boolean",
+          "default": false
+        },
+        "productCategoriesRelevant": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Bracelets",
+              "Necklaces",
+              "Earrings",
+              "Studs",
+              "Rings",
+              "Pendants",
+              "Loose Pearls",
+              "Brooches"
+            ]
+          },
+          "default": []
+        }
+      },
+      "default": {}
+    },
+    "factsProvided": {
+      "type": "array",
+      "description": "Optional factual bullets that the writer may rely on directly.",
+      "items": {
+        "type": "string",
+        "minLength": 3
+      },
+      "default": []
+    },
+    "linksToMention": {
+      "type": "array",
+      "description": "Optional internal links or paths that may be used as contextual references or CTA destinations.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+    "cta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "path"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "shop-collection",
+            "browse-category",
+            "custom-inquiry",
+            "soft-none"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "description": "Site-relative path such as /products or /custom/inquiry."
+        },
+        "labelHint": {
+          "type": "string",
+          "description": "Optional hint for CTA language."
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "avoidClaims": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "mustNotMention": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "targetReadingMinutes": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 20
+        }
+      },
+      "default": {}
+    }
+  }
+}

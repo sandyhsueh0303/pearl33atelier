@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://33pearlatelier.com/schemas/article-package.schema.json",
+  "title": "33 Pearl Atelier Article Package",
+  "description": "Final pipeline output for a blog article. The frontmatter keys intentionally match the current Next.js blog loader.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "slug",
+    "frontmatter",
+    "bodyMarkdown"
+  ],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Blog slug without extension."
+    },
+    "frontmatter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "excerpt",
+        "seoDescription",
+        "keywords",
+        "ogImage",
+        "ogImageAlt",
+        "publishedAt",
+        "author",
+        "tags",
+        "readingMinutes"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 10
+        },
+        "excerpt": {
+          "type": "string",
+          "minLength": 30
+        },
+        "seoDescription": {
+          "type": "string",
+          "minLength": 50
+        },
+        "keywords": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "ogImage": {
+          "type": "string",
+          "description": "Usually a site-relative image path such as /images/example.png."
+        },
+        "ogImageAlt": {
+          "type": "string",
+          "minLength": 8
+        },
+        "publishedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "updatedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "author": {
+          "type": "string",
+          "minLength": 2
+        },
+        "tags": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "readingMinutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        }
+      }
+    },
+    "bodyMarkdown": {
+      "type": "string",
+      "minLength": 300,
+      "description": "Publish-ready Markdown body. Do not include YAML frontmatter here."
+    },
+    "markdownDocument": {
+      "type": "string",
+      "description": "Optional fully rendered Markdown file including YAML frontmatter."
+    },
+    "internalLinks": {
+      "type": "array",
+      "description": "Optional internal links used or recommended for rendering.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "anchorText"],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "anchorText": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
+    "qa": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primaryKeywordUsed": {
+          "type": "boolean"
+        },
+        "relatedReadingSectionIncluded": {
+          "type": "boolean",
+          "description": "Should normally be false because the site computes related posts automatically."
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      },
+      "default": {}
+    }
+  }
+}
