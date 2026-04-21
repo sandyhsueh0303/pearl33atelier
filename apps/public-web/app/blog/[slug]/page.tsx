@@ -186,6 +186,7 @@ export default async function BlogPostPage({ params }: Props) {
         }}
       >
         <nav
+          className="blogBreadcrumb"
           aria-label="Breadcrumb"
           style={{
             maxWidth: '1040px',
@@ -202,6 +203,7 @@ export default async function BlogPostPage({ params }: Props) {
 
         {/* Article Header */}
         <header
+          className="blogArticleHeader"
           style={{
             maxWidth: '980px',
             margin: `${spacing.sm} auto 0`,
@@ -286,7 +288,7 @@ export default async function BlogPostPage({ params }: Props) {
           style={{
             maxWidth: '1040px',
             margin: `${spacing.md} auto 0`,
-            padding: `${spacing['2xl']} ${spacing['2xl']} ${spacing['4xl']}`,
+            padding: `clamp(1.2rem, 4vw, ${spacing['2xl']}) clamp(1rem, 4vw, ${spacing['2xl']}) clamp(2.5rem, 8vw, ${spacing['4xl']})`,
             borderRadius: '24px',
             border: '1px solid rgba(212, 175, 55, 0.2)',
             background: 'rgba(255, 255, 255, 0.92)',
@@ -307,6 +309,7 @@ export default async function BlogPostPage({ params }: Props) {
           />
 
           <section
+            className="blogCtaSection"
             style={{
               maxWidth: '860px',
               margin: `${spacing['2xl']} auto 0`,
@@ -318,6 +321,7 @@ export default async function BlogPostPage({ params }: Props) {
             }}
           >
             <div
+              className="blogCtaLayout"
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'minmax(0, 1.4fr) minmax(240px, 0.9fr)',
@@ -361,6 +365,7 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
 
               <div
+                className="blogCtaActions"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -415,6 +420,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           {relatedPosts.length > 0 && (
             <section
+              className="blogRelatedSection"
               style={{
                 maxWidth: '860px',
                 margin: `${spacing['2xl']} auto 0`,
@@ -596,12 +602,77 @@ export default async function BlogPostPage({ params }: Props) {
         }
 
         @media (max-width: 768px) {
+          .blogBreadcrumb {
+            padding: 1rem 1rem 0 !important;
+            line-height: 1.7;
+          }
+
+          .blogArticleHeader {
+            padding: 2rem 1rem !important;
+          }
+
+          .blogArticle {
+            margin-top: 1rem !important;
+            border-radius: 18px !important;
+          }
+
+          .blogCtaSection,
+          .blogRelatedSection {
+            padding: 1.15rem 1rem !important;
+            border-radius: 16px !important;
+          }
+
+          .blogCtaLayout {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+          }
+
+          .blogCtaActions {
+            align-items: stretch !important;
+            justify-self: stretch !important;
+          }
+
+          .blogCtaActions a {
+            width: 100%;
+            text-align: center;
+            white-space: normal !important;
+          }
+
+          .blogCtaActions p {
+            text-align: left !important;
+          }
+
+          .markdown-content {
+            font-size: 1rem !important;
+          }
+
           .markdown-content h2 {
             font-size: 1.45rem;
           }
 
           .markdown-content h3 {
             font-size: 1.22rem;
+          }
+
+          .markdown-content p,
+          .markdown-content li {
+            line-height: 1.8 !important;
+          }
+
+          .markdown-content img {
+            margin: 1.1rem auto 1.5rem !important;
+            border-radius: 14px !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .blogArticleHeader h1 {
+            font-size: 1.9rem !important;
+          }
+
+          .markdown-content ul,
+          .markdown-content ol {
+            margin-left: 1rem !important;
           }
         }
       `}</style>

@@ -38,6 +38,7 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
   return (
     <>
       <div
+        className="journalFilterBar"
         style={{
           maxWidth: '1240px',
           margin: `0 auto ${spacing.lg}`,
@@ -47,6 +48,7 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
         }}
       >
         <button
+          className="journalFilterButton"
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
           aria-expanded={isOpen}
@@ -89,6 +91,7 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
 
         {isOpen ? (
           <div
+            className="journalFilterPanel"
             style={{
               position: 'absolute',
               top: `calc(100% + ${spacing.sm})`,
@@ -210,6 +213,7 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
                   {post.ogImage ? (
                     <Link
                       href={`/blog/${post.slug}`}
+                      className="journalCardImage"
                       style={{
                         display: 'block',
                       textDecoration: 'none',
@@ -233,6 +237,7 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
                     </Link>
                   ) : null}
                   <div
+                    className="journalCardBody"
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
@@ -350,6 +355,46 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
           ))}
         </div>
       )}
+
+      <style>{`
+        @media (max-width: 768px) {
+          .journalFilterBar {
+            justify-content: stretch !important;
+          }
+
+          .journalFilterButton {
+            width: 100%;
+            justify-content: center;
+          }
+
+          .journalFilterPanel {
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+          }
+
+          .journalCard {
+            grid-template-columns: 1fr !important;
+            padding: 1rem !important;
+          }
+
+          .journalCardImage {
+            width: 100% !important;
+            height: 220px !important;
+            margin-top: 0 !important;
+          }
+
+          .journalCardBody h2 {
+            font-size: 1.3rem !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .journalCardImage {
+            height: 180px !important;
+          }
+        }
+      `}</style>
     </>
   )
 }

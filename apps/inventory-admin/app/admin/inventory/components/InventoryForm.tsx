@@ -109,8 +109,8 @@ export default function InventoryForm({ inventoryId }: Props) {
   
   if (loading) {
     return (
-      <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
+      <main className="admin-page admin-page-narrow">
+        <div className="admin-empty-state">
           Loading...
         </div>
       </main>
@@ -118,54 +118,31 @@ export default function InventoryForm({ inventoryId }: Props) {
   }
   
   return (
-    <main style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto' }}>
-      {/* Header */}
-      <div style={{ marginBottom: '2rem' }}>
-        <Link
-          href={backToListPath}
-          style={{
-            color: '#1976d2',
-            textDecoration: 'none',
-            fontSize: '0.875rem',
-            marginBottom: '1rem',
-            display: 'inline-block'
-          }}
-        >
-          ← Back to inventory list
-        </Link>
-        <h1 style={{ margin: 0, fontSize: '2rem', fontWeight: 'bold' }}>
-          {inventoryId ? 'Edit Inventory' : 'Add Inventory'}
-        </h1>
+    <main className="admin-page admin-page-narrow">
+      <div className="admin-page-header">
+        <div className="admin-page-title-row" style={{ alignItems: 'flex-start', flexDirection: 'column', gap: '0.5rem' }}>
+          <Link
+            href={backToListPath}
+            className="admin-link-back"
+          >
+            ← Back to inventory list
+          </Link>
+          <h1 className="admin-page-title">
+            {inventoryId ? 'Edit Inventory' : 'Add Inventory'}
+          </h1>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          padding: '2rem'
-        }}>
+        <div className="admin-card admin-form-card">
           {error && (
-            <div style={{
-              padding: '1rem',
-              backgroundColor: '#fee',
-              border: '1px solid #c00',
-              borderRadius: '4px',
-              marginBottom: '1.5rem',
-              color: '#c00'
-            }}>
+            <div className="admin-error-banner">
               <strong>Error:</strong> {error}
             </div>
           )}
           
-          {/* Name */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{
-              display: 'block',
-              fontWeight: '500',
-              marginBottom: '0.5rem',
-              fontSize: '0.875rem'
-            }}>
+          <div className="admin-form-section">
+            <label className="admin-form-label">
               Name
             </label>
             <input
@@ -173,40 +150,19 @@ export default function InventoryForm({ inventoryId }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Akoya 7.5mm Lot A"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                boxSizing: 'border-box'
-              }}
+              className="admin-control"
             />
           </div>
           
-          {/* Category */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{
-              display: 'block',
-              fontWeight: '500',
-              marginBottom: '0.5rem',
-              fontSize: '0.875rem'
-            }}>
-              Category <span style={{ color: '#c00' }}>*</span>
+          <div className="admin-form-section">
+            <label className="admin-form-label">
+              Category <span className="admin-form-required">*</span>
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                boxSizing: 'border-box',
-                backgroundColor: 'white'
-              }}
+              className="admin-control"
             >
               {CATEGORIES.map(cat => (
                 <option key={cat.value} value={cat.value}>
@@ -216,51 +172,25 @@ export default function InventoryForm({ inventoryId }: Props) {
             </select>
           </div>
           
-          {/* Purchase Date */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{
-              display: 'block',
-              fontWeight: '500',
-              marginBottom: '0.5rem',
-              fontSize: '0.875rem'
-            }}>
+          <div className="admin-form-section">
+            <label className="admin-form-label">
               Purchase Date
             </label>
             <input
               type="date"
               value={purchaseDate}
               onChange={(e) => setPurchaseDate(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                boxSizing: 'border-box'
-              }}
+              className="admin-control"
             />
           </div>
           
-          {/* Grid for Cost and Quantity */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
-            {/* Unit Cost */}
+          <div className="admin-form-grid-3">
             <div>
-              <label style={{
-                display: 'block',
-                fontWeight: '500',
-                marginBottom: '0.5rem',
-                fontSize: '0.875rem'
-              }}>
-                Unit Cost <span style={{ color: '#c00' }}>*</span>
+              <label className="admin-form-label">
+                Unit Cost <span className="admin-form-required">*</span>
               </label>
-              <div style={{ position: 'relative' }}>
-                <span style={{
-                  position: 'absolute',
-                  left: '0.75rem',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: '#666'
-                }}>
+              <div className="admin-input-prefix-wrap">
+                <span className="admin-input-prefix">
                   $
                 </span>
                 <input
@@ -270,27 +200,14 @@ export default function InventoryForm({ inventoryId }: Props) {
                   value={cost}
                   onChange={(e) => setCost(e.target.value)}
                   placeholder="0.00"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 0.75rem 0.75rem 2rem',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    fontSize: '1rem',
-                    boxSizing: 'border-box'
-                  }}
+                  className="admin-control admin-control-with-prefix"
                 />
               </div>
             </div>
             
-            {/* Quantity On Hand */}
             <div>
-              <label style={{
-                display: 'block',
-                fontWeight: '500',
-                marginBottom: '0.5rem',
-                fontSize: '0.875rem'
-              }}>
-                Total Quantity in Stock <span style={{ color: '#c00' }}>*</span>
+              <label className="admin-form-label">
+                Total Quantity in Stock <span className="admin-form-required">*</span>
               </label>
               <input
                 type="number"
@@ -298,25 +215,12 @@ export default function InventoryForm({ inventoryId }: Props) {
                 value={totalQuantity}
                 onChange={(e) => setTotalQuantity(e.target.value)}
                 placeholder="Total units"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '1rem',
-                  boxSizing: 'border-box'
-                }}
+                className="admin-control"
               />
             </div>
             
-            {/* Allocated Quantity */}
             <div>
-              <label style={{
-                display: 'block',
-                fontWeight: '500',
-                marginBottom: '0.5rem',
-                fontSize: '0.875rem'
-              }}>
+              <label className="admin-form-label">
                 Allocated Quantity
               </label>
               <input
@@ -324,47 +228,27 @@ export default function InventoryForm({ inventoryId }: Props) {
                 value={allocatedQuantity}
                 onChange={(e) => setAllocatedQuantity(e.target.value)}
                 placeholder="0"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '1rem',
-                  boxSizing: 'border-box'
-                }}
+                className="admin-control"
               />
             </div>
           </div>
           
-          {/* Total Value Display */}
           {totalValue > 0 && (
-            <div style={{
-              padding: '1.5rem',
-              backgroundColor: '#e3f2fd',
-              border: '1px solid #90caf9',
-              borderRadius: '8px',
-              marginBottom: '1.5rem'
-            }}>
-              <div style={{ fontSize: '0.875rem', color: '#1565c0', marginBottom: '0.25rem' }}>
+            <div className="admin-value-panel">
+              <div className="admin-value-panel-label">
                 Total Value
               </div>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#0d47a1' }}>
+              <div className="admin-value-panel-amount">
                 ${totalValue.toFixed(2)}
               </div>
-              <div style={{ fontSize: '0.875rem', color: '#1976d2', marginTop: '0.5rem' }}>
+              <div className="admin-value-panel-meta">
                 {totalQuantity} units x ${cost} per unit
               </div>
             </div>
           )}
           
-          {/* Notes */}
-          <div style={{ marginBottom: '2rem' }}>
-            <label style={{
-              display: 'block',
-              fontWeight: '500',
-              marginBottom: '0.5rem',
-              fontSize: '0.875rem'
-            }}>
+          <div className="admin-form-section" style={{ marginBottom: '2rem' }}>
+            <label className="admin-form-label">
               Notes
             </label>
             <textarea
@@ -372,52 +256,26 @@ export default function InventoryForm({ inventoryId }: Props) {
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
               placeholder="e.g. White Akoya pearl, AA+ grade, 8mm"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                fontFamily: 'inherit',
-                boxSizing: 'border-box',
-                resize: 'vertical'
-              }}
+              className="admin-control"
+              style={{ resize: 'vertical', fontFamily: 'inherit' }}
             />
-            <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '0.5rem' }}>
+            <div className="admin-form-help">
               Include pearl type, size, grade, or other details
             </div>
           </div>
           
-          {/* Actions */}
-          <div style={{ display: 'flex', gap: '1rem', paddingTop: '1rem', borderTop: '1px solid #eee' }}>
+          <div className="admin-form-actions">
             <button
               type="button"
               onClick={() => router.push(backToListPath)}
-              style={{
-                padding: '0.75rem 1.5rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                backgroundColor: 'white',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                fontWeight: '500'
-              }}
+              className="admin-btn admin-btn-outline"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: saving ? '#90caf9' : '#1976d2',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: saving ? 'not-allowed' : 'pointer',
-                fontSize: '1rem',
-                fontWeight: '500'
-              }}
+              className="admin-btn admin-btn-primary-solid"
             >
               {saving ? 'Saving...' : inventoryId ? 'Update Inventory' : 'Add Inventory'}
             </button>

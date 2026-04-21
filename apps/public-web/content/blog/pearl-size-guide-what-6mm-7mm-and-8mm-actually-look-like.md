@@ -4,7 +4,7 @@ excerpt: "See how 6mm, 7mm, and 8mm Akoya pearls change the look of earrings, ne
 seoDescription: "Compare 6mm, 7mm, and 8mm Akoya pearls to understand how size affects earrings, necklaces, and pendants before you choose."
 keywords: ["Akoya pearl", "Akoya pearl size guide", "6mm Akoya pearl", "7mm Akoya pearl", "8mm Akoya pearl", "pearl earrings", "pearl necklace"]
 ogImage: "/images/PearlStudSizeComparison.png"
-ogImageAlt: "Akoya pearl stud size comparison showing 6mm, 7mm, and 8mm pearls"
+ogImageAlt: "Akoya pearl size comparison shown in a clean editorial layout"
 publishedAt: "2026-04-21"
 updatedAt: "2026-04-21"
 author: "33 Pearl Atelier"
@@ -18,9 +18,9 @@ With Akoya pearls, millimeters do more than record size. They change how a piece
 
 If you are choosing earrings, a necklace, or a pendant, the size you pick affects how polished the piece feels and how much attention it draws. The difference is subtle on paper and much clearer when worn.
 
-## What 6mm, 7mm, and 8mm actually look like
+![PearlStudSizeComparison](/images/PearlStudSizeComparison.png)
 
-![Akoya pearl stud size comparison](/images/PearlStudSizeComparison.png)
+## What 6mm, 7mm, and 8mm actually look like
 
 ### 6mm
 

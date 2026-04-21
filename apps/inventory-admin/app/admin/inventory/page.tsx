@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import AdminPageHeader from '../components/AdminPageHeader'
 
 interface InventoryItem {
   id: string
@@ -207,34 +208,28 @@ function InventoryPageContent() {
 
   return (
     <main className="admin-page">
-      <div className="admin-page-header">
-        <div className="admin-page-title-row">
-          <h1 className="admin-page-title">Inventory</h1>
-          <button
-            onClick={async () => {
-              setLoading(true)
-              setError(null)
-              try {
-                await loadInventory(currentPage)
-              } catch (e) {
-                setError('Refresh failed, please try again')
-              }
-            }}
-            disabled={loading}
-            className="admin-btn admin-btn-secondary"
-            style={{ backgroundColor: loading ? '#e0e0e0' : '#f5f5f5', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}
-            title="Reload inventory list"
-          >
-            {loading ? '⏳ Loading...' : '🔄 Refresh'}
-          </button>
-        </div>
-        <Link
+      <AdminPageHeader
+        title="Inventory"
+        onRefresh={async () => {
+          setLoading(true)
+          setError(null)
+          try {
+            await loadInventory(currentPage)
+          } catch (e) {
+            setError('Refresh failed, please try again')
+          }
+        }}
+        refreshLabel="Reload inventory list"
+        refreshing={loading}
+        actions={
+          <Link
           href={`/admin/inventory/new?returnTo=${returnToParam}`}
           className="admin-link-btn admin-link-btn-primary"
-        >
-          + Add Inventory
-        </Link>
-      </div>
+          >
+            + Add Inventory
+          </Link>
+        }
+      />
 
       {error && (
         <div className="admin-error-banner">

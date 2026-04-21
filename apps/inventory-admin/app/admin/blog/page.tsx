@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { listAdminBlogPosts } from '@/app/lib/blogAdmin'
+import AdminPageHeader from '../components/AdminPageHeader'
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('en-US', {
@@ -14,31 +15,24 @@ export default async function BlogAdminPage() {
 
   return (
     <main className="admin-page">
-      <div className="admin-page-header">
-        <div className="admin-page-title-row">
-          <h1 className="admin-page-title">Blog</h1>
-        </div>
-        <Link href="/admin/blog/new" className="admin-link-btn admin-link-btn-primary">
-          New Article
+      <AdminPageHeader
+        title="Blog"
+        actions={
+          <Link
+          href="/admin/blog/new"
+          className="admin-link-btn admin-link-btn-soft"
+        >
+          <span aria-hidden="true" className="admin-link-btn-soft-icon">✦</span>
+          <span>Write with AI</span>
         </Link>
-      </div>
+        }
+      />
 
       <div className="admin-card" style={{ padding: '1.25rem 1.25rem 1rem' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: '1rem',
-            marginBottom: '1rem',
-            flexWrap: 'wrap',
-          }}
-        >
+        <div className="admin-section-header">
           <div>
-            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#8b7355', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              Existing Articles
-            </div>
-            <div style={{ color: '#5a4630', marginTop: '0.2rem' }}>
+            <div className="admin-section-kicker">Existing Articles</div>
+            <div className="admin-section-subtitle">
               {posts.length} article{posts.length === 1 ? '' : 's'} found
             </div>
           </div>

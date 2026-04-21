@@ -1,7 +1,7 @@
 'use client'
 
-import type { CSSProperties } from 'react'
 import { useEffect, useMemo, useState } from 'react'
+import AdminPageHeader from '../components/AdminPageHeader'
 
 interface OrderRecord {
   id: string
@@ -27,30 +27,6 @@ type DraftMap = Record<
     shipped_at: string
   }
 >
-
-const summaryGridStyle: CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-  gap: '0.75rem',
-  marginBottom: '2rem',
-}
-
-const summaryCardStyle: CSSProperties = {
-  padding: '1.5rem',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-}
-
-const summaryLabelStyle: CSSProperties = {
-  fontSize: '0.875rem',
-  color: '#666',
-  marginBottom: '0.5rem',
-}
-
-const tableCardStyle: CSSProperties = {
-  padding: '1.5rem',
-}
 
 function formatCurrency(cents: number, currency = 'usd') {
   return new Intl.NumberFormat('en-US', {
@@ -186,73 +162,47 @@ export default function OrdersPage() {
 
   return (
     <main className="admin-page">
-      <div className="admin-page-header">
-        <div className="admin-page-title-row">
-          <h1 className="admin-page-title">Orders</h1>
-          <button
-            onClick={() => void fetchOrders()}
-            disabled={loading}
-            className="admin-btn admin-btn-secondary"
-            style={{
-              backgroundColor: loading ? '#e0e0e0' : '#f5f5f5',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.6 : 1,
-            }}
-            title="Reload orders list"
-          >
-            {loading ? '⏳ Loading...' : '🔄 Refresh'}
-          </button>
-        </div>
-        <div style={{ color: '#666', fontSize: '0.95rem' }}>
-          Review paid orders, add shipment details, and send shipping confirmations from one place.
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Orders"
+        onRefresh={fetchOrders}
+        refreshLabel="Reload orders list"
+        refreshing={loading}
+        description="Review paid orders, add shipment details, and send shipping confirmations from one place."
+      />
 
       {error && <div className="admin-error-banner"><strong>Error:</strong> {error}</div>}
-      {notice && (
-        <div
-          style={{
-            marginBottom: '1rem',
-            padding: '0.75rem 1rem',
-            borderRadius: '8px',
-            border: '1px solid #A7F3D0',
-            backgroundColor: '#ECFDF5',
-            color: '#065F46',
-            fontWeight: 600,
-          }}
-        >
-          {notice}
-        </div>
-      )}
+      {notice && <div className="admin-banner admin-banner-success">{notice}</div>}
 
-      <div style={summaryGridStyle}>
-        <div style={summaryCardStyle}>
-          <div style={summaryLabelStyle}>Total Orders</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961' }}>
-            {orderCounts.total}
+      <div className="admin-stats-row">
+        <div className="admin-stats-grid">
+          <div className="admin-stat-card admin-stat-card-body">
+            <div className="admin-stat-label">Total Orders</div>
+            <div className="admin-stat-value" style={{ color: '#C9A961' }}>
+              {orderCounts.total}
+            </div>
           </div>
-        </div>
-        <div style={summaryCardStyle}>
-          <div style={summaryLabelStyle}>Paid / Processing</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2C5F8D' }}>
-            {orderCounts.paid}
+          <div className="admin-stat-card admin-stat-card-body">
+            <div className="admin-stat-label">Paid / Processing</div>
+            <div className="admin-stat-value" style={{ color: '#2C5F8D' }}>
+              {orderCounts.paid}
+            </div>
           </div>
-        </div>
-        <div style={summaryCardStyle}>
-          <div style={summaryLabelStyle}>Pending Shipment</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#D97706' }}>
-            {orderCounts.pendingShipment}
+          <div className="admin-stat-card admin-stat-card-body">
+            <div className="admin-stat-label">Pending Shipment</div>
+            <div className="admin-stat-value" style={{ color: '#D97706' }}>
+              {orderCounts.pendingShipment}
+            </div>
           </div>
-        </div>
-        <div style={summaryCardStyle}>
-          <div style={summaryLabelStyle}>Shipped</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10B981' }}>
-            {orderCounts.shipped}
+          <div className="admin-stat-card admin-stat-card-body">
+            <div className="admin-stat-label">Shipped</div>
+            <div className="admin-stat-value" style={{ color: '#10B981' }}>
+              {orderCounts.shipped}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="admin-card admin-filter-panel" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
+      <div className="admin-card admin-filter-panel">
         <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#666', marginBottom: '1rem' }}>
           🔍 Search Orders
         </div>
@@ -292,24 +242,15 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      <div className="admin-card admin-table-card" style={tableCardStyle}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: '1rem',
-            alignItems: 'center',
-            marginBottom: '1rem',
-            flexWrap: 'wrap',
-          }}
-        >
+      <div className="admin-card admin-table-card" style={{ padding: '1.5rem' }}>
+        <div className="admin-section-header">
           <div>
-            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#111827' }}>Order Queue</div>
-            <div style={{ fontSize: '0.875rem', color: '#666' }}>
+            <div className="admin-section-title">Order Queue</div>
+            <div className="admin-section-subtitle">
               Update shipment details and confirm which orders have already been fulfilled.
             </div>
           </div>
-          <div style={{ fontSize: '0.875rem', color: '#666' }}>
+          <div className="admin-section-meta">
             {hasSearch ? `Filtered by "${appliedSearch}"` : 'Showing the latest matching orders'}
           </div>
         </div>

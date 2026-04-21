@@ -163,55 +163,23 @@ export default function AiDraftClient() {
         <div className="admin-page-title-row">
           <h1 className="admin-page-title">Create Product with AI</h1>
         </div>
-        <Link href={returnTo} className="admin-link-btn" style={{ background: '#f5f5f5' }}>
+        <Link href={returnTo} className="admin-link-btn admin-btn-secondary">
           Back to Products
         </Link>
       </div>
 
-      <div
-        style={{
-          marginBottom: '1rem',
-          padding: '0.95rem 1rem',
-          borderRadius: '10px',
-          border: '1px solid rgba(201, 169, 97, 0.28)',
-          background: 'linear-gradient(145deg, #fffdf8 0%, #f7f1e7 100%)',
-          color: '#5a4630',
-          lineHeight: 1.6,
-        }}
-      >
+      <div className="admin-banner admin-banner-info">
         Upload one or more photos, generate AI suggestions, then create a draft product for final
         review. Uploaded images are now sent into OpenAI for visual analysis, and notes are used as
         extra guidance.
       </div>
 
       {error ? (
-        <div
-          style={{
-            marginBottom: '1rem',
-            padding: '0.85rem 1rem',
-            borderRadius: '10px',
-            border: '1px solid #fecaca',
-            background: '#fff1f2',
-            color: '#9f1239',
-            fontWeight: 600,
-          }}
-        >
-          {error}
-        </div>
+        <div className="admin-banner admin-banner-error">{error}</div>
       ) : null}
 
       {!error && debugMessage ? (
-        <div
-          style={{
-            marginBottom: '1rem',
-            padding: '0.85rem 1rem',
-            borderRadius: '10px',
-            border: '1px solid #fde68a',
-            background: '#fffbeb',
-            color: '#92400e',
-            lineHeight: 1.6,
-          }}
-        >
+        <div className="admin-banner admin-banner-warning">
           <strong>Fallback reason:</strong> {debugMessage}
         </div>
       ) : null}

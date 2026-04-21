@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import SalesForm from './components/SalesForm';
 import SalesList from './components/SalesList';
+import AdminPageHeader from '../components/AdminPageHeader';
 
 interface SaleRecord {
   id: string;
@@ -66,32 +67,26 @@ function SalesPageContent() {
 
   return (
     <main className="admin-page">
-      <div className="admin-page-header">
-        <div className="admin-page-title-row">
-          <h1 className="admin-page-title">Sales</h1>
+      <AdminPageHeader
+        title="Sales"
+        onRefresh={handleRefresh}
+        refreshLabel="Reload sales list"
+        refreshing={refreshing}
+        actions={
           <button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            className="admin-btn admin-btn-secondary"
-            style={{ backgroundColor: refreshing ? '#e0e0e0' : '#f5f5f5', cursor: refreshing ? 'not-allowed' : 'pointer', opacity: refreshing ? 0.6 : 1 }}
-            title="Reload sales list"
+            onClick={() => {
+              if (showForm && !editingSale) {
+                setShowForm(false);
+              } else {
+                handleNewSale();
+              }
+            }}
+            className={(showForm && !editingSale) ? 'admin-btn admin-btn-secondary' : 'admin-btn admin-btn-primary'}
           >
-            {refreshing ? '⏳ Loading...' : '🔄 Refresh'}
+            {(showForm && !editingSale) ? 'Hide Form' : '+ Record New Sale'}
           </button>
-        </div>
-        <button
-          onClick={() => {
-            if (showForm && !editingSale) {
-              setShowForm(false);
-            } else {
-              handleNewSale();
-            }
-          }}
-          className={(showForm && !editingSale) ? 'admin-btn admin-btn-secondary' : 'admin-btn admin-btn-primary'}
-        >
-          {(showForm && !editingSale) ? 'Hide Form' : '+ Record New Sale'}
-        </button>
-      </div>
+        }
+      />
 
       {showForm && (
         <div style={{ marginBottom: '2rem' }}>

@@ -4,6 +4,7 @@ import type { CatalogProduct } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
+import AdminPageHeader from '../components/AdminPageHeader'
 
 // Extended product type with cost and profit
 interface ProductWithStats extends CatalogProduct {
@@ -323,57 +324,37 @@ function ProductsPageContent() {
 
   return (
     <main className="admin-page">
-      <div className="admin-page-header">
-        <div className="admin-page-title-row">
-          <h1 className="admin-page-title">Products</h1>
-          <button
-            onClick={async () => {
-              setLoading(true)
-              setError(null)
-              try {
-                await loadProducts(currentPage)
-              } catch (e) {
-                setError('Refresh failed, please try again')
-              }
-            }}
-            disabled={loading}
-            className="admin-btn admin-btn-secondary"
-            style={{ backgroundColor: loading ? '#e0e0e0' : '#f5f5f5', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}
-            title="Reload product list"
-          >
-            {loading ? '⏳ Loading...' : '🔄 Refresh'}
-          </button>
-        </div>
-        <div className="admin-page-header-actions">
-          <Link
-            href={`/admin/products/ai-draft?returnTo=${returnToParam}`}
-            className="admin-link-btn"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.45rem',
-              padding: '0.78rem 1.15rem',
-              borderRadius: '999px',
-              background: 'linear-gradient(135deg, #f7ecd7 0%, #ead3a4 100%)',
-              color: '#4a3824',
-              border: '1px solid rgba(166, 126, 55, 0.28)',
-              boxShadow: '0 10px 24px rgba(161, 127, 59, 0.18)',
-              letterSpacing: '0.04em',
-              fontWeight: 700,
-            }}
-          >
-            <span aria-hidden="true">✦</span>
-            <span>Create with AI</span>
-          </Link>
-          <Link
-            href={`/admin/products/new?returnTo=${returnToParam}`}
-            className="admin-link-btn admin-link-btn-primary"
-          >
-            + Add Product
-          </Link>
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Products"
+        onRefresh={async () => {
+          setLoading(true)
+          setError(null)
+          try {
+            await loadProducts(currentPage)
+          } catch (e) {
+            setError('Refresh failed, please try again')
+          }
+        }}
+        refreshLabel="Reload product list"
+        refreshing={loading}
+        actions={
+          <>
+            <Link
+              href={`/admin/products/ai-draft?returnTo=${returnToParam}`}
+              className="admin-link-btn admin-link-btn-soft"
+            >
+              <span aria-hidden="true" className="admin-link-btn-soft-icon">✦</span>
+              <span>Create with AI</span>
+            </Link>
+            <Link
+              href={`/admin/products/new?returnTo=${returnToParam}`}
+              className="admin-link-btn admin-link-btn-primary"
+            >
+              + Add Product
+            </Link>
+          </>
+        }
+      />
 
       {error && (
         <div className="admin-error-banner">
@@ -559,7 +540,7 @@ function ProductsPageContent() {
           className="admin-products-stats-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
             gap: '0.75rem',
             width: '100%',
           }}
@@ -569,19 +550,13 @@ function ProductsPageContent() {
               key={card.label}
               className="admin-stat-card"
               style={{
-                padding: '1rem 1rem 1rem 1.1rem',
-                borderLeft: `4px solid ${card.accent}`,
-                backgroundColor: '#fffdf9',
-                minHeight: '88px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
+                padding: '1.5rem',
               }}
             >
-              <p style={{ fontSize: '0.75rem', color: '#777', margin: '0 0 0.35rem 0', letterSpacing: '0.02em' }}>
+              <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>
                 {card.label}
               </p>
-              <p style={{ fontSize: '1.6rem', fontWeight: 700, color: '#1f2937', margin: 0 }}>
+              <p style={{ fontSize: '2rem', fontWeight: 'bold', color: card.accent, margin: 0 }}>
                 {card.value}
               </p>
             </div>
