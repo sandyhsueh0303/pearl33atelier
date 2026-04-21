@@ -24,6 +24,7 @@ ENV PORT=8080
 
 COPY --from=builder /app/apps/inventory-admin/.next/standalone ./
 COPY --from=builder /app/apps/inventory-admin/.next/static ./apps/inventory-admin/.next/static
+COPY --from=builder /app/apps/public-web/content ./apps/public-web/content
 
 EXPOSE 8080
 CMD ["node", "apps/inventory-admin/server.js"]

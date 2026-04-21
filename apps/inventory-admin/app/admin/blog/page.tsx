@@ -18,30 +18,9 @@ export default async function BlogAdminPage() {
         <div className="admin-page-title-row">
           <h1 className="admin-page-title">Blog</h1>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <Link href="/admin/blog/new" className="admin-link-btn admin-link-btn-primary">
-            New Article
-          </Link>
-          <Link href="/api/blog/posts" className="admin-link-btn" style={{ background: '#f5f5f5' }}>
-            Open JSON
-          </Link>
-        </div>
-      </div>
-
-      <div
-        style={{
-          marginBottom: '1rem',
-          padding: '0.95rem 1rem',
-          borderRadius: '10px',
-          border: '1px solid rgba(201, 169, 97, 0.22)',
-          background: 'linear-gradient(145deg, #fffdf8 0%, #f8f3ea 100%)',
-          color: '#5a4630',
-          lineHeight: 1.6,
-        }}
-      >
-        This page reads the existing Markdown posts in <code>apps/public-web/content/blog</code>{' '}
-        and lists publishable articles with valid blog frontmatter. Pipeline prompts and schemas
-        now live separately in <code>apps/public-web/content/blog-pipeline</code>.
+        <Link href="/admin/blog/new" className="admin-link-btn admin-link-btn-primary">
+          New Article
+        </Link>
       </div>
 
       <div className="admin-card" style={{ padding: '1.25rem 1.25rem 1rem' }}>

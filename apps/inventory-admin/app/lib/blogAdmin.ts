@@ -1,8 +1,17 @@
 import fs from 'fs/promises'
+import fsSync from 'fs'
 import path from 'path'
-import matter from 'gray-matter'
 
-const blogContentDirectory = path.join(process.cwd(), '..', 'public-web', 'content', 'blog')
+type ParsedMarkdownFile = {
+  content: string
+  data: Record<string, unknown>
+}
+
+const blogContentDirectories = [
+  path.join(process.cwd(), '..', 'public-web', 'content', 'blog'),
+  path.join(process.cwd(), 'apps', 'public-web', 'content', 'blog'),
+  path.join(process.cwd(), 'content', 'blog'),
+]
 
 export type AdminBlogPostSummary = {
   slug: string
@@ -15,6 +24,126 @@ export type AdminBlogPostSummary = {
   tags: string[]
   readingMinutes: number
   ogImage?: string
+}
+
+function getBlogContentDirectory() {
+  return blogContentDirectories.find((directory) => fsSync.existsSync(directory))
+}
+
+function coerceFrontmatterValue(rawValue: string): unknown {
+  const trimmedValue = rawValue.trim()
+
+  if (trimmedValue.startsWith('"') && trimmedValue.endsWith('"')) {
+    try {
+      return JSON.parse(trimmedValue)
+    } catch {
+      return trimmedValue.slice(1, -1)
+    }
+  }
+
+  if (trimmedValue.startsWith("'") && trimmedValue.endsWith("'")) {
+    return trimmedValue.slice(1, -1)
+  }
+
+  if (trimmedValue === 'true') {
+    return true
+  }
+
+  if (trimmedValue === 'false') {
+    return false
+  }
+
+  if (/^-?\d+(\.\d+)?$/.test(trimmedValue)) {
+    return Number(trimmedValue)
+  }
+
+  if (trimmedValue.startsWith('[') && trimmedValue.endsWith(']')) {
+    return trimmedValue
+      .slice(1, -1)
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .map((item) => {
+        if (item.startsWith('"') && item.endsWith('"')) {
+          try {
+            return JSON.parse(item)
+          } catch {
+            return item.slice(1, -1)
+          }
+        }
+
+        if (item.startsWith("'") && item.endsWith("'")) {
+          return item.slice(1, -1)
+        }
+
+        return item
+      })
+  }
+
+  return trimmedValue
+}
+
+function parseFrontmatter(fileContents: string): ParsedMarkdownFile {
+  if (!fileContents.startsWith('---\n')) {
+    return { data: {}, content: fileContents }
+  }
+
+  const endMarkerIndex = fileContents.indexOf('\n---\n', 4)
+
+  if (endMarkerIndex === -1) {
+    return { data: {}, content: fileContents }
+  }
+
+  const frontmatterBlock = fileContents.slice(4, endMarkerIndex)
+  const content = fileContents.slice(endMarkerIndex + 5)
+  const data: Record<string, unknown> = {}
+  let currentArrayKey: string | null = null
+
+  for (const line of frontmatterBlock.split('\n')) {
+    const trimmedLine = line.trim()
+
+    if (!trimmedLine) {
+      continue
+    }
+
+    if (trimmedLine.startsWith('- ') && currentArrayKey) {
+      const currentValue = data[currentArrayKey]
+      const nextValue = trimmedLine.slice(2).trim()
+
+      if (Array.isArray(currentValue)) {
+        currentValue.push(String(coerceFrontmatterValue(nextValue)))
+      } else {
+        data[currentArrayKey] = [String(coerceFrontmatterValue(nextValue))]
+      }
+
+      continue
+    }
+
+    currentArrayKey = null
+
+    const separatorIndex = line.indexOf(':')
+
+    if (separatorIndex === -1) {
+      continue
+    }
+
+    const key = line.slice(0, separatorIndex).trim()
+    const rawValue = line.slice(separatorIndex + 1).trim()
+
+    if (!key) {
+      continue
+    }
+
+    if (!rawValue) {
+      currentArrayKey = key
+      data[key] = []
+      continue
+    }
+
+    data[key] = coerceFrontmatterValue(rawValue)
+  }
+
+  return { data, content }
 }
 
 function isPublishableBlogFrontmatter(data: Record<string, unknown>): data is {
@@ -40,6 +169,12 @@ function isPublishableBlogFrontmatter(data: Record<string, unknown>): data is {
 }
 
 export async function listAdminBlogPosts(): Promise<AdminBlogPostSummary[]> {
+  const blogContentDirectory = getBlogContentDirectory()
+
+  if (!blogContentDirectory) {
+    return []
+  }
+
   const fileNames = await fs.readdir(blogContentDirectory)
 
   const posts: Array<AdminBlogPostSummary | null> = await Promise.all(
@@ -48,7 +183,7 @@ export async function listAdminBlogPosts(): Promise<AdminBlogPostSummary[]> {
       .map(async (fileName) => {
         const fullPath = path.join(blogContentDirectory, fileName)
         const fileContents = await fs.readFile(fullPath, 'utf8')
-        const { data } = matter(fileContents)
+        const { data } = parseFrontmatter(fileContents)
 
         if (!isPublishableBlogFrontmatter(data)) {
           return null

@@ -1,5 +1,6 @@
 'use client'
 
+import type { CSSProperties } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
 interface OrderRecord {
@@ -26,6 +27,30 @@ type DraftMap = Record<
     shipped_at: string
   }
 >
+
+const summaryGridStyle: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+  gap: '0.75rem',
+  marginBottom: '2rem',
+}
+
+const summaryCardStyle: CSSProperties = {
+  padding: '1.5rem',
+  backgroundColor: 'white',
+  borderRadius: '8px',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+}
+
+const summaryLabelStyle: CSSProperties = {
+  fontSize: '0.875rem',
+  color: '#666',
+  marginBottom: '0.5rem',
+}
+
+const tableCardStyle: CSSProperties = {
+  padding: '1.5rem',
+}
 
 function formatCurrency(cents: number, currency = 'usd') {
   return new Intl.NumberFormat('en-US', {
@@ -100,6 +125,7 @@ export default function OrdersPage() {
       total: orders.length,
       paid: orders.filter((order) => order.status === 'paid' || order.status === 'processing').length,
       shipped: orders.filter((order) => order.status === 'shipped').length,
+      pendingShipment: orders.filter((order) => order.status !== 'shipped').length,
     }
   }, [orders])
 
@@ -163,10 +189,23 @@ export default function OrdersPage() {
       <div className="admin-page-header">
         <div className="admin-page-title-row">
           <h1 className="admin-page-title">Orders</h1>
+          <button
+            onClick={() => void fetchOrders()}
+            disabled={loading}
+            className="admin-btn admin-btn-secondary"
+            style={{
+              backgroundColor: loading ? '#e0e0e0' : '#f5f5f5',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.6 : 1,
+            }}
+            title="Reload orders list"
+          >
+            {loading ? '⏳ Loading...' : '🔄 Refresh'}
+          </button>
         </div>
-        <button onClick={() => void fetchOrders()} className="admin-btn admin-btn-secondary">
-          Refresh
-        </button>
+        <div style={{ color: '#666', fontSize: '0.95rem' }}>
+          Review paid orders, add shipment details, and send shipping confirmations from one place.
+        </div>
       </div>
 
       {error && <div className="admin-error-banner"><strong>Error:</strong> {error}</div>}
@@ -186,28 +225,37 @@ export default function OrdersPage() {
         </div>
       )}
 
-      <div className="admin-stats-row">
-        <div className="admin-stat-card" style={{ padding: '1rem', minWidth: '120px' }}>
-          <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Total</p>
-          <p style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#C9A961', margin: 0 }}>
+      <div style={summaryGridStyle}>
+        <div style={summaryCardStyle}>
+          <div style={summaryLabelStyle}>Total Orders</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961' }}>
             {orderCounts.total}
-          </p>
+          </div>
         </div>
-        <div className="admin-stat-card" style={{ padding: '1rem', minWidth: '150px' }}>
-          <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Paid / Processing</p>
-          <p style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#2C5F8D', margin: 0 }}>
+        <div style={summaryCardStyle}>
+          <div style={summaryLabelStyle}>Paid / Processing</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2C5F8D' }}>
             {orderCounts.paid}
-          </p>
+          </div>
         </div>
-        <div className="admin-stat-card" style={{ padding: '1rem', minWidth: '120px' }}>
-          <p style={{ fontSize: '0.75rem', color: '#666', margin: '0 0 0.25rem 0' }}>Shipped</p>
-          <p style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#10B981', margin: 0 }}>
+        <div style={summaryCardStyle}>
+          <div style={summaryLabelStyle}>Pending Shipment</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#D97706' }}>
+            {orderCounts.pendingShipment}
+          </div>
+        </div>
+        <div style={summaryCardStyle}>
+          <div style={summaryLabelStyle}>Shipped</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10B981' }}>
             {orderCounts.shipped}
-          </p>
+          </div>
         </div>
       </div>
 
-      <div className="admin-card admin-filter-panel">
+      <div className="admin-card admin-filter-panel" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
+        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#666', marginBottom: '1rem' }}>
+          🔍 Search Orders
+        </div>
         <form
           onSubmit={(event) => {
             event.preventDefault()
@@ -216,7 +264,7 @@ export default function OrdersPage() {
           className="admin-filter-row"
         >
           <div className="admin-filter-item-wide">
-            <label className="admin-filter-label">Search orders</label>
+            <label className="admin-filter-label">Find by order, customer, email, or tracking</label>
             <input
               className="admin-control"
               placeholder="Search order number, customer, email, or tracking..."
@@ -244,7 +292,27 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      <div className="admin-card admin-table-card">
+      <div className="admin-card admin-table-card" style={tableCardStyle}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            alignItems: 'center',
+            marginBottom: '1rem',
+            flexWrap: 'wrap',
+          }}
+        >
+          <div>
+            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#111827' }}>Order Queue</div>
+            <div style={{ fontSize: '0.875rem', color: '#666' }}>
+              Update shipment details and confirm which orders have already been fulfilled.
+            </div>
+          </div>
+          <div style={{ fontSize: '0.875rem', color: '#666' }}>
+            {hasSearch ? `Filtered by "${appliedSearch}"` : 'Showing the latest matching orders'}
+          </div>
+        </div>
         {loading ? (
           <div className="admin-empty-state">
             <p className="admin-empty-title">Loading orders...</p>
@@ -356,7 +424,11 @@ export default function OrdersPage() {
                       <td className="admin-cell-center">
                         <button
                           className="admin-btn admin-btn-primary admin-btn-sm"
-                          style={{ whiteSpace: 'nowrap' }}
+                          style={{
+                            whiteSpace: 'nowrap',
+                            minWidth: '150px',
+                            opacity: submittingId === order.id ? 0.7 : 1,
+                          }}
                           onClick={() => void handleSubmit(order.id)}
                           disabled={submittingId === order.id}
                         >

@@ -3,10 +3,12 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import {
-  BLOG_ARTICLE_TYPES,
-  BLOG_CTA_TYPES,
   BLOG_PRIMARY_INTENTS,
   BLOG_PRODUCT_CATEGORIES,
+  inferArticleTypeFromIntent,
+  inferAudienceFromIntent,
+  inferGoal,
+  inferMustCover,
   slugify,
   type ArticlePackage,
   type ArticleBrief,
@@ -17,26 +19,11 @@ import {
 } from '@/app/lib/blogPipeline'
 
 type BriefFormState = {
-  slug: string
   workingTitle: string
   primaryIntent: ArticleBrief['primaryIntent']
   primaryKeyword: string
-  secondaryKeywordsText: string
-  audience: string
-  articleType: ArticleBrief['articleType']
-  goal: string
   mustCoverText: string
-  niceToCoverText: string
-  factsProvidedText: string
-  linksToMentionText: string
-  relevantCollectionsText: string
-  customServiceRelevant: boolean
   productCategoriesRelevant: BlogProductCategory[]
-  ctaType: ArticleBrief['cta']['type']
-  ctaPath: string
-  ctaLabelHint: string
-  avoidClaimsText: string
-  mustNotMentionText: string
   targetReadingMinutes: string
 }
 
@@ -71,27 +58,72 @@ type BlogGenerateFullResponse = {
 }
 
 const defaultBrief: BriefFormState = {
-  slug: '',
   workingTitle: '',
   primaryIntent: 'educational',
   primaryKeyword: '',
-  secondaryKeywordsText: '',
-  audience: '',
-  articleType: 'evergreen-guide',
-  goal: '',
   mustCoverText: '',
-  niceToCoverText: '',
-  factsProvidedText: '',
-  linksToMentionText: '',
-  relevantCollectionsText: '',
-  customServiceRelevant: false,
   productCategoriesRelevant: [],
-  ctaType: 'soft-none',
-  ctaPath: '',
-  ctaLabelHint: '',
-  avoidClaimsText: '',
-  mustNotMentionText: '',
   targetReadingMinutes: '',
+}
+
+const ui = {
+  colors: {
+    white: '#ffffff',
+    pearl: '#f8f6f0',
+    champagne: '#f7e7ce',
+    sand: '#f4ede2',
+    gold: '#d4af37',
+    goldSoft: 'rgba(212, 175, 55, 0.18)',
+    ink: '#2c2c2c',
+    text: '#5a4630',
+    textSoft: '#7b6a55',
+    border: '#e8ddcb',
+    borderSoft: '#f0e7d9',
+  },
+  shadow: {
+    soft: '0 12px 32px rgba(63, 45, 24, 0.08)',
+    inset: 'inset 0 1px 0 rgba(255,255,255,0.7)',
+  },
+}
+
+const panelStyle = {
+  border: `1px solid ${ui.colors.border}`,
+  borderRadius: '20px',
+  background:
+    'linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(250,247,241,0.98) 100%)',
+  boxShadow: ui.shadow.soft,
+}
+
+const formControlStyle = {
+  width: '100%',
+  padding: '0.9rem 1rem',
+  borderRadius: '14px',
+  border: `1px solid ${ui.colors.border}`,
+  background: 'linear-gradient(180deg, #fffdfa 0%, #ffffff 100%)',
+  color: ui.colors.ink,
+  fontSize: '0.96rem',
+  lineHeight: 1.6,
+  boxShadow: ui.shadow.inset,
+} as const
+
+const readOnlyControlStyle = {
+  ...formControlStyle,
+  background: 'linear-gradient(180deg, #faf7f0 0%, #fdfbf7 100%)',
+  color: ui.colors.textSoft,
+}
+
+const primaryButtonStyle = {
+  background: 'linear-gradient(135deg, #2c2c2c 0%, #4a4438 100%)',
+  color: '#fff',
+  border: `1px solid rgba(212, 175, 55, 0.35)`,
+  boxShadow: '0 10px 24px rgba(44, 44, 44, 0.18)',
+}
+
+const secondaryButtonStyle = {
+  background: 'linear-gradient(180deg, #fffdf8 0%, #f7f0e3 100%)',
+  color: ui.colors.text,
+  border: `1px solid ${ui.colors.border}`,
+  boxShadow: '0 8px 20px rgba(92, 71, 39, 0.08)',
 }
 
 function splitLines(value: string) {
@@ -102,32 +134,48 @@ function splitLines(value: string) {
 }
 
 function buildBriefPayload(state: BriefFormState): ArticleBrief {
+  const slug = slugify(state.workingTitle)
+  const articleType = inferArticleTypeFromIntent(state.primaryIntent)
+  const audience = inferAudienceFromIntent(state.primaryIntent)
+  const goal = inferGoal({
+    workingTitle: state.workingTitle,
+    primaryKeyword: state.primaryKeyword,
+    primaryIntent: state.primaryIntent,
+  })
+  const manualMustCover = splitLines(state.mustCoverText)
+
   return {
-    slug: state.slug,
+    slug,
     workingTitle: state.workingTitle,
     primaryIntent: state.primaryIntent,
     primaryKeyword: state.primaryKeyword,
-    secondaryKeywords: splitLines(state.secondaryKeywordsText),
-    audience: state.audience,
-    articleType: state.articleType,
-    goal: state.goal,
-    mustCover: splitLines(state.mustCoverText),
-    niceToCover: splitLines(state.niceToCoverText),
+    secondaryKeywords: [],
+    audience,
+    articleType,
+    goal,
+    mustCover:
+      manualMustCover.length > 0
+        ? manualMustCover
+        : inferMustCover({
+            workingTitle: state.workingTitle,
+            primaryKeyword: state.primaryKeyword,
+            primaryIntent: state.primaryIntent,
+          }),
+    niceToCover: [],
     brandContext: {
-      relevantCollections: splitLines(state.relevantCollectionsText),
-      customServiceRelevant: state.customServiceRelevant,
+      relevantCollections: [],
+      customServiceRelevant: false,
       productCategoriesRelevant: state.productCategoriesRelevant,
     },
-    factsProvided: splitLines(state.factsProvidedText),
-    linksToMention: splitLines(state.linksToMentionText),
+    factsProvided: [],
+    linksToMention: [],
     cta: {
-      type: state.ctaType,
-      path: state.ctaType === 'soft-none' ? '' : state.ctaPath,
-      labelHint: state.ctaLabelHint || undefined,
+      type: 'soft-none',
+      path: '',
     },
     constraints: {
-      avoidClaims: splitLines(state.avoidClaimsText),
-      mustNotMention: splitLines(state.mustNotMentionText),
+      avoidClaims: [],
+      mustNotMention: [],
       targetReadingMinutes: state.targetReadingMinutes
         ? Number(state.targetReadingMinutes)
         : undefined,
@@ -243,7 +291,31 @@ export default function BlogGeneratorClient() {
     <main className="admin-page">
       <div className="admin-page-header">
         <div className="admin-page-title-row">
-          <h1 className="admin-page-title">New Blog Article</h1>
+          <div style={{ display: 'grid', gap: '0.45rem' }}>
+            <div
+              style={{
+                fontSize: '0.82rem',
+                letterSpacing: '0.22em',
+                textTransform: 'uppercase',
+                color: ui.colors.gold,
+                fontWeight: 600,
+              }}
+            >
+              Journal Pipeline
+            </div>
+            <h1
+              className="admin-page-title"
+              style={{
+                fontFamily: 'var(--font-playfair-display), serif',
+                fontWeight: 400,
+                letterSpacing: '0.02em',
+                color: ui.colors.ink,
+                margin: 0,
+              }}
+            >
+              New Blog Article
+            </h1>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <Link href="/admin/blog" className="admin-link-btn" style={{ background: '#f5f5f5' }}>
@@ -254,13 +326,14 @@ export default function BlogGeneratorClient() {
 
       <div
         style={{
-          marginBottom: '1rem',
-          padding: '0.95rem 1rem',
-          borderRadius: '10px',
-          border: '1px solid rgba(201, 169, 97, 0.22)',
-          background: 'linear-gradient(145deg, #fffdf8 0%, #f8f3ea 100%)',
-          color: '#5a4630',
-          lineHeight: 1.6,
+          marginBottom: '1.25rem',
+          padding: '1.2rem 1.25rem',
+          borderRadius: '18px',
+          border: '1px solid rgba(212, 175, 55, 0.2)',
+          background: 'linear-gradient(180deg, #f3eadc 0%, #fffdf8 100%)',
+          color: ui.colors.text,
+          lineHeight: 1.7,
+          boxShadow: ui.shadow.soft,
         }}
       >
         Start with the planner loop if you want to sanity-check the outline first. Once that looks
@@ -321,12 +394,29 @@ export default function BlogGeneratorClient() {
       ) : null}
 
       <div className="admin-card" style={{ display: 'grid', gap: '1.25rem', gridTemplateColumns: 'minmax(340px, 1.05fr) minmax(320px, 1fr)' }}>
-        <section style={{ display: 'grid', gap: '1rem', alignContent: 'start' }}>
+        <section
+          style={{
+            ...panelStyle,
+            display: 'grid',
+            gap: '1.15rem',
+            alignContent: 'start',
+            padding: '1.4rem',
+          }}
+        >
           <div>
-            <h2 style={{ margin: 0, color: '#2f2418' }}>Article Brief</h2>
-            <p style={{ margin: '0.45rem 0 0', color: '#6f5d48', lineHeight: 1.6 }}>
-              Keep this close to the schema. The planner output on the right should become the
-              writer-facing blueprint.
+            <h2
+              style={{
+                margin: 0,
+                color: ui.colors.ink,
+                fontFamily: 'var(--font-playfair-display), serif',
+                fontWeight: 400,
+                letterSpacing: '0.02em',
+              }}
+            >
+              Brief Input
+            </h2>
+            <p style={{ margin: '0.45rem 0 0', color: ui.colors.textSoft, lineHeight: 1.7 }}>
+              Keep the input light. Let the handbook and prompts do the heavier editorial work.
             </p>
           </div>
 
@@ -334,29 +424,22 @@ export default function BlogGeneratorClient() {
             <Field label="Working Title">
               <input
                 value={form.workingTitle}
+                style={formControlStyle}
                 onChange={(event) => {
                   const workingTitle = event.target.value
                   setForm((prev) => ({
                     ...prev,
                     workingTitle,
-                    slug: prev.slug || slugify(workingTitle),
                   }))
                 }}
               />
             </Field>
 
             <div style={{ display: 'grid', gap: '0.9rem', gridTemplateColumns: '1fr 1fr' }}>
-              <Field label="Slug">
-                <input
-                  value={form.slug}
-                  onChange={(event) =>
-                    setForm((prev) => ({ ...prev, slug: slugify(event.target.value) }))
-                  }
-                />
-              </Field>
               <Field label="Primary Keyword">
                 <input
                   value={form.primaryKeyword}
+                  style={formControlStyle}
                   onChange={(event) =>
                     setForm((prev) => ({ ...prev, primaryKeyword: event.target.value }))
                   }
@@ -368,6 +451,7 @@ export default function BlogGeneratorClient() {
               <Field label="Primary Intent">
                 <select
                   value={form.primaryIntent}
+                  style={formControlStyle}
                   onChange={(event) =>
                     setForm((prev) => ({
                       ...prev,
@@ -382,101 +466,21 @@ export default function BlogGeneratorClient() {
                   ))}
                 </select>
               </Field>
-              <Field label="Article Type">
-                <select
-                  value={form.articleType}
-                  onChange={(event) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      articleType: event.target.value as ArticleBrief['articleType'],
-                    }))
-                  }
-                >
-                  {BLOG_ARTICLE_TYPES.map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
+              <Field label="Auto Slug">
+                <input value={briefPreview.slug} readOnly style={readOnlyControlStyle} />
               </Field>
             </div>
 
-            <Field label="Audience">
-              <input
-                value={form.audience}
-                onChange={(event) => setForm((prev) => ({ ...prev, audience: event.target.value }))}
-              />
-            </Field>
-
-            <Field label="Goal">
-              <textarea
-                value={form.goal}
-                onChange={(event) => setForm((prev) => ({ ...prev, goal: event.target.value }))}
-                rows={3}
-              />
-            </Field>
-
-            <Field label="Must Cover" hint="One topic per line">
+            <Field label="Must Cover" hint="Optional. One topic per line if you want to steer the article.">
               <textarea
                 value={form.mustCoverText}
+                style={{ ...formControlStyle, minHeight: '130px', resize: 'vertical' }}
                 onChange={(event) =>
                   setForm((prev) => ({ ...prev, mustCoverText: event.target.value }))
                 }
                 rows={5}
               />
             </Field>
-
-            <Field label="Nice to Cover" hint="Optional, one topic per line">
-              <textarea
-                value={form.niceToCoverText}
-                onChange={(event) =>
-                  setForm((prev) => ({ ...prev, niceToCoverText: event.target.value }))
-                }
-                rows={3}
-              />
-            </Field>
-
-            <div style={{ display: 'grid', gap: '0.9rem', gridTemplateColumns: '1fr 1fr' }}>
-              <Field label="Secondary Keywords" hint="One per line">
-                <textarea
-                  value={form.secondaryKeywordsText}
-                  onChange={(event) =>
-                    setForm((prev) => ({ ...prev, secondaryKeywordsText: event.target.value }))
-                  }
-                  rows={4}
-                />
-              </Field>
-              <Field label="Links to Mention" hint="One path per line">
-                <textarea
-                  value={form.linksToMentionText}
-                  onChange={(event) =>
-                    setForm((prev) => ({ ...prev, linksToMentionText: event.target.value }))
-                  }
-                  rows={4}
-                />
-              </Field>
-            </div>
-
-            <div style={{ display: 'grid', gap: '0.9rem', gridTemplateColumns: '1fr 1fr' }}>
-              <Field label="Facts Provided" hint="One fact per line">
-                <textarea
-                  value={form.factsProvidedText}
-                  onChange={(event) =>
-                    setForm((prev) => ({ ...prev, factsProvidedText: event.target.value }))
-                  }
-                  rows={4}
-                />
-              </Field>
-              <Field label="Relevant Collections" hint="One collection per line">
-                <textarea
-                  value={form.relevantCollectionsText}
-                  onChange={(event) =>
-                    setForm((prev) => ({ ...prev, relevantCollectionsText: event.target.value }))
-                  }
-                  rows={4}
-                />
-              </Field>
-            </div>
 
             <Field label="Relevant Product Categories">
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -495,13 +499,16 @@ export default function BlogGeneratorClient() {
                         }))
                       }
                       style={{
-                        border: selected ? '1px solid #a67c39' : '1px solid #ddd6c8',
-                        background: selected ? '#f6f0e2' : '#fff',
-                        color: '#5a4630',
+                        border: selected ? `1px solid ${ui.colors.gold}` : `1px solid ${ui.colors.border}`,
+                        background: selected
+                          ? 'linear-gradient(180deg, #faf1dc 0%, #fffaf0 100%)'
+                          : 'linear-gradient(180deg, #fffdfa 0%, #ffffff 100%)',
+                        color: ui.colors.text,
                         borderRadius: '999px',
-                        padding: '0.45rem 0.7rem',
+                        padding: '0.5rem 0.8rem',
                         fontWeight: 600,
                         cursor: 'pointer',
+                        boxShadow: selected ? '0 6px 16px rgba(212, 175, 55, 0.14)' : 'none',
                       }}
                     >
                       {category}
@@ -511,84 +518,34 @@ export default function BlogGeneratorClient() {
               </div>
             </Field>
 
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#5a4630' }}>
+            <Field label="Target Reading Minutes" hint="Optional. Leave blank to let AI decide.">
               <input
-                type="checkbox"
-                checked={form.customServiceRelevant}
+                type="number"
+                min={3}
+                max={20}
+                value={form.targetReadingMinutes}
+                style={formControlStyle}
                 onChange={(event) =>
-                  setForm((prev) => ({ ...prev, customServiceRelevant: event.target.checked }))
+                  setForm((prev) => ({ ...prev, targetReadingMinutes: event.target.value }))
                 }
               />
-              Custom service is relevant to this article
-            </label>
+            </Field>
 
-            <div style={{ display: 'grid', gap: '0.9rem', gridTemplateColumns: '1fr 1fr 1fr' }}>
-              <Field label="CTA Type">
-                <select
-                  value={form.ctaType}
-                  onChange={(event) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      ctaType: event.target.value as ArticleBrief['cta']['type'],
-                      ctaPath:
-                        event.target.value === 'soft-none' ? '' : prev.ctaPath,
-                    }))
-                  }
-                >
-                  {BLOG_CTA_TYPES.map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-              <Field label="CTA Path">
-                <input
-                  value={form.ctaPath}
-                  onChange={(event) => setForm((prev) => ({ ...prev, ctaPath: event.target.value }))}
-                  disabled={form.ctaType === 'soft-none'}
-                />
-              </Field>
-              <Field label="CTA Label Hint">
-                <input
-                  value={form.ctaLabelHint}
-                  onChange={(event) =>
-                    setForm((prev) => ({ ...prev, ctaLabelHint: event.target.value }))
-                  }
-                />
-              </Field>
-            </div>
-
-            <div style={{ display: 'grid', gap: '0.9rem', gridTemplateColumns: '1fr 1fr 160px' }}>
-              <Field label="Avoid Claims" hint="One per line">
-                <textarea
-                  value={form.avoidClaimsText}
-                  onChange={(event) =>
-                    setForm((prev) => ({ ...prev, avoidClaimsText: event.target.value }))
-                  }
-                  rows={4}
-                />
-              </Field>
-              <Field label="Must Not Mention" hint="One per line">
-                <textarea
-                  value={form.mustNotMentionText}
-                  onChange={(event) =>
-                    setForm((prev) => ({ ...prev, mustNotMentionText: event.target.value }))
-                  }
-                  rows={4}
-                />
-              </Field>
-              <Field label="Target Reading Minutes">
-                <input
-                  type="number"
-                  min={3}
-                  max={20}
-                  value={form.targetReadingMinutes}
-                  onChange={(event) =>
-                    setForm((prev) => ({ ...prev, targetReadingMinutes: event.target.value }))
-                  }
-                />
-              </Field>
+            <div
+              style={{
+                padding: '1rem 1.05rem',
+                borderRadius: '16px',
+                border: `1px solid ${ui.colors.border}`,
+                background: 'linear-gradient(180deg, #fffdfa 0%, #f8f4ec 100%)',
+                color: ui.colors.textSoft,
+                lineHeight: 1.7,
+              }}
+            >
+              <strong style={{ color: ui.colors.text }}>AI will decide the rest.</strong>
+              <div style={{ marginTop: '0.35rem' }}>
+                Audience, goal, article type, slug, secondary keywords, internal links, CTA, and
+                guardrails are inferred from the handbook plus the three required inputs above.
+              </div>
             </div>
           </div>
 
@@ -598,6 +555,7 @@ export default function BlogGeneratorClient() {
               className="admin-link-btn admin-link-btn-primary"
               onClick={handleGenerateOutline}
               disabled={isGeneratingOutline || isRunningPipeline}
+              style={primaryButtonStyle}
             >
               {isGeneratingOutline ? 'Generating Outline...' : 'Generate Outline'}
             </button>
@@ -606,20 +564,38 @@ export default function BlogGeneratorClient() {
               className="admin-link-btn"
               onClick={handleRunFullPipeline}
               disabled={isGeneratingOutline || isRunningPipeline}
-              style={{ background: '#f5f5f5' }}
+              style={secondaryButtonStyle}
             >
               {isRunningPipeline ? 'Running Full Pipeline...' : 'Run Full Pipeline'}
             </button>
-            <span style={{ color: '#7b6a55' }}>
+            <span style={{ color: ui.colors.textSoft, lineHeight: 1.6 }}>
               Planner-only is useful for structure checks. Full pipeline adds article, QA, and packaging previews.
             </span>
           </div>
         </section>
 
-        <section style={{ display: 'grid', gap: '1rem', alignContent: 'start' }}>
+        <section
+          style={{
+            ...panelStyle,
+            display: 'grid',
+            gap: '1rem',
+            alignContent: 'start',
+            padding: '1.4rem',
+          }}
+        >
           <div>
-            <h2 style={{ margin: 0, color: '#2f2418' }}>Planner Output</h2>
-            <p style={{ margin: '0.45rem 0 0', color: '#6f5d48', lineHeight: 1.6 }}>
+            <h2
+              style={{
+                margin: 0,
+                color: ui.colors.ink,
+                fontFamily: 'var(--font-playfair-display), serif',
+                fontWeight: 400,
+                letterSpacing: '0.02em',
+              }}
+            >
+              Output Preview
+            </h2>
+            <p style={{ margin: '0.45rem 0 0', color: ui.colors.textSoft, lineHeight: 1.7 }}>
               Use this to confirm the article angle and outline before we generate the full draft.
             </p>
           </div>
@@ -731,7 +707,7 @@ export default function BlogGeneratorClient() {
                 <>
                   <div>
                     <h3 style={{ margin: '0.5rem 0 0', color: '#2f2418' }}>Pipeline Cards</h3>
-                    <p style={{ margin: '0.35rem 0 0', color: '#6f5d48', lineHeight: 1.6 }}>
+                    <p style={{ margin: '0.35rem 0 0', color: ui.colors.textSoft, lineHeight: 1.7 }}>
                       This mirrors the current stage-by-stage pipeline view, so we can inspect each
                       artifact before saving.
                     </p>
@@ -750,7 +726,7 @@ export default function BlogGeneratorClient() {
                 <>
                   <div>
                     <h3 style={{ margin: '0.5rem 0 0', color: '#2f2418' }}>Metadata Preview</h3>
-                    <p style={{ margin: '0.35rem 0 0', color: '#6f5d48', lineHeight: 1.6 }}>
+                    <p style={{ margin: '0.35rem 0 0', color: ui.colors.textSoft, lineHeight: 1.7 }}>
                       Final frontmatter preview before save.
                     </p>
                   </div>
@@ -805,10 +781,11 @@ export default function BlogGeneratorClient() {
                       className="admin-link-btn admin-link-btn-primary"
                       onClick={handleSaveArticle}
                       disabled={isSaving}
+                      style={primaryButtonStyle}
                     >
                       {isSaving ? 'Saving...' : 'Save Article'}
                     </button>
-                    <span style={{ color: '#7b6a55' }}>
+                    <span style={{ color: ui.colors.textSoft, lineHeight: 1.6 }}>
                       This writes <code>{finalArticlePackage.slug}.md</code> and{' '}
                       <code>{finalArticlePackage.slug}.schema.json</code> into{' '}
                       <code>apps/public-web/content/blog</code>.
@@ -848,10 +825,19 @@ function Field({
   children: React.ReactNode
 }) {
   return (
-    <label style={{ display: 'grid', gap: '0.45rem' }}>
-      <span style={{ fontWeight: 700, color: '#5a4630' }}>{label}</span>
+    <label style={{ display: 'grid', gap: '0.5rem' }}>
+      <span
+        style={{
+          fontWeight: 700,
+          color: ui.colors.text,
+          fontSize: '0.9rem',
+          letterSpacing: '0.02em',
+        }}
+      >
+        {label}
+      </span>
       {children}
-      {hint ? <span style={{ color: '#8a7862', fontSize: '0.84rem' }}>{hint}</span> : null}
+      {hint ? <span style={{ color: ui.colors.textSoft, fontSize: '0.84rem', lineHeight: 1.55 }}>{hint}</span> : null}
     </label>
   )
 }
@@ -876,16 +862,17 @@ function PipelineCard({
       <details
         open={defaultOpen}
         style={{
-          border: '1px solid #ece7de',
-          borderRadius: '14px',
-          background: '#fff',
+          border: `1px solid ${ui.colors.border}`,
+          borderRadius: '18px',
+          background: 'linear-gradient(180deg, #fffdf9 0%, #ffffff 100%)',
           overflow: 'hidden',
+          boxShadow: '0 8px 22px rgba(92, 71, 39, 0.07)',
         }}
       >
         <summary
           style={{
-            padding: '0.85rem 1rem',
-            borderBottom: '1px solid #f1ece4',
+            padding: '1rem 1.05rem',
+            borderBottom: `1px solid ${ui.colors.borderSoft}`,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -895,8 +882,8 @@ function PipelineCard({
           }}
         >
           <span style={{ display: 'grid', gap: '0.18rem' }}>
-            <strong style={{ color: '#2f2418' }}>{title}</strong>
-            <span style={{ color: '#8a7862', fontSize: '0.9rem' }}>{subtitle}</span>
+            <strong style={{ color: ui.colors.ink }}>{title}</strong>
+            <span style={{ color: ui.colors.textSoft, fontSize: '0.9rem' }}>{subtitle}</span>
           </span>
           <span className="admin-pill admin-pill-gold">{status}</span>
         </summary>
@@ -908,16 +895,17 @@ function PipelineCard({
   return (
     <section
       style={{
-        border: '1px solid #ece7de',
-        borderRadius: '14px',
-        background: '#fff',
+        border: `1px solid ${ui.colors.border}`,
+        borderRadius: '18px',
+        background: 'linear-gradient(180deg, #fffdf9 0%, #ffffff 100%)',
         overflow: 'hidden',
+        boxShadow: '0 8px 22px rgba(92, 71, 39, 0.07)',
       }}
     >
       <div
         style={{
-          padding: '0.85rem 1rem',
-          borderBottom: '1px solid #f1ece4',
+          padding: '1rem 1.05rem',
+          borderBottom: `1px solid ${ui.colors.borderSoft}`,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -925,8 +913,8 @@ function PipelineCard({
         }}
       >
         <div style={{ display: 'grid', gap: '0.18rem' }}>
-          <strong style={{ color: '#2f2418' }}>{title}</strong>
-          <span style={{ color: '#8a7862', fontSize: '0.9rem' }}>{subtitle}</span>
+          <strong style={{ color: ui.colors.ink }}>{title}</strong>
+          <span style={{ color: ui.colors.textSoft, fontSize: '0.9rem' }}>{subtitle}</span>
         </div>
         <span className="admin-pill admin-pill-gold">{status}</span>
       </div>

@@ -188,6 +188,112 @@ function titleCase(value: string) {
     .join(' ')
 }
 
+export function inferArticleTypeFromIntent(intent: BlogPrimaryIntent): BlogArticleType {
+  switch (intent) {
+    case 'comparison':
+      return 'comparison-guide'
+    case 'care-guide':
+      return 'faq-style-guide'
+    case 'process-explainer':
+      return 'brand-education'
+    default:
+      return 'evergreen-guide'
+  }
+}
+
+export function inferAudienceFromIntent(intent: BlogPrimaryIntent): string {
+  switch (intent) {
+    case 'buying-guide':
+      return 'Readers choosing their first or next pearl piece'
+    case 'comparison':
+      return 'Readers comparing pearl options before making a decision'
+    case 'care-guide':
+      return 'Pearl owners looking for practical daily care guidance'
+    case 'styling-guide':
+      return 'Readers looking for styling clarity around pearl jewelry'
+    case 'process-explainer':
+      return 'Readers curious about how custom pearl jewelry comes together'
+    default:
+      return 'Readers researching pearls before choosing, styling, or caring for them'
+  }
+}
+
+export function inferGoal({
+  workingTitle,
+  primaryKeyword,
+  primaryIntent,
+}: {
+  workingTitle: string
+  primaryKeyword: string
+  primaryIntent: BlogPrimaryIntent
+}): string {
+  const topic = primaryKeyword || workingTitle || 'the topic'
+  switch (primaryIntent) {
+    case 'comparison':
+      return `Help the reader compare ${topic} clearly and decide which option fits best.`
+    case 'buying-guide':
+      return `Help the reader choose ${topic} with more confidence and less guesswork.`
+    case 'care-guide':
+      return `Help the reader understand how to care for ${topic} in a practical, realistic way.`
+    case 'styling-guide':
+      return `Help the reader style ${topic} with more clarity and confidence.`
+    case 'process-explainer':
+      return `Help the reader understand how ${topic} works from a design and decision-making perspective.`
+    default:
+      return `Help the reader understand ${topic} in a way that is practical, clear, and easy to use.`
+  }
+}
+
+export function inferMustCover({
+  workingTitle,
+  primaryKeyword,
+  primaryIntent,
+}: {
+  workingTitle: string
+  primaryKeyword: string
+  primaryIntent: BlogPrimaryIntent
+}): string[] {
+  const topic = primaryKeyword || workingTitle || 'the topic'
+  switch (primaryIntent) {
+    case 'comparison':
+      return [
+        `How the main options within ${topic} differ`,
+        `What differences actually matter when deciding`,
+        `How to choose the best fit with more confidence`,
+      ]
+    case 'buying-guide':
+      return [
+        `What to look for first when choosing ${topic}`,
+        `How to avoid overcomplicating the decision`,
+        `Which factors matter most for a first purchase`,
+      ]
+    case 'care-guide':
+      return [
+        `The daily habits that help protect ${topic}`,
+        `What to avoid when wearing or storing ${topic}`,
+        `How to keep care advice practical and realistic`,
+      ]
+    case 'styling-guide':
+      return [
+        `How ${topic} changes the mood of a look`,
+        `What makes ${topic} easier or harder to style`,
+        `How to choose a more wearable styling direction`,
+      ]
+    case 'process-explainer':
+      return [
+        `How the process around ${topic} typically starts`,
+        `What decisions shape the final result`,
+        `How to understand the process without overcomplicating it`,
+      ]
+    default:
+      return [
+        `Why ${topic} matters in practical terms`,
+        `What the reader should understand first`,
+        `How to use that understanding in a real decision`,
+      ]
+  }
+}
+
 export function validateArticleBrief(input: unknown): { brief?: ArticleBrief; errors: string[] } {
   const errors: string[] = []
 
@@ -200,14 +306,42 @@ export function validateArticleBrief(input: unknown): { brief?: ArticleBrief; er
   const workingTitle = typeof data.workingTitle === 'string' ? data.workingTitle.trim() : ''
   const primaryIntent = data.primaryIntent
   const primaryKeyword = typeof data.primaryKeyword === 'string' ? data.primaryKeyword.trim() : ''
-  const audience = typeof data.audience === 'string' ? data.audience.trim() : ''
-  const articleType = data.articleType
-  const goal = typeof data.goal === 'string' ? data.goal.trim() : ''
-  const mustCover = Array.isArray(data.mustCover)
+  const normalizedIntent = BLOG_PRIMARY_INTENTS.includes(primaryIntent as BlogPrimaryIntent)
+    ? (primaryIntent as BlogPrimaryIntent)
+    : null
+  const audienceRaw = typeof data.audience === 'string' ? data.audience.trim() : ''
+  const audience =
+    audienceRaw || (normalizedIntent ? inferAudienceFromIntent(normalizedIntent) : '')
+  const articleTypeRaw = data.articleType
+  const articleType =
+    BLOG_ARTICLE_TYPES.includes(articleTypeRaw as BlogArticleType)
+      ? (articleTypeRaw as BlogArticleType)
+      : normalizedIntent
+        ? inferArticleTypeFromIntent(normalizedIntent)
+        : articleTypeRaw
+  const goalRaw = typeof data.goal === 'string' ? data.goal.trim() : ''
+  const goal =
+    goalRaw ||
+    (normalizedIntent
+      ? inferGoal({
+          workingTitle,
+          primaryKeyword,
+          primaryIntent: normalizedIntent,
+        })
+      : '')
+  const mustCoverRaw = Array.isArray(data.mustCover)
     ? data.mustCover.map((item) => String(item).trim()).filter(Boolean)
     : []
+  const mustCover =
+    mustCoverRaw.length > 0 || !normalizedIntent
+      ? mustCoverRaw
+      : inferMustCover({
+          workingTitle,
+          primaryKeyword,
+          primaryIntent: normalizedIntent,
+        })
   const ctaRaw = data.cta && typeof data.cta === 'object' ? (data.cta as Record<string, unknown>) : null
-  const ctaType = ctaRaw?.type
+  const ctaType = ctaRaw?.type || 'soft-none'
   const ctaPath = typeof ctaRaw?.path === 'string' ? ctaRaw.path.trim() : ''
 
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
@@ -216,7 +350,7 @@ export function validateArticleBrief(input: unknown): { brief?: ArticleBrief; er
   if (workingTitle.length < 10) {
     errors.push('Working title must be at least 10 characters.')
   }
-  if (!BLOG_PRIMARY_INTENTS.includes(primaryIntent as BlogPrimaryIntent)) {
+  if (!normalizedIntent) {
     errors.push('Primary intent is invalid.')
   }
   if (primaryKeyword.length < 3) {
