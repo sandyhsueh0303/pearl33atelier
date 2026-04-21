@@ -1,0 +1,71 @@
+---
+title: "Akoya Pearl Size Guide: 6mm, 7mm, and 8mm"
+excerpt: "See how 6mm, 7mm, and 8mm Akoya pearls change the look of earrings, necklaces, and pendants, and choose the size that feels right for your style."
+seoDescription: "Compare 6mm, 7mm, and 8mm Akoya pearls to understand how size affects earrings, necklaces, and pendants before you choose."
+keywords: ["Akoya pearl", "Akoya pearl size guide", "6mm Akoya pearl", "7mm Akoya pearl", "8mm Akoya pearl", "pearl earrings", "pearl necklace"]
+ogImage: "/images/PearlStudSizeComparison.png"
+ogImageAlt: "Akoya pearl stud size comparison showing 6mm, 7mm, and 8mm pearls"
+publishedAt: "2026-04-21"
+updatedAt: "2026-04-21"
+author: "33 Pearl Atelier"
+tags: ["Akoya pearls", "styling guide", "pearl size", "earrings", "necklaces"]
+readingMinutes: 3
+---
+
+## Why Akoya pearl size changes the whole look
+
+With Akoya pearls, millimeters do more than record size. They change how a piece reads on the body: delicate, balanced, or more visibly present. That is why 6mm, 7mm, and 8mm pearls can feel quite different even when the shape and style are similar.
+
+If you are choosing earrings, a necklace, or a pendant, the size you pick affects how polished the piece feels and how much attention it draws. The difference is subtle on paper and much clearer when worn.
+
+## What 6mm, 7mm, and 8mm actually look like
+
+![Akoya pearl stud size comparison](/images/PearlStudSizeComparison.png)
+
+### 6mm
+
+A 6mm Akoya pearl tends to look light and restrained. It has a smaller visual footprint, which makes it a good fit if you want the pearl to feel understated rather than dominant.
+
+In earrings, 6mm often reads as refined and easy to wear every day. On a necklace or pendant, it creates a quieter presence and keeps the overall look delicate.
+
+### 7mm
+
+A 7mm Akoya pearl usually feels like the middle ground. It still looks clean and classic, but with a little more presence than 6mm.
+
+For many people, this is the most flexible size because it can work across everyday wear and more polished settings without feeling too small or too pronounced.
+
+### 8mm
+
+An 8mm Akoya pearl has a more noticeable look. It still feels elegant, but the visual effect is stronger and easier to see at a glance.
+
+In earrings, 8mm tends to stand out more. In a pendant or necklace, it creates a fuller, more intentional focal point.
+
+## Choosing size for earrings, necklaces, and pendants
+
+The right size depends on where the pearl will sit and how much presence you want from the piece.
+
+- **Earrings:** 6mm feels subtle, 7mm feels balanced, and 8mm feels more visible.
+- **Necklaces:** smaller pearls create a lighter, finer look, while larger ones read with more clarity.
+- **Pendants:** 7mm and 8mm often feel especially balanced because the pearl has room to become the focal point.
+
+If you are deciding between sizes, think about how often you plan to wear the piece. Everyday earrings may call for a quieter scale, while a pendant or necklace may invite something slightly more noticeable.
+
+## How to think about a coordinated set
+
+When earrings and a necklace or pendant are worn together, size consistency matters more than people expect. A coordinated set usually feels strongest when the pearls belong to the same visual family.
+
+That does not always mean choosing the exact same millimeter size everywhere. It means keeping the overall scale harmonious so one piece does not feel noticeably heavier or lighter than the other.
+
+A helpful way to think about the set is by the kind of balance you want across both pieces:
+
+- **6mm** works well when you want the earrings and necklace or pendant to stay light and understated.
+- **7mm** is the easiest middle ground when you want the set to feel polished without looking too small.
+- **8mm** gives the whole pairing more presence, which can be useful if you want the necklace or pendant to feel like a stronger focal point while the earrings still echo it.
+
+For many readers, the most refined result comes from choosing one clear size direction and letting the pieces echo each other. That keeps the set calm, coherent, and easy to wear.
+
+## A simple way to choose with confidence
+
+If you want the most understated look, start with 6mm. If you want the easiest all-around choice, 7mm is often the most adaptable. If you want the pearl to feel more present, 8mm gives you that extra visibility.
+
+The main question is not which size is objectively better, but which one matches the way you want the piece to read when worn. For Akoya pearls, that visual balance is usually the best guide.

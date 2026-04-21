@@ -39,9 +39,11 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
     <>
       <div
         style={{
-          maxWidth: '980px',
+          maxWidth: '1240px',
           margin: `0 auto ${spacing.lg}`,
           position: 'relative',
+          display: 'flex',
+          justifyContent: 'flex-end',
         }}
       >
         <button
@@ -90,7 +92,7 @@ export default function BlogSearch({ posts }: BlogSearchProps) {
             style={{
               position: 'absolute',
               top: `calc(100% + ${spacing.sm})`,
-              left: 0,
+              right: 0,
               width: 'min(92vw, 360px)',
               padding: spacing.md,
               border: '1px solid rgba(44, 44, 44, 0.12)',
