@@ -113,17 +113,35 @@ const readOnlyControlStyle = {
 }
 
 const primaryButtonStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: '48px',
+  padding: '0.85rem 1.35rem',
+  borderRadius: '14px',
   background: 'linear-gradient(135deg, #2c2c2c 0%, #4a4438 100%)',
   color: '#fff',
   border: `1px solid rgba(212, 175, 55, 0.35)`,
   boxShadow: '0 10px 24px rgba(44, 44, 44, 0.18)',
-}
+  fontWeight: 700,
+  fontSize: '0.95rem',
+  letterSpacing: '0.01em',
+} 
 
 const secondaryButtonStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: '48px',
+  padding: '0.85rem 1.35rem',
+  borderRadius: '14px',
   background: 'linear-gradient(180deg, #fffdf8 0%, #f7f0e3 100%)',
   color: ui.colors.text,
   border: `1px solid ${ui.colors.border}`,
   boxShadow: '0 8px 20px rgba(92, 71, 39, 0.08)',
+  fontWeight: 700,
+  fontSize: '0.95rem',
+  letterSpacing: '0.01em',
 }
 
 function splitLines(value: string) {
@@ -552,19 +570,27 @@ export default function BlogGeneratorClient() {
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <button
               type="button"
-              className="admin-link-btn admin-link-btn-primary"
+              className="admin-btn"
               onClick={handleGenerateOutline}
               disabled={isGeneratingOutline || isRunningPipeline}
-              style={primaryButtonStyle}
+              style={{
+                ...primaryButtonStyle,
+                cursor: isGeneratingOutline || isRunningPipeline ? 'not-allowed' : 'pointer',
+                opacity: isGeneratingOutline || isRunningPipeline ? 0.65 : 1,
+              }}
             >
               {isGeneratingOutline ? 'Generating Outline...' : 'Generate Outline'}
             </button>
             <button
               type="button"
-              className="admin-link-btn"
+              className="admin-btn"
               onClick={handleRunFullPipeline}
               disabled={isGeneratingOutline || isRunningPipeline}
-              style={secondaryButtonStyle}
+              style={{
+                ...secondaryButtonStyle,
+                cursor: isGeneratingOutline || isRunningPipeline ? 'not-allowed' : 'pointer',
+                opacity: isGeneratingOutline || isRunningPipeline ? 0.65 : 1,
+              }}
             >
               {isRunningPipeline ? 'Running Full Pipeline...' : 'Run Full Pipeline'}
             </button>

@@ -82,6 +82,8 @@ Package like the final gate before publish, not like a passive serializer.
 8. Prefer preserving approved content over unnecessary rewriting.
 9. Do not let optional helper inputs become schema-external publishable fields.
 10. Ensure the final package is compatible with both the schema and the current blog loader/frontmatter flow.
+11. Never return reviewer-report fields such as `decision`, `summary`, `checks`, `blockingIssues`, or `nonBlockingSuggestions`.
+12. If an input includes `reviewedArticlePackage` or `rewrittenArticlePackage`, unwrap it and return only the final `ArticlePackage` object itself.
 
 ## Schema Rules
 
@@ -89,6 +91,7 @@ Package like the final gate before publish, not like a passive serializer.
 - `slug`, `frontmatter`, and `bodyMarkdown` are required.
 - `markdownDocument`, `internalLinks`, and `qa` are optional but should be included when useful and valid.
 - Do not return helper fields such as `faq`, `faqs`, `faqJsonLd`, `imagePrompt`, `image_prompt`, `metadataDraft`, `reviewNotes`, or any similar extras.
+- Do not return wrapper keys such as `reviewedArticlePackage` or `rewrittenArticlePackage`.
 - Do not rename frontmatter keys.
 - Do not retain null-like placeholders, pseudo-fields, or staging keys that are not part of the schema.
 
@@ -176,6 +179,10 @@ Package like the final gate before publish, not like a passive serializer.
 
 Return valid JSON only.
 
+Do not return a review report.
+Do not return a wrapper object.
+Do not nest the final package under any other key.
+
 Use this exact shape:
 
 ```json
@@ -262,6 +269,8 @@ You must:
 - fold any approved FAQ content into bodyMarkdown only
 - translate image prompt inputs into usable image metadata only
 - return a publishable final package
+- unwrap any `reviewedArticlePackage` or `rewrittenArticlePackage` inputs before answering
+- never return `decision`, `summary`, `checks`, `blockingIssues`, `nonBlockingSuggestions`, `reviewedArticlePackage`, or `rewrittenArticlePackage`
 
 Required references:
 1. blog-ai-handbook.md

@@ -40,6 +40,37 @@ type StageResult<T> = {
   debug?: string
 }
 
+function unwrapArticlePackageCandidate(value: unknown): ArticlePackage | null {
+  if (isArticlePackage(value)) {
+    return value
+  }
+
+  if (isReviewerOutput(value)) {
+    return value.reviewedArticlePackage
+  }
+
+  if (isRewriterOutput(value)) {
+    return value.rewrittenArticlePackage
+  }
+
+  if (value && typeof value === 'object') {
+    const maybePackage = value as {
+      reviewedArticlePackage?: unknown
+      rewrittenArticlePackage?: unknown
+    }
+
+    if (isArticlePackage(maybePackage.reviewedArticlePackage)) {
+      return maybePackage.reviewedArticlePackage
+    }
+
+    if (isArticlePackage(maybePackage.rewrittenArticlePackage)) {
+      return maybePackage.rewrittenArticlePackage
+    }
+  }
+
+  return null
+}
+
 async function runPlanner(brief: ArticleBrief): Promise<{ output: PlannerOutput; source: 'openai' | 'fallback'; debug?: string }> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) {
@@ -120,11 +151,15 @@ async function runPromptStage<T>({
   refs,
   blocks,
   validator,
+  retryInstruction,
+  recover,
 }: {
   promptFile: string
   refs: string[]
   blocks: Array<{ label: string; value: unknown }>
   validator: (value: unknown) => value is T
+  retryInstruction?: string
+  recover?: (value: unknown) => T | null
 }): Promise<T> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) {
@@ -142,43 +177,86 @@ async function runPromptStage<T>({
     ...blocks.map(({ label, value }) => `${label}:\n${typeof value === 'string' ? value : JSON.stringify(value, null, 2)}`),
   ].join('\n\n')
 
-  const response = await fetch('https://api.openai.com/v1/responses', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model,
-      input: [
-        {
-          role: 'system',
-          content: [{ type: 'input_text', text: promptText }],
-        },
-        {
-          role: 'user',
-          content: [{ type: 'input_text', text: userText }],
-        },
-      ],
-    }),
-  })
+  async function requestStageOutput(extraInstruction?: string) {
+    const response = await fetch('https://api.openai.com/v1/responses', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        input: [
+          {
+            role: 'system',
+            content: [{ type: 'input_text', text: promptText }],
+          },
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'input_text',
+                text: extraInstruction
+                  ? `${userText}\n\nIMPORTANT RETRY INSTRUCTION:\n${extraInstruction}`
+                  : userText,
+              },
+            ],
+          },
+        ],
+      }),
+    })
 
-  const data = await response.json()
-  if (!response.ok) {
-    throw new Error(data?.error?.message || `${promptFile} request failed`)
+    const data = await response.json()
+    if (!response.ok) {
+      throw new Error(data?.error?.message || `${promptFile} request failed`)
+    }
+
+    const outputText = extractOutputText(data)
+    if (!outputText) {
+      throw new Error(`${promptFile} did not return output text`)
+    }
+
+    return parseJsonObject<unknown>(outputText)
   }
 
-  const outputText = extractOutputText(data)
-  if (!outputText) {
-    throw new Error(`${promptFile} did not return output text`)
+  function validateOrRecover(parsed: unknown) {
+    if (validator(parsed)) {
+      return parsed
+    }
+
+    if (recover) {
+      const recovered = recover(parsed)
+      if (recovered) {
+        console.warn(`${promptFile} returned a non-final wrapper shape; recovered nested package automatically.`)
+        return recovered
+      }
+    }
+
+    return null
   }
 
-  const parsed = parseJsonObject<T>(outputText)
-  if (!validator(parsed)) {
-    throw new Error(`${promptFile} returned JSON, but the shape was invalid`)
+  const parsed = await requestStageOutput()
+  const firstPass = validateOrRecover(parsed)
+  if (firstPass) {
+    return firstPass
   }
 
-  return parsed
+  if (retryInstruction) {
+    console.warn(`${promptFile} returned the wrong shape; retrying once with stricter schema instructions.`)
+    const retried = await requestStageOutput(retryInstruction)
+    const secondPass = validateOrRecover(retried)
+    if (secondPass) {
+      return secondPass
+    }
+
+    console.log('INVALID JSON AFTER RETRY:')
+    console.dir(retried, { depth: null })
+    throw new Error(`${promptFile} returned JSON, but the shape was invalid after retry`)
+  }
+
+  console.log('INVALID JSON:')
+  console.dir(parsed, { depth: null })
+  throw new Error(`${promptFile} returned JSON, but the shape was invalid`)
 }
 
 async function runWriter(
@@ -330,12 +408,15 @@ async function runPackaging(
       { label: 'Planner output', value: planner },
       { label: 'Writer output', value: writer },
       { label: 'Reviewer output', value: reviewer },
-      ...(rewriter ? [{ label: 'Optional rewritten article package', value: rewriter }] : []),
+      ...(rewriter ? [{ label: 'Optional rewritten output', value: rewriter }] : []),
       { label: 'Optional metadata notes', value: '' },
       { label: 'Optional FAQ draft', value: '' },
       { label: 'Optional image prompt draft', value: '' },
     ],
     validator: isArticlePackage,
+    retryInstruction:
+      'Your previous answer used the wrong schema. Return only one top-level ArticlePackage JSON object with allowed keys: slug, frontmatter, bodyMarkdown, markdownDocument, internalLinks, qa. Do not return decision, summary, checks, blockingIssues, nonBlockingSuggestions, reviewedArticlePackage, or rewrittenArticlePackage. If reviewer or rewriter inputs contain nested packages, unwrap them and return only the final package object.',
+    recover: unwrapArticlePackageCandidate,
   })
 
   const normalized = normalizeArticlePackage(output)

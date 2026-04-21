@@ -450,23 +450,68 @@ export function validateArticleBrief(input: unknown): { brief?: ArticleBrief; er
 }
 
 export function parseJsonObject<T>(text: string): T {
-  const trimmed = text.trim()
+  const raw = text.trim()
+
+  // 1. direct parse
   try {
-    return JSON.parse(trimmed) as T
-  } catch {
-    const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i)
-    if (fenced?.[1]) {
+    return JSON.parse(raw) as T
+  } catch {}
+
+  // 2. remove markdown fences
+  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/i)
+  if (fenced?.[1]) {
+    try {
       return JSON.parse(fenced[1].trim()) as T
-    }
-
-    const firstBrace = trimmed.indexOf('{')
-    const lastBrace = trimmed.lastIndexOf('}')
-    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-      return JSON.parse(trimmed.slice(firstBrace, lastBrace + 1)) as T
-    }
-
-    throw new Error('Model did not return valid JSON.')
+    } catch {}
   }
+
+  // 3. find first balanced JSON object
+  const extracted = extractFirstJsonObject(raw)
+  if (extracted) {
+    return JSON.parse(extracted) as T
+  }
+
+  throw new Error("Model did not return valid JSON.")
+}
+
+function extractFirstJsonObject(text: string): string | null {
+  let depth = 0
+  let inString = false
+  let escape = false
+  let start = -1
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]
+
+    if (escape) {
+      escape = false
+      continue
+    }
+
+    if (ch === "\\") {
+      escape = true
+      continue
+    }
+
+    if (ch === '"') {
+      inString = !inString
+      continue
+    }
+
+    if (inString) continue
+
+    if (ch === "{") {
+      if (depth === 0) start = i
+      depth++
+    } else if (ch === "}") {
+      depth--
+      if (depth === 0 && start !== -1) {
+        return text.slice(start, i + 1)
+      }
+    }
+  }
+
+  return null
 }
 
 export function isPlannerOutput(input: unknown): input is PlannerOutput {
