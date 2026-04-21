@@ -552,6 +552,20 @@ button {
   margin-bottom: 1.5rem;
 }
 
+.admin-form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-form-grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
 .admin-form-label {
   display: block;
   font-weight: 500;
@@ -567,6 +581,16 @@ button {
   font-size: 0.75rem;
   color: #666;
   margin-top: 0.5rem;
+}
+
+.admin-form-help-inline {
+  margin-top: 0.35rem;
+}
+
+.admin-form-textarea-lg {
+  min-height: 120px;
+  line-height: 1.6;
+  resize: vertical;
 }
 
 .admin-form-actions {
@@ -651,6 +675,19 @@ button {
   margin-top: 0.5rem;
 }
 
+.admin-value-panel-neutral {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+}
+
+.admin-value-panel-neutral .admin-value-panel-label {
+  color: #666;
+}
+
+.admin-value-panel-neutral .admin-value-panel-meta {
+  color: #666;
+}
+
 .admin-section-header {
   display: flex;
   justify-content: space-between;
@@ -683,6 +720,22 @@ button {
 .admin-section-meta {
   color: #666;
   font-size: 0.875rem;
+}
+
+.admin-hidden-input {
+  display: none;
+}
+
+.admin-action-disabled {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.admin-ai-draft-seo-grid {
+  display: grid;
+  gap: 0.85rem;
+  color: #5a4630;
+  line-height: 1.6;
 }
 
 .admin-pagination {
@@ -742,6 +795,11 @@ button {
   }
 
   .admin-form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-grid-2,
+  .admin-form-grid-auto {
     grid-template-columns: 1fr;
   }
 

@@ -1,24 +1,19 @@
 'use client'
 
-import type { CatalogProduct } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
 import AdminPageHeader from '../components/AdminPageHeader'
-
-// Extended product type with cost and profit
-interface ProductWithStats extends CatalogProduct {
-  total_cost?: number
-  profit?: number
-}
-
-interface ProductSummaryStats {
-  total: number
-  published: number
-  draft: number
-  sold: number
-  preorder: number
-}
+import ProductsFilters from './components/ProductsFilters'
+import ProductsPagination from './components/ProductsPagination'
+import ProductsStats from './components/ProductsStats'
+import ProductsTable from './components/ProductsTable'
+import {
+  formatCategory,
+  type ProductFilterStatus,
+  type ProductSummaryStats,
+  type ProductWithStats,
+} from './components/productsPageTypes'
 
 export default function ProductsPage() {
   return (
@@ -48,13 +43,11 @@ function ProductsPageContent() {
   
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState(() => searchParams.get('search') || '')
-  const [filterStatus, setFilterStatus] = useState<
-    'active' | 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold'
-  >(() => {
+  const [filterStatus, setFilterStatus] = useState<ProductFilterStatus>(() => {
     const value = searchParams.get('status')
     const allowed = ['active', 'all', 'published', 'draft', 'in_stock', 'preorder', 'sold'] as const
-    return allowed.includes(value as (typeof allowed)[number])
-      ? (value as 'active' | 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold')
+    return allowed.includes(value as ProductFilterStatus)
+      ? (value as ProductFilterStatus)
       : 'active'
   })
   const [filterPearlType, setFilterPearlType] = useState<string>(
@@ -121,51 +114,6 @@ function ProductsPageContent() {
     pathname,
     router,
   ])
-  const formatCategory = (category: string) => {
-    const labels: Record<string, string> = {
-      BRACELETS: 'Bracelets',
-      NECKLACES: 'Necklaces',
-      EARRINGS: 'Earrings',
-      STUDS: 'Studs',
-      RINGS: 'Rings',
-      PENDANTS: 'Pendants',
-      LOOSE_PEARLS: 'Loose Pearls',
-      BROOCHES: 'Brooches',
-    }
-    return labels[category] || category
-  }
-
-  const formatMoney = (value?: number) => (
-    value !== undefined ? `$ ${value.toLocaleString()}` : '-'
-  )
-
-  const getAvailabilityMeta = (availability: ProductWithStats['availability']) => {
-    if (availability === 'IN_STOCK') {
-      return {
-        label: 'In Stock',
-        className: 'admin-pill admin-pill-success',
-        style: {},
-      }
-    }
-
-    if (availability === 'PREORDER') {
-      return {
-        label: 'Preorder',
-        className: 'admin-pill admin-pill-gold',
-        style: {},
-      }
-    }
-
-    return {
-      label: 'Sold',
-      className: 'admin-pill',
-      style: {
-        background: '#FEE2E2',
-        color: '#B91C1C',
-      },
-    }
-  }
-
   useEffect(() => {
     void loadProducts(currentPage)
   }, [currentPage, searchQuery, filterStatus, filterPearlType, filterCategory, sortBy, sortOrder])
@@ -307,13 +255,6 @@ function ProductsPageContent() {
   const soldCount = summaryStats.sold
   const preorderCount = summaryStats.preorder
   const paginatedProducts = filteredProducts
-  const statCards = [
-    { label: 'Total', value: summaryStats.total, accent: '#C9A961' },
-    { label: 'Published', value: publishedCount, accent: '#10B981' },
-    { label: 'Draft', value: draftCount, accent: '#F59E0B' },
-    { label: 'Preorder', value: preorderCount, accent: '#A162F7' },
-    { label: 'Sold', value: soldCount, accent: '#EF4444' },
-  ]
 
   useEffect(() => {
     if (loading) return
@@ -363,206 +304,50 @@ function ProductsPageContent() {
       )}
 
       {notice && (
-        <div
-          style={{
-            marginBottom: '1rem',
-            padding: '0.75rem 1rem',
-            borderRadius: '8px',
-            border: '1px solid #A7F3D0',
-            backgroundColor: '#ECFDF5',
-            color: '#065F46',
-            fontWeight: 600,
-          }}
-        >
-          {notice}
-        </div>
+        <div className="admin-banner admin-banner-success">{notice}</div>
       )}
 
-      {/* Search and Filter Controls */}
-      <div className="admin-card admin-filter-panel">
-        <div className="admin-filter-row">
-          {/* Search Input */}
-          <div className="admin-filter-item-wide">
-            <label className="admin-filter-label">
-              🔍 Search products
-            </label>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value)
-                setCurrentPage(1)
-              }}
-              placeholder="Search title, slug, or description..."
-              className="admin-control"
-            />
-          </div>
+      <ProductsFilters
+        searchQuery={searchQuery}
+        filterStatus={filterStatus}
+        filterPearlType={filterPearlType}
+        filterCategory={filterCategory}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        pearlTypes={pearlTypes}
+        categories={categories}
+        hasFilters={hasFilters}
+        filteredCount={filteredProducts.length}
+        totalItems={totalItems}
+        formatCategory={formatCategory}
+        onSearchQueryChange={(value) => {
+          setSearchQuery(value)
+          setCurrentPage(1)
+        }}
+        onFilterStatusChange={(value) => {
+          setFilterStatus(value)
+          setCurrentPage(1)
+        }}
+        onFilterPearlTypeChange={(value) => {
+          setFilterPearlType(value)
+          setCurrentPage(1)
+        }}
+        onFilterCategoryChange={(value) => {
+          setFilterCategory(value)
+          setCurrentPage(1)
+        }}
+        onSortByChange={(value) => {
+          setSortBy(value)
+          setCurrentPage(1)
+        }}
+        onSortOrderChange={(value) => {
+          setSortOrder(value)
+          setCurrentPage(1)
+        }}
+        onReset={resetFilters}
+      />
 
-          {/* Status Filter */}
-          <div style={{ flex: '0 1 150px' }}>
-            <label className="admin-filter-label">
-              📌 Status
-            </label>
-            <select
-              value={filterStatus}
-              onChange={(e) => {
-                setFilterStatus(
-                  e.target.value as 'active' | 'all' | 'published' | 'draft' | 'in_stock' | 'preorder' | 'sold'
-                )
-                setCurrentPage(1)
-              }}
-              className="admin-control"
-            >
-              <option value="active">Hide Sold</option>
-              <option value="all">All</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
-              <option value="in_stock">In Stock</option>
-              <option value="preorder">Preorder</option>
-              <option value="sold">Sold</option>
-            </select>
-          </div>
-
-          {/* Pearl Type Filter */}
-          <div style={{ flex: '0 1 180px' }}>
-            <label className="admin-filter-label">
-              💎 Pearl Type
-            </label>
-            <select
-              value={filterPearlType}
-              onChange={(e) => {
-                setFilterPearlType(e.target.value)
-                setCurrentPage(1)
-              }}
-              className="admin-control"
-            >
-              <option value="all">All Types</option>
-              {pearlTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-          </div>
-
-          <div style={{ flex: '0 1 180px' }}>
-            <label className="admin-filter-label">
-              📂 Category
-            </label>
-            <select
-              value={filterCategory}
-              onChange={(e) => {
-                setFilterCategory(e.target.value)
-                setCurrentPage(1)
-              }}
-              className="admin-control"
-            >
-              <option value="all">All Categories</option>
-              {categories.map(category => (
-                <option key={category} value={category}>{formatCategory(category)}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Sort By */}
-          <div style={{ flex: '0 1 150px' }}>
-            <label className="admin-filter-label">
-              📊 Sort By
-            </label>
-            <select
-              value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value as 'title' | 'price' | 'created')
-                setCurrentPage(1)
-              }}
-              className="admin-control"
-            >
-              <option value="created">Created Time</option>
-              <option value="title">Title</option>
-              <option value="price">Price</option>
-            </select>
-          </div>
-
-          {/* Sort Order */}
-          <div style={{ flex: '0 1 130px' }}>
-            <label className="admin-filter-label">
-              ↕️ Order
-            </label>
-            <select
-              value={sortOrder}
-              onChange={(e) => {
-                setSortOrder(e.target.value as 'asc' | 'desc')
-                setCurrentPage(1)
-              }}
-              className="admin-control"
-            >
-              <option value="desc">Descending ↓</option>
-              <option value="asc">Ascending ↑</option>
-            </select>
-          </div>
-
-          {/* Reset Button */}
-          {hasFilters && (
-            <div style={{ flex: '0 0 auto' }}>
-              <button
-                onClick={resetFilters}
-                className="admin-btn admin-btn-secondary"
-                style={{ padding: '0.75rem 1rem' }}
-              >
-                🔄 Reset
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Results Count */}
-        <div className="admin-filter-results">
-          Showing <strong>{filteredProducts.length}</strong> / {totalItems} products
-          {filterStatus !== 'active' &&
-            ` • ${
-              filterStatus === 'all'
-                ? 'All'
-                : filterStatus === 'published'
-                ? 'Published'
-                : filterStatus === 'draft'
-                ? 'Draft'
-                : filterStatus === 'in_stock'
-                ? 'In Stock'
-                : filterStatus === 'preorder'
-                ? 'Preorder'
-                : 'Sold'
-            }`}
-          {filterPearlType !== 'all' && ` • ${filterPearlType}`}
-          {filterCategory !== 'all' && ` • ${formatCategory(filterCategory)}`}
-        </div>
-      </div>
-
-      <div className="admin-stats-row">
-        <div
-          className="admin-products-stats-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: '0.75rem',
-            width: '100%',
-          }}
-        >
-          {statCards.map((card) => (
-            <div
-              key={card.label}
-              className="admin-stat-card"
-              style={{
-                padding: '1.5rem',
-              }}
-            >
-              <p style={{ fontSize: '0.875rem', color: '#666', margin: '0 0 0.5rem 0' }}>
-                {card.label}
-              </p>
-              <p style={{ fontSize: '2rem', fontWeight: 'bold', color: card.accent, margin: 0 }}>
-                {card.value}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <ProductsStats summaryStats={summaryStats} />
 
       {filteredProducts.length === 0 ? (
         <div className="admin-card admin-empty-state">
@@ -572,215 +357,36 @@ function ProductsPageContent() {
           {products.length === 0 ? (
             <Link
               href={`/admin/products/new?returnTo=${returnToParam}`}
-              style={{
-                display: 'inline-block',
-                padding: '0.75rem 1.5rem',
-                backgroundColor: '#C9A961',
-                color: 'white',
-                borderRadius: '4px',
-                textDecoration: 'none',
-                fontWeight: 'bold'
-              }}
+              className="admin-link-btn admin-link-btn-primary admin-empty-action"
             >
               Create first product
             </Link>
           ) : (
             <button
+              type="button"
               onClick={resetFilters}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: '#C9A961',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontWeight: 'bold'
-              }}
+              className="admin-btn admin-btn-primary"
             >
               Clear filters
             </button>
           )}
         </div>
       ) : (
-        <>
-          <div className="admin-card admin-table-card admin-products-table-wrap">
-            <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr className="admin-table-head-row">
-                  <th>Status</th>
-                  <th>SKU</th>
-                  <th>Available</th>
-                  <th>Title</th>
-                  <th>Category</th>
-                  <th>Pearl Type</th>
-                  <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Total Cost</th>
-                  <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Sell Price</th>
-                  <th className="admin-th-right" style={{ minWidth: '140px' }}>Profit</th>
-                  <th className="admin-th-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedProducts.map((product) => {
-                  const availabilityMeta = getAvailabilityMeta(product.availability)
-
-                  return (
-                    <tr key={product.id} className="admin-row-divider">
-                      <td>
-                        <span className={`admin-pill ${product.published ? 'admin-pill-success' : 'admin-pill-warning'}`}>
-                          {product.published ? 'Published' : 'Draft'}
-                        </span>
-                      </td>
-                      <td className="admin-cell-mono">
-                        {product.sku || '-'}
-                      </td>
-                      <td>
-                        <span
-                          className={availabilityMeta.className}
-                          style={{
-                            fontSize: '0.875rem',
-                            ...availabilityMeta.style,
-                          }}
-                        >
-                          {availabilityMeta.label}
-                        </span>
-                      </td>
-                      <td style={{ fontWeight: '500' }}>
-                        {product.title}
-                      </td>
-                      <td>
-                        <span className="admin-pill admin-pill-lilac" style={{ fontSize: '0.875rem' }}>
-                          {product.category ? formatCategory(product.category) : '-'}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="admin-pill admin-pill-sky" style={{ fontSize: '0.875rem' }}>
-                          {product.pearl_type}
-                        </span>
-                      </td>
-                      <td className="admin-cell-right admin-money admin-money-danger">
-                        {formatMoney(product.total_cost)}
-                      </td>
-                      <td className="admin-cell-right admin-money">
-                        {product.sell_price ? formatMoney(product.sell_price) : '-'}
-                      </td>
-                      <td style={{ minWidth: '140px' }} className="admin-cell-right admin-money">
-                        {product.profit !== undefined ? (
-                          <span style={{
-                            color: product.profit >= 0 ? '#10B981' : '#EF4444',
-                          }}>
-                            {formatMoney(product.profit)}
-                          </span>
-                        ) : '-'}
-                      </td>
-                      <td className="admin-cell-center">
-                        <div className="admin-action-group">
-                          <Link
-                            href={`/admin/products/${product.id}?returnTo=${returnToParam}`}
-                            className="admin-btn admin-btn-edit admin-link-btn admin-btn-md"
-                          >
-                            Edit
-                          </Link>
-                          <button
-                            onClick={() => handleDelete(product.id, product.title)}
-                            className="admin-btn admin-btn-delete admin-btn-md"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="admin-products-mobile-list">
-            {paginatedProducts.map((product) => {
-              const availabilityMeta = getAvailabilityMeta(product.availability)
-              const profitColor = product.profit !== undefined && product.profit < 0 ? '#EF4444' : '#10B981'
-
-              return (
-                <article key={product.id} className="admin-card admin-products-mobile-card">
-                  <div className="admin-products-mobile-card-header">
-                    <div style={{ minWidth: 0 }}>
-                      <h2 className="admin-products-mobile-title">{product.title}</h2>
-                      <p className="admin-products-mobile-sku">{product.sku || 'No SKU'}</p>
-                    </div>
-                    <div className="admin-products-mobile-badges">
-                      <span className={`admin-pill ${product.published ? 'admin-pill-success' : 'admin-pill-warning'}`}>
-                        {product.published ? 'Published' : 'Draft'}
-                      </span>
-                      <span className={availabilityMeta.className} style={availabilityMeta.style}>
-                        {availabilityMeta.label}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="admin-products-mobile-summary">
-                    <div className="admin-products-mobile-price">
-                      <span className="admin-products-mobile-meta-label">Sell Price</span>
-                      <span className="admin-money">{product.sell_price ? formatMoney(product.sell_price) : '-'}</span>
-                    </div>
-                    <div className="admin-products-mobile-price">
-                      <span className="admin-products-mobile-meta-label">Profit</span>
-                      <span className="admin-money" style={{ color: profitColor }}>
-                        {product.profit !== undefined ? formatMoney(product.profit) : '-'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="admin-products-mobile-inline-meta">
-                    <span>{product.category ? formatCategory(product.category) : '-'}</span>
-                    <span>{product.pearl_type || '-'}</span>
-                  </div>
-
-                  <div className="admin-action-group admin-products-mobile-actions">
-                    <Link
-                      href={`/admin/products/${product.id}?returnTo=${returnToParam}`}
-                      className="admin-btn admin-btn-edit admin-link-btn admin-btn-sm"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(product.id, product.title)}
-                      className="admin-btn admin-btn-delete admin-btn-sm"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </article>
-              )
-            })}
-          </div>
-        </>
+        <ProductsTable
+          products={paginatedProducts}
+          returnToParam={returnToParam}
+          onDelete={handleDelete}
+        />
       )}
 
-      {filteredProducts.length > 0 && totalPages > 1 && (
-        <div className="admin-products-pagination" style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', gap: '0.5rem', alignItems: 'center' }}>
-          <button
-            type="button"
-            className="admin-btn admin-btn-secondary admin-btn-sm"
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            style={{ opacity: currentPage === 1 ? 0.5 : 1 }}
-          >
-            Previous
-          </button>
-          <span style={{ fontSize: '0.875rem', color: '#666' }}>
-            Page {currentPage} / {totalPages}
-          </span>
-          <button
-            type="button"
-            className="admin-btn admin-btn-secondary admin-btn-sm"
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-            style={{ opacity: currentPage === totalPages ? 0.5 : 1 }}
-          >
-            Next
-          </button>
-        </div>
-      )}
+      {filteredProducts.length > 0 ? (
+        <ProductsPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPrevious={() => setCurrentPage((page) => Math.max(1, page - 1))}
+          onNext={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+        />
+      ) : null}
     </main>
   )
 }

@@ -279,74 +279,42 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{
-      backgroundColor: 'white',
-      padding: '2rem',
-      borderRadius: '8px',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    }}>
+    <form onSubmit={handleSubmit} className="admin-card admin-form-card">
       {formError && (
-        <div className="admin-error-banner" style={{ marginBottom: '1rem' }}>
+        <div className="admin-error-banner">
           <strong>Error:</strong> {formError}
         </div>
       )}
       {formNotice && (
-        <div
-          style={{
-            marginBottom: '1rem',
-            padding: '0.75rem 1rem',
-            borderRadius: '8px',
-            border: '1px solid #A7F3D0',
-            backgroundColor: '#ECFDF5',
-            color: '#065F46',
-            fontWeight: 600,
-          }}
-        >
+        <div className="admin-banner admin-banner-success">
           {formNotice}
         </div>
       )}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-        <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 'bold' }}>{editSale ? 'Edit Sales Record' : 'Record New Sale'}</h2>
+      <div className="admin-section-header">
+        <h2 className="admin-section-title">{editSale ? 'Edit Sales Record' : 'Record New Sale'}</h2>
         {editSale && onCancelEdit && (
           <button
             type="button"
             onClick={onCancelEdit}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: '#f5f5f5',
-              color: '#333',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-            }}
+            className="admin-btn admin-btn-secondary"
           >
             Cancel
           </button>
         )}
       </div>
 
-      <div style={{ display: 'grid', gap: '1.5rem' }}>
-        {/* Product Selection */}
-        <div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
+      <div>
+        <div className="admin-form-section">
+          <div className="admin-form-grid-2" style={{ marginBottom: '0.75rem' }}>
             <div>
-              <label style={{ display: 'block', marginBottom: '0.35rem', fontWeight: '500', fontSize: '0.8125rem', color: '#666' }}>
+              <label className="admin-form-label" style={{ marginBottom: '0.35rem', fontSize: '0.8125rem' }}>
                 Pearl Type Filter
               </label>
               <select
                 value={pearlTypeFilter}
                 onChange={(e) => setPearlTypeFilter(e.target.value)}
                 disabled={!!preselectedProductId}
-                style={{
-                  width: '100%',
-                  padding: '0.625rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '0.875rem',
-                  backgroundColor: 'white'
-                }}
+                className="admin-control"
               >
                 <option value="all">All Pearl Types</option>
                 {pearlTypeOptions.map((type) => (
@@ -358,7 +326,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             </div>
 
             <div>
-              <label style={{ display: 'block', marginBottom: '0.35rem', fontWeight: '500', fontSize: '0.8125rem', color: '#666' }}>
+              <label className="admin-form-label" style={{ marginBottom: '0.35rem', fontSize: '0.8125rem' }}>
                 Search Product
               </label>
               <input
@@ -367,33 +335,20 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
                 onChange={(e) => setProductSearch(e.target.value)}
                 disabled={!!preselectedProductId}
                 placeholder="Search by title or slug..."
-                style={{
-                  width: '100%',
-                  padding: '0.625rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '0.875rem'
-                }}
+                className="admin-control"
               />
             </div>
           </div>
 
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-            Product <span style={{ color: '#EF4444' }}>*</span>
+          <label className="admin-form-label">
+            Product <span className="admin-form-required">*</span>
           </label>
           <select
             value={productId}
             onChange={handleProductChange}
             required
             disabled={!!preselectedProductId || loadingCost}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '0.875rem',
-              backgroundColor: 'white'
-            }}
+            className="admin-control"
           >
             <option value="">Select product...</option>
             {filteredProducts.map((product) => (
@@ -402,21 +357,20 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
               </option>
             ))}
           </select>
-          <div style={{ marginTop: '0.35rem', fontSize: '0.75rem', color: '#666' }}>
+          <div className="admin-form-help admin-form-help-inline">
             Showing {filteredProducts.length} / {products.length} products
           </div>
           {loadingCost && (
-            <div style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#666' }}>
+            <div className="admin-section-meta" style={{ marginTop: '0.5rem' }}>
               Loading product cost...
             </div>
           )}
         </div>
 
-        {/* Quantity, Price, Cost */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+        <div className="admin-form-grid-auto">
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              Quantity <span style={{ color: '#EF4444' }}>*</span>
+            <label className="admin-form-label">
+              Quantity <span className="admin-form-required">*</span>
             </label>
             <input
               type="number"
@@ -425,19 +379,13 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
               min="1"
               step="1"
               required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-              }}
+              className="admin-control"
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              Unit Price <span style={{ color: '#EF4444' }}>*</span>
+            <label className="admin-form-label">
+              Unit Price <span className="admin-form-required">*</span>
             </label>
             <input
               type="number"
@@ -446,19 +394,13 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
               min="0"
               step="0.01"
               required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-              }}
+              className="admin-control"
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
-              Unit Cost <span style={{ color: '#EF4444' }}>*</span>
+            <label className="admin-form-label">
+              Unit Cost <span className="admin-form-required">*</span>
             </label>
             <input
               type="number"
@@ -467,55 +409,35 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
               min="0"
               step="0.01"
               required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-              }}
+              className="admin-control"
             />
           </div>
         </div>
 
-        {/* Calculated Values Display */}
         {(totalPrice > 0 || totalCost > 0) && (
-          <div style={{
-            padding: '1.5rem',
-            backgroundColor: '#f5f5f5',
-            borderRadius: '4px',
-            border: '1px solid #ddd',
-          }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+          <div className="admin-value-panel admin-value-panel-neutral">
+            <div className="admin-form-grid-auto" style={{ marginBottom: 0 }}>
               <div>
-                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Total Price</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#C9A961' }}>
+                <div className="admin-value-panel-label">Total Price</div>
+                <div className="admin-value-panel-amount" style={{ color: '#C9A961', fontSize: '1.5rem' }}>
                   ${totalPrice.toFixed(2)}
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Total Cost</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#EF4444' }}>
+                <div className="admin-value-panel-label">Total Cost</div>
+                <div className="admin-value-panel-amount" style={{ color: '#EF4444', fontSize: '1.5rem' }}>
                   ${totalCost.toFixed(2)}
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Profit</div>
-                <div style={{
-                  fontSize: '1.5rem',
-                  fontWeight: 'bold',
-                  color: profit >= 0 ? '#10B981' : '#EF4444'
-                }}>
+                <div className="admin-value-panel-label">Profit</div>
+                <div className="admin-value-panel-amount" style={{ color: profit >= 0 ? '#10B981' : '#EF4444', fontSize: '1.5rem' }}>
                   ${profit.toFixed(2)}
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.5rem' }}>Profit Margin</div>
-                <div style={{
-                  fontSize: '1.5rem',
-                  fontWeight: 'bold',
-                  color: profitMargin >= 0 ? '#10B981' : '#EF4444'
-                }}>
+                <div className="admin-value-panel-label">Profit Margin</div>
+                <div className="admin-value-panel-amount" style={{ color: profitMargin >= 0 ? '#10B981' : '#EF4444', fontSize: '1.5rem' }}>
                   {profitMargin.toFixed(1)}%
                 </div>
               </div>
@@ -523,29 +445,21 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
           </div>
         )}
 
-        {/* Sale Date */}
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
+        <div className="admin-form-section">
+          <label className="admin-form-label">
             Sale Date
           </label>
           <input
             type="date"
             value={saleDate}
             onChange={(e) => setSaleDate(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '0.875rem',
-            }}
+            className="admin-control"
           />
         </div>
 
-        {/* Optional Fields */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+        <div className="admin-form-grid-2">
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
+            <label className="admin-form-label">
               Customer Name
             </label>
             <input
@@ -553,18 +467,12 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="Optional"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-              }}
+              className="admin-control"
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
+            <label className="admin-form-label">
               Order Number
             </label>
             <input
@@ -572,33 +480,19 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
               value={orderNumber}
               onChange={(e) => setOrderNumber(e.target.value)}
               placeholder="Optional"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-              }}
+              className="admin-control"
             />
           </div>
         </div>
 
-        {/* Platform */}
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
+        <div className="admin-form-section">
+          <label className="admin-form-label">
             Sales Channel
           </label>
           <select
             value={platform}
             onChange={(e) => setPlatform(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '0.875rem',
-              backgroundColor: 'white'
-            }}
+            className="admin-control"
           >
             <option value="">Select channel...</option>
             <option value="website">Website</option>
@@ -611,9 +505,8 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
           </select>
         </div>
 
-        {/* Notes */}
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem', color: '#666' }}>
+        <div className="admin-form-section">
+          <label className="admin-form-label">
             Notes
           </label>
           <textarea
@@ -621,34 +514,17 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             onChange={(e) => setNotes(e.target.value)}
             placeholder="OptionalNotes..."
             rows={3}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '0.875rem',
-              fontFamily: 'inherit',
-              resize: 'vertical',
-            }}
+            className="admin-control"
+            style={{ fontFamily: 'inherit', resize: 'vertical' }}
           />
         </div>
 
-        {/* Submit Button */}
-        <div style={{ display: 'flex', gap: '1rem' }}>
+        <div className="admin-form-actions">
           <button
             type="submit"
             disabled={loading || loadingCost}
-            style={{
-              flex: 1,
-              padding: '1rem',
-              backgroundColor: loading ? '#e0e0e0' : '#C9A961',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              cursor: loading ? 'not-allowed' : 'pointer',
-            }}
+            className="admin-btn admin-btn-primary"
+            style={{ flex: 1 }}
           >
             {loading ? (editSale ? 'Updating...' : 'Saving...') : (editSale ? '💾 Update Sale' : '💰 Record Sale')}
           </button>
@@ -656,16 +532,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             <button
               type="button"
               onClick={onCancelEdit}
-              style={{
-                padding: '1rem 2rem',
-                backgroundColor: '#f5f5f5',
-                color: '#333',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-              }}
+              className="admin-btn admin-btn-outline"
             >
               Cancel
             </button>

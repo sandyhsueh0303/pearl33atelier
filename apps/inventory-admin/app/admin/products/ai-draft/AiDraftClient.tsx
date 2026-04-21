@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import AdminPageHeader from '../../components/AdminPageHeader'
 
 type DraftPreview = {
   title: string
@@ -159,14 +160,14 @@ export default function AiDraftClient() {
 
   return (
     <main className="admin-page">
-      <div className="admin-page-header">
-        <div className="admin-page-title-row">
-          <h1 className="admin-page-title">Create Product with AI</h1>
-        </div>
-        <Link href={returnTo} className="admin-link-btn admin-btn-secondary">
-          Back to Products
-        </Link>
-      </div>
+      <AdminPageHeader
+        title="Create Product with AI"
+        actions={
+          <Link href={returnTo} className="admin-link-btn admin-btn-secondary">
+            Back to Products
+          </Link>
+        }
+      />
 
       <div className="admin-banner admin-banner-info">
         Upload one or more photos, generate AI suggestions, then create a draft product for final
@@ -198,7 +199,7 @@ export default function AiDraftClient() {
               accept="image/*"
               multiple
               onChange={handleFilesSelected}
-              style={{ display: 'none' }}
+              className="admin-hidden-input"
             />
             <span>Upload Images</span>
             <small>PNG, JPG, or HEIC. Up to 6 images for the first draft.</small>
@@ -222,24 +223,15 @@ export default function AiDraftClient() {
             </div>
           )}
 
-          <div style={{ marginTop: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 700 }}>
+          <div className="admin-form-section" style={{ marginTop: '1rem', marginBottom: 0 }}>
+            <label className="admin-form-label" style={{ fontWeight: 700 }}>
               Notes for AI
             </label>
             <textarea
               value={notes}
               onChange={(event) => setNotes(event.target.value)}
               placeholder="Optional: e.g. freshwater piece, very soft pink overtone, intended as everyday necklace..."
-              style={{
-                width: '100%',
-                minHeight: '120px',
-                padding: '0.85rem',
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                fontSize: '0.95rem',
-                lineHeight: 1.6,
-                resize: 'vertical',
-              }}
+              className="admin-control admin-form-textarea-lg"
             />
           </div>
 
@@ -248,11 +240,9 @@ export default function AiDraftClient() {
               type="button"
               onClick={handleGenerateDraft}
               disabled={files.length === 0 || isGenerating}
-              className="admin-link-btn admin-link-btn-primary"
-              style={{
-                opacity: files.length === 0 || isGenerating ? 0.6 : 1,
-                pointerEvents: files.length === 0 || isGenerating ? 'none' : 'auto',
-              }}
+              className={`admin-link-btn admin-link-btn-primary ${
+                files.length === 0 || isGenerating ? 'admin-action-disabled' : ''
+              }`}
             >
               {isGenerating ? 'Generating...' : 'Generate Draft'}
             </button>
@@ -401,14 +391,7 @@ export default function AiDraftClient() {
 
               <div className="admin-ai-draft-description-card">
                 <div className="admin-ai-draft-label">SEO</div>
-                <div
-                  style={{
-                    display: 'grid',
-                    gap: '0.85rem',
-                    color: '#5a4630',
-                    lineHeight: 1.6,
-                  }}
-                >
+                <div className="admin-ai-draft-seo-grid">
                   <div>
                     <strong>SEO Title</strong>
                     <div>{draftPreview.seoTitle}</div>
@@ -431,14 +414,11 @@ export default function AiDraftClient() {
               <div className="admin-ai-draft-actions">
                 <button
                   type="button"
-                  className="admin-link-btn admin-link-btn-primary"
+                  className={`admin-link-btn admin-link-btn-primary ${
+                    isCreatingDraft || !draftValidation?.canCreateDraft ? 'admin-action-disabled' : ''
+                  }`}
                   onClick={handleCreateDraftProduct}
                   disabled={isCreatingDraft || !draftValidation?.canCreateDraft}
-                  style={{
-                    opacity: isCreatingDraft || !draftValidation?.canCreateDraft ? 0.65 : 1,
-                    pointerEvents:
-                      isCreatingDraft || !draftValidation?.canCreateDraft ? 'none' : 'auto',
-                  }}
                 >
                   {isCreatingDraft ? 'Creating Draft...' : 'Create Draft Product'}
                 </button>
