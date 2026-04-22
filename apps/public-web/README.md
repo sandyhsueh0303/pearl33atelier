@@ -14,6 +14,7 @@
 - checkout success 流程
 - blog / care guide / FAQ / contact / custom inquiry
 - 顧客端訂單確認信相關流程
+- 讀取由 `inventory-admin` AI blog workflow 產出的 Markdown 與 frontmatter 內容
 
 ## 設計思路
 
@@ -46,6 +47,12 @@
 - 觸發 downstream order sync
 - 在設定完整時寄送訂單確認信
 
+### 4. Content 與 Blog 責任
+
+- 從 `content/blog` 載入站內 blog 文章
+- 將 frontmatter 與 Markdown 內容轉成公開閱讀頁面
+- 與 `inventory-admin` 的 AI blog save flow 保持內容格式相容
+
 ## 路由概覽
 
 主要頁面：
@@ -63,6 +70,11 @@
 - `/care-guide`
 - `/blog`
 - `/blog/[slug]`
+
+補充內容來源：
+
+- `apps/public-web/content/blog`
+- `apps/public-web/content/blog-pipeline`
 
 主要 API：
 
@@ -137,6 +149,7 @@ PORT=3000 npm run start
 - availability 不是只看手動欄位，也可能由材料配置推導
 - contact API 目前保持 endpoint 穩定，但仍是暫時的 server-side logging 實作
 - `SUPABASE_SERVICE_ROLE_KEY` 只應該出現在可信任的 server-side flow
+- blog 文章的 publish artifact 目前是 `.md` 加 `.schema.json` 的雙檔案模式
 
 ## 相關檔案
 

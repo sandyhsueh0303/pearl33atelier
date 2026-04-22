@@ -113,6 +113,23 @@ The system intentionally automates the repetitive parts of running the shop:
 - confirmation emails are sent after payment when email config is present
 - admin shipping emails can be triggered from admin flows
 - product availability can be derived from material inventory instead of only manual status toggles
+- inventory admin includes an AI product draft workflow that turns uploaded product images into a reviewable draft product
+- inventory admin includes an AI blog workflow that generates, reviews, and packages blog content before saving it into `public-web`
+
+## Recent Feature Areas
+
+The repo now includes two notable AI-assisted editorial and merchandising workflows inside `inventory-admin`:
+
+- `Create Product with AI`
+  Upload product images, inspect extraction / normalization / enrichment artifacts, validate the draft, then open the standard product form for final editing.
+- `Write with AI`
+  Create a blog article brief, run the planner or full editorial pipeline, inspect stage artifacts, then save the final Markdown and schema into the public blog content folder.
+
+If you are orienting yourself to the AI workflows specifically, also see:
+
+- [docs/ai-product-draft-poc.md](/Users/sandyhsueh/pearl33atelier/docs/ai-product-draft-poc.md)
+- [docs/ai-blog-system-spec.md](/Users/sandyhsueh/pearl33atelier/docs/ai-blog-system-spec.md)
+- [apps/public-web/content/blog-pipeline/ai-blog-pipeline.md](/Users/sandyhsueh/pearl33atelier/apps/public-web/content/blog-pipeline/ai-blog-pipeline.md)
 
 ## Local Development
 

@@ -10,10 +10,12 @@
 
 - 管理員登入與 session
 - 商品建立、編輯、發布
+- `Create Product with AI` 工作流
 - inventory item 管理
 - product material 配置與成本 / 可售邏輯支撐
 - sales records 管理
 - orders 檢視與出貨資訊更新
+- blog 文章列表與 `Write with AI` 生成工作流
 
 ## 設計思路
 
@@ -39,6 +41,7 @@
 - 管理 `slug`、`sku`、價格、分類、發布狀態
 - 支援 product image 與 material 關聯
 - 在列表上計算成本、毛利與實際 availability
+- 支援 AI product draft 流程，先從圖片生成草稿，再回到標準 product form 做最後確認
 
 ### 3. 庫存營運模型
 
@@ -53,18 +56,28 @@
 - 支援後續 shipping workflow
 - 與 public-web 的付款結果保持一致
 
+### 5. Blog 營運模型
+
+- 列出 `public-web` 目前已存在的 blog 文章
+- 使用 article brief 啟動 AI blog pipeline
+- 顯示 planner / writer / reviewer / rewriter / packaging 產物
+- 將最終輸出寫入 `apps/public-web/content/blog`
+
 ## 主要頁面
 
 - `/`
 - `/admin/login`
 - `/admin/products`
 - `/admin/products/new`
+- `/admin/products/ai-draft`
 - `/admin/products/[id]`
 - `/admin/inventory`
 - `/admin/inventory/new`
 - `/admin/inventory/[id]`
 - `/admin/sales`
 - `/admin/orders`
+- `/admin/blog`
+- `/admin/blog/new`
 
 ## 主要 API
 
@@ -82,6 +95,13 @@ Products：
 - `PATCH /api/products/[id]`
 - `DELETE /api/products/[id]`
 - `GET /api/products/next-sku`
+- `POST /api/products/ai-draft`
+- `POST /api/products/ai-draft/create`
+- `GET /api/products/[id]/materials`
+- `POST /api/products/[id]/materials`
+- `DELETE /api/products/[id]/materials?materialId=...`
+- `POST /api/products/[id]/seo`
+- `POST /api/products/[id]/videos`
 
 Inventory：
 
@@ -95,9 +115,17 @@ Sales and orders：
 
 - `GET /api/sales`
 - `POST /api/sales`
+- `GET /api/sales/product-cost/[productId]`
 - `PATCH /api/sales/[id]`
 - `DELETE /api/sales/[id]`
 - `GET /api/orders`
+- `POST /api/orders/[id]/ship`
+
+Blog：
+
+- `GET /api/blog/posts`
+- `POST /api/blog/generate`
+- `POST /api/blog/save`
 
 ## 與其他系統的關係
 
@@ -171,3 +199,6 @@ PORT=3001 npm run start
 - [app/api/products/route.ts](/Users/sandyhsueh/pearl33atelier/apps/inventory-admin/app/api/products/route.ts)
 - [app/api/inventory/route.ts](/Users/sandyhsueh/pearl33atelier/apps/inventory-admin/app/api/inventory/route.ts)
 - [app/api/orders/route.ts](/Users/sandyhsueh/pearl33atelier/apps/inventory-admin/app/api/orders/route.ts)
+- [app/api/blog/generate/route.ts](/Users/sandyhsueh/pearl33atelier/apps/inventory-admin/app/api/blog/generate/route.ts)
+- [app/admin/blog/new/BlogGeneratorClient.tsx](/Users/sandyhsueh/pearl33atelier/apps/inventory-admin/app/admin/blog/new/BlogGeneratorClient.tsx)
+- [app/admin/products/ai-draft/AiDraftClient.tsx](/Users/sandyhsueh/pearl33atelier/apps/inventory-admin/app/admin/products/ai-draft/AiDraftClient.tsx)

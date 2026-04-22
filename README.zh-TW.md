@@ -113,6 +113,23 @@
 - 如果 email 設定完整，系統會自動寄出訂單確認信
 - 後台可觸發 shipping email
 - 商品 availability 可以由材料庫存與配置關係推導，而不是只靠人工切狀態
+- `inventory-admin` 現在也包含 AI 商品草稿工作流，可把商品圖片轉成可檢視的 draft
+- `inventory-admin` 也包含 AI blog 工作流，可從 brief 生成、審稿、封裝並寫入前台 blog 內容
+
+## 最近新增的重要功能面
+
+目前 repo 裡有兩條值得特別注意的 AI 輔助工作流：
+
+- `Create Product with AI`
+  上傳商品圖片，檢查 extraction / normalization / enrichment 產物，驗證 draft，最後回到標準商品編輯頁做人工確認。
+- `Write with AI`
+  先建立 blog brief，再跑 planner 或完整 editorial pipeline，檢查各 stage artifact，最後把 Markdown 與 schema 寫入前台 blog content。
+
+如果你要直接理解這兩條 AI workflow，建議一起看：
+
+- [docs/ai-product-draft-poc.md](/Users/sandyhsueh/pearl33atelier/docs/ai-product-draft-poc.md)
+- [docs/ai-blog-system-spec.md](/Users/sandyhsueh/pearl33atelier/docs/ai-blog-system-spec.md)
+- [apps/public-web/content/blog-pipeline/ai-blog-pipeline.md](/Users/sandyhsueh/pearl33atelier/apps/public-web/content/blog-pipeline/ai-blog-pipeline.md)
 
 ## 本機開發
 
