@@ -27,12 +27,6 @@ interface PendingCheckoutItem {
   line_total_amount_cents: number
 }
 
-interface CheckoutDraftRow {
-  id: string
-  order_id: string
-  items_json: unknown
-}
-
 function extractPendingCheckoutItems(metadata: unknown): PendingCheckoutItem[] {
   if (!metadata || typeof metadata !== 'object') {
     return []
@@ -79,26 +73,6 @@ function extractPendingCheckoutItems(metadata: unknown): PendingCheckoutItem[] {
 
 async function loadPendingCheckoutItems(orderId: string) {
   const supabase = createSupabaseAdminClient()
-
-  const { data: checkoutDraft, error: draftError } = await (supabase as any)
-    .from('checkout_drafts')
-    .select('id, order_id, items_json')
-    .eq('order_id', orderId)
-    .maybeSingle()
-
-  if (draftError) {
-    throw new Error(`Failed to load checkout draft for ${orderId}: ${draftError.message}`)
-  }
-
-  if (checkoutDraft) {
-    const checkoutItems = extractPendingCheckoutItems((checkoutDraft as CheckoutDraftRow).items_json)
-
-    if (checkoutItems.length === 0) {
-      throw new Error(`Checkout draft for order ${orderId} is missing item snapshots`)
-    }
-
-    return checkoutItems
-  }
 
   const { data: order, error: orderError } = await supabase
     .from('orders')

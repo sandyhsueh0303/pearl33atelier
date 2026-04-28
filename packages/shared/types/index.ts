@@ -12,6 +12,7 @@ export type AdminUserRow = Tables['admin_users']['Row']
 export type InventoryItemRow = Tables['inventory_items']['Row']
 export type CatalogProductRow = Tables['catalog_products']['Row']
 export type ProductImageRow = Tables['product_images']['Row']
+export type CrmLeadRow = Tables['crm_leads']['Row']
 
 // ============================================
 // Enums

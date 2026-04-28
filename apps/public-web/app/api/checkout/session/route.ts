@@ -27,24 +27,6 @@ const US_FLAT_SHIPPING_RATE_CENTS = 1_000
 const SHIPPING_ALLOWED_COUNTRIES: Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[] =
   ['US']
 
-type CheckoutDraftInsert = {
-  id: string
-  order_id: string
-  status: string
-  currency: string
-  subtotal_amount_cents: number
-  items_json: Array<{
-    product_id: string
-    product_slug_snapshot: string
-    product_title_snapshot: string
-    unit_price_amount_cents: number
-    quantity: number
-    line_total_amount_cents: number
-  }>
-  source: string
-  stripe_checkout_session_id?: string | null
-}
-
 function generateOrderNumber() {
   const datePart = new Date().toISOString().slice(0, 10).replaceAll('-', '')
   const uniquePart = crypto.randomUUID().slice(0, 8).toUpperCase()
@@ -53,7 +35,7 @@ function generateOrderNumber() {
 
 export async function POST(request: NextRequest) {
   let createdOrderId: string | null = null
-  let createdCheckoutDraftId: string | null = null
+  let createdCheckoutSessionId: string | null = null
 
   try {
     const body = (await request.json()) as { items?: unknown[] }
@@ -167,10 +149,8 @@ export async function POST(request: NextRequest) {
 
     const subtotalAmount = normalizedItems.reduce((sum, item) => sum + item.lineTotalAmount, 0)
     const orderId = crypto.randomUUID()
-    const checkoutDraftId = crypto.randomUUID()
     const orderNumber = generateOrderNumber()
     createdOrderId = orderId
-    createdCheckoutDraftId = checkoutDraftId
     const checkoutItemsSnapshot = normalizedItems.map((item) => ({
       product_id: item.product.id,
       product_slug_snapshot: item.product.slug,
@@ -192,27 +172,12 @@ export async function POST(request: NextRequest) {
       order_source: 'public_web',
       metadata: {
         source: 'public-web-cart',
+        checkout_items: checkoutItemsSnapshot,
       },
     })
 
     if (orderError) {
       throw new Error(`Failed to create order: ${orderError.message}`)
-    }
-
-    const { error: draftError } = await (adminSupabase as any)
-      .from('checkout_drafts')
-      .insert({
-        id: checkoutDraftId,
-        order_id: orderId,
-        status: 'active',
-        currency: 'usd',
-        subtotal_amount_cents: subtotalAmount,
-        items_json: checkoutItemsSnapshot,
-        source: 'public_web',
-      } satisfies CheckoutDraftInsert)
-
-    if (draftError) {
-      throw new Error(`Failed to create checkout draft: ${draftError.message}`)
     }
 
     const headersList = await headers()
@@ -249,6 +214,7 @@ export async function POST(request: NextRequest) {
         cart_item_count: String(items.length),
       },
     })
+    createdCheckoutSessionId = session.id
 
     const { error: sessionUpdateError } = await adminSupabase
       .from('orders')
@@ -261,27 +227,24 @@ export async function POST(request: NextRequest) {
       throw new Error(`Failed to store checkout session: ${sessionUpdateError.message}`)
     }
 
-    const { error: draftSessionUpdateError } = await (adminSupabase as any)
-      .from('checkout_drafts')
-      .update({
-        stripe_checkout_session_id: session.id,
-      })
-      .eq('id', checkoutDraftId)
-
-    if (draftSessionUpdateError) {
-      throw new Error(`Failed to store checkout draft session: ${draftSessionUpdateError.message}`)
-    }
-
     return NextResponse.json({ url: session.url })
   } catch (error) {
     console.error('[checkout/session] Failed to create checkout session', error)
 
+    if (createdCheckoutSessionId) {
+      try {
+        await stripe.checkout.sessions.expire(createdCheckoutSessionId)
+      } catch (expireError) {
+        console.error('[checkout/session] Failed to expire checkout session after local failure', {
+          checkoutSessionId: createdCheckoutSessionId,
+          error: expireError,
+        })
+      }
+    }
+
     if (createdOrderId) {
       try {
         const adminSupabase = createSupabaseAdminClient()
-        if (createdCheckoutDraftId) {
-          await (adminSupabase as any).from('checkout_drafts').delete().eq('id', createdCheckoutDraftId)
-        }
         await adminSupabase.from('orders').delete().eq('id', createdOrderId)
       } catch {
         // Ignore cleanup errors and return the original checkout failure.

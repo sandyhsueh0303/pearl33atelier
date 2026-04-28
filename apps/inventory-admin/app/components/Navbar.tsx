@@ -30,6 +30,9 @@ export default function Navbar() {
           <Link href="/admin/orders" className={styles.navLink}>
             Orders
           </Link>
+          <Link href="/admin/crm" className={styles.navLink}>
+            CRM
+          </Link>
           <Link href="/admin/blog" className={styles.navLink}>
             Blog
           </Link>
@@ -72,6 +75,9 @@ export default function Navbar() {
           </Link>
           <Link href="/admin/orders" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
             Orders
+          </Link>
+          <Link href="/admin/crm" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+            CRM
           </Link>
           <Link href="/admin/blog" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
             Blog

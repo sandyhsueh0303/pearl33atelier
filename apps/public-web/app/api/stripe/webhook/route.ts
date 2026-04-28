@@ -10,6 +10,12 @@ import {
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
 
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {}
+}
+
 function logCheckoutCompletion(session: Stripe.Checkout.Session) {
   console.log('[stripe:webhook] checkout.session.completed', {
     checkoutSessionId: session.id,
@@ -51,6 +57,18 @@ async function markOrderPaid(session: Stripe.Checkout.Session) {
       ? session.payment_intent
       : session.payment_intent?.id ?? null
 
+  const { data: existingOrder, error: existingOrderError } = await adminSupabase
+    .from('orders')
+    .select('id, metadata')
+    .eq('id', orderId)
+    .single()
+
+  if (existingOrderError || !existingOrder) {
+    throw new Error(
+      `Order ${orderId} not found before payment update: ${existingOrderError?.message || 'unknown error'}`
+    )
+  }
+
   const updatePayload = {
     status: 'paid',
     stripe_checkout_session_id: session.id,
@@ -64,6 +82,7 @@ async function markOrderPaid(session: Stripe.Checkout.Session) {
     total_amount_cents: session.amount_total ?? 0,
     shipping_address: session.customer_details?.address ?? null,
     metadata: {
+      ...asRecord(existingOrder.metadata),
       ...(session.metadata || {}),
       payment_status: session.payment_status,
     },
@@ -95,18 +114,6 @@ async function markOrderPaid(session: Stripe.Checkout.Session) {
     sessionId: session.id,
     updatedRows: data,
   })
-
-  const { error: checkoutDraftUpdateError } = await (adminSupabase as any)
-    .from('checkout_drafts')
-    .update({
-      status: 'converted',
-      stripe_checkout_session_id: session.id,
-    })
-    .eq('order_id', orderId)
-
-  if (checkoutDraftUpdateError) {
-    throw new Error(`Failed to update checkout draft ${orderId}: ${checkoutDraftUpdateError.message}`)
-  }
 
   try {
     await ensureOrderItemsForPaidOrder(orderId)
@@ -207,10 +214,6 @@ export async function POST(request: NextRequest) {
         if (orderId) {
           const adminSupabase = createSupabaseAdminClient()
           await adminSupabase.from('orders').update({ status: 'cancelled' }).eq('id', orderId)
-          await (adminSupabase as any)
-            .from('checkout_drafts')
-            .update({ status: 'expired' })
-            .eq('order_id', orderId)
         }
         break
       }

@@ -9,6 +9,7 @@ import { colors, typography, spacing, transitions, shadows } from '../constants/
 import { pageHeroStyles } from '../constants/pageHero'
 import FilterPanel, { type ProductFilters } from '../components/FilterPanel'
 import PageHero from '../components/PageHero'
+import PearlFinderQuiz from '../components/PearlFinderQuiz'
 import { useCart } from '../components/CartProvider'
 
 export interface ProductListItem {
@@ -210,6 +211,7 @@ export default function ProductList({
 
   return (
     <main style={{ ...pageHeroStyles.main, minHeight: '100vh' }}>
+      <PearlFinderQuiz />
       <PageHero
         eyebrow="Collection"
         title={pageTitle || 'Collection'}

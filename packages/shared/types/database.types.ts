@@ -48,10 +48,10 @@ export type Database = {
           preorder_note: string | null
           published: boolean
           published_at: string | null
+          sell_price: number | null
           seo_description: string | null
           seo_keywords: string | null
           seo_title: string | null
-          sell_price: number | null
           shape: string | null
           size_mm: string | null
           sku: string | null
@@ -77,10 +77,10 @@ export type Database = {
           preorder_note?: string | null
           published?: boolean
           published_at?: string | null
+          sell_price?: number | null
           seo_description?: string | null
           seo_keywords?: string | null
           seo_title?: string | null
-          sell_price?: number | null
           shape?: string | null
           size_mm?: string | null
           sku?: string | null
@@ -106,10 +106,10 @@ export type Database = {
           preorder_note?: string | null
           published?: boolean
           published_at?: string | null
+          sell_price?: number | null
           seo_description?: string | null
           seo_keywords?: string | null
           seo_title?: string | null
-          sell_price?: number | null
           shape?: string | null
           size_mm?: string | null
           sku?: string | null
@@ -126,6 +126,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      crm_leads: {
+        Row: {
+          coupon_amount_off_cents: number | null
+          coupon_code: string | null
+          created_at: string
+          email: string
+          email_normalized: string
+          id: string
+          message: string | null
+          metadata: Json
+          name: string
+          phone: string | null
+          phone_normalized: string | null
+          quiz_answers: Json
+          quiz_result: string | null
+          source: string
+          status: string
+          stripe_coupon_id: string | null
+          stripe_promotion_code_id: string | null
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          coupon_amount_off_cents?: number | null
+          coupon_code?: string | null
+          created_at?: string
+          email: string
+          email_normalized: string
+          id?: string
+          message?: string | null
+          metadata?: Json
+          name: string
+          phone?: string | null
+          phone_normalized?: string | null
+          quiz_answers?: Json
+          quiz_result?: string | null
+          source?: string
+          status?: string
+          stripe_coupon_id?: string | null
+          stripe_promotion_code_id?: string | null
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          coupon_amount_off_cents?: number | null
+          coupon_code?: string | null
+          created_at?: string
+          email?: string
+          email_normalized?: string
+          id?: string
+          message?: string | null
+          metadata?: Json
+          name?: string
+          phone?: string | null
+          phone_normalized?: string | null
+          quiz_answers?: Json
+          quiz_result?: string | null
+          source?: string
+          status?: string
+          stripe_coupon_id?: string | null
+          stripe_promotion_code_id?: string | null
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       inventory_items: {
         Row: {
@@ -595,6 +661,7 @@ export type Database = {
           luster: string | null
           material: string | null
           note: string | null
+          og_image_alt: string | null
           original_price: number | null
           overtone: string | null
           pearl_type: string
@@ -602,6 +669,9 @@ export type Database = {
           published: boolean
           published_at: string | null
           sell_price: number | null
+          seo_description: string | null
+          seo_keywords: string | null
+          seo_title: string | null
           shape: string | null
           size_mm: string | null
           sku: string | null
@@ -633,6 +703,7 @@ export type Database = {
           luster: string | null
           material: string | null
           note: string | null
+          og_image_alt: string | null
           original_price: number | null
           overtone: string | null
           pearl_type: string
@@ -640,6 +711,9 @@ export type Database = {
           published: boolean
           published_at: string | null
           sell_price: number | null
+          seo_description: string | null
+          seo_keywords: string | null
+          seo_title: string | null
           shape: string | null
           size_mm: string | null
           sku: string | null
