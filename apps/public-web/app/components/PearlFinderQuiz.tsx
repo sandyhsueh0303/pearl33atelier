@@ -1,7 +1,7 @@
 'use client'
 
 import { type FormEvent, useEffect, useMemo, useState } from 'react'
-import { colors, shadows, spacing, transitions, typography } from '../constants/design'
+import styles from './PearlFinderQuiz.module.css'
 
 type PearlMatch = 'akoya' | 'south-sea' | 'tahitian'
 type QuizStep = 'intro' | 'quiz' | 'lead' | 'success'
@@ -209,7 +209,7 @@ export default function PearlFinderQuiz() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('/api/pearl-finder/coupon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -269,30 +269,30 @@ export default function PearlFinderQuiz() {
 
   return (
     <div
-      className="pearlFinderOverlay"
+      className={styles.pearlFinderOverlay}
       role="dialog"
       aria-modal="true"
       aria-labelledby="pearl-finder-title"
     >
-      <div className="pearlFinderModal">
-        <button type="button" className="pearlFinderClose" onClick={closeQuiz} aria-label="Close pearl finder quiz">
+      <div className={styles.pearlFinderModal}>
+        <button type="button" className={styles.pearlFinderClose} onClick={closeQuiz} aria-label="Close pearl finder quiz">
           Close
         </button>
 
         {step === 'intro' && (
-          <div className="pearlFinderPanel">
-            <div className="pearlFinderEyebrow">Pearl Finder Quiz</div>
+          <div className={styles.pearlFinderPanel}>
+            <div className={styles.pearlFinderEyebrow}>Pearl Finder Quiz</div>
             <h2 id="pearl-finder-title">Find Your Perfect Pearl</h2>
             <p>
               Answer 3 quick questions and discover whether Akoya, South Sea, or Tahitian pearls match your
               everyday style best.
             </p>
-            <p className="pearlFinderZh">回答 3 個小問題，找到最適合你的珍珠風格。</p>
-            <div className="pearlFinderActions">
-              <button type="button" className="pearlFinderPrimary" onClick={() => setStep('quiz')}>
+            <p className={styles.pearlFinderZh}>回答 3 個小問題，找到最適合你的珍珠風格。</p>
+            <div className={styles.pearlFinderActions}>
+              <button type="button" className={styles.pearlFinderPrimary} onClick={() => setStep('quiz')}>
                 Start Quiz
               </button>
-              <button type="button" className="pearlFinderSecondary" onClick={closeQuiz}>
+              <button type="button" className={styles.pearlFinderSecondary} onClick={closeQuiz}>
                 Maybe later
               </button>
             </div>
@@ -300,22 +300,22 @@ export default function PearlFinderQuiz() {
         )}
 
         {step === 'quiz' && (
-          <div className="pearlFinderPanel">
-            <div className="pearlFinderTopline">
+          <div className={styles.pearlFinderPanel}>
+            <div className={styles.pearlFinderTopline}>
               <span>Question {progress} / {questions.length}</span>
               <span>{Math.round((progress / questions.length) * 100)}%</span>
             </div>
-            <div className="pearlFinderProgress" aria-hidden="true">
+            <div className={styles.pearlFinderProgress} aria-hidden="true">
               <span style={{ width: `${(progress / questions.length) * 100}%` }} />
             </div>
             <h2 id="pearl-finder-title">{currentQuestion.question}</h2>
-            <p className="pearlFinderZh">{currentQuestion.zhQuestion}</p>
-            <div className="pearlFinderOptions">
+            <p className={styles.pearlFinderZh}>{currentQuestion.zhQuestion}</p>
+            <div className={styles.pearlFinderOptions}>
               {currentQuestion.options.map((option) => (
                 <button
                   type="button"
                   key={option.label}
-                  className="pearlFinderOption"
+                  className={styles.pearlFinderOption}
                   onClick={() => handleSelectAnswer(option.match)}
                 >
                   <span>{option.label}</span>
@@ -323,23 +323,23 @@ export default function PearlFinderQuiz() {
                 </button>
               ))}
             </div>
-            <button type="button" className="pearlFinderTextButton" onClick={handleBack}>
+            <button type="button" className={styles.pearlFinderTextButton} onClick={handleBack}>
               Back
             </button>
           </div>
         )}
 
         {step === 'lead' && (
-          <div className="pearlFinderPanel">
-            <div className="pearlFinderEyebrow">Your Pearl Match</div>
+          <div className={styles.pearlFinderPanel}>
+            <div className={styles.pearlFinderEyebrow}>Your Pearl Match</div>
             <h2 id="pearl-finder-title">{matchDetail.title}</h2>
             <p>{matchDetail.description}</p>
-            <div className="pearlFinderResultBox">
+            <div className={styles.pearlFinderResultBox}>
               <strong>Unlock $20 off your pearl match</strong>
               <span>Leave your details and receive your one-time $20 off code by email or message.</span>
             </div>
 
-            <form className="pearlFinderForm" onSubmit={handleLeadSubmit}>
+            <form className={styles.pearlFinderForm} onSubmit={handleLeadSubmit}>
               <label>
                 Name
                 <input value={name} onChange={(event) => setName(event.target.value)} required />
@@ -352,12 +352,12 @@ export default function PearlFinderQuiz() {
                 Phone Number
                 <input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} required />
               </label>
-              {error && <div className="pearlFinderError">{error}</div>}
-              <div className="pearlFinderActions compact">
-                <button type="submit" className="pearlFinderPrimary" disabled={loading}>
+              {error && <div className={styles.pearlFinderError}>{error}</div>}
+              <div className={`${styles.pearlFinderActions} ${styles.compact}`}>
+                <button type="submit" className={styles.pearlFinderPrimary} disabled={loading}>
                   {loading ? 'Submitting...' : 'Send My $20 Off Code'}
                 </button>
-                <button type="button" className="pearlFinderSecondary" onClick={handleBack}>
+                <button type="button" className={styles.pearlFinderSecondary} onClick={handleBack}>
                   Back
                 </button>
               </div>
@@ -366,14 +366,14 @@ export default function PearlFinderQuiz() {
         )}
 
         {step === 'success' && (
-          <div className="pearlFinderPanel">
-            <div className="pearlFinderEyebrow">Your Code Is Reserved</div>
+          <div className={styles.pearlFinderPanel}>
+            <div className={styles.pearlFinderEyebrow}>Your Code Is Reserved</div>
             <h2 id="pearl-finder-title">Check your email or message us</h2>
             <p>
               Your {matchDetail.title} match and one-time $20 off code are saved. We only share the code through email
               or direct message, so it stays connected to your request.
             </p>
-            <div className="pearlFinderResultBox">
+            <div className={styles.pearlFinderResultBox}>
               <strong>
                 {couponDelivery === 'email_sent'
                   ? 'We sent the code to your email.'
@@ -385,20 +385,20 @@ export default function PearlFinderQuiz() {
                   : 'Use one of the contact buttons below to request your code.'}
               </span>
             </div>
-            <div className="pearlFinderActions">
-              <a className="pearlFinderPrimary linkButton" href={matchDetail.collectionHref} onClick={closeQuiz}>
+            <div className={styles.pearlFinderActions}>
+              <a className={`${styles.pearlFinderPrimary} ${styles.linkButton}`} href={matchDetail.collectionHref} onClick={closeQuiz}>
                 Shop {matchDetail.title}
               </a>
-              <a className="pearlFinderSecondary linkButton" href={emailHref} onClick={closeQuiz}>
+              <a className={`${styles.pearlFinderSecondary} ${styles.linkButton}`} href={emailHref} onClick={closeQuiz}>
                 Email Us
               </a>
-              <a className="pearlFinderSecondary linkButton" href={instagramHref} target="_blank" rel="noreferrer" onClick={closeQuiz}>
+              <a className={`${styles.pearlFinderSecondary} ${styles.linkButton}`} href={instagramHref} target="_blank" rel="noreferrer" onClick={closeQuiz}>
                 Instagram
               </a>
-              <a className="pearlFinderSecondary linkButton" href={lineHref} target="_blank" rel="noreferrer" onClick={closeQuiz}>
+              <a className={`${styles.pearlFinderSecondary} ${styles.linkButton}`} href={lineHref} target="_blank" rel="noreferrer" onClick={closeQuiz}>
                 LINE
               </a>
-              <button type="button" className="pearlFinderSecondary" onClick={closeQuiz}>
+              <button type="button" className={styles.pearlFinderSecondary} onClick={closeQuiz}>
                 Continue Browsing
               </button>
             </div>
@@ -406,299 +406,6 @@ export default function PearlFinderQuiz() {
         )}
       </div>
 
-      <style jsx>{`
-        .pearlFinderOverlay {
-          position: fixed;
-          inset: 0;
-          z-index: 1200;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: ${spacing.md};
-          background: rgba(24, 24, 24, 0.42);
-        }
-
-        .pearlFinderModal {
-          position: relative;
-          width: min(94vw, 520px);
-          max-height: min(760px, calc(100vh - 2rem));
-          overflow-y: auto;
-          background:
-            linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 246, 240, 0.98)),
-            ${colors.white};
-          border: 1px solid rgba(201, 169, 97, 0.28);
-          border-radius: 8px;
-          box-shadow: 0 22px 70px rgba(20, 20, 20, 0.24);
-        }
-
-        .pearlFinderPanel {
-          padding: clamp(${spacing.lg}, 5vw, ${spacing.xl});
-        }
-
-        .pearlFinderClose {
-          position: absolute;
-          top: 12px;
-          right: 12px;
-          z-index: 2;
-          border: 1px solid rgba(44, 44, 44, 0.14);
-          background: rgba(255, 255, 255, 0.86);
-          color: ${colors.textSecondary};
-          padding: 7px 10px;
-          border-radius: 6px;
-          font-size: ${typography.fontSize.xs};
-          cursor: pointer;
-          transition: ${transitions.fast};
-        }
-
-        .pearlFinderClose:hover {
-          border-color: rgba(44, 44, 44, 0.32);
-          color: ${colors.darkGray};
-        }
-
-        .pearlFinderEyebrow,
-        .pearlFinderTopline {
-          color: ${colors.gold};
-          font-size: ${typography.fontSize.xs};
-          font-weight: ${typography.fontWeight.semibold};
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-        }
-
-        .pearlFinderTopline {
-          display: flex;
-          justify-content: space-between;
-          gap: ${spacing.sm};
-          margin-bottom: ${spacing.xs};
-        }
-
-        .pearlFinderProgress {
-          height: 4px;
-          overflow: hidden;
-          background: rgba(44, 44, 44, 0.08);
-          border-radius: 999px;
-          margin-bottom: ${spacing.lg};
-        }
-
-        .pearlFinderProgress span {
-          display: block;
-          height: 100%;
-          background: ${colors.gold};
-          border-radius: inherit;
-          transition: width ${transitions.normal};
-        }
-
-        h2 {
-          margin: ${spacing.xs} 0 ${spacing.sm};
-          color: ${colors.darkGray};
-          font-size: clamp(${typography.fontSize['2xl']}, 4vw, ${typography.fontSize['4xl']});
-          line-height: 1.14;
-          letter-spacing: 0;
-        }
-
-        p {
-          color: ${colors.textSecondary};
-          font-size: ${typography.fontSize.base};
-          line-height: 1.7;
-        }
-
-        .pearlFinderZh {
-          margin-top: ${spacing.xs};
-          color: ${colors.textLight};
-          font-size: ${typography.fontSize.sm};
-        }
-
-        .pearlFinderActions {
-          display: flex;
-          gap: ${spacing.xs};
-          flex-wrap: wrap;
-          margin-top: ${spacing.lg};
-        }
-
-        .pearlFinderActions.compact {
-          margin-top: ${spacing.sm};
-        }
-
-        .pearlFinderPrimary,
-        .pearlFinderSecondary,
-        .pearlFinderOption,
-        .pearlFinderTextButton {
-          border-radius: 6px;
-          cursor: pointer;
-          transition: ${transitions.fast};
-        }
-
-        .pearlFinderPrimary,
-        .pearlFinderSecondary {
-          min-height: 44px;
-          padding: 11px 18px;
-          border: 1px solid ${colors.darkGray};
-          font-size: ${typography.fontSize.sm};
-          font-weight: ${typography.fontWeight.semibold};
-        }
-
-        .pearlFinderPrimary {
-          background: ${colors.darkGray};
-          color: ${colors.white};
-          box-shadow: ${shadows.soft};
-        }
-
-        .pearlFinderPrimary:hover,
-        .pearlFinderPrimary:focus-visible {
-          background: ${colors.gold};
-          border-color: ${colors.gold};
-        }
-
-        .pearlFinderPrimary:disabled {
-          opacity: 0.6;
-          cursor: wait;
-        }
-
-        .pearlFinderSecondary {
-          background: rgba(255, 255, 255, 0.72);
-          color: ${colors.darkGray};
-        }
-
-        .pearlFinderSecondary:hover,
-        .pearlFinderSecondary:focus-visible {
-          border-color: ${colors.gold};
-          color: ${colors.gold};
-        }
-
-        .linkButton {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          text-decoration: none;
-        }
-
-        .pearlFinderOptions {
-          display: grid;
-          gap: ${spacing.xs};
-          margin-top: ${spacing.lg};
-        }
-
-        .pearlFinderOption {
-          width: 100%;
-          border: 1px solid rgba(44, 44, 44, 0.14);
-          background: rgba(255, 255, 255, 0.72);
-          padding: ${spacing.sm};
-          text-align: left;
-        }
-
-        .pearlFinderOption:hover,
-        .pearlFinderOption:focus-visible {
-          border-color: rgba(201, 169, 97, 0.72);
-          background: ${colors.white};
-          box-shadow: ${shadows.soft};
-        }
-
-        .pearlFinderOption span,
-        .pearlFinderOption small {
-          display: block;
-        }
-
-        .pearlFinderOption span {
-          color: ${colors.darkGray};
-          font-size: ${typography.fontSize.base};
-          line-height: 1.35;
-        }
-
-        .pearlFinderOption small {
-          margin-top: 4px;
-          color: ${colors.textLight};
-          font-size: ${typography.fontSize.sm};
-          line-height: 1.45;
-        }
-
-        .pearlFinderTextButton {
-          margin-top: ${spacing.sm};
-          border: 0;
-          background: transparent;
-          color: ${colors.textSecondary};
-          font-size: ${typography.fontSize.sm};
-          text-decoration: underline;
-          text-underline-offset: 4px;
-        }
-
-        .pearlFinderResultBox {
-          display: grid;
-          gap: 4px;
-          margin: ${spacing.md} 0;
-          padding: ${spacing.sm};
-          border: 1px solid rgba(201, 169, 97, 0.34);
-          border-radius: 8px;
-          background: rgba(255, 255, 255, 0.66);
-          color: ${colors.darkGray};
-        }
-
-        .pearlFinderResultBox span {
-          color: ${colors.textSecondary};
-          font-size: ${typography.fontSize.sm};
-        }
-
-        .pearlFinderForm {
-          display: grid;
-          gap: ${spacing.sm};
-        }
-
-        .pearlFinderForm label {
-          display: grid;
-          gap: 6px;
-          color: ${colors.darkGray};
-          font-size: ${typography.fontSize.sm};
-          font-weight: ${typography.fontWeight.semibold};
-        }
-
-        .pearlFinderForm input {
-          width: 100%;
-          border: 1px solid rgba(44, 44, 44, 0.18);
-          border-radius: 6px;
-          background: ${colors.white};
-          color: ${colors.darkGray};
-          padding: 11px 12px;
-          outline: none;
-          transition: ${transitions.fast};
-        }
-
-        .pearlFinderForm input:focus {
-          border-color: ${colors.gold};
-          box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.14);
-        }
-
-        .pearlFinderError {
-          color: #b42318;
-          font-size: ${typography.fontSize.sm};
-        }
-
-        @media (max-width: 640px) {
-          .pearlFinderOverlay {
-            align-items: stretch;
-            padding: 0;
-          }
-
-          .pearlFinderModal {
-            width: 100vw;
-            max-height: none;
-            min-height: 100vh;
-            border-radius: 0;
-            border-left: 0;
-            border-right: 0;
-          }
-
-          .pearlFinderPanel {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: ${spacing.xl} ${spacing.md};
-          }
-
-          .pearlFinderActions,
-          .pearlFinderActions.compact {
-            display: grid;
-          }
-        }
-      `}</style>
     </div>
   )
 }
