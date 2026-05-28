@@ -117,13 +117,13 @@ NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=
 從 repo root：
 
 ```bash
-npm run dev:public-web
+pnpm dev:public-web
 ```
 
 從 app 目錄：
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 預設埠號：`3000`
@@ -133,15 +133,15 @@ npm run dev
 從 repo root：
 
 ```bash
-npm run build:public-web
-npm run start:public-web
+pnpm build:public-web
+pnpm start:public-web
 ```
 
 從 app 目錄：
 
 ```bash
-npm run build
-PORT=3000 npm run start
+pnpm build
+PORT=3000 pnpm start
 ```
 
 ## 實作上值得記住的事

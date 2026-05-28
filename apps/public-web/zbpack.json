@@ -1,5 +1,5 @@
 {
-  "build_command": "npm install && npm run build:public-web",
-  "start_command": "npm run start:public-web",
-  "install_command": "npm install"
+  "build_command": "corepack enable && pnpm install --frozen-lockfile && pnpm build:public-web",
+  "start_command": "corepack enable && pnpm start:public-web",
+  "install_command": "corepack enable && pnpm install --frozen-lockfile"
 }

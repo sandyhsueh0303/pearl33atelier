@@ -136,23 +136,24 @@
 安裝：
 
 ```bash
-npm install
+corepack enable
+pnpm install
 ```
 
 分別在不同 terminal 啟動兩個 app：
 
 ```bash
-npm run dev:public-web
-npm run dev:inventory-admin
+pnpm dev:public-web
+pnpm dev:inventory-admin
 ```
 
 ## Build 與 Start
 
 ```bash
-npm run build:public-web
-npm run build:inventory-admin
-npm run start:public-web
-npm run start:inventory-admin
+pnpm build:public-web
+pnpm build:inventory-admin
+pnpm start:public-web
+pnpm start:inventory-admin
 ```
 
 ## 環境變數概覽
@@ -184,7 +185,7 @@ npm run start:inventory-admin
 當 public schema 變更時：
 
 ```bash
-npm run gen:types
+pnpm gen:types
 ```
 
 輸出檔案：

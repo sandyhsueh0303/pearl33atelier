@@ -39,7 +39,7 @@ Recommended:
 After env/policy changes:
 
 ```bash
-npm run dev:inventory-admin
+pnpm dev:inventory-admin
 ```
 
 ## 5. Verify Login Flow

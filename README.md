@@ -136,23 +136,24 @@ If you are orienting yourself to the AI workflows specifically, also see:
 Install dependencies:
 
 ```bash
-npm install
+corepack enable
+pnpm install
 ```
 
 Run both apps in separate terminals:
 
 ```bash
-npm run dev:public-web
-npm run dev:inventory-admin
+pnpm dev:public-web
+pnpm dev:inventory-admin
 ```
 
 ## Build And Start
 
 ```bash
-npm run build:public-web
-npm run build:inventory-admin
-npm run start:public-web
-npm run start:inventory-admin
+pnpm build:public-web
+pnpm build:inventory-admin
+pnpm start:public-web
+pnpm start:inventory-admin
 ```
 
 ## Environment Overview
@@ -184,7 +185,7 @@ See each app README for the exact env list and usage.
 When the public schema changes:
 
 ```bash
-npm run gen:types
+pnpm gen:types
 ```
 
 Generated file:

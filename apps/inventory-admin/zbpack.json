@@ -1,5 +1,5 @@
 {
-  "build_command": "npm install && npm run build:inventory-admin",
-  "start_command": "npm run start:inventory-admin",
-  "install_command": "npm install"
+  "build_command": "corepack enable && pnpm install --frozen-lockfile && pnpm build:inventory-admin",
+  "start_command": "corepack enable && pnpm start:inventory-admin",
+  "install_command": "corepack enable && pnpm install --frozen-lockfile"
 }

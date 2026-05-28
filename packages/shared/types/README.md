@@ -30,7 +30,7 @@
 從 repo root：
 
 ```bash
-npm run gen:types
+pnpm gen:types
 ```
 
 輸出位置：

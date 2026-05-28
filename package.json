@@ -3,18 +3,19 @@
   "version": "1.0.0",
   "description": "Jewelry shop with web and inventory systems",
   "private": true,
+  "packageManager": "pnpm@9.15.4",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "dev:public-web": "npm run dev --workspace=apps/public-web",
-    "dev:inventory-admin": "npm run dev --workspace=apps/inventory-admin",
-    "build:public-web": "npm run build --workspace=apps/public-web",
-    "build:inventory-admin": "npm run build --workspace=apps/inventory-admin",
-    "start:public-web": "npm run start --workspace=apps/public-web",
-    "start:inventory-admin": "npm run start --workspace=apps/inventory-admin",
-    "gen:types": "npx supabase gen types typescript --project-id xjrnyynfzbrhmotepzyl --schema public > packages/shared/types/database.types.ts"
+    "dev:public-web": "pnpm --filter public-web dev",
+    "dev:inventory-admin": "pnpm --filter inventory-admin dev",
+    "build:public-web": "pnpm --filter public-web build",
+    "build:inventory-admin": "pnpm --filter inventory-admin build",
+    "start:public-web": "pnpm --filter public-web start",
+    "start:inventory-admin": "pnpm --filter inventory-admin start",
+    "gen:types": "pnpm exec supabase gen types typescript --project-id xjrnyynfzbrhmotepzyl --schema public > packages/shared/types/database.types.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",

@@ -113,8 +113,8 @@ Blog:
 Confirm both apps start successfully:
 
 ```bash
-npm run dev:public-web
-npm run dev:inventory-admin
+pnpm dev:public-web
+pnpm dev:inventory-admin
 ```
 
 Then open:

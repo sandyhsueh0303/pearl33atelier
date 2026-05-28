@@ -8,7 +8,7 @@
     "start": "next start -p $PORT -H 0.0.0.0"
   },
   "dependencies": {
-    "@pearl33atelier/shared": "*",
+    "@pearl33atelier/shared": "workspace:*",
     "@supabase/supabase-js": "^2.93.2",
     "gray-matter": "^4.0.3",
     "next": "^16.1.6",

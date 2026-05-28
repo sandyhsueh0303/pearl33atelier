@@ -8,13 +8,14 @@
     "start": "next start -p $PORT -H 0.0.0.0"
   },
   "dependencies": {
-    "@pearl33atelier/shared": "*",
+    "@pearl33atelier/shared": "workspace:*",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.93.2",
     "next": "^16.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "resend": "^6.9.4"
+    "resend": "^6.9.4",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

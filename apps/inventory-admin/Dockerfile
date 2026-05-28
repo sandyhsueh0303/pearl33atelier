@@ -1,19 +1,22 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/public-web/package.json apps/public-web/package.json
 COPY apps/inventory-admin/package.json apps/inventory-admin/package.json
 COPY packages/shared/package.json packages/shared/package.json
-RUN npm ci
+RUN corepack enable && pnpm install --frozen-lockfile
 
 FROM node:20-alpine AS builder
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/public-web/node_modules ./apps/public-web/node_modules
+COPY --from=deps /app/apps/inventory-admin/node_modules ./apps/inventory-admin/node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
 COPY . .
-RUN npm run build --workspace=apps/inventory-admin
+RUN corepack enable && pnpm --filter inventory-admin build
 
 FROM node:20-alpine AS runner
 WORKDIR /app

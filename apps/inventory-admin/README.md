@@ -157,13 +157,13 @@ RESEND_REPLY_TO_EMAIL=
 從 repo root：
 
 ```bash
-npm run dev:inventory-admin
+pnpm dev:inventory-admin
 ```
 
 從 app 目錄：
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 預設埠號：`3001`
@@ -173,15 +173,15 @@ npm run dev
 從 repo root：
 
 ```bash
-npm run build:inventory-admin
-npm run start:inventory-admin
+pnpm build:inventory-admin
+pnpm start:inventory-admin
 ```
 
 從 app 目錄：
 
 ```bash
-npm run build
-PORT=3001 npm run start
+pnpm build
+PORT=3001 pnpm start
 ```
 
 ## 實作上值得記住的事
