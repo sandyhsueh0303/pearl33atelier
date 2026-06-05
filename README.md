@@ -54,7 +54,6 @@ Both apps
 ├── packages/
 │   └── shared/
 ├── supabase/
-├── 33pearlatelier/
 └── package.json
 ```
 
@@ -64,7 +63,6 @@ Both apps
 - [apps/inventory-admin/README.md](/Users/sandyhsueh/pearl33atelier/apps/inventory-admin/README.md): admin workflows, auth model, operational APIs
 - [packages/shared/README.md](/Users/sandyhsueh/pearl33atelier/packages/shared/README.md): shared domain layer and why it exists
 - [packages/shared/types/README.md](/Users/sandyhsueh/pearl33atelier/packages/shared/types/README.md): generated types workflow
-- [33pearlatelier/README.md](/Users/sandyhsueh/pearl33atelier/33pearlatelier/README.md): nested workspace notes and Notion inventory import script
 
 ## Main Components
 

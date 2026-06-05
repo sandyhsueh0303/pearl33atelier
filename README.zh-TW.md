@@ -54,7 +54,6 @@
 ├── packages/
 │   └── shared/
 ├── supabase/
-├── 33pearlatelier/
 └── package.json
 ```
 
@@ -64,7 +63,6 @@
 - [apps/inventory-admin/README.md](/Users/sandyhsueh/pearl33atelier/apps/inventory-admin/README.md)：後台工作流、auth 模型、主要 API
 - [packages/shared/README.md](/Users/sandyhsueh/pearl33atelier/packages/shared/README.md)：shared domain layer 的責任與邏輯
 - [packages/shared/types/README.md](/Users/sandyhsueh/pearl33atelier/packages/shared/types/README.md)：型別生成與維護方式
-- [33pearlatelier/README.md](/Users/sandyhsueh/pearl33atelier/33pearlatelier/README.md)：巢狀 workspace 與 Notion 匯入腳本說明
 
 ## 系統主要組成
 
