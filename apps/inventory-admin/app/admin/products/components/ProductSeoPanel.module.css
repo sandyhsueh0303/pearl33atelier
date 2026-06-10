@@ -1,0 +1,106 @@
+.panel {
+  background-color: #fffaf5;
+  border: 1px solid #e5dccf;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.summary {
+  align-items: flex-start;
+  cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  list-style: none;
+  padding: 1rem;
+}
+
+.summaryTitle {
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.summaryDescription,
+.helperText,
+.helperTextWide {
+  color: #666;
+  line-height: 1.5;
+}
+
+.summaryDescription {
+  font-size: 0.9rem;
+}
+
+.summaryAction {
+  color: #7c5c2b;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.body {
+  padding: 0 1rem 1rem;
+}
+
+.actionRow {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.generateButton {
+  background-color: #7c5c2b;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0.65rem 1rem;
+  white-space: nowrap;
+}
+
+.generateButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.helperTextWide {
+  flex: 1 1 240px;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.control {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  padding: 0.75rem;
+  width: 100%;
+}
+
+.textarea {
+  font-family: inherit;
+  resize: vertical;
+}
+
+.helperText {
+  display: block;
+  margin-top: 0.25rem;
+}

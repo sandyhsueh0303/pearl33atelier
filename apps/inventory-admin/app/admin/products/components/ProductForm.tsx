@@ -13,6 +13,7 @@ import ProductMaterials from './ProductMaterials'
 import ProductPublishSection from './ProductPublishSection'
 import ProductSeoPanel from './ProductSeoPanel'
 import QuickSaleButton from './QuickSaleButton'
+import styles from './ProductForm.module.css'
 import MaterialField from './fields/MaterialField'
 import OvertoneField from './fields/OvertoneField'
 import PearlTypeField from './fields/PearlTypeField'
@@ -28,24 +29,6 @@ import {
   PEARL_TYPE_OPTIONS,
   SHAPE_OPTIONS,
 } from './productFormConfig'
-import {
-  cardStyle,
-  errorBannerStyle,
-  formGridStyle,
-  headerActionsStyle,
-  headerRowStyle,
-  helperTextStyle,
-  labelStyle,
-  monospaceInputStyle,
-  mutedTextStyle,
-  pageContainerStyle,
-  primaryButtonStyle,
-  secondaryButtonStyle,
-  selectStyle,
-  submitRowStyle,
-  textInputStyle,
-  textareaStyle,
-} from './productFormStyles'
 import { useProductFormData } from './useProductFormData'
 import { useProductMediaManager } from './useProductMediaManager'
 
@@ -269,19 +252,19 @@ export default function ProductForm({ productId }: ProductFormProps) {
   }
 
   if (loading) {
-    return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
+    return <div className={styles.loading}>Loading...</div>
   }
 
   return (
-    <div className="admin-product-form-page" style={pageContainerStyle}>
-      <div className="admin-product-form-header" style={headerRowStyle}>
+    <div className={`admin-product-form-page ${styles.page}`}>
+      <div className={`admin-product-form-header ${styles.header}`}>
         <h1 className="admin-product-form-title">{isEditMode ? 'Edit Product' : 'Add Product'}</h1>
-        <div className="admin-product-form-header-actions" style={headerActionsStyle}>
+        <div className={`admin-product-form-header-actions ${styles.headerActions}`}>
           {isEditMode && <QuickSaleButton productId={currentProductId} />}
           <button
             onClick={() => router.push(backToListPath)}
-            className="admin-product-form-back-button"
-            style={secondaryButtonStyle}
+            type="button"
+            className={`admin-product-form-back-button ${styles.secondaryButton}`}
           >
             Back to list
           </button>
@@ -289,7 +272,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
       </div>
 
       {error && (
-        <div style={errorBannerStyle}>
+        <div className={styles.errorBanner}>
           <strong>Error:</strong> {error}
         </div>
       )}
@@ -321,49 +304,51 @@ export default function ProductForm({ productId }: ProductFormProps) {
             preorderNote,
           })
         }}
-        className="admin-product-form-card"
-        style={cardStyle}
+        className={`admin-product-form-card ${styles.card}`}
       >
-        <div className="admin-product-form-grid" style={formGridStyle}>
+        <div className={`admin-product-form-grid ${styles.formGrid}`}>
           <div className="admin-product-form-full">
-            <label style={labelStyle}>
-              Title <span style={{ color: 'red' }}>*</span>
+            <label className={styles.label} htmlFor="product-title">
+              Title <span className={styles.required}>*</span>
             </label>
             <input
+              id="product-title"
               type="text"
               value={title}
               onChange={(e) => handleTitleChange(e.target.value)}
               required
-              style={textInputStyle}
+              className={styles.control}
             />
           </div>
 
           <div>
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-sku">
               SKU
             </label>
             <input
+              id="product-sku"
               type="text"
               value={sku}
               onChange={(e) => handleSkuChange(e.target.value)}
               placeholder="e.g.: PA0001"
-              style={monospaceInputStyle}
+              className={`${styles.control} ${styles.monospace}`}
             />
           </div>
 
           <div>
-            <label style={labelStyle}>
-              Slug (URL slug) <span style={{ color: 'red' }}>*</span>
+            <label className={styles.label} htmlFor="product-slug">
+              Slug (URL slug) <span className={styles.required}>*</span>
             </label>
             <input
+              id="product-slug"
               type="text"
               value={slug}
               onChange={(e) => handleSlugChange(e.target.value)}
               required
               placeholder="white-akoya-8mm"
-              style={monospaceInputStyle}
+              className={`${styles.control} ${styles.monospace}`}
             />
-            <small style={{ ...helperTextStyle, marginTop: '0.25rem' }}>
+            <small className={styles.helperTextTight}>
               {isEditMode
                 ? 'Auto-updates when product details change until you edit it manually. URL will update after saving.'
                 : 'Auto-generated from product details, but editable manually'}
@@ -377,13 +362,14 @@ export default function ProductForm({ productId }: ProductFormProps) {
           />
 
           <div>
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-category">
               Product Category
             </label>
             <select
+              id="product-category"
               value={category}
               onChange={(e) => setCategory(e.target.value as ProductCategory | '')}
-              style={selectStyle}
+              className={`${styles.control} ${styles.select}`}
             >
               <option value="">Uncategorized</option>
               <option value="BRACELETS">Bracelets</option>
@@ -398,26 +384,28 @@ export default function ProductForm({ productId }: ProductFormProps) {
           </div>
 
           <div>
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-size-mm">
               Size (mm)
             </label>
             <input
+              id="product-size-mm"
               type="text"
               value={sizeMm}
               onChange={(e) => setSizeMm(e.target.value)}
               placeholder="e.g.: 7.5 or 7-7.5 or 3.5-8"
-              style={textInputStyle}
+              className={styles.control}
             />
           </div>
 
           <div>
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-shape">
               Shape
             </label>
             <select
+              id="product-shape"
               value={shape}
               onChange={(e) => setShape(e.target.value)}
-              style={{ ...selectStyle, textTransform: 'capitalize' }}
+              className={`${styles.control} ${styles.select} ${styles.capitalize}`}
             >
               <option value="">Select shape</option>
               {SHAPE_OPTIONS.map((option) => (
@@ -429,13 +417,14 @@ export default function ProductForm({ productId }: ProductFormProps) {
           </div>
 
           <div>
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-luster">
               Luster
             </label>
             <select
+              id="product-luster"
               value={luster}
               onChange={(e) => setLuster(e.target.value)}
-              style={selectStyle}
+              className={`${styles.control} ${styles.select}`}
             >
               <option value="">Select luster</option>
               {LUSTER_OPTIONS.map((option) => (
@@ -447,27 +436,15 @@ export default function ProductForm({ productId }: ProductFormProps) {
           </div>
 
           <div>
-            <label
-              className="admin-product-form-toggle-card"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                padding: '0.9rem 1rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                backgroundColor: '#fffaf2',
-                cursor: 'pointer',
-              }}
-            >
+            <label className={`admin-product-form-toggle-card ${styles.toggleCard}`}>
               <input
                 type="checkbox"
                 checked={editorsPick}
                 onChange={(e) => setEditorsPick(e.target.checked)}
               />
               <div>
-                <div style={{ fontWeight: 'bold', color: '#333' }}>Editor&apos;s Pick</div>
-                <div style={{ color: '#666', fontSize: '0.875rem', marginTop: '0.15rem' }}>
+                <div className={styles.toggleTitle}>Editor&apos;s Pick</div>
+                <div className={styles.toggleDescription}>
                   Add an Editor&apos;s Pick badge to the public product card.
                 </div>
               </div>
@@ -491,43 +468,46 @@ export default function ProductForm({ productId }: ProductFormProps) {
           />
 
           <div>
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-sell-price">
               Sell Price ($)
             </label>
             <input
+              id="product-sell-price"
               type="number"
               step="0.01"
               value={sellPrice}
               onChange={(e) => setSellPrice(e.target.value)}
-              style={textInputStyle}
+              className={styles.control}
             />
           </div>
 
           <div>
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-original-price">
               Original Price ($)
             </label>
             <input
+              id="product-original-price"
               type="number"
               step="0.01"
               value={originalPrice}
               onChange={(e) => setOriginalPrice(e.target.value)}
-              style={textInputStyle}
+              className={styles.control}
             />
           </div>
 
           <div>
-            <label style={labelStyle}>
-              Selling Mode <span style={{ color: 'red' }}>*</span>
+            <label className={styles.label} htmlFor="product-availability">
+              Selling Mode <span className={styles.required}>*</span>
             </label>
-            <p style={{ margin: '0 0 0.5rem 0', ...mutedTextStyle, fontSize: '0.875rem', lineHeight: 1.5 }}>
+            <p className={styles.fieldHint}>
               `Preorder` is a manual selling mode. Actual in-stock or sold-out status is determined by BOM material inventory.
             </p>
             <select
+              id="product-availability"
               value={availability}
               onChange={(e) => setAvailability(e.target.value as AvailabilityKind)}
               required
-              style={selectStyle}
+              className={`${styles.control} ${styles.select}`}
             >
               <option value="IN_STOCK">Normal Sale</option>
               <option value="PREORDER">Preorder</option>
@@ -536,28 +516,30 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
           {availability === 'PREORDER' && (
             <div className="admin-product-form-full">
-              <label style={labelStyle}>
+              <label className={styles.label} htmlFor="product-preorder-note">
                 Preorder Note
               </label>
               <input
+                id="product-preorder-note"
                 type="text"
                 value={preorderNote}
                 onChange={(e) => setPreorderNote(e.target.value)}
                 placeholder="e.g.: Expected in 2 weeks"
-                style={textInputStyle}
+                className={styles.control}
               />
             </div>
           )}
 
           <div className="admin-product-form-full">
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-description">
               Product Description
             </label>
             <textarea
+              id="product-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={5}
-              style={textareaStyle}
+              className={`${styles.control} ${styles.textarea}`}
             />
           </div>
 
@@ -594,25 +576,25 @@ export default function ProductForm({ productId }: ProductFormProps) {
           </div>
 
           <div className="admin-product-form-full">
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-internal-note">
               Internal Notes (admin only)
             </label>
             <textarea
+              id="product-internal-note"
               value={note}
               onChange={(e) => setNote(e.target.value)}
               rows={3}
               placeholder="Internal notes, e.g. inventory source or reminders"
-              style={{ ...textareaStyle, backgroundColor: '#fffef0' }}
+              className={`${styles.control} ${styles.textarea} ${styles.internalNote}`}
             />
           </div>
         </div>
 
-        <div className="admin-product-form-submit-row" style={submitRowStyle}>
+        <div className={`admin-product-form-submit-row ${styles.submitRow}`}>
           <button
             type="submit"
             disabled={saving}
-            className="admin-product-form-primary-button"
-            style={primaryButtonStyle(saving, '#1976d2')}
+            className={`admin-product-form-primary-button ${styles.primaryButton}`}
           >
             {saving ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Create Product (Draft)')}
           </button>
@@ -646,7 +628,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
         />
       )}
 
-      <div style={{ marginTop: '2rem' }}>
+      <div className={styles.materialsWrap}>
         {isEditMode ? (
           <ProductMaterials
             productId={currentProductId}
@@ -654,12 +636,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
           />
         ) : (
           <div
-            className="admin-product-form-section"
-            style={{
-              ...cardStyle,
-              padding: '1.5rem',
-              ...mutedTextStyle,
-            }}
+            className={`admin-product-form-section ${styles.materialsPlaceholder}`}
           >
             Save the product first to manage BOM materials.
           </div>

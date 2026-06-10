@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  helperTextStyle,
-  labelStyle,
-  primaryButtonStyle,
-  textInputStyle,
-  textareaStyle,
-} from './productFormStyles'
+import styles from './ProductSeoPanel.module.css'
 
 type ProductSeoPanelProps = {
   isEditMode: boolean
@@ -45,108 +39,94 @@ export default function ProductSeoPanel({
   )
 
   return (
-    <details
-      style={{
-        border: '1px solid #e5dccf',
-        borderRadius: '8px',
-        backgroundColor: '#fffaf5',
-        overflow: 'hidden',
-      }}
-    >
-      <summary
-        style={{
-          listStyle: 'none',
-          cursor: 'pointer',
-          padding: '1rem',
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          gap: '1rem',
-          flexWrap: 'wrap',
-        }}
-      >
+    <details className={styles.panel}>
+      <summary className={styles.summary}>
         <div>
-          <div style={{ fontWeight: 'bold', marginBottom: '0.35rem' }}>SEO</div>
-          <div style={{ color: '#666', fontSize: '0.9rem', lineHeight: 1.5 }}>
+          <div className={styles.summaryTitle}>SEO</div>
+          <div className={styles.summaryDescription}>
             {hasSeoContent ? 'SEO configured' : 'SEO missing'}
           </div>
         </div>
-        <div style={{ color: '#7c5c2b', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
+        <div className={styles.summaryAction}>
           {hasSeoContent ? 'Review SEO details' : 'Add SEO details'}
         </div>
       </summary>
 
-      <div style={{ padding: '0 1rem 1rem' }}>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', marginBottom: '1rem', flexWrap: 'wrap' }}>
+      <div className={styles.body}>
+        <div className={styles.actionRow}>
           <button
             type="button"
             onClick={onGenerateSeo}
             disabled={!canGenerateSeo}
-            style={{ ...primaryButtonStyle(!canGenerateSeo, '#7c5c2b'), padding: '0.65rem 1rem', whiteSpace: 'nowrap' }}
+            className={styles.generateButton}
           >
             {generatingSeo ? 'Generating SEO...' : 'Generate SEO for this product'}
           </button>
-          <small style={{ color: '#666', lineHeight: 1.5, flex: '1 1 240px' }}>
+          <small className={styles.helperTextWide}>
             Uses current form values and the product&apos;s existing images. Review before saving.
           </small>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
-          <div style={{ gridColumn: '1 / -1' }}>
-            <label style={labelStyle}>
+        <div className={styles.grid}>
+          <div className={styles.fullWidth}>
+            <label className={styles.label} htmlFor="product-seo-title">
               SEO Title
             </label>
             <input
+              id="product-seo-title"
               type="text"
               value={seoTitle}
               onChange={(e) => onSeoTitleChange(e.target.value)}
               placeholder="e.g. White South Sea Pearl Necklace | 33 Pearl Atelier"
-              style={textInputStyle}
+              className={styles.control}
             />
-            <small style={{ ...helperTextStyle, marginTop: '0.25rem' }}>
+            <small className={styles.helperText}>
               Recommended length: about 50-65 characters. Current: {seoTitle.trim().length}
             </small>
           </div>
 
-          <div style={{ gridColumn: '1 / -1' }}>
-            <label style={labelStyle}>
+          <div className={styles.fullWidth}>
+            <label className={styles.label} htmlFor="product-seo-description">
               SEO Description
             </label>
             <textarea
+              id="product-seo-description"
               value={seoDescription}
               onChange={(e) => onSeoDescriptionChange(e.target.value)}
               rows={3}
               placeholder="Short search result description for this product"
-              style={textareaStyle}
+              className={`${styles.control} ${styles.textarea}`}
             />
-            <small style={{ ...helperTextStyle, marginTop: '0.25rem' }}>
+            <small className={styles.helperText}>
               Recommended length: about 120-160 characters. Current: {seoDescription.trim().length}
             </small>
           </div>
 
           <div>
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-seo-keywords">
               SEO Keywords
             </label>
             <textarea
+              id="product-seo-keywords"
               value={seoKeywords}
               onChange={(e) => onSeoKeywordsChange(e.target.value)}
               rows={3}
               placeholder="Comma-separated keywords"
-              style={textareaStyle}
+              className={`${styles.control} ${styles.textarea}`}
             />
           </div>
 
           <div>
-            <label style={labelStyle}>
+            <label className={styles.label} htmlFor="product-og-image-alt">
               OG Image Alt Text
             </label>
             <textarea
+              id="product-og-image-alt"
               value={ogImageAlt}
               onChange={(e) => onOgImageAltChange(e.target.value)}
               rows={3}
               placeholder="Describe the main product image for social sharing"
-              style={textareaStyle}
+              className={`${styles.control} ${styles.textarea}`}
             />
           </div>
         </div>

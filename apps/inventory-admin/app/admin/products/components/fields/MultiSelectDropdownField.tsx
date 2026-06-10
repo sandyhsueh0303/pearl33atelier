@@ -1,7 +1,7 @@
 'use client'
 
 import { useId } from 'react'
-import { helperTextStyle, labelStyle, textInputStyle } from '../productFormStyles'
+import styles from './MultiSelectDropdownField.module.css'
 
 type OptionGroup = {
   label: string
@@ -35,6 +35,7 @@ export default function MultiSelectDropdownField({
 }: MultiSelectDropdownFieldProps) {
   const fieldId = useId()
   const selectedLabel = selectedValues.length > 0 ? selectedValues.join(', ') : placeholder
+  const customInputId = `${fieldId}-custom`
 
   const toggleValue = (value: string) => {
     const nextValues = selectedValues.includes(value)
@@ -45,62 +46,33 @@ export default function MultiSelectDropdownField({
 
   return (
     <div>
-      <label style={labelStyle}>
+      <div className={styles.fieldLabel}>
         {label}
-        {required ? <span style={{ color: 'red' }}> *</span> : null}
-      </label>
+        {required ? <span className={styles.required}> *</span> : null}
+      </div>
 
-      <details
-        style={{
-          border: '1px solid #ddd',
-          borderRadius: '4px',
-          backgroundColor: '#fff',
-        }}
-      >
-        <summary
-          style={{
-            listStyle: 'none',
-            cursor: 'pointer',
-            padding: '0.75rem',
-            color: selectedValues.length > 0 ? '#111' : '#666',
-            fontSize: '1rem',
-            lineHeight: 1.4,
-          }}
-        >
+      <details className={styles.dropdown}>
+        <summary className={`${styles.summary} ${selectedValues.length > 0 ? styles.hasSelection : styles.placeholder}`}>
           {selectedLabel}
         </summary>
 
-        <div
-          style={{
-            padding: '0 0.75rem 0.75rem',
-            borderTop: '1px solid #eee',
-            display: 'grid',
-            gap: '0.75rem',
-          }}
-        >
+        <div className={styles.menu}>
           {optionGroups.map((group) => (
             <div key={group.label}>
               {optionGroups.length > 1 ? (
-                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#666', margin: '0.75rem 0 0.5rem' }}>
+                <div className={styles.groupLabel}>
                   {group.label}
                 </div>
               ) : null}
-              <div style={{ display: 'grid', gap: '0.45rem' }}>
-                {group.options.map((option) => (
+              <div className={styles.optionGrid}>
+                {group.options.map((option, optionIndex) => (
                   <label
                     key={option}
-                    htmlFor={`${fieldId}-${option}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      fontSize: '0.95rem',
-                      color: '#333',
-                      cursor: 'pointer',
-                    }}
+                    htmlFor={`${fieldId}-${group.label}-${optionIndex}`}
+                    className={styles.optionLabel}
                   >
                     <input
-                      id={`${fieldId}-${option}`}
+                      id={`${fieldId}-${group.label}-${optionIndex}`}
                       type="checkbox"
                       checked={selectedValues.includes(option)}
                       onChange={() => toggleValue(option)}
@@ -113,18 +85,24 @@ export default function MultiSelectDropdownField({
           ))}
 
           {typeof customValue === 'string' && onCustomValueChange ? (
-            <input
-              type="text"
-              value={customValue}
-              onChange={(e) => onCustomValueChange(e.target.value)}
-              placeholder={customPlaceholder}
-              style={{ ...textInputStyle, padding: '0.625rem', fontSize: '0.95rem' }}
-            />
+            <div>
+              <label className={styles.visuallyHidden} htmlFor={customInputId}>
+                Custom {label}
+              </label>
+              <input
+                id={customInputId}
+                type="text"
+                value={customValue}
+                onChange={(e) => onCustomValueChange(e.target.value)}
+                placeholder={customPlaceholder}
+                className={styles.customInput}
+              />
+            </div>
           ) : null}
         </div>
       </details>
 
-      {helperText ? <small style={helperTextStyle}>{helperText}</small> : null}
+      {helperText ? <small className={styles.helperText}>{helperText}</small> : null}
     </div>
   )
 }

@@ -1,0 +1,162 @@
+.loading {
+  padding: 2rem;
+  text-align: center;
+}
+
+.page {
+  font-family: sans-serif;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 2rem;
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.headerActions {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.secondaryButton {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+.errorBanner {
+  background-color: #fee;
+  border: 1px solid #c00;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.card,
+.materialsPlaceholder {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  padding: 2rem;
+}
+
+.formGrid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.required {
+  color: #f00;
+}
+
+.control {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  padding: 0.75rem;
+  width: 100%;
+}
+
+.select {
+  background-color: #fff;
+}
+
+.monospace {
+  font-family: monospace;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.textarea {
+  font-family: inherit;
+  resize: vertical;
+}
+
+.helperTextTight {
+  color: #666;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.toggleCard {
+  align-items: center;
+  background-color: #fffaf2;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+}
+
+.toggleTitle {
+  color: #333;
+  font-weight: 700;
+}
+
+.toggleDescription {
+  color: #666;
+  font-size: 0.875rem;
+  margin-top: 0.15rem;
+}
+
+.fieldHint {
+  color: #666;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0 0 0.5rem;
+}
+
+.internalNote {
+  background-color: #fffef0;
+}
+
+.submitRow {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.primaryButton {
+  background-color: #1976d2;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.75rem 2rem;
+}
+
+.primaryButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.materialsWrap {
+  margin-top: 2rem;
+}
+
+.materialsPlaceholder {
+  color: #666;
+  padding: 1.5rem;
+}

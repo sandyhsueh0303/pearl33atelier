@@ -1,0 +1,88 @@
+.fieldLabel {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.required {
+  color: #f00;
+}
+
+.dropdown {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.summary {
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1.4;
+  list-style: none;
+  padding: 0.75rem;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.hasSelection {
+  color: #111;
+}
+
+.placeholder {
+  color: #666;
+}
+
+.menu {
+  border-top: 1px solid #eee;
+  display: grid;
+  gap: 0.75rem;
+  padding: 0 0.75rem 0.75rem;
+}
+
+.groupLabel {
+  color: #666;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.optionGrid {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.optionLabel {
+  align-items: center;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.95rem;
+  gap: 0.5rem;
+}
+
+.customInput {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  padding: 0.625rem;
+  width: 100%;
+}
+
+.helperText {
+  color: #666;
+  display: block;
+  margin-top: 0.35rem;
+}
+
+.visuallyHidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
