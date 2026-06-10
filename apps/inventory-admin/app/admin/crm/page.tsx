@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Json } from '@pearl33atelier/shared/types'
 import AdminPageHeader from '../components/AdminPageHeader'
+import styles from './page.module.css'
 
 type LeadStatus = 'new' | 'contacted' | 'qualified' | 'converted' | 'archived'
 
@@ -162,25 +163,25 @@ export default function CrmPage() {
         <div className="admin-stats-grid">
           <div className="admin-stat-card admin-stat-card-body">
             <div className="admin-stat-label">Visible Leads</div>
-            <div className="admin-stat-value" style={{ color: '#C9A961' }}>{leadCounts.total}</div>
+            <div className={`admin-stat-value ${styles.statGold}`}>{leadCounts.total}</div>
           </div>
           <div className="admin-stat-card admin-stat-card-body">
             <div className="admin-stat-label">New</div>
-            <div className="admin-stat-value" style={{ color: '#D97706' }}>{leadCounts.new}</div>
+            <div className={`admin-stat-value ${styles.statAmber}`}>{leadCounts.new}</div>
           </div>
           <div className="admin-stat-card admin-stat-card-body">
             <div className="admin-stat-label">Pearl Finder</div>
-            <div className="admin-stat-value" style={{ color: '#2C5F8D' }}>{leadCounts.pearlFinder}</div>
+            <div className={`admin-stat-value ${styles.statBlue}`}>{leadCounts.pearlFinder}</div>
           </div>
           <div className="admin-stat-card admin-stat-card-body">
             <div className="admin-stat-label">Converted</div>
-            <div className="admin-stat-value" style={{ color: '#10B981' }}>{leadCounts.converted}</div>
+            <div className={`admin-stat-value ${styles.statGreen}`}>{leadCounts.converted}</div>
           </div>
         </div>
       </div>
 
       <div className="admin-card admin-filter-panel">
-        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#666', marginBottom: '1rem' }}>
+        <div className={styles.filterTitle}>
           Search CRM
         </div>
         <form
@@ -191,8 +192,11 @@ export default function CrmPage() {
           className="admin-filter-row"
         >
           <div className="admin-filter-item-wide">
-            <label className="admin-filter-label">Find by name, email, phone, source, or pearl match</label>
+            <label className="admin-filter-label" htmlFor="crm-search">
+              Find by name, email, phone, source, or pearl match
+            </label>
             <input
+              id="crm-search"
               className="admin-control"
               placeholder="Search leads..."
               value={search}
@@ -212,7 +216,7 @@ export default function CrmPage() {
               ))}
             </select>
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+          <div className={styles.filterActions}>
             <button type="submit" className="admin-btn admin-btn-primary">Search</button>
             {(appliedSearch || status !== 'all') && (
               <button
@@ -231,11 +235,11 @@ export default function CrmPage() {
         </form>
       </div>
 
-      <div className="admin-card admin-table-card" style={{ overflowX: 'auto' }}>
+      <div className={`admin-card admin-table-card ${styles.tableCard}`}>
         {loading ? (
-          <div style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>Loading CRM leads...</div>
+          <div className={styles.emptyState}>Loading CRM leads...</div>
         ) : leads.length === 0 ? (
-          <div style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>No leads found.</div>
+          <div className={styles.emptyState}>No leads found.</div>
         ) : (
           <table className="admin-table">
             <thead>
@@ -253,42 +257,41 @@ export default function CrmPage() {
               {leads.map((lead) => (
                 <tr key={lead.id}>
                   <td>
-                    <div style={{ fontWeight: 600 }}>{lead.name}</div>
-                    <div style={{ color: '#666', fontSize: '0.82rem' }}>{lead.email}</div>
-                    <div style={{ color: '#888', fontSize: '0.82rem' }}>{lead.phone || '-'}</div>
+                    <div className={styles.primaryText}>{lead.name}</div>
+                    <div className={styles.secondaryText}>{lead.email}</div>
+                    <div className={styles.tertiaryText}>{lead.phone || '-'}</div>
                   </td>
                   <td>{formatSource(lead.source)}</td>
                   <td>
-                    <div style={{ fontWeight: 600 }}>{lead.quiz_result || '-'}</div>
-                    <div style={{ color: '#888', fontSize: '0.78rem', maxWidth: 220 }}>
+                    <div className={styles.primaryText}>{lead.quiz_result || '-'}</div>
+                    <div className={styles.answerText}>
                       {formatQuizAnswers(lead.quiz_answers)}
                     </div>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600 }}>{lead.coupon_code || '-'}</div>
+                    <div className={styles.primaryText}>{lead.coupon_code || '-'}</div>
                     {lead.coupon_amount_off_cents ? (
-                      <div style={{ color: '#888', fontSize: '0.78rem' }}>
+                      <div className={styles.tertiaryTextSmall}>
                         {formatCouponValue(lead.coupon_amount_off_cents)} off · one-time
                       </div>
                     ) : null}
                   </td>
                   <td>
                     <select
-                      className="admin-control"
                       aria-label={`Status for ${lead.name}`}
                       value={lead.status}
                       disabled={updatingId === lead.id}
                       onChange={(event) => void updateLeadStatus(lead.id, event.target.value as LeadStatus)}
-                      style={{ minWidth: 130 }}
+                      className={`admin-control ${styles.statusSelect}`}
                     >
                       {statuses.filter((item) => item.value !== 'all').map((item) => (
                         <option key={item.value} value={item.value}>{item.label}</option>
                       ))}
                     </select>
                   </td>
-                  <td style={{ whiteSpace: 'nowrap' }}>{formatDate(lead.created_at)}</td>
+                  <td className={styles.nowrap}>{formatDate(lead.created_at)}</td>
                   <td>
-                    <div style={{ color: '#555', maxWidth: 340, whiteSpace: 'pre-wrap' }}>
+                    <div className={styles.messageText}>
                       {lead.message || lead.subject || '-'}
                     </div>
                   </td>

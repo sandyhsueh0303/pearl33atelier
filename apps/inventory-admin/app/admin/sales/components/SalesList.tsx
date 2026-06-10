@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import styles from './SalesList.module.css';
 
 interface SalesRecord {
   id: string;
@@ -188,125 +189,69 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
   return (
     <div>
       {error && (
-        <div className="admin-error-banner" style={{ marginBottom: '1rem' }}>
+        <div className={`admin-error-banner ${styles.banner}`}>
           <strong>Error:</strong> {error}
         </div>
       )}
 
       {notice && (
-        <div
-          style={{
-            marginBottom: '1rem',
-            padding: '0.75rem 1rem',
-            borderRadius: '8px',
-            border: '1px solid #A7F3D0',
-            backgroundColor: '#ECFDF5',
-            color: '#065F46',
-            fontWeight: 600,
-          }}
-        >
+        <div className={styles.notice}>
           {notice}
         </div>
       )}
 
       {/* Summary Cards */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-        gap: '0.75rem',
-        marginBottom: '2rem',
-      }}>
-        <div style={{
-          padding: '1.5rem',
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Orders</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961' }}>{summary.totalOrders}</div>
+      <div className={styles.summaryGrid}>
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryLabel}>Total Orders</div>
+          <div className={`${styles.summaryValue} ${styles.goldText}`}>{summary.totalOrders}</div>
         </div>
-        <div style={{
-          padding: '1.5rem',
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Units</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10B981' }}>{summary.totalUnits}</div>
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryLabel}>Total Units</div>
+          <div className={`${styles.summaryValue} ${styles.positiveText}`}>{summary.totalUnits}</div>
         </div>
-        <div style={{
-          padding: '1.5rem',
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Revenue</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#C9A961' }}>
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryLabel}>Total Revenue</div>
+          <div className={`${styles.summaryValue} ${styles.goldText}`}>
             {formatCurrency(summary.totalRevenue)}
           </div>
         </div>
-        <div style={{
-          padding: '1.5rem',
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Cost</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#EF4444' }}>
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryLabel}>Total Cost</div>
+          <div className={`${styles.summaryValue} ${styles.negativeText}`}>
             {formatCurrency(summary.totalCost)}
           </div>
         </div>
-        <div style={{
-          padding: '1.5rem',
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Total Profit</div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10B981' }}>
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryLabel}>Total Profit</div>
+          <div className={`${styles.summaryValue} ${styles.positiveText}`}>
             {formatCurrency(summary.totalProfit)}
           </div>
-          <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#10B981', marginTop: '0.35rem' }}>
+          <div className={styles.marginText}>
             {totalProfitMargin.toFixed(1)}% Profit Margin
           </div>
         </div>
       </div>
 
       {/* Search and Sort Controls */}
-      <div className="admin-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
-        <div style={{
-          display: 'flex',
-          gap: '1rem',
-          marginBottom: '1rem',
-          flexWrap: 'wrap',
-          alignItems: 'flex-end',
-        }}>
-          <div style={{ flex: '1 1 300px' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+      <div className={`admin-card ${styles.filterCard}`}>
+        <div className={styles.filterRow}>
+          <div className={styles.searchFilter}>
+            <label className={styles.filterLabel} htmlFor="sales-list-search">
               🔍 Search
             </label>
-            <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <form onSubmit={handleSearch} className={styles.searchForm}>
               <input
+                id="sales-list-search"
                 type="text"
                 placeholder="Search customer, order number, or channel..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                style={{
-                  flex: 1,
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '0.875rem',
-                }}
+                className={styles.searchInput}
               />
               <button
                 type="submit"
-                className="admin-btn admin-btn-secondary"
-                style={{
-                  padding: '0.75rem 1rem',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                }}
+                className={`admin-btn admin-btn-secondary ${styles.filterButton}`}
               >
                 Search
               </button>
@@ -318,16 +263,7 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                     setAppliedSearch('');
                     setCurrentPage(1);
                   }}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    backgroundColor: '#f5f5f5',
-                    color: '#333',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                  }}
+                  className={styles.clearButton}
                 >
                   Clear
                 </button>
@@ -335,21 +271,15 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
             </form>
           </div>
 
-          <div style={{ flex: '0 1 150px' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+          <div className={styles.sortByFilter}>
+            <label className={styles.filterLabel} htmlFor="sales-sort-by">
               Sort Field
             </label>
             <select
+              id="sales-sort-by"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-                backgroundColor: 'white'
-              }}
+              className={styles.selectControl}
             >
               <option value="order_number">Order Number</option>
               <option value="total_price">Revenue</option>
@@ -358,68 +288,51 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
             </select>
           </div>
 
-          <div style={{ flex: '0 1 100px' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem', color: '#666' }}>
+          <div className={styles.orderFilter}>
+            <label className={styles.filterLabel} htmlFor="sales-sort-order">
               Order
             </label>
             <select
+              id="sales-sort-order"
               value={order}
               onChange={(e) => setOrder(e.target.value as 'asc' | 'desc')}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-                backgroundColor: 'white'
-              }}
+              className={styles.selectControl}
             >
               <option value="desc">Descending ↓</option>
               <option value="asc">Ascending ↑</option>
             </select>
           </div>
 
-          <div style={{ flex: '0 0 auto' }}>
+          <div className={styles.refreshFilter}>
             <button
               onClick={() => {
                 void fetchSales(currentPage);
               }}
-              style={{
-                padding: '0.75rem 1rem',
-                backgroundColor: '#f5f5f5',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-              }}
+              className={styles.clearButton}
             >
               🔄 Refresh
             </button>
           </div>
         </div>
 
-        <div style={{ fontSize: '0.875rem', color: '#666' }}>
+        <div className={styles.resultText}>
           Showing <strong>{sales.length}</strong> / {totalItems} sales records
         </div>
       </div>
 
       {/* Sales Table */}
       {loading ? (
-        <div className="admin-card" style={{ textAlign: 'center', padding: '3rem' }}>
+        <div className={`admin-card ${styles.emptyCard}`}>
           Loading...
         </div>
       ) : sales.length === 0 ? (
-        <div className="admin-card" style={{ textAlign: 'center', padding: '3rem' }}>
-          <p style={{ fontSize: '1rem', color: '#666', margin: 0 }}>No sales records yet</p>
+        <div className={`admin-card ${styles.emptyCard}`}>
+          <p className={styles.emptyText}>No sales records yet</p>
         </div>
       ) : (
-        <div className="admin-card" style={{ overflow: 'hidden' }}>
-          <div style={{ overflowX: 'auto' }}>
-            <table className="admin-table" style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-            }}>
+        <div className={`admin-card ${styles.tableCard}`}>
+          <div className={styles.tableScroll}>
+            <table className={`admin-table ${styles.table}`}>
               <thead>
                 <tr className="admin-table-head-row">
                   <th>Order Number</th>
@@ -455,12 +368,10 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
                     <td className="admin-cell-center admin-cell-sm">{sale.quantity}</td>
                     <td className="admin-cell-right admin-money admin-cell-sm">{formatCurrency(sale.total_price)}</td>
                     <td className="admin-cell-right admin-money admin-money-danger admin-cell-sm">{formatCurrency(sale.total_cost)}</td>
-                    <td style={{
-                      color: sale.profit >= 0 ? '#10B981' : '#EF4444',
-                    }} className="admin-cell-right admin-money admin-cell-sm">
+                    <td className={`admin-cell-right admin-money admin-cell-sm ${sale.profit >= 0 ? styles.positiveText : styles.negativeText}`}>
                       {formatCurrency(sale.profit)}
                       {sale.profit_margin !== null && (
-                        <span style={{ fontSize: '0.75rem', marginLeft: '0.25rem', fontWeight: 'normal' }}>
+                        <span className={styles.profitMarginInline}>
                           ({sale.profit_margin.toFixed(1)}%)
                         </span>
                       )}
@@ -491,17 +402,16 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
       )}
 
       {sales.length > 0 && totalPages > 1 && (
-        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center', gap: '0.5rem', alignItems: 'center' }}>
+        <div className={styles.pagination}>
           <button
             type="button"
             className="admin-btn admin-btn-secondary admin-btn-sm"
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            style={{ opacity: currentPage === 1 ? 0.5 : 1 }}
           >
             Previous
           </button>
-          <span style={{ fontSize: '0.875rem', color: '#666' }}>
+          <span className={styles.paginationLabel}>
             Page {currentPage} / {totalPages}
           </span>
           <button
@@ -509,7 +419,6 @@ export default function SalesList({ onRefresh, onEdit }: SalesListProps) {
             className="admin-btn admin-btn-secondary admin-btn-sm"
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            style={{ opacity: currentPage === totalPages ? 0.5 : 1 }}
           >
             Next
           </button>

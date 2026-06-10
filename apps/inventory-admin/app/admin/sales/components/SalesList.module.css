@@ -1,0 +1,180 @@
+.banner,
+.notice {
+  margin-bottom: 1rem;
+}
+
+.notice {
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  color: #065f46;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+}
+
+.summaryGrid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 2rem;
+}
+
+.summaryCard {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.summaryLabel {
+  color: #666;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.summaryValue {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.goldText {
+  color: #c9a961;
+}
+
+.positiveText {
+  color: #10b981;
+}
+
+.negativeText {
+  color: #ef4444;
+}
+
+.marginText {
+  color: #10b981;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+.filterCard {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+}
+
+.filterRow {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.searchFilter {
+  flex: 1 1 300px;
+}
+
+.sortByFilter {
+  flex: 0 1 150px;
+}
+
+.orderFilter {
+  flex: 0 1 100px;
+}
+
+.refreshFilter {
+  flex: 0 0 auto;
+}
+
+.filterLabel {
+  color: #666;
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.searchForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.searchInput,
+.selectControl {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  padding: 0.75rem;
+}
+
+.searchInput {
+  flex: 1;
+}
+
+.selectControl {
+  background-color: #fff;
+  width: 100%;
+}
+
+.filterButton,
+.clearButton {
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+}
+
+.clearButton {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333;
+  cursor: pointer;
+}
+
+.resultText,
+.paginationLabel {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.emptyCard {
+  padding: 3rem;
+  text-align: center;
+}
+
+.emptyText {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.tableCard {
+  overflow: hidden;
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.profitMarginInline {
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-left: 0.25rem;
+}
+
+.pagination {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+}

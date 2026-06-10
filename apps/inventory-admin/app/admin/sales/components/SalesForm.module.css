@@ -1,0 +1,41 @@
+.filterGrid {
+  margin-bottom: 0.75rem;
+}
+
+.compactLabel {
+  font-size: 0.8125rem;
+  margin-bottom: 0.35rem;
+}
+
+.costLoading {
+  margin-top: 0.5rem;
+}
+
+.valueGrid {
+  margin-bottom: 0;
+}
+
+.amount {
+  font-size: 1.5rem;
+}
+
+.goldAmount {
+  color: #c9a961;
+}
+
+.positiveAmount {
+  color: #10b981;
+}
+
+.negativeAmount {
+  color: #ef4444;
+}
+
+.notesTextarea {
+  font-family: inherit;
+  resize: vertical;
+}
+
+.submitButton {
+  flex: 1;
+}

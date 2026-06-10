@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import styles from './SalesForm.module.css';
 
 interface Product {
   id: string;
@@ -305,12 +306,13 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
       <div>
         <div className="admin-form-section">
-          <div className="admin-form-grid-2" style={{ marginBottom: '0.75rem' }}>
+          <div className={`admin-form-grid-2 ${styles.filterGrid}`}>
             <div>
-              <label className="admin-form-label" style={{ marginBottom: '0.35rem', fontSize: '0.8125rem' }}>
+              <label className={`admin-form-label ${styles.compactLabel}`} htmlFor="sales-pearl-type-filter">
                 Pearl Type Filter
               </label>
               <select
+                id="sales-pearl-type-filter"
                 value={pearlTypeFilter}
                 onChange={(e) => setPearlTypeFilter(e.target.value)}
                 disabled={!!preselectedProductId}
@@ -326,10 +328,11 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             </div>
 
             <div>
-              <label className="admin-form-label" style={{ marginBottom: '0.35rem', fontSize: '0.8125rem' }}>
+              <label className={`admin-form-label ${styles.compactLabel}`} htmlFor="sales-product-search">
                 Search Product
               </label>
               <input
+                id="sales-product-search"
                 type="text"
                 value={productSearch}
                 onChange={(e) => setProductSearch(e.target.value)}
@@ -340,10 +343,11 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             </div>
           </div>
 
-          <label className="admin-form-label">
+          <label className="admin-form-label" htmlFor="sales-product">
             Product <span className="admin-form-required">*</span>
           </label>
           <select
+            id="sales-product"
             value={productId}
             onChange={handleProductChange}
             required
@@ -361,7 +365,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
             Showing {filteredProducts.length} / {products.length} products
           </div>
           {loadingCost && (
-            <div className="admin-section-meta" style={{ marginTop: '0.5rem' }}>
+            <div className={`admin-section-meta ${styles.costLoading}`}>
               Loading product cost...
             </div>
           )}
@@ -369,10 +373,11 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
         <div className="admin-form-grid-auto">
           <div>
-            <label className="admin-form-label">
+            <label className="admin-form-label" htmlFor="sales-quantity">
               Quantity <span className="admin-form-required">*</span>
             </label>
             <input
+              id="sales-quantity"
               type="number"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
@@ -384,10 +389,11 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
           </div>
 
           <div>
-            <label className="admin-form-label">
+            <label className="admin-form-label" htmlFor="sales-unit-price">
               Unit Price <span className="admin-form-required">*</span>
             </label>
             <input
+              id="sales-unit-price"
               type="number"
               value={unitPrice}
               onChange={(e) => setUnitPrice(e.target.value)}
@@ -399,10 +405,11 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
           </div>
 
           <div>
-            <label className="admin-form-label">
+            <label className="admin-form-label" htmlFor="sales-unit-cost">
               Unit Cost <span className="admin-form-required">*</span>
             </label>
             <input
+              id="sales-unit-cost"
               type="number"
               value={unitCost}
               onChange={(e) => setUnitCost(e.target.value)}
@@ -416,28 +423,28 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
         {(totalPrice > 0 || totalCost > 0) && (
           <div className="admin-value-panel admin-value-panel-neutral">
-            <div className="admin-form-grid-auto" style={{ marginBottom: 0 }}>
+            <div className={`admin-form-grid-auto ${styles.valueGrid}`}>
               <div>
                 <div className="admin-value-panel-label">Total Price</div>
-                <div className="admin-value-panel-amount" style={{ color: '#C9A961', fontSize: '1.5rem' }}>
+                <div className={`admin-value-panel-amount ${styles.amount} ${styles.goldAmount}`}>
                   ${totalPrice.toFixed(2)}
                 </div>
               </div>
               <div>
                 <div className="admin-value-panel-label">Total Cost</div>
-                <div className="admin-value-panel-amount" style={{ color: '#EF4444', fontSize: '1.5rem' }}>
+                <div className={`admin-value-panel-amount ${styles.amount} ${styles.negativeAmount}`}>
                   ${totalCost.toFixed(2)}
                 </div>
               </div>
               <div>
                 <div className="admin-value-panel-label">Profit</div>
-                <div className="admin-value-panel-amount" style={{ color: profit >= 0 ? '#10B981' : '#EF4444', fontSize: '1.5rem' }}>
+                <div className={`admin-value-panel-amount ${styles.amount} ${profit >= 0 ? styles.positiveAmount : styles.negativeAmount}`}>
                   ${profit.toFixed(2)}
                 </div>
               </div>
               <div>
                 <div className="admin-value-panel-label">Profit Margin</div>
-                <div className="admin-value-panel-amount" style={{ color: profitMargin >= 0 ? '#10B981' : '#EF4444', fontSize: '1.5rem' }}>
+                <div className={`admin-value-panel-amount ${styles.amount} ${profitMargin >= 0 ? styles.positiveAmount : styles.negativeAmount}`}>
                   {profitMargin.toFixed(1)}%
                 </div>
               </div>
@@ -446,10 +453,11 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         )}
 
         <div className="admin-form-section">
-          <label className="admin-form-label">
+          <label className="admin-form-label" htmlFor="sales-date">
             Sale Date
           </label>
           <input
+            id="sales-date"
             type="date"
             value={saleDate}
             onChange={(e) => setSaleDate(e.target.value)}
@@ -459,10 +467,11 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
 
         <div className="admin-form-grid-2">
           <div>
-            <label className="admin-form-label">
+            <label className="admin-form-label" htmlFor="sales-customer-name">
               Customer Name
             </label>
             <input
+              id="sales-customer-name"
               type="text"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
@@ -472,10 +481,11 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
           </div>
 
           <div>
-            <label className="admin-form-label">
+            <label className="admin-form-label" htmlFor="sales-order-number">
               Order Number
             </label>
             <input
+              id="sales-order-number"
               type="text"
               value={orderNumber}
               onChange={(e) => setOrderNumber(e.target.value)}
@@ -486,10 +496,11 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         </div>
 
         <div className="admin-form-section">
-          <label className="admin-form-label">
+          <label className="admin-form-label" htmlFor="sales-platform">
             Sales Channel
           </label>
           <select
+            id="sales-platform"
             value={platform}
             onChange={(e) => setPlatform(e.target.value)}
             className="admin-control"
@@ -506,16 +517,16 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
         </div>
 
         <div className="admin-form-section">
-          <label className="admin-form-label">
+          <label className="admin-form-label" htmlFor="sales-notes">
             Notes
           </label>
           <textarea
+            id="sales-notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="OptionalNotes..."
             rows={3}
-            className="admin-control"
-            style={{ fontFamily: 'inherit', resize: 'vertical' }}
+            className={`admin-control ${styles.notesTextarea}`}
           />
         </div>
 
@@ -523,8 +534,7 @@ export default function SalesForm({ onSuccess, preselectedProductId, editSale, o
           <button
             type="submit"
             disabled={loading || loadingCost}
-            className="admin-btn admin-btn-primary"
-            style={{ flex: 1 }}
+            className={`admin-btn admin-btn-primary ${styles.submitButton}`}
           >
             {loading ? (editSale ? 'Updating...' : 'Saving...') : (editSale ? '💾 Update Sale' : '💰 Record Sale')}
           </button>

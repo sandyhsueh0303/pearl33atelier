@@ -1,0 +1,77 @@
+.statGold {
+  color: #c9a961;
+}
+
+.statAmber {
+  color: #d97706;
+}
+
+.statBlue {
+  color: #2c5f8d;
+}
+
+.statGreen {
+  color: #10b981;
+}
+
+.filterTitle {
+  color: #666;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.filterActions {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tableCard {
+  overflow-x: auto;
+}
+
+.emptyState {
+  color: #666;
+  padding: 2rem;
+  text-align: center;
+}
+
+.primaryText {
+  font-weight: 600;
+}
+
+.secondaryText {
+  color: #666;
+  font-size: 0.82rem;
+}
+
+.tertiaryText {
+  color: #888;
+  font-size: 0.82rem;
+}
+
+.tertiaryTextSmall,
+.answerText {
+  color: #888;
+  font-size: 0.78rem;
+}
+
+.answerText {
+  max-width: 220px;
+}
+
+.statusSelect {
+  min-width: 130px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.messageText {
+  color: #555;
+  max-width: 340px;
+  white-space: pre-wrap;
+}

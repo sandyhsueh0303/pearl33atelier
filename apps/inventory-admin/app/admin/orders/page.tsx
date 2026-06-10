@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import AdminPageHeader from '../components/AdminPageHeader'
+import styles from './page.module.css'
 
 interface OrderRecord {
   id: string
@@ -177,25 +178,25 @@ export default function OrdersPage() {
         <div className="admin-stats-grid">
           <div className="admin-stat-card admin-stat-card-body">
             <div className="admin-stat-label">Total Orders</div>
-            <div className="admin-stat-value" style={{ color: '#C9A961' }}>
+            <div className={`admin-stat-value ${styles.statGold}`}>
               {orderCounts.total}
             </div>
           </div>
           <div className="admin-stat-card admin-stat-card-body">
             <div className="admin-stat-label">Paid / Processing</div>
-            <div className="admin-stat-value" style={{ color: '#2C5F8D' }}>
+            <div className={`admin-stat-value ${styles.statBlue}`}>
               {orderCounts.paid}
             </div>
           </div>
           <div className="admin-stat-card admin-stat-card-body">
             <div className="admin-stat-label">Pending Shipment</div>
-            <div className="admin-stat-value" style={{ color: '#D97706' }}>
+            <div className={`admin-stat-value ${styles.statAmber}`}>
               {orderCounts.pendingShipment}
             </div>
           </div>
           <div className="admin-stat-card admin-stat-card-body">
             <div className="admin-stat-label">Shipped</div>
-            <div className="admin-stat-value" style={{ color: '#10B981' }}>
+            <div className={`admin-stat-value ${styles.statGreen}`}>
               {orderCounts.shipped}
             </div>
           </div>
@@ -203,7 +204,7 @@ export default function OrdersPage() {
       </div>
 
       <div className="admin-card admin-filter-panel">
-        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#666', marginBottom: '1rem' }}>
+        <div className={styles.filterTitle}>
           🔍 Search Orders
         </div>
         <form
@@ -214,8 +215,11 @@ export default function OrdersPage() {
           className="admin-filter-row"
         >
           <div className="admin-filter-item-wide">
-            <label className="admin-filter-label">Find by order, customer, email, or tracking</label>
+            <label className="admin-filter-label" htmlFor="orders-search">
+              Find by order, customer, email, or tracking
+            </label>
             <input
+              id="orders-search"
               className="admin-control"
               placeholder="Search order number, customer, email, or tracking..."
               value={search}
@@ -242,7 +246,7 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      <div className="admin-card admin-table-card" style={{ padding: '1.5rem' }}>
+      <div className={`admin-card admin-table-card ${styles.tableCard}`}>
         <div className="admin-section-header">
           <div>
             <div className="admin-section-title">Order Queue</div>
@@ -263,7 +267,7 @@ export default function OrdersPage() {
             <p className="admin-empty-title">No orders found</p>
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
+          <div className={styles.tableScroll}>
             <table className="admin-table">
               <thead>
                 <tr className="admin-table-head-row">
@@ -287,57 +291,41 @@ export default function OrdersPage() {
                   return (
                     <tr key={order.id} className="admin-row-divider">
                       <td className="admin-cell-sm">
-                        <div style={{ fontWeight: 700 }}>{order.order_number || order.id.slice(0, 8)}</div>
-                        <div style={{ color: '#666', fontSize: '0.8rem' }}>
+                        <div className={styles.orderNumber}>{order.order_number || order.id.slice(0, 8)}</div>
+                        <div className={styles.mutedSmall}>
                           {new Date(order.created_at).toLocaleString()}
                         </div>
                       </td>
                       <td className="admin-cell-sm">
-                        <div style={{ fontWeight: 600 }}>{order.customer_name || 'No name'}</div>
-                        <div style={{ color: '#666', fontSize: '0.8rem' }}>{order.customer_email || 'No email'}</div>
+                        <div className={styles.customerName}>{order.customer_name || 'No name'}</div>
+                        <div className={styles.mutedSmall}>{order.customer_email || 'No email'}</div>
                       </td>
                       <td className="admin-cell-sm">
-                        <span style={{
-                          display: 'inline-block',
-                          padding: '0.35rem 0.6rem',
-                          borderRadius: '999px',
-                          background:
-                            order.status === 'shipped'
-                              ? '#DCFCE7'
-                              : order.status === 'paid' || order.status === 'processing'
-                              ? '#DBEAFE'
-                              : '#F3F4F6',
-                          color:
-                            order.status === 'shipped'
-                              ? '#166534'
-                              : order.status === 'paid' || order.status === 'processing'
-                              ? '#1D4ED8'
-                              : '#4B5563',
-                          fontSize: '0.8rem',
-                          fontWeight: 700,
-                          textTransform: 'capitalize',
-                        }}>
+                        <span className={`${styles.statusPill} ${order.status === 'shipped' ? styles.statusShipped : order.status === 'paid' || order.status === 'processing' ? styles.statusPaid : styles.statusNeutral}`}>
                           {order.status}
                         </span>
                       </td>
                       <td className="admin-cell-right admin-money admin-cell-sm">
                         {formatCurrency(order.total_amount_cents, order.currency || 'usd')}
                       </td>
-                      <td className="admin-cell-sm" style={{ minWidth: '260px' }}>
-                        <div style={{ display: 'grid', gap: '0.5rem' }}>
+                      <td className={`admin-cell-sm ${styles.trackingCell}`}>
+                        <div className={styles.trackingFields}>
                           <input
+                            aria-label={`Carrier for order ${order.order_number || order.id.slice(0, 8)}`}
                             className="admin-control"
                             placeholder="Carrier"
                             value={draft.shipping_carrier}
                             onChange={(event) => updateDraft(order.id, 'shipping_carrier', event.target.value)}
                           />
                           <input
+                            aria-label={`Tracking number for order ${order.order_number || order.id.slice(0, 8)}`}
                             className="admin-control"
                             placeholder="Tracking number"
                             value={draft.tracking_number}
                             onChange={(event) => updateDraft(order.id, 'tracking_number', event.target.value)}
                           />
                           <input
+                            aria-label={`Shipped date for order ${order.order_number || order.id.slice(0, 8)}`}
                             className="admin-control"
                             type="datetime-local"
                             value={draft.shipped_at}
@@ -348,28 +336,23 @@ export default function OrdersPage() {
                       <td className="admin-cell-sm">
                         {order.shipped_at ? (
                           <div>
-                            <div style={{ color: '#166534', fontWeight: 700 }}>Shipped</div>
-                            <div style={{ color: '#666', fontSize: '0.8rem' }}>
+                            <div className={styles.shippedLabel}>Shipped</div>
+                            <div className={styles.mutedSmall}>
                               {new Date(order.shipped_at).toLocaleString()}
                             </div>
                             {order.shipping_carrier || order.tracking_number ? (
-                              <div style={{ color: '#666', fontSize: '0.8rem', marginTop: '0.35rem' }}>
+                              <div className={styles.shipmentMeta}>
                                 {[order.shipping_carrier, order.tracking_number].filter(Boolean).join(' • ')}
                               </div>
                             ) : null}
                           </div>
                         ) : (
-                          <span style={{ color: '#666' }}>Pending</span>
+                          <span className={styles.pendingText}>Pending</span>
                         )}
                       </td>
                       <td className="admin-cell-center">
                         <button
-                          className="admin-btn admin-btn-primary admin-btn-sm"
-                          style={{
-                            whiteSpace: 'nowrap',
-                            minWidth: '150px',
-                            opacity: submittingId === order.id ? 0.7 : 1,
-                          }}
+                          className={`admin-btn admin-btn-primary admin-btn-sm ${styles.shipButton}`}
                           onClick={() => void handleSubmit(order.id)}
                           disabled={submittingId === order.id}
                         >

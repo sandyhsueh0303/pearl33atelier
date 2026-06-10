@@ -1,0 +1,99 @@
+.statGold {
+  color: #c9a961;
+}
+
+.statBlue {
+  color: #2c5f8d;
+}
+
+.statAmber {
+  color: #d97706;
+}
+
+.statGreen {
+  color: #10b981;
+}
+
+.filterTitle {
+  color: #666;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.tableCard {
+  padding: 1.5rem;
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.orderNumber {
+  font-weight: 700;
+}
+
+.customerName {
+  font-weight: 600;
+}
+
+.mutedSmall,
+.shipmentMeta {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.shipmentMeta {
+  margin-top: 0.35rem;
+}
+
+.statusPill {
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35rem 0.6rem;
+  text-transform: capitalize;
+}
+
+.statusShipped {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.statusPaid {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.statusNeutral {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.trackingCell {
+  min-width: 260px;
+}
+
+.trackingFields {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.shippedLabel {
+  color: #166534;
+  font-weight: 700;
+}
+
+.pendingText {
+  color: #666;
+}
+
+.shipButton {
+  min-width: 150px;
+  white-space: nowrap;
+}
+
+.shipButton:disabled {
+  opacity: 0.7;
+}
