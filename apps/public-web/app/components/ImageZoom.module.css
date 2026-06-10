@@ -1,0 +1,60 @@
+.zoomContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: zoom-in;
+  border-radius: 8px;
+}
+
+.previewImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  cursor: zoom-out;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+.zoomedImage,
+.zoomedImageLarge {
+  object-fit: contain;
+  pointer-events: auto;
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.zoomedImage {
+  max-width: 45vw;
+  max-height: 45vh;
+  transform: scale(2);
+}
+
+.zoomedImageLarge {
+  max-width: 41vw;
+  max-height: 41vh;
+  transform: scale(2.2);
+}
+
+.closeHint {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+}

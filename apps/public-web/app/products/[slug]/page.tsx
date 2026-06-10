@@ -10,6 +10,7 @@ import type { CatalogProduct, ProductImage, ProductVideo } from '@pearl33atelier
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import ProductDetailClient from './ProductDetailClient'
+import styles from './page.module.css'
 
 // Disable caching for this page to always show latest data
 export const dynamic = 'force-dynamic'
@@ -262,17 +263,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       console.error('Error loading product:', error)
     }
     return (
-      <main
-        style={{
-          minHeight: '60vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '2rem',
-          textAlign: 'center',
-          color: '#2e2e2e',
-        }}
-      >
+      <main className={styles.errorPage}>
         Product details are temporarily unavailable. Please try again in a moment.
       </main>
     )

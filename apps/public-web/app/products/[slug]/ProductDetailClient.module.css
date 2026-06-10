@@ -1,0 +1,446 @@
+.main {
+  min-height: 100vh;
+  padding: clamp(1rem, 3vw, 6rem);
+  background-color: #ffffff;
+}
+
+.shell {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  margin-bottom: 4rem;
+}
+
+.breadcrumbLink {
+  color: #d4af37;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+.productLayout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 6rem;
+  background-color: #ffffff;
+}
+
+.galleryStage {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.mainMediaFrame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: #f8f6f0;
+}
+
+.editorsPickBadge {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 2;
+  padding: 0.5rem 1rem;
+  color: #2c2c2c;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(255, 252, 246, 0.94);
+  border: 1px solid rgba(201, 169, 97, 0.34);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.mainMedia,
+.zoomFrame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mainMedia {
+  object-fit: cover;
+  background-color: #f8f6f0;
+}
+
+.emptyMedia {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888888;
+}
+
+.emptyMediaIcon {
+  font-size: 4rem;
+}
+
+.galleryArrow {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-50%);
+  transition: 0.15s ease;
+}
+
+.galleryArrowPrevious {
+  left: 1.5rem;
+}
+
+.galleryArrowNext {
+  right: 1.5rem;
+}
+
+.galleryCounter {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  padding: 0.5rem 1rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.galleryNote {
+  margin: 0 0 1.5rem;
+  color: #888888;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+}
+
+.thumbnailGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+}
+
+.thumbnail {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #f8f6f0;
+  border: 1px solid #f5f5f5;
+  transition: 0.15s ease;
+}
+
+.thumbnail:hover,
+.thumbnailActive {
+  border-color: #d4af37;
+}
+
+.thumbnailActive {
+  border-width: 2px;
+}
+
+.thumbnailMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.videoPlayBadge {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.5rem;
+  background: rgba(20, 20, 20, 0.18);
+}
+
+.productTitle {
+  margin: 0 0 1rem;
+  color: #2c2c2c;
+  font-size: 2.25rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+.productSummary {
+  margin-bottom: 2rem;
+}
+
+.productMeta {
+  margin: 0;
+  color: #666666;
+  font-size: 0.875rem;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+}
+
+.lifestyleHook {
+  margin: 0.5rem 0 0;
+  color: #666666;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.availabilityRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.availabilityBadge {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.availabilityInStock {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+}
+
+.availabilitySoldOut {
+  color: #76624c;
+  background-color: #f5efe6;
+  border: 1px solid rgba(196, 173, 145, 0.4);
+}
+
+.availabilityPreorder {
+  color: #d4af37;
+  background-color: #f7e7ce;
+}
+
+.purchaseRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.priceStack {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.currentPrice {
+  color: #2c2c2c;
+  font-size: 3rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.originalPrice {
+  color: #888888;
+  font-size: 1.125rem;
+  text-decoration: line-through;
+}
+
+.pillButton {
+  min-width: 168px;
+  padding: 1rem 2rem;
+  color: #2c2c2c;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: #f6efe3;
+  border: 1px solid #d8c7ae;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(110, 89, 52, 0.10);
+  transition: 0.15s ease;
+}
+
+.pillButtonDisabled {
+  color: #7b6a58;
+  cursor: not-allowed;
+  background-color: #d7cbbd;
+  border-color: #d7cbbd;
+}
+
+.cartNotice {
+  margin-top: -1.5rem;
+  margin-bottom: 1rem;
+  color: #2e7d32;
+  font-size: 0.875rem;
+}
+
+.limitedCopy {
+  margin: 0 0 2rem;
+  color: #888888;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.copyCard {
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  background: #fbf8f2;
+  border: 1px solid #e5dccb;
+  border-radius: 14px;
+}
+
+.copyCardTitle {
+  margin: 0 0 0.5rem;
+  color: #2c2c2c;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.copyCardText {
+  margin: 0;
+  color: #666666;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.copyCardSection {
+  margin-top: 1.5rem;
+}
+
+.copyCardSubheading {
+  margin: 0 0 0.5rem;
+  color: #2c2c2c;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.accordionBlock {
+  padding-top: 0.5rem;
+  margin-bottom: 3rem;
+  border-top: 1px solid #f5f5f5;
+}
+
+.careBlock {
+  margin-bottom: 4rem;
+}
+
+.accordionButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+  margin: 0;
+  color: #2c2c2c;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+}
+
+.accordionTitle {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.accordionIcon {
+  color: #888888;
+  font-size: 1.125rem;
+}
+
+.accordionCopy {
+  margin: 0 0 1rem;
+  color: #666666;
+  font-size: 0.875rem;
+  line-height: 1.8;
+}
+
+.specTable {
+  width: 100%;
+}
+
+.specRow {
+  border-bottom: 1px solid #f8f6f0;
+}
+
+.specLabelCell {
+  padding: 0.5rem 0;
+  color: #666666;
+  font-size: 0.875rem;
+}
+
+.specValueCell,
+.specCodeValueCell {
+  padding: 0.5rem 0;
+  color: #2c2c2c;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.specCodeValueCell {
+  font-family: monospace;
+  font-weight: 400;
+}
+
+.careCopy {
+  margin: 1rem 0 0;
+  color: #666666;
+  line-height: 1.9;
+}
+
+.careActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.backToList {
+  margin-top: 6rem;
+  text-align: center;
+}
+
+.browseMoreLink {
+  display: inline-block;
+  padding: 1.5rem 4rem;
+  color: #2c2c2c;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  background-color: #ffffff;
+  border: 1px solid #2c2c2c;
+  transition: 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem;
+  }
+
+  .breadcrumb {
+    margin-bottom: 2rem;
+  }
+
+  .productLayout {
+    gap: 3rem;
+  }
+
+  .currentPrice {
+    font-size: 2.25rem;
+  }
+}

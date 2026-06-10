@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import ImageZoom from '../../components/ImageZoom'
 import ProductInquiryModal from '../../components/ProductInquiryModal'
 import { useCart } from '../../components/CartProvider'
 import { getProductImageUrl, getProductVideoUrl } from '@pearl33atelier/shared'
 import type { CatalogProduct, ProductImage, ProductVideo } from '@pearl33atelier/shared/types'
 import Link from 'next/link'
-import { colors, typography, spacing, transitions, shadows } from '../../constants/design'
+import styles from './ProductDetailClient.module.css'
 
 interface ProductDetailClientProps {
   product: CatalogProduct
@@ -170,28 +170,10 @@ export default function ProductDetailClient({ product, images, videos }: Product
     setTimeout(() => setCartNotice(null), 1800)
   }
 
-  const specRowStyle: CSSProperties = { borderBottom: `1px solid ${colors.pearl}` }
-  const specLabelCellStyle: CSSProperties = {
-    padding: `${spacing.xs} 0`,
-    color: colors.textSecondary,
-    fontSize: typography.fontSize.sm,
-  }
-  const specValueCellStyle: CSSProperties = {
-    padding: `${spacing.xs} 0`,
-    color: colors.darkGray,
-    fontWeight: typography.fontWeight.medium,
-    fontSize: typography.fontSize.sm,
-  }
-  const specCodeValueCellStyle: CSSProperties = {
-    ...specValueCellStyle,
-    fontFamily: 'monospace',
-    fontWeight: typography.fontWeight.normal,
-  }
-
-  const renderSpecRow = (label: string, value: ReactNode, valueStyle: CSSProperties = specValueCellStyle) => (
-    <tr style={specRowStyle}>
-      <td style={specLabelCellStyle}>{label}</td>
-      <td style={valueStyle}>{value}</td>
+  const renderSpecRow = (label: string, value: ReactNode, isCode = false) => (
+    <tr className={styles.specRow}>
+      <td className={styles.specLabelCell}>{label}</td>
+      <td className={isCode ? styles.specCodeValueCell : styles.specValueCell}>{value}</td>
     </tr>
   )
   const formatPearlTypeLabel = (value: string) =>
@@ -199,62 +181,38 @@ export default function ProductDetailClient({ product, images, videos }: Product
       .replace(/([a-z])([A-Z])/g, '$1 $2')
       .replace(/\s+/g, ' ')
       .trim()
-  const editorsPickBadgeStyle: CSSProperties = {
-    position: 'absolute',
-    top: spacing.md,
-    left: spacing.md,
-    zIndex: 2,
-    padding: `${spacing.xs} ${spacing.sm}`,
-    background: 'rgba(255, 252, 246, 0.94)',
-    border: '1px solid rgba(201, 169, 97, 0.34)',
-    color: colors.darkGray,
-    fontSize: typography.fontSize.xs,
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase',
-    boxShadow: shadows.soft,
-  }
+  const availabilityClassName =
+    effectiveAvailability === 'IN_STOCK'
+      ? styles.availabilityInStock
+      : effectiveAvailability === 'OUT_OF_STOCK'
+        ? styles.availabilitySoldOut
+        : styles.availabilityPreorder
+  const actionButtonClassName =
+    effectiveAvailability === 'OUT_OF_STOCK'
+      ? `${styles.pillButton} ${styles.pillButtonDisabled}`
+      : styles.pillButton
 
   return (
-    <main style={{ 
-      minHeight: '100vh',
-      backgroundColor: colors.white,
-      padding: `clamp(1rem, 3vw, ${spacing['3xl']})`,
-    }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+    <main className={styles.main}>
+      <div className={styles.shell}>
         {/* Breadcrumb */}
-        <div style={{ marginBottom: spacing['2xl'] }}>
+        <div className={styles.breadcrumb}>
           <Link 
             href="/products"
-            style={{
-              color: colors.gold,
-              textDecoration: 'none',
-              fontSize: typography.fontSize.sm,
-              letterSpacing: '0.05em',
-            }}
+            className={styles.breadcrumbLink}
           >
             ← Back to Products
           </Link>
         </div>
 
-        <div style={{ 
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: spacing['3xl'],
-          backgroundColor: colors.white,
-        }}>
+        <div className={styles.productLayout}>
           {/* Images Section */}
           <div>
             {/* Main Image with Navigation */}
-            <div style={{ position: 'relative', marginBottom: spacing.md }}>
-              <div style={{
-                width: '100%',
-                paddingBottom: '133.333%',
-                position: 'relative',
-                backgroundColor: colors.pearl,
-                overflow: 'hidden'
-              }}>
+            <div className={styles.galleryStage}>
+              <div className={styles.mainMediaFrame}>
                 {product.editors_pick && (
-                  <div style={editorsPickBadgeStyle}>Editor&apos;s Pick</div>
+                  <div className={styles.editorsPickBadge}>Editor&apos;s Pick</div>
                 )}
                 {currentGalleryItem?.kind === 'video' ? (
                   <video
@@ -262,37 +220,19 @@ export default function ProductDetailClient({ product, images, videos }: Product
                     src={getProductVideoUrl(currentGalleryItem.video.storage_path)}
                     controls
                     preload="metadata"
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      backgroundColor: colors.pearl,
-                    }}
+                    className={styles.mainMedia}
                   />
                 ) : currentImage ? (
-                    <div style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}}>
+                    <div className={styles.zoomFrame}>
                       <ImageZoom
                         src={getProductImageUrl(currentImage.storage_path)}
                         alt={`${product.pearl_type || 'Pearl'} ${categoryLabels[product.category || ''] || 'Jewelry'} - ${product.title}`}
                         zoomScale={2.2}
-                        style={{ width: '100%', height: '100%' }}
                       />
                     </div>
                 ) : (
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: colors.textLight
-                  }}>
-                    <span style={{ fontSize: '4rem' }}>✦</span>
+                  <div className={styles.emptyMedia}>
+                    <span className={styles.emptyMediaIcon}>✦</span>
                   </div>
                 )}
               </div>
@@ -302,121 +242,47 @@ export default function ProductDetailClient({ product, images, videos }: Product
                 <>
                   <button
                     onClick={prevImage}
-                    style={{
-                      position: 'absolute',
-                      left: spacing.md,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                      border: 'none',
-                      width: '40px',
-                      height: '40px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: typography.fontSize['2xl'],
-                      boxShadow: shadows.soft,
-                      transition: transitions.fast
-                    }}
+                    className={`${styles.galleryArrow} ${styles.galleryArrowPrevious}`}
+                    aria-label="Previous media"
                   >
                     ‹
                   </button>
                   <button
                     onClick={nextImage}
-                    style={{
-                      position: 'absolute',
-                      right: spacing.md,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                      border: 'none',
-                      width: '40px',
-                      height: '40px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: typography.fontSize['2xl'],
-                      boxShadow: shadows.soft,
-                      transition: transitions.fast
-                    }}
+                    className={`${styles.galleryArrow} ${styles.galleryArrowNext}`}
+                    aria-label="Next media"
                   >
                     ›
                   </button>
 
                   {/* Image Counter */}
-                  <div style={{
-                    position: 'absolute',
-                    bottom: spacing.md,
-                    right: spacing.md,
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    color: colors.white,
-                    padding: `${spacing.xs} ${spacing.sm}`,
-                    fontSize: typography.fontSize.sm,
-                    fontWeight: typography.fontWeight.medium
-                  }}>
+                  <div className={styles.galleryCounter}>
                     {currentGalleryIndex + 1} / {galleryItems.length}
                   </div>
                 </>
               )}
             </div>
 
-            <p
-              style={{
-                margin: `0 0 ${spacing.md}`,
-                color: colors.textLight,
-                fontSize: typography.fontSize.sm,
-                lineHeight: 1.6,
-                letterSpacing: '0.02em',
-              }}
-            >
+            <p className={styles.galleryNote}>
               Shown in natural light to reveal the pearl&apos;s true luster.
             </p>
 
             {/* Image Thumbnails */}
             {galleryItems.length > 1 && (
-              <div style={{ 
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
-                gap: spacing.xs
-              }}>
+              <div className={styles.thumbnailGrid}>
                 {galleryItems.map((item, index) => (
                   <div
                     key={item.id}
                     onClick={() => selectGalleryItem(index)}
-                    style={{
-                      paddingBottom: '100%',
-                      position: 'relative',
-                      backgroundColor: colors.pearl,
-                      border: index === currentGalleryIndex ? `2px solid ${colors.gold}` : `1px solid ${colors.lightGray}`,
-                      cursor: 'pointer',
-                      overflow: 'hidden',
-                      transition: transitions.fast
-                    }}
-                    onMouseEnter={(e) => {
-                      if (index !== currentGalleryIndex) {
-                        e.currentTarget.style.borderColor = colors.gold
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (index !== currentGalleryIndex) {
-                        e.currentTarget.style.borderColor = colors.lightGray
-                      }
-                    }}
+                    className={`${styles.thumbnail} ${
+                      index === currentGalleryIndex ? styles.thumbnailActive : ''
+                    }`}
                   >
                     {item.kind === 'image' ? (
                       <img 
                         src={getProductImageUrl(item.image.storage_path)}
                         alt={`${product.pearl_type || 'Pearl'} ${categoryLabels[product.category || ''] || 'Jewelry'} detail view ${index + 1} - ${product.title}`}
-                        style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
+                        className={styles.thumbnailMedia}
                       />
                     ) : (
                       <>
@@ -425,27 +291,9 @@ export default function ProductDetailClient({ product, images, videos }: Product
                           preload="metadata"
                           muted
                           playsInline
-                          style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                          }}
+                          className={styles.thumbnailMedia}
                         />
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            background: 'rgba(20, 20, 20, 0.18)',
-                            color: colors.white,
-                            fontSize: '1.5rem',
-                          }}
-                        >
+                        <div className={styles.videoPlayBadge}>
                           ▶
                         </div>
                       </>
@@ -458,26 +306,12 @@ export default function ProductDetailClient({ product, images, videos }: Product
 
           {/* Product Info Section */}
           <div>
-            <h1 style={{ 
-              fontSize: typography.fontSize['4xl'],
-              fontWeight: typography.fontWeight.light,
-              marginBottom: spacing.sm,
-              color: colors.darkGray,
-              letterSpacing: '0.02em',
-            }}>
+            <h1 className={styles.productTitle}>
               {product.title}
             </h1>
 
-            <div style={{ marginBottom: spacing.lg }}>
-              <p
-                style={{
-                  margin: 0,
-                  color: colors.textSecondary,
-                  fontSize: typography.fontSize.sm,
-                  lineHeight: 1.8,
-                  letterSpacing: '0.02em',
-                }}
-              >
+            <div className={styles.productSummary}>
+              <p className={styles.productMeta}>
                 {[
                   formatPearlTypeLabel(product.pearl_type),
                   product.size_mm ? `${product.size_mm}mm` : null,
@@ -487,63 +321,24 @@ export default function ProductDetailClient({ product, images, videos }: Product
                   .filter(Boolean)
                   .join('｜')}
               </p>
-              <p
-                style={{
-                  margin: `${spacing.xs} 0 0`,
-                  color: colors.textSecondary,
-                  fontSize: typography.fontSize.base,
-                  lineHeight: 1.8,
-                }}
-              >
+              <p className={styles.lifestyleHook}>
                 {lifestyleHook}
               </p>
             </div>
-            <div style={{ 
-              display: 'flex',
-              gap: spacing.xs,
-              marginBottom: spacing.lg,
-              flexWrap: 'wrap'
-            }}>
-              <span style={{
-                padding: `${spacing.xs} ${spacing.md}`,
-                backgroundColor:
-                  effectiveAvailability === 'IN_STOCK' ? '#e8f5e9' : effectiveAvailability === 'OUT_OF_STOCK' ? '#f5efe6' : colors.champagne,
-                color:
-                  effectiveAvailability === 'IN_STOCK' ? '#2e7d32' : effectiveAvailability === 'OUT_OF_STOCK' ? '#76624c' : colors.gold,
-                border: effectiveAvailability === 'OUT_OF_STOCK' ? '1px solid rgba(196, 173, 145, 0.4)' : 'none',
-                fontSize: typography.fontSize.sm,
-                fontWeight: typography.fontWeight.medium,
-              }}>
+            <div className={styles.availabilityRow}>
+              <span className={`${styles.availabilityBadge} ${availabilityClassName}`}>
                 {effectiveAvailability === 'IN_STOCK' ? 'In Stock' : effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Pre-order'}
               </span>
             </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: spacing.md,
-                flexWrap: 'wrap',
-                marginBottom: spacing.xl,
-              }}
-            >
-              <div style={{ display: 'grid', gap: '0.2rem' }}>
+            <div className={styles.purchaseRow}>
+              <div className={styles.priceStack}>
                 {product.sell_price && (
-                  <div style={{ 
-                    fontSize: typography.fontSize['5xl'],
-                    fontWeight: typography.fontWeight.light,
-                    color: colors.darkGray,
-                    lineHeight: 1
-                  }}>
+                  <div className={styles.currentPrice}>
                     $ {product.sell_price.toLocaleString()}
                   </div>
                 )}
                 {product.original_price && product.original_price > (product.sell_price || 0) && (
-                  <div style={{ 
-                    fontSize: typography.fontSize.lg,
-                    color: colors.textLight,
-                    textDecoration: 'line-through'
-                  }}>
+                  <div className={styles.originalPrice}>
                     Original Price $ {product.original_price.toLocaleString()}
                   </div>
                 )}
@@ -552,156 +347,60 @@ export default function ProductDetailClient({ product, images, videos }: Product
               <button
                 onClick={handleAddToCart}
                 disabled={effectiveAvailability === 'OUT_OF_STOCK'}
-                style={{
-                  minWidth: '168px',
-                  padding: `${spacing.sm} ${spacing.lg}`,
-                  backgroundColor:
-                    effectiveAvailability === 'OUT_OF_STOCK' ? '#d7cbbd' : '#f6efe3',
-                  color: effectiveAvailability === 'OUT_OF_STOCK' ? '#7b6a58' : colors.darkGray,
-                  border: `1px solid ${
-                    effectiveAvailability === 'OUT_OF_STOCK' ? '#d7cbbd' : '#d8c7ae'
-                  }`,
-                  borderRadius: '999px',
-                  fontWeight: typography.fontWeight.medium,
-                  fontSize: typography.fontSize.sm,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  cursor: effectiveAvailability === 'OUT_OF_STOCK' ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 10px 24px rgba(110, 89, 52, 0.10)',
-                  transition: transitions.fast,
-                }}
+                className={actionButtonClassName}
               >
                 {effectiveAvailability === 'OUT_OF_STOCK' ? 'Sold Out' : 'Add to Bag'}
               </button>
             </div>
 
             {cartNotice && (
-              <div
-                style={{
-                  marginTop: `-${spacing.md}`,
-                  marginBottom: spacing.sm,
-                  color: '#2e7d32',
-                  fontSize: typography.fontSize.sm,
-                }}
-              >
+              <div className={styles.cartNotice}>
                 {cartNotice}
               </div>
             )}
 
-            <p
-              style={{
-                margin: `0 0 ${spacing.lg}`,
-                color: colors.textLight,
-                fontSize: typography.fontSize.sm,
-                lineHeight: 1.7,
-              }}
-            >
+            <p className={styles.limitedCopy}>
               Each pearl is naturally unique, and only a few pieces are available.
             </p>
 
-            <div
-              style={{
-                marginBottom: spacing.lg,
-                padding: `${spacing.md} ${spacing.lg}`,
-                background: '#fbf8f2',
-                border: '1px solid #e5dccb',
-                borderRadius: '14px',
-              }}
-            >
-              <h3
-                style={{
-                  fontSize: typography.fontSize.base,
-                  fontWeight: typography.fontWeight.medium,
-                  marginBottom: spacing.xs,
-                  color: colors.darkGray,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                }}
-              >
+            <div className={styles.copyCard}>
+              <h3 className={styles.copyCardTitle}>
                 Why You&apos;ll Love It ⭐
               </h3>
-              <p
-                style={{
-                  margin: 0,
-                  color: colors.textSecondary,
-                  lineHeight: 1.8,
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
+              <p className={styles.copyCardText}>
                 {whyLoveCopy}
               </p>
-              <div style={{ marginTop: spacing.md }}>
-                <p
-                  style={{
-                    margin: `0 0 ${spacing.xs}`,
-                    color: colors.darkGray,
-                    fontSize: typography.fontSize.sm,
-                    fontWeight: typography.fontWeight.medium,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                  }}
-                >
+              <div className={styles.copyCardSection}>
+                <p className={styles.copyCardSubheading}>
                   Perfect For
                 </p>
-                <p
-                  style={{
-                    margin: 0,
-                    color: colors.textSecondary,
-                    lineHeight: 1.9,
-                    whiteSpace: 'pre-wrap',
-                  }}
-                >
+                <p className={styles.copyCardText}>
                   {perfectForCopy}
                 </p>
               </div>
             </div>
 
             {/* Product Details */}
-            <div style={{ 
-              borderTop: `1px solid ${colors.lightGray}`,
-              paddingTop: spacing.xs,
-              marginBottom: spacing.xl
-            }}>
+            <div className={styles.accordionBlock}>
               <button
                 type="button"
                 onClick={() => setIsPearlDetailsOpen((prev) => !prev)}
                 aria-expanded={isPearlDetailsOpen}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: spacing.md,
-                  background: 'transparent',
-                  border: 'none',
-                  padding: `${spacing.xs} 0`,
-                  cursor: 'pointer',
-                  color: colors.darkGray,
-                }}
+                className={styles.accordionButton}
               >
-                <span style={{ 
-                  fontSize: typography.fontSize.lg,
-                  fontWeight: typography.fontWeight.medium,
-                }}>
+                <span className={styles.accordionTitle}>
                   Product Details
                 </span>
-                <span style={{ fontSize: typography.fontSize.lg, color: colors.textLight }}>
+                <span className={styles.accordionIcon}>
                   {isPearlDetailsOpen ? '−' : '+'}
                 </span>
               </button>
               {isPearlDetailsOpen && (
                 <>
-                  <p
-                    style={{
-                      margin: `0 0 ${spacing.sm}`,
-                      color: colors.textSecondary,
-                      fontSize: typography.fontSize.sm,
-                      lineHeight: 1.8,
-                    }}
-                  >
+                  <p className={styles.accordionCopy}>
                     Each pair is carefully matched for luster, tone, and proportion — the details that define how pearls look on the skin.
                   </p>
-                  <table style={{ width: '100%' }}>
+                  <table className={styles.specTable}>
                     <tbody>
                       {renderSpecRow('Pearl Type', product.pearl_type)}
                       {product.category && (
@@ -722,83 +421,34 @@ export default function ProductDetailClient({ product, images, videos }: Product
                       {product.material && (
                         renderSpecRow('Material', product.material)
                       )}
-                      {renderSpecRow('Product Code', product.slug, specCodeValueCellStyle)}
+                      {renderSpecRow('Product Code', product.slug, true)}
                     </tbody>
                   </table>
                 </>
               )}
             </div>
 
-            <div
-              style={{
-                borderTop: `1px solid ${colors.lightGray}`,
-                paddingTop: spacing.xs,
-                marginBottom: spacing['2xl'],
-              }}
-            >
+            <div className={`${styles.accordionBlock} ${styles.careBlock}`}>
               <button
                 type="button"
                 onClick={() => setIsCareOpen((prev) => !prev)}
                 aria-expanded={isCareOpen}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: spacing.md,
-                  background: 'transparent',
-                  border: 'none',
-                  padding: `${spacing.xs} 0`,
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  margin: 0,
-                  color: colors.darkGray,
-                  fontSize: typography.fontSize.lg,
-                  fontWeight: typography.fontWeight.medium,
-                }}
+                className={styles.accordionButton}
               >
-                <span>Care</span>
-                <span style={{ fontSize: typography.fontSize.lg, color: colors.textLight }}>
+                <span className={styles.accordionTitle}>Care</span>
+                <span className={styles.accordionIcon}>
                   {isCareOpen ? '−' : '+'}
                 </span>
               </button>
               {isCareOpen && (
                 <>
-                  <p
-                    style={{
-                      margin: `${spacing.sm} 0 0`,
-                      color: colors.textSecondary,
-                      lineHeight: 1.9,
-                    }}
-                  >
+                  <p className={styles.careCopy}>
                     {careServiceCopy}
                   </p>
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                      gap: spacing.sm,
-                      flexWrap: 'wrap',
-                      marginTop: spacing.md,
-                    }}
-                  >
+                  <div className={styles.careActions}>
                     <button
                       onClick={() => setInquiryOpen(true)}
-                      style={{
-                        minWidth: '168px',
-                        padding: `${spacing.sm} ${spacing.lg}`,
-                        backgroundColor: '#f6efe3',
-                        color: colors.darkGray,
-                        border: '1px solid #d8c7ae',
-                        borderRadius: '999px',
-                        fontWeight: typography.fontWeight.medium,
-                        fontSize: typography.fontSize.sm,
-                        letterSpacing: '0.08em',
-                        textTransform: 'uppercase',
-                        cursor: 'pointer',
-                        boxShadow: '0 10px 24px rgba(110, 89, 52, 0.10)',
-                        transition: transitions.fast,
-                      }}
+                      className={styles.pillButton}
                     >
                       Ask About This Piece
                     </button>
@@ -817,21 +467,10 @@ export default function ProductDetailClient({ product, images, videos }: Product
         />
 
         {/* Back to list */}
-        <div style={{ marginTop: spacing['3xl'], textAlign: 'center' }}>
+        <div className={styles.backToList}>
           <Link
             href="/products"
-            style={{
-              display: 'inline-block',
-              padding: `${spacing.md} ${spacing['2xl']}`,
-              backgroundColor: colors.white,
-              color: colors.darkGray,
-              border: `1px solid ${colors.darkGray}`,
-              textDecoration: 'none',
-              fontWeight: typography.fontWeight.medium,
-              fontSize: typography.fontSize.base,
-              letterSpacing: '0.05em',
-              transition: transitions.normal,
-            }}
+            className={styles.browseMoreLink}
           >
             Browse More Products
           </Link>
