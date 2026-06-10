@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
-import { colors, typography, spacing } from '../constants/design'
-import { pageHeroStyles } from '../constants/pageHero'
 import PageHero from '../components/PageHero'
 import ContactMethods from './ContactMethods'
 import ContactForm from './ContactForm'
+import styles from './page.module.css'
 
 export const metadata: Metadata = {
   title: 'Contact Us | 33 Pearl Atelier',
@@ -16,46 +15,22 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main style={pageHeroStyles.main}>
+    <main className={styles.main}>
       <PageHero
         eyebrow="Contact"
         title="Get in Touch"
         description="Reach out for ready-to-wear inquiries, custom design requests, pearl care questions, or pearl redesign service."
       />
 
-      <div style={{ marginTop: `-${spacing.lg}` }}>
+      <div className={styles.methodsWrap}>
         <ContactMethods />
       </div>
 
       {/* Contact Form Section */}
-      <section
-        style={{
-          padding: `0 ${spacing.xl} ${spacing['3xl']}`,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '980px',
-            margin: '0 auto',
-            backgroundColor: colors.white,
-            border: '1px solid #ece7dc',
-            borderRadius: '12px',
-            boxShadow: 'none',
-            padding: spacing.xl,
-          }}
-        >
+      <section className={styles.formSection}>
+        <div className={styles.formPanel}>
           <ContactForm />
-          <p
-            style={{
-              margin: `${spacing.lg} 0 0`,
-              paddingTop: spacing.md,
-              borderTop: '1px solid #f0ece2',
-              textAlign: 'center',
-              fontSize: typography.fontSize.base,
-              color: colors.gold,
-              fontWeight: typography.fontWeight.medium,
-            }}
-          >
+          <p className={styles.responseNote}>
             ✓ We typically respond within 24 hours
           </p>
         </div>
