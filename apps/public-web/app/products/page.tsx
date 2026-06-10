@@ -5,6 +5,7 @@ import ProductList from './ProductList'
 import type { ProductListImage, ProductListItem } from './ProductList'
 import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
+import styles from './page.module.css'
 
 type CollectionSortBy = 'price-low' | 'price-high' | 'date-old' | 'date-new'
 type ProductSearchParams = {
@@ -269,21 +270,8 @@ export default async function ProductsPage({
       console.error('Error loading products:', productsError)
     }
     return (
-      <main style={{ 
-        minHeight: '100vh',
-        backgroundColor: '#fafafa',
-        padding: '2rem',
-                display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <div style={{ 
-          padding: '2rem', 
-          backgroundColor: '#fee', 
-          border: '1px solid #c00',
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
+      <main className={styles.errorPage}>
+        <div className={styles.errorPanel}>
           <strong>Error:</strong> Failed to load products
         </div>
       </main>

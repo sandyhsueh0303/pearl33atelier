@@ -1,0 +1,16 @@
+.errorPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #fafafa;
+}
+
+.errorPanel {
+  padding: 2rem;
+  text-align: center;
+  background-color: #ffeeee;
+  border: 1px solid #cc0000;
+  border-radius: 8px;
+}

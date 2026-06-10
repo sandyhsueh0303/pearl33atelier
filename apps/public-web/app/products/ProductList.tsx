@@ -5,12 +5,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getProductImageUrl, getProductImageVariantUrl } from '@pearl33atelier/shared'
 import type { AvailabilityKind, ProductCategory } from '@pearl33atelier/shared/types'
-import { colors, typography, spacing, transitions, shadows } from '../constants/design'
-import { pageHeroStyles } from '../constants/pageHero'
 import FilterPanel, { type ProductFilters } from '../components/FilterPanel'
 import PageHero from '../components/PageHero'
 import PearlFinderQuiz from '../components/PearlFinderQuiz'
 import { useCart } from '../components/CartProvider'
+import styles from './ProductList.module.css'
 
 export interface ProductListItem {
   id: string
@@ -71,20 +70,6 @@ export default function ProductList({
   }
   const normalize = (value: string) => value.toLowerCase().replace(/\s+/g, '')
   const getTimestamp = (value?: string | null) => (value ? new Date(value).getTime() : 0)
-  const editorsPickBadgeStyle = {
-    position: 'absolute' as const,
-    top: spacing.md,
-    left: spacing.md,
-    zIndex: 2,
-    padding: `${spacing.xs} ${spacing.sm}`,
-    background: 'rgba(255, 252, 246, 0.94)',
-    border: '1px solid rgba(201, 169, 97, 0.34)',
-    color: colors.darkGray,
-    fontSize: typography.fontSize.xs,
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase' as const,
-    boxShadow: shadows.soft,
-  }
   const filteredProducts = useMemo(() => {
     let result = [...products]
 
@@ -210,28 +195,16 @@ export default function ProductList({
   })()
 
   return (
-    <main style={{ ...pageHeroStyles.main, minHeight: '100vh' }}>
+    <main className={styles.main}>
       <PearlFinderQuiz />
       <PageHero
         eyebrow="Collection"
         title={pageTitle || 'Collection'}
         description={`${pageDescription || 'Accessible luxury for everyday wear'}\nHand-selected pearls • Exact piece shown • Small batch production`}
       />
-      <section style={{ padding: `clamp(1rem, 3vw, ${spacing['3xl']})` }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div
-            style={{
-              margin: `${spacing.lg} 0 ${spacing.xl}`,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              gap: spacing.md,
-              flexWrap: 'wrap',
-              color: colors.textSecondary,
-              fontSize: typography.fontSize.sm,
-              letterSpacing: '0.02em',
-            }}
-          >
+      <section className={styles.section}>
+        <div className={styles.shell}>
+          <div className={styles.toolbar}>
             <span>
               {filteredProducts.length} {filteredProducts.length === 1 ? 'result' : 'results'}
             </span>
@@ -239,72 +212,31 @@ export default function ProductList({
           </div>
 
         {filteredProducts.length === 0 ? (
-          <div style={{ 
-            padding: spacing['4xl'],
-            textAlign: 'center',
-            backgroundColor: colors.pearl,
-          }}>
-            <p style={{ 
-              fontSize: typography.fontSize.xl, 
-              color: colors.textSecondary 
-            }}>
+          <div className={styles.emptyState}>
+            <p className={styles.emptyTitle}>
               No products found
             </p>
-            <p style={{ 
-              fontSize: typography.fontSize.base, 
-              color: colors.textLight, 
-              marginTop: spacing.sm 
-            }}>
+            <p className={styles.emptyCopy}>
               Try adjusting your filters to see more items
             </p>
           </div>
         ) : (
-          <div
-            className="productGrid"
-            style={{
-              display: 'grid',
-              gap: spacing.lg,
-            }}
-          >
+          <div className={styles.productGrid}>
             {filteredProducts.map((product, index) => (
-              <div
-                key={product.id}
-                style={{
-                  height: '100%',
-                }}
-              >
-                <div style={{
-                  backgroundColor: colors.white,
-                  overflow: 'hidden',
-                  boxShadow: shadows.subtle,
-                  transition: transitions.normal,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '100%',
-                  opacity: product.availability === 'OUT_OF_STOCK' ? 0.72 : 1,
-                }}
-                className="productCard"
+              <div key={product.id} className={styles.productItem}>
+                <div
+                  className={`${styles.productCard} ${
+                    product.availability === 'OUT_OF_STOCK' ? styles.soldProductCard : ''
+                  }`}
                 >
                   <Link
                     href={`/products/${product.slug}`}
-                    style={{
-                      textDecoration: 'none',
-                      color: 'inherit',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      flex: 1,
-                    }}
+                    className={styles.productLink}
                   >
                     {/* Image */}
-                    <div style={{
-                      width: '100%',
-                      paddingBottom: '133.333%',
-                      position: 'relative',
-                      backgroundColor: colors.pearl
-                    }}>
+                    <div className={styles.imageFrame}>
                       {product.editors_pick && product.availability !== 'OUT_OF_STOCK' ? (
-                        <div style={editorsPickBadgeStyle}>Editor&apos;s Pick</div>
+                        <div className={styles.editorsPickBadge}>Editor&apos;s Pick</div>
                       ) : null}
                       {product.primaryImage ? (
                         <Image
@@ -313,26 +245,12 @@ export default function ProductList({
                           fill
                           priority={index < 2}
                           sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                          style={{
-                            objectFit: 'cover'
-                          }}
+                          className={styles.productImage}
                         />
                       ) : (
-                        <div style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          background: '#ffffff',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: '#C9A961'
-                        }}>
-                          <span style={{ fontSize: '3rem' }}>✦</span>
-                          <div style={{ fontSize: '0.875rem', marginTop: '1rem' }}>
+                        <div className={styles.imagePlaceholder}>
+                          <span className={styles.placeholderIcon}>✦</span>
+                          <div className={styles.placeholderText}>
                             Photo Coming Soon
                           </div>
                         </div>
@@ -340,75 +258,34 @@ export default function ProductList({
                       {product.availability === 'OUT_OF_STOCK' && (
                         <div
                           aria-hidden="true"
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            background: 'rgba(255, 255, 255, 0.22)',
-                            pointerEvents: 'none',
-                          }}
+                          className={styles.soldOverlay}
                         />
                       )}
                     </div>
 
                     {/* Product Info */}
-                    <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', flex: 1 }}>
-                      <h2 style={{ 
-                        fontSize: typography.fontSize.lg,
-                        fontWeight: typography.fontWeight.medium,
-                        marginBottom: '0.35rem',
-                        color: colors.darkGray,
-                        lineHeight: 1.32,
-                        wordBreak: 'break-word',
-                      }}>
+                    <div className={styles.productInfo}>
+                      <h2 className={styles.productTitle}>
                         {product.title}
                       </h2>
 
-                      <div style={{ 
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginTop: 'auto',
-                        gap: spacing.xs,
-                      }}>
+                      <div className={styles.productMetaRow}>
                         <div>
                           {product.sell_price && (
-                            <div style={{ 
-                              fontSize: typography.fontSize.xl,
-                              fontWeight: typography.fontWeight.semibold,
-                              color: colors.darkGray
-                            }}>
+                            <div className={styles.currentPrice}>
                               $ {product.sell_price.toLocaleString()}
                             </div>
                           )}
                           {product.original_price && product.original_price > (product.sell_price || 0) && (
-                            <div style={{ 
-                              fontSize: typography.fontSize.sm,
-                              color: colors.textLight,
-                              textDecoration: 'line-through'
-                            }}>
+                            <div className={styles.originalPrice}>
                               $ {product.original_price.toLocaleString()}
                             </div>
                           )}
                         </div>
 
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: spacing.xs,
-                            flexShrink: 0,
-                          }}
-                        >
+                        <div className={styles.productActions}>
                           {product.availability === 'OUT_OF_STOCK' && (
-                            <span
-                              style={{
-                                padding: '6px 12px',
-                                backgroundColor: '#fbe9e7',
-                                color: '#b71c1c',
-                                fontSize: typography.fontSize.sm,
-                                fontWeight: typography.fontWeight.semibold,
-                              }}
-                            >
+                            <span className={styles.soldBadge}>
                               Sold
                             </span>
                           )}
@@ -432,20 +309,7 @@ export default function ProductList({
                                   availability: product.availability,
                                 })
                               }}
-                              style={{
-                                width: '30px',
-                                height: '30px',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                border: `1px solid ${colors.gold}`,
-                                backgroundColor: 'rgba(201, 169, 97, 0.08)',
-                                color: colors.gold,
-                                fontSize: typography.fontSize.lg,
-                                lineHeight: 1,
-                                cursor: 'pointer',
-                                flexShrink: 0,
-                              }}
+                              className={styles.addToCartButton}
                             >
                               +
                             </button>
@@ -461,20 +325,14 @@ export default function ProductList({
         )}
 
           {!hasActiveFilters && filteredProducts.length > 0 && (currentPage > 1 || hasNextPage) && (
-            <div style={{ marginTop: spacing['2xl'], textAlign: 'center' }}>
-              <div style={{ display: 'flex', gap: spacing.xs, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <div className={styles.pagination}>
+              <div className={styles.paginationControls}>
                 <Link
                   href={previousPageHref}
                   prefetch
-                  style={{
-                    pointerEvents: currentPage === 1 ? 'none' : 'auto',
-                    textDecoration: 'none',
-                    padding: `${spacing.xs} ${spacing.md}`,
-                    border: `1px solid ${colors.lightGray}`,
-                    backgroundColor: currentPage === 1 ? colors.pearl : colors.white,
-                    color: colors.darkGray,
-                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                  }}
+                  className={`${styles.paginationLink} ${
+                    currentPage === 1 ? styles.paginationLinkDisabled : ''
+                  }`}
                 >
                   Previous
                 </Link>
@@ -482,15 +340,9 @@ export default function ProductList({
                 <Link
                   href={nextPageHref}
                   prefetch
-                  style={{
-                    pointerEvents: hasNextPage ? 'auto' : 'none',
-                    textDecoration: 'none',
-                    padding: `${spacing.xs} ${spacing.md}`,
-                    border: `1px solid ${colors.lightGray}`,
-                    backgroundColor: hasNextPage ? colors.white : colors.pearl,
-                    color: colors.darkGray,
-                    cursor: hasNextPage ? 'pointer' : 'not-allowed',
-                  }}
+                  className={`${styles.paginationLink} ${
+                    hasNextPage ? '' : styles.paginationLinkDisabled
+                  }`}
                 >
                   Next
                 </Link>
@@ -499,33 +351,6 @@ export default function ProductList({
           )}
         </div>
       </section>
-      <style jsx>{`
-        .productGrid {
-          grid-template-columns: repeat(5, minmax(0, 1fr));
-        }
-
-        @media (max-width: 1400px) {
-          .productGrid {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-          }
-        }
-
-        @media (max-width: 1100px) {
-          .productGrid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-          }
-        }
-
-        @media (max-width: 768px) {
-          .productGrid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-        }
-
-        .productCard:hover {
-          box-shadow: ${shadows.medium};
-        }
-      `}</style>
     </main>
   )
 }
