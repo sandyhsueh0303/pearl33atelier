@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react'
 import type { CatalogProduct } from '@pearl33atelier/shared/types'
 
 export interface ProductWithStats extends CatalogProduct {
@@ -44,13 +43,11 @@ export function formatMoney(value?: number) {
 export function getAvailabilityMeta(availability: ProductWithStats['availability']): {
   label: string
   className: string
-  style: CSSProperties
 } {
   if (availability === 'IN_STOCK') {
     return {
       label: 'In Stock',
       className: 'admin-pill admin-pill-success',
-      style: {},
     }
   }
 
@@ -58,16 +55,11 @@ export function getAvailabilityMeta(availability: ProductWithStats['availability
     return {
       label: 'Preorder',
       className: 'admin-pill admin-pill-gold',
-      style: {},
     }
   }
 
   return {
     label: 'Sold',
-    className: 'admin-pill',
-    style: {
-      background: '#FEE2E2',
-      color: '#B91C1C',
-    },
+    className: 'admin-pill admin-pill-danger',
   }
 }

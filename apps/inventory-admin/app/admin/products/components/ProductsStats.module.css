@@ -1,0 +1,19 @@
+.total {
+  color: #c9a961;
+}
+
+.published {
+  color: #10b981;
+}
+
+.draft {
+  color: #f59e0b;
+}
+
+.preorder {
+  color: #a162f7;
+}
+
+.sold {
+  color: #ef4444;
+}

@@ -7,6 +7,7 @@ import {
   getAvailabilityMeta,
   type ProductWithStats,
 } from './productsPageTypes'
+import styles from './ProductsTable.module.css'
 
 interface ProductsTableProps {
   products: ProductWithStats[]
@@ -22,7 +23,7 @@ export default function ProductsTable({
   return (
     <>
       <div className="admin-card admin-table-card admin-products-table-wrap">
-        <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <table className={`admin-table ${styles.table}`}>
           <thead>
             <tr className="admin-table-head-row">
               <th>Status</th>
@@ -31,9 +32,9 @@ export default function ProductsTable({
               <th>Title</th>
               <th>Category</th>
               <th>Pearl Type</th>
-              <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Total Cost</th>
-              <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Sell Price</th>
-              <th className="admin-th-right" style={{ minWidth: '140px' }}>Profit</th>
+              <th className={`admin-th-right ${styles.nowrap}`}>Total Cost</th>
+              <th className={`admin-th-right ${styles.nowrap}`}>Sell Price</th>
+              <th className={`admin-th-right ${styles.profitColumn}`}>Profit</th>
               <th className="admin-th-center">Actions</th>
             </tr>
           </thead>
@@ -52,26 +53,20 @@ export default function ProductsTable({
                     {product.sku || '-'}
                   </td>
                   <td>
-                    <span
-                      className={availabilityMeta.className}
-                      style={{
-                        fontSize: '0.875rem',
-                        ...availabilityMeta.style,
-                      }}
-                    >
+                    <span className={`${availabilityMeta.className} ${styles.availabilityPill}`}>
                       {availabilityMeta.label}
                     </span>
                   </td>
-                  <td style={{ fontWeight: '500' }}>
+                  <td className={styles.titleCell}>
                     {product.title}
                   </td>
                   <td>
-                    <span className="admin-pill admin-pill-lilac" style={{ fontSize: '0.875rem' }}>
+                    <span className={`admin-pill admin-pill-lilac ${styles.tablePill}`}>
                       {product.category ? formatCategory(product.category) : '-'}
                     </span>
                   </td>
                   <td>
-                    <span className="admin-pill admin-pill-sky" style={{ fontSize: '0.875rem' }}>
+                    <span className={`admin-pill admin-pill-sky ${styles.tablePill}`}>
                       {product.pearl_type}
                     </span>
                   </td>
@@ -81,9 +76,9 @@ export default function ProductsTable({
                   <td className="admin-cell-right admin-money">
                     {product.sell_price ? formatMoney(product.sell_price) : '-'}
                   </td>
-                  <td style={{ minWidth: '140px' }} className="admin-cell-right admin-money">
+                  <td className={`admin-cell-right admin-money ${styles.profitColumn}`}>
                     {product.profit !== undefined ? (
-                      <span style={{ color: product.profit >= 0 ? '#10B981' : '#EF4444' }}>
+                      <span className={product.profit >= 0 ? styles.profitPositive : styles.profitNegative}>
                         {formatMoney(product.profit)}
                       </span>
                     ) : '-'}
@@ -115,12 +110,12 @@ export default function ProductsTable({
       <div className="admin-products-mobile-list">
         {products.map((product) => {
           const availabilityMeta = getAvailabilityMeta(product.availability)
-          const profitColor = product.profit !== undefined && product.profit < 0 ? '#EF4444' : '#10B981'
+          const profitClass = product.profit !== undefined && product.profit < 0 ? styles.profitNegative : styles.profitPositive
 
           return (
             <article key={product.id} className="admin-card admin-products-mobile-card">
               <div className="admin-products-mobile-card-header">
-                <div style={{ minWidth: 0 }}>
+                <div className={styles.mobileTitleWrap}>
                   <h2 className="admin-products-mobile-title">{product.title}</h2>
                   <p className="admin-products-mobile-sku">{product.sku || 'No SKU'}</p>
                 </div>
@@ -128,7 +123,7 @@ export default function ProductsTable({
                   <span className={`admin-pill ${product.published ? 'admin-pill-success' : 'admin-pill-warning'}`}>
                     {product.published ? 'Published' : 'Draft'}
                   </span>
-                  <span className={availabilityMeta.className} style={availabilityMeta.style}>
+                  <span className={availabilityMeta.className}>
                     {availabilityMeta.label}
                   </span>
                 </div>
@@ -141,7 +136,7 @@ export default function ProductsTable({
                 </div>
                 <div className="admin-products-mobile-price">
                   <span className="admin-products-mobile-meta-label">Profit</span>
-                  <span className="admin-money" style={{ color: profitColor }}>
+                  <span className={`admin-money ${profitClass}`}>
                     {product.profit !== undefined ? formatMoney(product.profit) : '-'}
                   </span>
                 </div>

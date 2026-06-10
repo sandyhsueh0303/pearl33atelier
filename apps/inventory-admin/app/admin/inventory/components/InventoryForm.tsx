@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import styles from './InventoryForm.module.css'
 
 interface Props {
   inventoryId?: string
@@ -120,7 +121,7 @@ export default function InventoryForm({ inventoryId }: Props) {
   return (
     <main className="admin-page admin-page-narrow">
       <div className="admin-page-header">
-        <div className="admin-page-title-row" style={{ alignItems: 'flex-start', flexDirection: 'column', gap: '0.5rem' }}>
+        <div className={`admin-page-title-row ${styles.titleRow}`}>
           <Link
             href={backToListPath}
             className="admin-link-back"
@@ -142,10 +143,11 @@ export default function InventoryForm({ inventoryId }: Props) {
           )}
           
           <div className="admin-form-section">
-            <label className="admin-form-label">
+            <label className="admin-form-label" htmlFor="inventory-name">
               Name
             </label>
             <input
+              id="inventory-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -155,10 +157,11 @@ export default function InventoryForm({ inventoryId }: Props) {
           </div>
           
           <div className="admin-form-section">
-            <label className="admin-form-label">
+            <label className="admin-form-label" htmlFor="inventory-category">
               Category <span className="admin-form-required">*</span>
             </label>
             <select
+              id="inventory-category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               required
@@ -173,10 +176,11 @@ export default function InventoryForm({ inventoryId }: Props) {
           </div>
           
           <div className="admin-form-section">
-            <label className="admin-form-label">
+            <label className="admin-form-label" htmlFor="inventory-purchase-date">
               Purchase Date
             </label>
             <input
+              id="inventory-purchase-date"
               type="date"
               value={purchaseDate}
               onChange={(e) => setPurchaseDate(e.target.value)}
@@ -186,7 +190,7 @@ export default function InventoryForm({ inventoryId }: Props) {
           
           <div className="admin-form-grid-3">
             <div>
-              <label className="admin-form-label">
+              <label className="admin-form-label" htmlFor="inventory-unit-cost">
                 Unit Cost <span className="admin-form-required">*</span>
               </label>
               <div className="admin-input-prefix-wrap">
@@ -194,6 +198,7 @@ export default function InventoryForm({ inventoryId }: Props) {
                   $
                 </span>
                 <input
+                  id="inventory-unit-cost"
                   type="number"
                   step="0.01"
                   required
@@ -206,10 +211,11 @@ export default function InventoryForm({ inventoryId }: Props) {
             </div>
             
             <div>
-              <label className="admin-form-label">
+              <label className="admin-form-label" htmlFor="inventory-total-quantity">
                 Total Quantity in Stock <span className="admin-form-required">*</span>
               </label>
               <input
+                id="inventory-total-quantity"
                 type="number"
                 required
                 value={totalQuantity}
@@ -220,10 +226,11 @@ export default function InventoryForm({ inventoryId }: Props) {
             </div>
             
             <div>
-              <label className="admin-form-label">
+              <label className="admin-form-label" htmlFor="inventory-allocated-quantity">
                 Allocated Quantity
               </label>
               <input
+                id="inventory-allocated-quantity"
                 type="number"
                 value={allocatedQuantity}
                 onChange={(e) => setAllocatedQuantity(e.target.value)}
@@ -247,17 +254,17 @@ export default function InventoryForm({ inventoryId }: Props) {
             </div>
           )}
           
-          <div className="admin-form-section" style={{ marginBottom: '2rem' }}>
-            <label className="admin-form-label">
+          <div className={`admin-form-section ${styles.notesSection}`}>
+            <label className="admin-form-label" htmlFor="inventory-notes">
               Notes
             </label>
             <textarea
+              id="inventory-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
               placeholder="e.g. White Akoya pearl, AA+ grade, 8mm"
-              className="admin-control"
-              style={{ resize: 'vertical', fontFamily: 'inherit' }}
+              className={`admin-control ${styles.notesTextarea}`}
             />
             <div className="admin-form-help">
               Include pearl type, size, grade, or other details

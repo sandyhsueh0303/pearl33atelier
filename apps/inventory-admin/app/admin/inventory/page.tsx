@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import AdminPageHeader from '../components/AdminPageHeader'
 import AdminLoadingFallback from '../components/AdminLoadingFallback'
+import styles from './page.module.css'
 
 interface InventoryItem {
   id: string
@@ -247,10 +248,11 @@ function InventoryPageContent() {
         <div className="admin-filter-row admin-filter-row-center">
           {/* Search Input */}
           <div className="admin-filter-item-wide">
-            <label className="admin-filter-label">
+            <label className="admin-filter-label" htmlFor="inventory-search">
               🔍 Search name or notes
             </label>
             <input
+              id="inventory-search"
               type="text"
               value={searchQuery}
               onChange={(e) => {
@@ -264,10 +266,11 @@ function InventoryPageContent() {
 
           {/* Category Filter */}
           <div className="admin-filter-item-lg">
-            <label className="admin-filter-label">
+            <label className="admin-filter-label" htmlFor="inventory-category-filter">
               🏷️ Category
             </label>
             <select
+              id="inventory-category-filter"
               value={filterCategory}
               onChange={(e) => {
                 setFilterCategory(e.target.value)
@@ -284,10 +287,11 @@ function InventoryPageContent() {
 
           {/* Sort By */}
           <div className="admin-filter-item-md">
-            <label className="admin-filter-label">
+            <label className="admin-filter-label" htmlFor="inventory-status-filter">
               📦 Status
             </label>
             <select
+              id="inventory-status-filter"
               value={filterStatus}
               onChange={(e) => {
                 setFilterStatus(e.target.value as 'all' | 'instock' | 'sold')
@@ -302,11 +306,12 @@ function InventoryPageContent() {
           </div>
 
           {/* Sort By */}
-          <div style={{ flex: '0 1 200px' }}>
-            <label className="admin-filter-label">
+          <div className={styles.sortByFilter}>
+            <label className="admin-filter-label" htmlFor="inventory-sort-by">
               📊 Sort By
             </label>
             <select
+              id="inventory-sort-by"
               value={sortBy}
               onChange={(e) => {
                 setSortBy(e.target.value as 'date' | 'value' | 'quantity')
@@ -322,10 +327,11 @@ function InventoryPageContent() {
 
           {/* Sort Order */}
           <div className="admin-filter-item-sm">
-            <label className="admin-filter-label">
+            <label className="admin-filter-label" htmlFor="inventory-sort-order">
               ↕️ Order
             </label>
             <select
+              id="inventory-sort-order"
               value={sortOrder}
               onChange={(e) => {
                 setSortOrder(e.target.value as 'asc' | 'desc')
@@ -340,14 +346,10 @@ function InventoryPageContent() {
 
           {/* Reset Button */}
           {hasFilters && (
-            <div className="admin-filter-item-auto" style={{ marginTop: 'auto' }}>
-              <label className="admin-filter-label" style={{ visibility: 'hidden' }}>
-                &nbsp;
-              </label>
+            <div className={`admin-filter-item-auto ${styles.resetFilter}`}>
               <button
                 onClick={resetFilters}
                 className="admin-btn admin-btn-secondary"
-                style={{ padding: '0.75rem 1rem' }}
               >
                 🔄 Reset
               </button>
@@ -365,31 +367,31 @@ function InventoryPageContent() {
         <div className="admin-stats-grid">
           <div className="admin-stat-card admin-stat-card-body">
             <p className="admin-stat-label">Total Items</p>
-            <p className="admin-stat-value" style={{ color: '#C9A961' }}>
+            <p className={`admin-stat-value ${styles.statGold}`}>
               {summary.total_items}
             </p>
           </div>
           <div className="admin-stat-card admin-stat-card-body">
             <p className="admin-stat-label">Total Quantity</p>
-            <p className="admin-stat-value" style={{ color: '#10B981' }}>
+            <p className={`admin-stat-value ${styles.statGreen}`}>
               {summary.total_quantity}
             </p>
           </div>
           <div className="admin-stat-card admin-stat-card-body">
             <p className="admin-stat-label">Available Quantity</p>
-            <p className="admin-stat-value" style={{ color: '#10B981' }}>
+            <p className={`admin-stat-value ${styles.statGreen}`}>
               {summary.available_quantity}
             </p>
           </div>
           <div className="admin-stat-card admin-stat-card-body">
             <p className="admin-stat-label">Total Value</p>
-            <p className="admin-stat-value" style={{ color: '#F59E0B' }}>
+            <p className={`admin-stat-value ${styles.statAmber}`}>
               ${summary.total_value.toFixed(2)}
             </p>
           </div>
           <div className="admin-stat-card admin-stat-card-body">
             <p className="admin-stat-label">Remaining Value</p>
-            <p className="admin-stat-value" style={{ color: '#C9A961' }}>
+            <p className={`admin-stat-value ${styles.statGold}`}>
               ${summary.remaining_value.toFixed(2)}
             </p>
           </div>
@@ -419,17 +421,17 @@ function InventoryPageContent() {
         </div>
       ) : (
         <div className="admin-card admin-table-card">
-          <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table className={`admin-table ${styles.inventoryTable}`}>
             <thead>
               <tr className="admin-table-head-row">
                 <th className="admin-th-center">Status</th>
                 <th>Name</th>
                 <th>Category</th>
-                <th style={{ whiteSpace: 'nowrap' }}>Purchase Date</th>
-                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Unit Cost</th>
-                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Qty</th>
-                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Remaining</th>
-                <th className="admin-th-right" style={{ whiteSpace: 'nowrap' }}>Remaining Value</th>
+                <th className={styles.nowrap}>Purchase Date</th>
+                <th className={`admin-th-right ${styles.nowrap}`}>Unit Cost</th>
+                <th className={`admin-th-right ${styles.nowrap}`}>Qty</th>
+                <th className={`admin-th-right ${styles.nowrap}`}>Remaining</th>
+                <th className={`admin-th-right ${styles.nowrap}`}>Remaining Value</th>
                 <th className="admin-th-center">Actions</th>
               </tr>
             </thead>
@@ -444,50 +446,41 @@ function InventoryPageContent() {
                 return (
                   <tr
                     key={item.id}
-                    className="admin-row-divider"
-                    style={{
-                      opacity: isSold ? 0.7 : 1,
-                      backgroundColor: isSold ? '#FFFBFB' : 'transparent',
-                    }}
+                    className={isSold ? `admin-row-divider ${styles.soldRow}` : 'admin-row-divider'}
                   >
                     <td className="admin-cell-center">
                       <span
-                        className={isSold ? 'admin-pill' : 'admin-pill admin-pill-success'}
-                        style={
-                          isSold
-                            ? { background: '#FEE2E2', color: '#B91C1C', fontSize: '0.875rem', whiteSpace: 'nowrap' }
-                            : { fontSize: '0.875rem', whiteSpace: 'nowrap' }
-                        }
+                        className={isSold ? `admin-pill ${styles.soldPill}` : `admin-pill admin-pill-success ${styles.tablePill}`}
                       >
                         {isSold ? 'Sold' : 'In Stock'}
                       </span>
                     </td>
                     <td>
-                      <div style={{ fontWeight: '500' }}>
+                      <div className={styles.itemName}>
                         {item.name || '-'}
                       </div>
                     </td>
                     <td>
-                      <span className="admin-pill admin-pill-lilac" style={{ fontSize: '0.875rem', whiteSpace: 'nowrap' }}>
+                      <span className={`admin-pill admin-pill-lilac ${styles.tablePill}`}>
                         {categoryInfo.label}
                       </span>
                     </td>
-                    <td className="admin-cell-muted" style={{ whiteSpace: 'nowrap' }}>
+                    <td className={`admin-cell-muted ${styles.nowrap}`}>
                       {item.purchase_date 
                         ? new Date(item.purchase_date).toLocaleDateString('zh-TW')
                         : '-'
                       }
                     </td>
-                    <td className="admin-cell-right admin-money" style={{ whiteSpace: 'nowrap' }}>
+                    <td className={`admin-cell-right admin-money ${styles.nowrap}`}>
                       ${unitCost.toFixed(2)}
                     </td>
-                    <td className="admin-cell-right" style={{ whiteSpace: 'nowrap' }}>
+                    <td className={`admin-cell-right ${styles.nowrap}`}>
                       {item.total_quantity}
                     </td>
-                    <td style={{ fontWeight: '600', whiteSpace: 'nowrap' }} className="admin-cell-right">
+                    <td className={`admin-cell-right ${styles.remainingCell}`}>
                       {remainingQuantity}
                     </td>
-                    <td className="admin-cell-right admin-money admin-money-accent" style={{ whiteSpace: 'nowrap' }}>
+                    <td className={`admin-cell-right admin-money admin-money-accent ${styles.nowrap}`}>
                       ${remainingValue.toFixed(2)}
                     </td>
                     <td className="admin-cell-center">
@@ -522,7 +515,6 @@ function InventoryPageContent() {
             className="admin-btn admin-btn-secondary admin-btn-sm"
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            style={{ opacity: currentPage === 1 ? 0.5 : 1 }}
           >
             Previous
           </button>
@@ -534,7 +526,6 @@ function InventoryPageContent() {
             className="admin-btn admin-btn-secondary admin-btn-sm"
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            style={{ opacity: currentPage === totalPages ? 0.5 : 1 }}
           >
             Next
           </button>

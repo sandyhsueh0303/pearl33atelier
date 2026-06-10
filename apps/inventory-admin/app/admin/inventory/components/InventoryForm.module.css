@@ -1,0 +1,14 @@
+.titleRow {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.notesSection {
+  margin-bottom: 2rem;
+}
+
+.notesTextarea {
+  resize: vertical;
+  font-family: inherit;
+}

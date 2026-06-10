@@ -1,6 +1,7 @@
 'use client'
 
 import type { ProductFilterStatus } from './productsPageTypes'
+import styles from './ProductsFilters.module.css'
 
 interface ProductsFiltersProps {
   searchQuery: string
@@ -49,10 +50,11 @@ export default function ProductsFilters({
     <div className="admin-card admin-filter-panel">
       <div className="admin-filter-row">
         <div className="admin-filter-item-wide">
-          <label className="admin-filter-label">
+          <label className="admin-filter-label" htmlFor="products-search">
             🔍 Search products
           </label>
           <input
+            id="products-search"
             type="text"
             value={searchQuery}
             onChange={(event) => onSearchQueryChange(event.target.value)}
@@ -62,10 +64,11 @@ export default function ProductsFilters({
         </div>
 
         <div className="admin-filter-item-sm">
-          <label className="admin-filter-label">
+          <label className="admin-filter-label" htmlFor="products-status-filter">
             📌 Status
           </label>
           <select
+            id="products-status-filter"
             value={filterStatus}
             onChange={(event) => onFilterStatusChange(event.target.value as ProductFilterStatus)}
             className="admin-control"
@@ -81,10 +84,11 @@ export default function ProductsFilters({
         </div>
 
         <div className="admin-filter-item-md">
-          <label className="admin-filter-label">
+          <label className="admin-filter-label" htmlFor="products-pearl-type-filter">
             💎 Pearl Type
           </label>
           <select
+            id="products-pearl-type-filter"
             value={filterPearlType}
             onChange={(event) => onFilterPearlTypeChange(event.target.value)}
             className="admin-control"
@@ -99,10 +103,11 @@ export default function ProductsFilters({
         </div>
 
         <div className="admin-filter-item-md">
-          <label className="admin-filter-label">
+          <label className="admin-filter-label" htmlFor="products-category-filter">
             📂 Category
           </label>
           <select
+            id="products-category-filter"
             value={filterCategory}
             onChange={(event) => onFilterCategoryChange(event.target.value)}
             className="admin-control"
@@ -117,10 +122,11 @@ export default function ProductsFilters({
         </div>
 
         <div className="admin-filter-item-sm">
-          <label className="admin-filter-label">
+          <label className="admin-filter-label" htmlFor="products-sort-by">
             📊 Sort By
           </label>
           <select
+            id="products-sort-by"
             value={sortBy}
             onChange={(event) => onSortByChange(event.target.value as 'title' | 'price' | 'created')}
             className="admin-control"
@@ -131,11 +137,12 @@ export default function ProductsFilters({
           </select>
         </div>
 
-        <div style={{ flex: '0 1 130px' }}>
-          <label className="admin-filter-label">
+        <div className={styles.orderFilter}>
+          <label className="admin-filter-label" htmlFor="products-sort-order">
             ↕️ Order
           </label>
           <select
+            id="products-sort-order"
             value={sortOrder}
             onChange={(event) => onSortOrderChange(event.target.value as 'asc' | 'desc')}
             className="admin-control"
@@ -150,8 +157,7 @@ export default function ProductsFilters({
             <button
               type="button"
               onClick={onReset}
-              className="admin-btn admin-btn-secondary"
-              style={{ padding: '0.75rem 1rem' }}
+              className={`admin-btn admin-btn-secondary ${styles.resetButton}`}
             >
               🔄 Reset
             </button>

@@ -1,5 +1,7 @@
 'use client'
 
+import styles from './ProductsPagination.module.css'
+
 interface ProductsPaginationProps {
   currentPage: number
   totalPages: number
@@ -19,10 +21,9 @@ export default function ProductsPagination({
     <div className="admin-pagination admin-products-pagination">
       <button
         type="button"
-        className="admin-btn admin-btn-secondary admin-btn-sm"
+        className={`admin-btn admin-btn-secondary admin-btn-sm ${styles.paginationButton}`}
         onClick={onPrevious}
         disabled={currentPage === 1}
-        style={{ opacity: currentPage === 1 ? 0.5 : 1 }}
       >
         Previous
       </button>
@@ -31,10 +32,9 @@ export default function ProductsPagination({
       </span>
       <button
         type="button"
-        className="admin-btn admin-btn-secondary admin-btn-sm"
+        className={`admin-btn admin-btn-secondary admin-btn-sm ${styles.paginationButton}`}
         onClick={onNext}
         disabled={currentPage === totalPages}
-        style={{ opacity: currentPage === totalPages ? 0.5 : 1 }}
       >
         Next
       </button>

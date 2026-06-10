@@ -1,0 +1,33 @@
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.profitColumn {
+  min-width: 140px;
+}
+
+.availabilityPill,
+.tablePill {
+  font-size: 0.875rem;
+}
+
+.titleCell {
+  font-weight: 500;
+}
+
+.profitPositive {
+  color: #10b981;
+}
+
+.profitNegative {
+  color: #ef4444;
+}
+
+.mobileTitleWrap {
+  min-width: 0;
+}

@@ -498,6 +498,11 @@ button {
   color: #2c69a0;
 }
 
+.admin-pill-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
 .admin-action-group {
   display: flex;
   gap: 0.5rem;

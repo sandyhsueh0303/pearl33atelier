@@ -1,0 +1,57 @@
+.sortByFilter {
+  flex: 0 1 200px;
+}
+
+.resetFilter {
+  margin-top: auto;
+}
+
+.resetFilter button {
+  padding: 0.75rem 1rem;
+}
+
+.statGold {
+  color: #c9a961;
+}
+
+.statGreen {
+  color: #10b981;
+}
+
+.statAmber {
+  color: #f59e0b;
+}
+
+.inventoryTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.soldRow {
+  background-color: #fffbfb;
+  opacity: 0.7;
+}
+
+.tablePill,
+.soldPill {
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.soldPill {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.itemName {
+  font-weight: 500;
+}
+
+.remainingCell {
+  font-weight: 600;
+  white-space: nowrap;
+}

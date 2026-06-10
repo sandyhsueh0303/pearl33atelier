@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import styles from './QuickSaleButton.module.css';
 
 interface QuickSaleButtonProps {
   productId: string;
@@ -20,20 +21,7 @@ export default function QuickSaleButton({ productId }: QuickSaleButtonProps) {
     <button
       onClick={handleQuickSale}
       disabled={loading}
-      className="admin-product-form-quick-sale-button"
-      style={{
-        padding: '0.75rem 1.5rem',
-        backgroundColor: '#2b8a3e',
-        color: 'white',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: loading ? 'not-allowed' : 'pointer',
-        fontSize: '1rem',
-        fontWeight: 600,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.5rem',
-      }}
+      className={`admin-product-form-quick-sale-button ${styles.button}`}
       title="Record a sale for this product"
     >
       <span className="admin-product-form-quick-sale-icon">💰</span>

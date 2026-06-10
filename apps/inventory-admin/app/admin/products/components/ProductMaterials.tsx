@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { computeProductInventorySummary } from '@pearl33atelier/shared'
+import styles from './ProductMaterials.module.css'
 
 interface InventoryItem {
   id: string
@@ -205,118 +206,98 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
   })
 
   if (loading) {
-    return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
+    return <div className={styles.loading}>Loading...</div>
   }
 
+  const profitToneClass = profit >= 0 ? styles.positive : styles.negative
+  const profitCardClass = profit >= 0 ? styles.profitPositive : styles.profitNegative
+
   return (
-    <div className="admin-bom-card" style={{ 
-      backgroundColor: 'white',
-      borderRadius: '8px',
-      padding: '1.5rem',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-      marginBottom: '2rem'
-    }}>
-      <div className="admin-bom-stats-grid" style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-        gap: '0.75rem',
-        marginBottom: '1.25rem',
-      }}>
-        <div style={{ padding: '0.9rem 1rem', backgroundColor: '#ffebee', borderRadius: '8px' }}>
-          <div className="admin-bom-stat-label" style={{ fontSize: '0.8rem', color: '#EF4444', fontWeight: '500', marginBottom: '0.35rem' }}>Total Cost</div>
-          <div className="admin-bom-stat-value" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#EF4444', lineHeight: 1.15 }}>${totalMaterialCost.toFixed(2)}</div>
+    <div className={`admin-bom-card ${styles.card}`}>
+      <div className={`admin-bom-stats-grid ${styles.statsGrid}`}>
+        <div className={`${styles.statCard} ${styles.costCard}`}>
+          <div className={`admin-bom-stat-label ${styles.statLabel} ${styles.costText}`}>Total Cost</div>
+          <div className={`admin-bom-stat-value ${styles.statValue} ${styles.costText}`}>${totalMaterialCost.toFixed(2)}</div>
         </div>
-        <div style={{ padding: '0.9rem 1rem', backgroundColor: '#e3f2fd', borderRadius: '8px' }}>
-          <div className="admin-bom-stat-label" style={{ fontSize: '0.8rem', color: '#1565c0', fontWeight: '500', marginBottom: '0.35rem' }}>Sell Price</div>
-          <div className="admin-bom-stat-value" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2196f3', lineHeight: 1.15 }}>${sellingPrice.toFixed(2)}</div>
+        <div className={`${styles.statCard} ${styles.priceCard}`}>
+          <div className={`admin-bom-stat-label ${styles.statLabel} ${styles.priceLabel}`}>Sell Price</div>
+          <div className={`admin-bom-stat-value ${styles.statValue} ${styles.priceValue}`}>${sellingPrice.toFixed(2)}</div>
         </div>
-        <div style={{ padding: '0.9rem 1rem', backgroundColor: profit >= 0 ? '#e8f5e9' : '#ffebee', borderRadius: '8px' }}>
-          <div className="admin-bom-stat-label" style={{ fontSize: '0.8rem', color: profit >= 0 ? '#10B981' : '#EF4444', fontWeight: '500', marginBottom: '0.35rem' }}>Profit</div>
-          <div className="admin-bom-stat-value" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: profit >= 0 ? '#10B981' : '#EF4444', lineHeight: 1.15 }}>${profit.toFixed(2)}</div>
-          <div style={{ fontSize: '0.8rem', color: profit >= 0 ? '#10B981' : '#EF4444', marginTop: '0.35rem', fontWeight: '600' }}>
+        <div className={`${styles.statCard} ${profitCardClass}`}>
+          <div className={`admin-bom-stat-label ${styles.statLabel} ${profitToneClass}`}>Profit</div>
+          <div className={`admin-bom-stat-value ${styles.statValue} ${profitToneClass}`}>${profit.toFixed(2)}</div>
+          <div className={`${styles.profitMargin} ${profitToneClass}`}>
             {profitMargin.toFixed(1)}% Profit Margin
           </div>
         </div>
-        <div style={{ padding: '0.9rem 1rem', backgroundColor: '#fff8e1', borderRadius: '8px' }}>
-          <div className="admin-bom-stat-label" style={{ fontSize: '0.8rem', color: '#b7791f', fontWeight: '500', marginBottom: '0.35rem' }}>Available Units</div>
-          <div className="admin-bom-stat-value" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#b7791f', lineHeight: 1.15 }}>{inventorySummary.availableQuantity ?? '-'}</div>
-          <div style={{ fontSize: '0.8rem', color: '#8a6d1d', marginTop: '0.35rem', lineHeight: 1.35 }}>
+        <div className={`${styles.statCard} ${styles.availableCard}`}>
+          <div className={`admin-bom-stat-label ${styles.statLabel} ${styles.availableLabel}`}>Available Units</div>
+          <div className={`admin-bom-stat-value ${styles.statValue} ${styles.availableLabel}`}>{inventorySummary.availableQuantity ?? '-'}</div>
+          <div className={styles.availableMeta}>
             {inventorySummary.limitingMaterialName
               ? `Limited by ${inventorySummary.limitingMaterialName}`
               : 'Based on current material inventory'}
           </div>
         </div>
       </div>
-      <h2 style={{ marginTop: 0, marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: 'bold' }}>
+      <h2 className={styles.title}>
         🧾 BOM Materials List (BOM)
       </h2>
 
       {/* Materials List */}
       {materials.length > 0 ? (
-        <div style={{ marginBottom: '2rem' }}>
+        <div className={styles.materialsSection}>
           <div className="admin-bom-table-wrap">
-            <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table className={`admin-table ${styles.table}`}>
               <thead>
-                <tr style={{ borderBottom: '2px solid #ddd', backgroundColor: '#f9f9f9' }}>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Name</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Qty/Unit</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Unit Cost</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Subtotal</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600' }}>Remaining</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: '600' }}>Notes</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: '600' }}>Actions</th>
+                <tr className={styles.tableHeaderRow}>
+                  <th className={`${styles.tableCell} ${styles.leftCell}`}>Name</th>
+                  <th className={`${styles.tableCell} ${styles.rightCell}`}>Qty/Unit</th>
+                  <th className={`${styles.tableCell} ${styles.rightCell}`}>Unit Cost</th>
+                  <th className={`${styles.tableCell} ${styles.rightCell}`}>Subtotal</th>
+                  <th className={`${styles.tableCell} ${styles.rightCell}`}>Remaining</th>
+                  <th className={`${styles.tableCell} ${styles.leftCell}`}>Notes</th>
+                  <th className={`${styles.tableCell} ${styles.centerCell}`}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {materials.map((material) => (
-                  <tr key={material.id} style={{ borderBottom: '1px solid #eee' }}>
-                    <td style={{ padding: '0.75rem' }}>
+                  <tr key={material.id} className={styles.tableRow}>
+                    <td className={styles.tableCell}>
                       {material.inventory_items.name || '-'}
                     </td>
-                    <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '500' }}>
+                    <td className={`${styles.tableCell} ${styles.rightCell} ${styles.mediumCell}`}>
                       {material.quantity_per_unit}
                     </td>
-                    <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                    <td className={`${styles.tableCell} ${styles.rightCell}`}>
                       ${(material.unit_cost_snapshot || 0).toFixed(2)}
                     </td>
-                    <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: '600', color: '#1976d2' }}>
+                    <td className={`${styles.tableCell} ${styles.rightCell} ${styles.subtotalCell}`}>
                       ${(material.quantity_per_unit * (material.unit_cost_snapshot || 0)).toFixed(2)}
                     </td>
-                    <td style={{ padding: '0.75rem', textAlign: 'right' }}>
-                      <span style={{
-                        padding: '0.25rem 0.5rem',
-                        backgroundColor: material.inventory_items.remaining_quantity > 0 ? '#e8f5e9' : '#ffebee',
-                        color: material.inventory_items.remaining_quantity > 0 ? '#10B981' : '#EF4444',
-                        borderRadius: '4px',
-                        fontSize: '0.875rem',
-                        fontWeight: '500'
-                      }}>
+                    <td className={`${styles.tableCell} ${styles.rightCell}`}>
+                      <span className={`${styles.remainingPill} ${material.inventory_items.remaining_quantity > 0 ? styles.positivePill : styles.negativePill}`}>
                         {material.inventory_items.remaining_quantity}
                       </span>
                     </td>
-                    <td style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#666' }}>
+                    <td className={`${styles.tableCell} ${styles.noteCell}`}>
                       {material.notes || material.inventory_items.internal_note || '-'}
                     </td>
-                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>
+                    <td className={`${styles.tableCell} ${styles.centerCell}`}>
                       <button
                         onClick={() => handleDeleteMaterial(material.id)}
-                        className="admin-btn admin-btn-delete"
-                        style={{
-                          padding: '0.5rem 0.75rem',
-                          fontSize: '0.875rem',
-                          fontWeight: '500'
-                        }}
+                        className={`admin-btn admin-btn-delete ${styles.deleteButton}`}
                       >
                         Delete
                       </button>
                     </td>
                   </tr>
                 ))}
-                <tr style={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>
-                  <td colSpan={3} style={{ padding: '0.75rem', textAlign: 'right' }}>
+                <tr className={styles.totalRow}>
+                  <td colSpan={3} className={`${styles.tableCell} ${styles.rightCell}`}>
                     Total material cost:
                   </td>
-                  <td style={{ padding: '0.75rem', textAlign: 'right', color: '#1976d2', fontSize: '1.125rem' }}>
+                  <td className={`${styles.tableCell} ${styles.rightCell} ${styles.totalCell}`}>
                     ${totalMaterialCost.toFixed(2)}
                   </td>
                   <td colSpan={3}></td>
@@ -331,11 +312,7 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
                 <div className="admin-bom-mobile-header">
                   <div className="admin-bom-mobile-name">{material.inventory_items.name || '-'}</div>
                   <span
-                    className="admin-bom-mobile-remaining"
-                    style={{
-                      backgroundColor: material.inventory_items.remaining_quantity > 0 ? '#e8f5e9' : '#ffebee',
-                      color: material.inventory_items.remaining_quantity > 0 ? '#10B981' : '#EF4444',
-                    }}
+                    className={`admin-bom-mobile-remaining ${material.inventory_items.remaining_quantity > 0 ? styles.positivePill : styles.negativePill}`}
                   >
                     Rem: {material.inventory_items.remaining_quantity}
                   </span>
@@ -352,7 +329,7 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
                   </div>
                   <div>
                     <div className="admin-bom-mobile-label">Subtotal</div>
-                    <div className="admin-bom-mobile-value" style={{ color: '#1976d2', fontWeight: 700 }}>
+                    <div className={`admin-bom-mobile-value ${styles.mobileSubtotal}`}>
                       ${(material.quantity_per_unit * (material.unit_cost_snapshot || 0)).toFixed(2)}
                     </div>
                   </div>
@@ -378,44 +355,27 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
           </div>
         </div>
       ) : (
-        <div style={{ 
-          padding: '2rem', 
-          textAlign: 'center', 
-          backgroundColor: '#f9f9f9',
-          borderRadius: '4px',
-          marginBottom: '2rem',
-          color: '#666'
-        }}>
+        <div className={styles.emptyState}>
           No materials added yet
         </div>
       )}
 
       {/* Add Material Form */}
-      <div className="admin-bom-add-card" style={{ 
-        padding: '1.5rem',
-        backgroundColor: '#f9f9f9',
-        borderRadius: '8px'
-      }}>
-        <h3 style={{ marginTop: 0, marginBottom: '1rem', fontSize: '1.125rem' }}>
+      <div className={`admin-bom-add-card ${styles.addCard}`}>
+        <h3 className={styles.addTitle}>
           ➕ Add Material
         </h3>
         <form onSubmit={handleAddMaterial}>
-          <div className="admin-bom-add-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr 1fr 2fr auto', gap: '1rem', alignItems: 'end' }}>
+          <div className={`admin-bom-add-grid ${styles.addGrid}`}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
+              <label className={styles.label} htmlFor="product-material-category-filter">
                 Category
               </label>
               <select
+                id="product-material-category-filter"
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '0.875rem',
-                  backgroundColor: 'white'
-                }}
+                className={`${styles.control} ${styles.selectControl}`}
               >
                 {materialCategoryOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -426,40 +386,29 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
+              <label className={styles.label} htmlFor="product-material-search">
                 Search
               </label>
               <input
+                id="product-material-search"
                 type="text"
                 value={materialSearch}
                 onChange={(e) => setMaterialSearch(e.target.value)}
                 placeholder="Search material name..."
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '0.875rem'
-                }}
+                className={styles.control}
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
+              <label className={styles.label} htmlFor="product-material-item">
                 Select inventory material
               </label>
               <select
+                id="product-material-item"
                 value={selectedItemId}
                 onChange={(e) => setSelectedItemId(e.target.value)}
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '0.875rem',
-                  backgroundColor: 'white'
-                }}
+                className={`${styles.control} ${styles.selectControl}`}
               >
                 <option value="">-- Select material --</option>
                 {filteredInventoryItems.map(item => (
@@ -471,59 +420,38 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
+              <label className={styles.label} htmlFor="product-material-quantity">
                 Qty/Unit
               </label>
               <input
+                id="product-material-quantity"
                 type="number"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 min="1"
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '0.875rem'
-                }}
+                className={styles.control}
               />
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>
+              <label className={styles.label} htmlFor="product-material-notes">
                 Notes (Optional)
               </label>
               <input
+                id="product-material-notes"
                 type="text"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="e.g. Main pearl"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '0.875rem'
-                }}
+                className={styles.control}
               />
             </div>
 
             <button
               type="submit"
               disabled={adding || !selectedItemId}
-              className="admin-bom-add-button"
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: adding ? '#ccc' : '#1976d2',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: adding ? 'not-allowed' : 'pointer',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                whiteSpace: 'nowrap'
-              }}
+              className={`admin-bom-add-button ${styles.addButton}`}
             >
               {adding ? 'Adding...' : 'Add Material'}
             </button>
