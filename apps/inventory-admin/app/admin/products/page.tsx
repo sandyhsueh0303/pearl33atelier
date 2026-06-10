@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
 import AdminPageHeader from '../components/AdminPageHeader'
+import AdminLoadingFallback from '../components/AdminLoadingFallback'
 import ProductsFilters from './components/ProductsFilters'
 import ProductsPagination from './components/ProductsPagination'
 import ProductsStats from './components/ProductsStats'
@@ -17,7 +18,7 @@ import {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<main className="admin-page"><div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div></main>}>
+    <Suspense fallback={<AdminLoadingFallback page />}>
       <ProductsPageContent />
     </Suspense>
   )

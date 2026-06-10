@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import styles from './page.module.css'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -38,106 +39,50 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#f5f5f5',
-      fontFamily: 'sans-serif'
-    }}>
-      <div style={{
-        width: '100%',
-        maxWidth: '400px',
-        padding: '2rem',
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-      }}>
-        <h1 style={{ 
-          marginBottom: '0.5rem', 
-          fontSize: '1.875rem', 
-          fontWeight: 'bold',
-          textAlign: 'center'
-        }}>
+    <div className={styles.page}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>
           Admin Login
         </h1>
-        <p style={{ 
-          marginBottom: '2rem', 
-          color: '#666', 
-          textAlign: 'center',
-          fontSize: '0.875rem'
-        }}>
+        <p className={styles.subtitle}>
           33 Pearl Atelier Inventory System
         </p>
 
         {error && (
-          <div style={{
-            padding: '0.75rem',
-            marginBottom: '1rem',
-            backgroundColor: '#fee',
-            border: '1px solid #fcc',
-            borderRadius: '4px',
-            color: '#c00',
-            fontSize: '0.875rem'
-          }}>
+          <div className={styles.error}>
             {error}
           </div>
         )}
 
         <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              color: '#333'
-            }}>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="admin-email">
               Email
             </label>
             <input
+              id="admin-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="admin@33pearlatelier.com"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                boxSizing: 'border-box'
-              }}
+              className={styles.input}
               disabled={loading}
             />
           </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              color: '#333'
-            }}>
+          <div className={styles.fieldLarge}>
+            <label className={styles.label} htmlFor="admin-password">
               Password
             </label>
             <input
+              id="admin-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                boxSizing: 'border-box'
-              }}
+              className={styles.input}
               disabled={loading}
             />
           </div>
@@ -145,31 +90,13 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              backgroundColor: loading ? '#ccc' : '#1976d2',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              fontSize: '1rem',
-              fontWeight: '600',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              transition: 'background-color 0.2s'
-            }}
+            className={styles.submitButton}
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
-        <div style={{
-          marginTop: '1.5rem',
-          paddingTop: '1.5rem',
-          borderTop: '1px solid #eee',
-          textAlign: 'center',
-          fontSize: '0.75rem',
-          color: '#999'
-        }}>
+        <div className={styles.notice}>
           <p>Restricted Access - Authorized Personnel Only</p>
         </div>
       </div>

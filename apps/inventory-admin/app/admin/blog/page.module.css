@@ -1,0 +1,82 @@
+.blogCard {
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+.emptyState {
+  padding: 2rem 1rem;
+}
+
+.postList {
+  display: grid;
+  gap: 1rem;
+}
+
+.postCard {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  background: #ffffff;
+  border: 1px solid #ece7de;
+  border-radius: 14px;
+}
+
+.postHeader,
+.postFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.postHeader {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.postFooter {
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.postTitleGroup {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.postTitle {
+  margin: 0;
+  color: #2f2418;
+  font-size: 1.1rem;
+}
+
+.postSlug {
+  color: #7b6a55;
+  font-size: 0.95rem;
+}
+
+.pillRow,
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.excerpt {
+  margin: 0;
+  color: #5a4630;
+  line-height: 1.65;
+}
+
+.tag {
+  padding: 0.25rem 0.55rem;
+  color: #6f5837;
+  background: #f6f1e7;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.fileMeta {
+  color: #7b6a55;
+  font-size: 0.88rem;
+}

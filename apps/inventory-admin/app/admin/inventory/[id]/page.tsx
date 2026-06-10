@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import AdminLoadingFallback from '../../components/AdminLoadingFallback'
 import InventoryForm from '../components/InventoryForm'
 
 export default async function EditInventoryPage({
@@ -8,7 +9,7 @@ export default async function EditInventoryPage({
 }) {
   const { id } = await params
   return (
-    <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
+    <Suspense fallback={<AdminLoadingFallback />}>
       <InventoryForm inventoryId={id} />
     </Suspense>
   )

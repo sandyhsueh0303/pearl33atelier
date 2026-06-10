@@ -1,9 +1,10 @@
 import { Suspense } from 'react'
+import AdminLoadingFallback from '../../components/AdminLoadingFallback'
 import AiDraftClient from './AiDraftClient'
 
 export default function AiDraftProductPage() {
   return (
-    <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
+    <Suspense fallback={<AdminLoadingFallback />}>
       <AiDraftClient />
     </Suspense>
   )

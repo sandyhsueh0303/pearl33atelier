@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import AdminPageHeader from '../components/AdminPageHeader'
+import AdminLoadingFallback from '../components/AdminLoadingFallback'
 
 interface InventoryItem {
   id: string
@@ -39,7 +40,7 @@ interface InventorySummary {
 
 export default function InventoryPage() {
   return (
-    <Suspense fallback={<main className="admin-page"><div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div></main>}>
+    <Suspense fallback={<AdminLoadingFallback page />}>
       <InventoryPageContent />
     </Suspense>
   )
