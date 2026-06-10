@@ -200,8 +200,9 @@ export default function CrmPage() {
             />
           </div>
           <div className="admin-filter-item">
-            <label className="admin-filter-label">Status</label>
+            <label className="admin-filter-label" htmlFor="crm-status-filter">Status</label>
             <select
+              id="crm-status-filter"
               className="admin-control"
               value={status}
               onChange={(event) => setStatus(event.target.value as LeadStatus | 'all')}
@@ -274,6 +275,7 @@ export default function CrmPage() {
                   <td>
                     <select
                       className="admin-control"
+                      aria-label={`Status for ${lead.name}`}
                       value={lead.status}
                       disabled={updatingId === lead.id}
                       onChange={(event) => void updateLeadStatus(lead.id, event.target.value as LeadStatus)}

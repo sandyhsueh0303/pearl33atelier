@@ -75,6 +75,8 @@ export default function BlogBriefPanel({
       <div style={{ display: 'grid', gap: '0.9rem' }}>
         <BlogField label="Working Title">
           <input
+            aria-label="Working title"
+            placeholder="Enter a working title"
             value={form.workingTitle}
             style={blogGeneratorFormControlStyle}
             onChange={(event) => updateBriefField(setForm, 'workingTitle', event.target.value)}
@@ -90,6 +92,8 @@ export default function BlogBriefPanel({
         >
           <BlogField label="Primary Keyword">
             <input
+              aria-label="Primary keyword"
+              placeholder="Enter the primary keyword"
               value={form.primaryKeyword}
               style={blogGeneratorFormControlStyle}
               onChange={(event) => updateBriefField(setForm, 'primaryKeyword', event.target.value)}
@@ -106,6 +110,7 @@ export default function BlogBriefPanel({
         >
           <BlogField label="Primary Intent">
             <select
+              aria-label="Primary intent"
               value={form.primaryIntent}
               style={blogGeneratorFormControlStyle}
               onChange={(event) =>
@@ -124,12 +129,19 @@ export default function BlogBriefPanel({
             </select>
           </BlogField>
           <BlogField label="Auto Slug">
-            <input value={briefPreview.slug} readOnly style={blogGeneratorReadOnlyControlStyle} />
+            <input
+              aria-label="Auto slug"
+              value={briefPreview.slug}
+              readOnly
+              style={blogGeneratorReadOnlyControlStyle}
+            />
           </BlogField>
         </div>
 
         <BlogField label="Must Cover" hint="Optional. One topic per line if you want to steer the article.">
           <textarea
+            aria-label="Must cover topics"
+            placeholder="One topic per line"
             value={form.mustCoverText}
             style={{ ...blogGeneratorFormControlStyle, minHeight: '130px', resize: 'vertical' }}
             onChange={(event) => updateBriefField(setForm, 'mustCoverText', event.target.value)}
@@ -166,6 +178,8 @@ export default function BlogBriefPanel({
 
         <BlogField label="Target Reading Minutes" hint="Optional. Leave blank to let AI decide.">
           <input
+            aria-label="Target reading minutes"
+            placeholder="Optional"
             type="number"
             min={3}
             max={20}
