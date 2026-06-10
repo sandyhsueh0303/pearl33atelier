@@ -1,0 +1,56 @@
+.section {
+  padding: 6.25rem 2rem 4rem;
+  text-align: center;
+  background: linear-gradient(180deg, #f2e9da 0%, #ffffff 100%);
+}
+
+.inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: #d4af37;
+  font-size: 0.875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0 0 1.25rem;
+  color: #2c2c2c;
+  font-size: clamp(1.9rem, 4.8vw, 3.15rem);
+  font-weight: 400;
+  line-height: 1.14;
+  letter-spacing: 0.02em;
+  text-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
+}
+
+.description {
+  max-width: 680px;
+  margin: 0 auto;
+  color: #666666;
+  font-size: 1rem;
+  line-height: 1.68;
+}
+
+.descriptionLineFirst {
+  margin: 0;
+}
+
+.descriptionLine {
+  margin: 0.6rem 0 0;
+}
+
+.divider {
+  width: 96px;
+  height: 2px;
+  margin: 1.5rem auto 0;
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0.08) 0%,
+    rgba(212, 175, 55, 0.85) 50%,
+    rgba(212, 175, 55, 0.08) 100%
+  );
+}

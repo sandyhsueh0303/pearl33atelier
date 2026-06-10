@@ -1,34 +1,30 @@
-import type { CSSProperties } from 'react'
-import { pageHeroStyles } from '../constants/pageHero'
+import styles from './PageHero.module.css'
 
 type PageHeroProps = {
   eyebrow: string
   title: string
   description: string
-  sectionStyle?: CSSProperties
 }
 
-export default function PageHero({ eyebrow, title, description, sectionStyle }: PageHeroProps) {
+export default function PageHero({ eyebrow, title, description }: PageHeroProps) {
   const descriptionLines = description.split('\n').filter(Boolean)
 
   return (
-    <section style={{ ...pageHeroStyles.section, ...sectionStyle }}>
-      <div style={pageHeroStyles.inner}>
-        <p style={pageHeroStyles.eyebrow}>{eyebrow}</p>
-        <h1 style={pageHeroStyles.title}>{title}</h1>
-        <div style={pageHeroStyles.description}>
+    <section className={styles.section}>
+      <div className={styles.inner}>
+        <p className={styles.eyebrow}>{eyebrow}</p>
+        <h1 className={styles.title}>{title}</h1>
+        <div className={styles.description}>
           {descriptionLines.map((line, index) => (
             <p
               key={`${line}-${index}`}
-              style={{
-                margin: index === 0 ? 0 : '0.6rem 0 0',
-              }}
+              className={index === 0 ? styles.descriptionLineFirst : styles.descriptionLine}
             >
               {line}
             </p>
           ))}
         </div>
-        <div style={pageHeroStyles.divider} />
+        <div className={styles.divider} />
       </div>
     </section>
   )
