@@ -1,0 +1,127 @@
+.panel {
+  display: grid;
+  align-content: start;
+  gap: 1.15rem;
+  padding: 1.4rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #fcfbf8 100%);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.title {
+  margin: 0;
+  color: #1f2937;
+  font-family: var(--font-playfair-display), serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.description {
+  margin: 0.45rem 0 0;
+  color: #6b7280;
+  line-height: 1.7;
+}
+
+.formGrid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.responsiveGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem;
+}
+
+.control {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%);
+  color: #1f2937;
+  font-size: 0.96rem;
+  line-height: 1.6;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.readOnlyControl {
+  color: #6b7280;
+  background: linear-gradient(180deg, #faf7f0 0%, #fdfbf7 100%);
+}
+
+.textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.categoryList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.categoryButton {
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffffff 0%, #fcfbf8 100%);
+  color: #5a4630;
+  padding: 0.55rem 0.85rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.categoryButtonSelected {
+  border-color: #c9a961;
+  background: linear-gradient(145deg, #fffdf8 0%, #f7f1e7 100%);
+  box-shadow: 0 8px 18px rgba(201, 169, 97, 0.12);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.85rem 1.35rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.primaryButton {
+  color: #ffffff;
+  background: linear-gradient(135deg, #2c5f8d 0%, #274869 100%);
+  border: 1px solid rgba(44, 95, 141, 0.28);
+  box-shadow: 0 10px 24px rgba(44, 95, 141, 0.18);
+  letter-spacing: 0.04em;
+}
+
+.secondaryButton {
+  color: #5a4630;
+  background: linear-gradient(145deg, #fffdf8 0%, #f7f1e7 100%);
+  border: 1px solid rgba(201, 169, 97, 0.16);
+  box-shadow: 0 8px 20px rgba(92, 71, 39, 0.08);
+  letter-spacing: 0.03em;
+}
+
+.busyButton {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.actionHint {
+  color: #6b7280;
+  line-height: 1.6;
+}

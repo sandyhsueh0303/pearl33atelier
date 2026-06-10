@@ -4,22 +4,16 @@ import type { Dispatch, SetStateAction } from 'react'
 import type { ArticleBrief } from '@/app/lib/blogPipeline'
 import {
   BLOG_GENERATOR_LABELS,
-  BLOG_GENERATOR_UI,
   BLOG_PRIMARY_INTENTS,
   BLOG_PRODUCT_CATEGORIES,
   BlogAssistCard,
   BlogField,
-  blogGeneratorFormControlStyle,
-  blogGeneratorPanelStyle,
-  blogGeneratorPrimaryButtonStyle,
-  blogGeneratorReadOnlyControlStyle,
-  blogGeneratorSecondaryButtonStyle,
-  blogGeneratorTagButtonBaseStyle,
   getBlogGeneratorActionState,
   toggleBriefCategory,
   updateBriefField,
   type BriefFormState,
 } from './blogGeneratorShared'
+import styles from './BlogBriefPanel.module.css'
 
 interface BlogBriefPanelProps {
   form: BriefFormState
@@ -46,73 +40,45 @@ export default function BlogBriefPanel({
   })
 
   return (
-    <section
-      style={{
-        ...blogGeneratorPanelStyle,
-        display: 'grid',
-        gap: '1.15rem',
-        alignContent: 'start',
-        padding: '1.4rem',
-      }}
-    >
+    <section className={styles.panel}>
       <div>
-        <h2
-          style={{
-            margin: 0,
-            color: BLOG_GENERATOR_UI.colors.ink,
-            fontFamily: 'var(--font-playfair-display), serif',
-            fontWeight: 400,
-            letterSpacing: '0.02em',
-          }}
-        >
+        <h2 className={styles.title}>
           Brief Input
         </h2>
-        <p style={{ margin: '0.45rem 0 0', color: BLOG_GENERATOR_UI.colors.textSoft, lineHeight: 1.7 }}>
+        <p className={styles.description}>
           Keep the input light. Let the handbook and prompts do the heavier editorial work.
         </p>
       </div>
 
-      <div style={{ display: 'grid', gap: '0.9rem' }}>
+      <div className={styles.formGrid}>
         <BlogField label="Working Title">
           <input
             aria-label="Working title"
             placeholder="Enter a working title"
             value={form.workingTitle}
-            style={blogGeneratorFormControlStyle}
+            className={styles.control}
             onChange={(event) => updateBriefField(setForm, 'workingTitle', event.target.value)}
           />
         </BlogField>
 
-        <div
-          style={{
-            display: 'grid',
-            gap: '0.9rem',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          }}
-        >
+        <div className={styles.responsiveGrid}>
           <BlogField label="Primary Keyword">
             <input
               aria-label="Primary keyword"
               placeholder="Enter the primary keyword"
               value={form.primaryKeyword}
-              style={blogGeneratorFormControlStyle}
+              className={styles.control}
               onChange={(event) => updateBriefField(setForm, 'primaryKeyword', event.target.value)}
             />
           </BlogField>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gap: '0.9rem',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          }}
-        >
+        <div className={styles.responsiveGrid}>
           <BlogField label="Primary Intent">
             <select
               aria-label="Primary intent"
               value={form.primaryIntent}
-              style={blogGeneratorFormControlStyle}
+              className={styles.control}
               onChange={(event) =>
                 updateBriefField(
                   setForm,
@@ -133,7 +99,7 @@ export default function BlogBriefPanel({
               aria-label="Auto slug"
               value={briefPreview.slug}
               readOnly
-              style={blogGeneratorReadOnlyControlStyle}
+              className={`${styles.control} ${styles.readOnlyControl}`}
             />
           </BlogField>
         </div>
@@ -143,14 +109,14 @@ export default function BlogBriefPanel({
             aria-label="Must cover topics"
             placeholder="One topic per line"
             value={form.mustCoverText}
-            style={{ ...blogGeneratorFormControlStyle, minHeight: '130px', resize: 'vertical' }}
+            className={`${styles.control} ${styles.textarea}`}
             onChange={(event) => updateBriefField(setForm, 'mustCoverText', event.target.value)}
             rows={5}
           />
         </BlogField>
 
         <BlogField label="Relevant Product Categories">
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <div className={styles.categoryList}>
             {BLOG_PRODUCT_CATEGORIES.map((category) => {
               const selected = form.productCategoriesRelevant.includes(category)
               return (
@@ -158,16 +124,7 @@ export default function BlogBriefPanel({
                   key={category}
                   type="button"
                   onClick={() => toggleBriefCategory(setForm, category)}
-                  style={{
-                    ...blogGeneratorTagButtonBaseStyle,
-                    border: selected
-                      ? `1px solid ${BLOG_GENERATOR_UI.colors.gold}`
-                      : `1px solid ${BLOG_GENERATOR_UI.colors.border}`,
-                    background: selected
-                      ? 'linear-gradient(145deg, #fffdf8 0%, #f7f1e7 100%)'
-                      : 'linear-gradient(180deg, #ffffff 0%, #fcfbf8 100%)',
-                    boxShadow: selected ? '0 8px 18px rgba(201, 169, 97, 0.12)' : 'none',
-                  }}
+                  className={selected ? `${styles.categoryButton} ${styles.categoryButtonSelected}` : styles.categoryButton}
                 >
                   {category}
                 </button>
@@ -184,7 +141,7 @@ export default function BlogBriefPanel({
             min={3}
             max={20}
             value={form.targetReadingMinutes}
-            style={blogGeneratorFormControlStyle}
+            className={styles.control}
             onChange={(event) =>
               updateBriefField(setForm, 'targetReadingMinutes', event.target.value)
             }
@@ -196,34 +153,24 @@ export default function BlogBriefPanel({
         </BlogAssistCard>
       </div>
 
-      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+      <div className={styles.actions}>
         <button
           type="button"
-          className="admin-btn"
+          className={`${styles.primaryButton} ${actionState.isBusy ? styles.busyButton : ''}`}
           onClick={onGenerateOutline}
           disabled={actionState.isBusy}
-          style={{
-            ...blogGeneratorPrimaryButtonStyle,
-            cursor: actionState.isBusy ? 'not-allowed' : 'pointer',
-            opacity: actionState.isBusy ? 0.65 : 1,
-          }}
         >
           {actionState.generateOutlineLabel}
         </button>
         <button
           type="button"
-          className="admin-btn"
+          className={`${styles.secondaryButton} ${actionState.isBusy ? styles.busyButton : ''}`}
           onClick={onRunFullPipeline}
           disabled={actionState.isBusy}
-          style={{
-            ...blogGeneratorSecondaryButtonStyle,
-            cursor: actionState.isBusy ? 'not-allowed' : 'pointer',
-            opacity: actionState.isBusy ? 0.65 : 1,
-          }}
         >
           {actionState.runFullPipelineLabel}
         </button>
-        <span style={{ color: BLOG_GENERATOR_UI.colors.textSoft, lineHeight: 1.6 }}>
+        <span className={styles.actionHint}>
           {BLOG_GENERATOR_LABELS.plannerOnlyHint}
         </span>
       </div>

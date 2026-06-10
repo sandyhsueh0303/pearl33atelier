@@ -362,11 +362,13 @@ export function BlogInfoBlock({
 export function BlogJsonPreview({
   value,
   style,
+  className,
 }: {
   value: string
   style?: CSSProperties
+  className?: string
 }) {
-  return <pre style={{ ...blogGeneratorJsonPreviewStyle, ...style }}>{value}</pre>
+  return <pre className={className} style={{ ...blogGeneratorJsonPreviewStyle, ...style }}>{value}</pre>
 }
 
 export function BlogEmptyState({ children }: { children: ReactNode }) {

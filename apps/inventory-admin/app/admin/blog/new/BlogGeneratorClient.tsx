@@ -15,6 +15,7 @@ import {
   defaultBrief,
   type BriefFormState,
 } from './blogGeneratorShared'
+import styles from './BlogGeneratorClient.module.css'
 
 type GenerationResultState = {
   stages: BlogGenerationStages
@@ -157,7 +158,7 @@ export default function BlogGeneratorClient() {
       {validationErrors.length > 0 ? (
         <div className="admin-banner admin-banner-warning">
           <strong>Brief validation</strong>
-          <ul style={{ margin: '0.6rem 0 0', paddingLeft: '1.2rem' }}>
+          <ul className={styles.validationList}>
             {validationErrors.map((message) => (
               <li key={message}>{message}</li>
             ))}
@@ -166,15 +167,7 @@ export default function BlogGeneratorClient() {
       ) : null}
 
       <div
-        className="admin-card"
-        style={{
-          display: 'grid',
-          gap: '1.25rem',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          padding: '0.1rem',
-          background: 'transparent',
-          boxShadow: 'none',
-        }}
+        className={`admin-card ${styles.generatorGrid}`}
       >
         <BlogBriefPanel
           form={form}

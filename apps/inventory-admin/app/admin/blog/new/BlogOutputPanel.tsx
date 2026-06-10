@@ -3,19 +3,15 @@
 import type { ArticlePackage } from '@/app/lib/blogPipeline'
 import {
   type BlogGenerationStages,
-  BLOG_GENERATOR_UI,
   BlogEmptyState,
   BlogInfoBlock,
   BlogJsonPreview,
   BlogSectionHeading,
   PipelineCard,
   StageArtifactCard,
-  blogGeneratorContentBlockStyle,
-  blogGeneratorInlineNoticeStyle,
-  blogGeneratorPanelStyle,
-  blogGeneratorPrimaryButtonStyle,
   type PlannerStageResponse,
 } from './blogGeneratorShared'
+import styles from './BlogOutputPanel.module.css'
 
 interface BlogOutputPanelProps {
   plannerStage: PlannerStageResponse | null
@@ -35,28 +31,12 @@ export default function BlogOutputPanel({
   const plannerOutput = plannerStage?.output
 
   return (
-    <section
-      style={{
-        ...blogGeneratorPanelStyle,
-        display: 'grid',
-        gap: '1rem',
-        alignContent: 'start',
-        padding: '1.4rem',
-      }}
-    >
+    <section className={styles.panel}>
       <div>
-        <h2
-          style={{
-            margin: 0,
-            color: BLOG_GENERATOR_UI.colors.ink,
-            fontFamily: 'var(--font-playfair-display), serif',
-            fontWeight: 400,
-            letterSpacing: '0.02em',
-          }}
-        >
+        <h2 className={styles.title}>
           Output Preview
         </h2>
-        <p style={{ margin: '0.45rem 0 0', color: BLOG_GENERATOR_UI.colors.textSoft, lineHeight: 1.7 }}>
+        <p className={styles.description}>
           Use this to confirm the article angle and outline before we generate the full draft.
         </p>
       </div>
@@ -74,9 +54,9 @@ export default function BlogOutputPanel({
             collapsible
             defaultOpen
           >
-            <div style={{ ...blogGeneratorContentBlockStyle, gap: '0.9rem' }}>
+            <div className={`${styles.contentBlock} ${styles.contentBlockLoose}`}>
               {plannerStage.debug ? (
-                <div style={blogGeneratorInlineNoticeStyle}>
+                <div className={styles.inlineNotice}>
                   <strong>Fallback reason:</strong> {plannerStage.debug}
                 </div>
               ) : null}
@@ -95,16 +75,16 @@ export default function BlogOutputPanel({
             collapsible
             defaultOpen={false}
           >
-            <div style={blogGeneratorContentBlockStyle}>
+            <div className={styles.contentBlock}>
               <div><strong>{plannerOutput.recommendedTitle}</strong></div>
               <div>{plannerOutput.frontmatterDraft.excerpt}</div>
-              <div style={{ color: '#7b6a55', fontSize: '0.92rem' }}>
+              <div className={styles.keywordLine}>
                 Keywords: {plannerOutput.frontmatterDraft.keywords.join(', ')}
               </div>
             </div>
           </PipelineCard>
 
-          <div style={{ display: 'grid', gap: '0.9rem' }}>
+          <div className={styles.cardGrid}>
             {plannerOutput.outline.map((section, index) => (
               <PipelineCard
                 key={`${section.heading}-${index}`}
@@ -114,11 +94,11 @@ export default function BlogOutputPanel({
                 collapsible
                 defaultOpen={index === 0}
               >
-                <div style={blogGeneratorContentBlockStyle}>
+                <div className={styles.contentBlock}>
                   <BlogInfoBlock label="Purpose" value={section.purpose} />
                   <div>
                     <strong>Must Cover</strong>
-                    <ul style={{ margin: '0.45rem 0 0', paddingLeft: '1.1rem' }}>
+                    <ul className={styles.detailList}>
                       {section.mustCover.map((item) => (
                         <li key={item}>{item}</li>
                       ))}
@@ -127,7 +107,7 @@ export default function BlogOutputPanel({
                   {section.notes.length > 0 ? (
                     <div>
                       <strong>Notes</strong>
-                      <ul style={{ margin: '0.45rem 0 0', paddingLeft: '1.1rem' }}>
+                      <ul className={styles.detailList}>
                         {section.notes.map((item) => (
                           <li key={item}>{item}</li>
                         ))}
@@ -146,7 +126,7 @@ export default function BlogOutputPanel({
                 copy="This mirrors the current stage-by-stage pipeline view, so we can inspect each artifact before saving."
               />
 
-              <div style={{ display: 'grid', gap: '0.9rem' }}>
+              <div className={styles.cardGrid}>
                 <StageArtifactCard title="Writer" stage={pipelineStages.writer} />
                 <StageArtifactCard title="Reviewer" stage={pipelineStages.reviewer} />
                 <StageArtifactCard title="Rewriter" stage={pipelineStages.rewriter} />
@@ -181,21 +161,20 @@ export default function BlogOutputPanel({
               >
                 <BlogJsonPreview
                   value={finalArticlePackage.bodyMarkdown}
-                  style={{ lineHeight: 1.65, fontSize: '0.92rem', maxHeight: '420px', overflow: 'auto' }}
+                  className={styles.markdownPreview}
                 />
               </PipelineCard>
 
-              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <div className={styles.saveActions}>
                 <button
                   type="button"
-                  className="admin-link-btn admin-link-btn-primary"
+                  className={styles.saveButton}
                   onClick={onSaveArticle}
                   disabled={isSaving}
-                  style={blogGeneratorPrimaryButtonStyle}
                 >
                   {isSaving ? 'Saving...' : 'Save Article'}
                 </button>
-                <span style={{ color: BLOG_GENERATOR_UI.colors.textSoft, lineHeight: 1.6 }}>
+                <span className={styles.saveHint}>
                   This writes <code>{finalArticlePackage.slug}.md</code> and{' '}
                   <code>{finalArticlePackage.slug}.schema.json</code> into{' '}
                   <code>apps/public-web/content/blog</code>.

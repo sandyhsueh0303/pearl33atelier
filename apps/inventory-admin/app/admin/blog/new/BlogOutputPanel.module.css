@@ -1,0 +1,95 @@
+.panel {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  padding: 1.4rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #fcfbf8 100%);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.title {
+  margin: 0;
+  color: #1f2937;
+  font-family: var(--font-playfair-display), serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.description {
+  margin: 0.45rem 0 0;
+  color: #6b7280;
+  line-height: 1.7;
+}
+
+.contentBlock {
+  display: grid;
+  gap: 0.75rem;
+  color: #5a4630;
+  line-height: 1.6;
+}
+
+.contentBlockLoose,
+.cardGrid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.inlineNotice {
+  padding: 0.75rem 0.85rem;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+}
+
+.keywordLine {
+  color: #7b6a55;
+  font-size: 0.92rem;
+}
+
+.detailList {
+  margin: 0.45rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.markdownPreview {
+  max-height: 420px;
+  overflow: auto;
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.saveActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.saveButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.85rem 1.35rem;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2c5f8d 0%, #274869 100%);
+  border: 1px solid rgba(44, 95, 141, 0.28);
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(44, 95, 141, 0.18);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.saveButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.saveHint {
+  color: #6b7280;
+  line-height: 1.6;
+}
