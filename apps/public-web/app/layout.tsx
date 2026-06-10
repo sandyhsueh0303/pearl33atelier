@@ -4,6 +4,7 @@ import Script from 'next/script'
 import Navigation from './components/Navigation'
 import Footer from './components/Footer'
 import { CartProvider } from './components/CartProvider'
+import styles from './layout.module.css'
 import './globals.css'
 
 const playfairDisplay = Playfair_Display({
@@ -102,7 +103,7 @@ export default function RootLayout({
         />
         <CartProvider>
           <Navigation />
-          <main style={{ paddingTop: '80px' }}>
+          <main className={styles.content}>
             {children}
           </main>
           <Footer />

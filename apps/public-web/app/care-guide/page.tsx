@@ -378,7 +378,7 @@ export default function CareGuidePage() {
           <a
             href="https://www.instagram.com/33_pearl_atelier/"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             style={{
               padding: `${spacing.sm} ${spacing.lg}`,
               backgroundColor: colors.white,

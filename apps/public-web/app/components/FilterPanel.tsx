@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { colors, typography, spacing, shadows } from '../constants/design'
+import styles from './FilterPanel.module.css'
 
 interface FilterPanelProps {
   onFilterChange: (filters: ProductFilters) => void
@@ -64,99 +64,46 @@ export default function FilterPanel({ onFilterChange, initialFilters }: FilterPa
     ].filter(Boolean).length
   }, [filters])
 
+  const filterButtonClassName = hasActiveFilters
+    ? `${styles.filterButton} ${styles.filterButtonActive}`
+    : styles.filterButton
+
   return (
-    <div style={{ position: 'relative' }}>
+    <div className={styles.filterPanel}>
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: spacing.xs,
-          padding: `${spacing.xs} ${spacing.md}`,
-          border: `1px solid ${hasActiveFilters ? colors.gold : 'rgba(44, 44, 44, 0.14)'}`,
-          backgroundColor: colors.white,
-          color: colors.darkGray,
-          cursor: 'pointer',
-          fontSize: typography.fontSize.sm,
-          letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-          boxShadow: shadows.subtle,
-        }}
+        className={filterButtonClassName}
       >
         <span>Filter</span>
-        {activeCount > 0 ? (
-          <span
-            style={{
-              display: 'inline-flex',
-              minWidth: '18px',
-              height: '18px',
-              padding: '0 5px',
-              borderRadius: '999px',
-              backgroundColor: colors.gold,
-              color: colors.white,
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: typography.fontSize.xs,
-            }}
-          >
-            {activeCount}
-          </span>
-        ) : null}
+        {activeCount > 0 ? <span className={styles.filterCount}>{activeCount}</span> : null}
         <span>{isOpen ? '▴' : '▾'}</span>
       </button>
 
       {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: `calc(100% + ${spacing.sm})`,
-            right: 0,
-            width: 'min(92vw, 360px)',
-            padding: spacing.md,
-            border: '1px solid rgba(44, 44, 44, 0.12)',
-            backgroundColor: colors.white,
-            boxShadow: shadows.medium,
-            zIndex: 20,
-            display: 'grid',
-            gap: spacing.sm,
-          }}
-        >
+        <div className={styles.filterPopover}>
           <input
             type="text"
             value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
+            onChange={(event) => setSearchInput(event.target.value)}
             placeholder="Search"
-            style={{
-              width: '100%',
-              padding: `${spacing.xs} ${spacing.sm}`,
-              border: `1px solid ${colors.lightGray}`,
-              backgroundColor: '#fffdf8',
-              fontSize: typography.fontSize.sm,
-            }}
+            className={styles.filterInput}
           />
 
           <select
             value={filters.editorsPick ? 'editors-picks' : filters.sortBy || ''}
-            onChange={(e) =>
+            onChange={(event) =>
               setFilters((prev) => ({
                 ...prev,
-                editorsPick: e.target.value === 'editors-picks' ? true : undefined,
+                editorsPick: event.target.value === 'editors-picks' ? true : undefined,
                 sortBy:
-                  e.target.value && e.target.value !== 'editors-picks'
-                    ? (e.target.value as ProductFilters['sortBy'])
+                  event.target.value && event.target.value !== 'editors-picks'
+                    ? (event.target.value as ProductFilters['sortBy'])
                     : undefined,
               }))
             }
-            style={{
-              width: '100%',
-              padding: `${spacing.xs} ${spacing.sm}`,
-              border: `1px solid ${colors.lightGray}`,
-              backgroundColor: '#fffdf8',
-              fontSize: typography.fontSize.sm,
-              cursor: 'pointer',
-            }}
+            className={styles.filterSelect}
           >
             <option value="">Sort By</option>
             <option value="editors-picks">Editor Picks</option>
@@ -166,45 +113,18 @@ export default function FilterPanel({ onFilterChange, initialFilters }: FilterPa
             <option value="date-new">Newest First</option>
           </select>
 
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              gap: spacing.sm,
-              marginTop: spacing.xs,
-            }}
-          >
+          <div className={styles.filterActions}>
             <button
               type="button"
               onClick={() => {
                 setFilters({})
                 setSearchInput('')
               }}
-              style={{
-                border: 'none',
-                background: 'transparent',
-                color: colors.gold,
-                fontSize: typography.fontSize.sm,
-                cursor: 'pointer',
-                textDecoration: 'underline',
-                padding: 0,
-              }}
+              className={styles.clearButton}
             >
               Clear
             </button>
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              style={{
-                border: `1px solid ${colors.lightGray}`,
-                background: colors.white,
-                color: colors.darkGray,
-                fontSize: typography.fontSize.sm,
-                cursor: 'pointer',
-                padding: `${spacing.xs} ${spacing.sm}`,
-              }}
-            >
+            <button type="button" onClick={() => setIsOpen(false)} className={styles.doneButton}>
               Done
             </button>
           </div>

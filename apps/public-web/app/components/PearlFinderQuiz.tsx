@@ -160,6 +160,14 @@ export default function PearlFinderQuiz() {
   const matchDetail = matchDetails[match]
   const currentQuestion = questions[questionIndex]
   const progress = Math.min(questionIndex + 1, questions.length)
+  const progressClassName = [
+    styles.pearlFinderProgressValue,
+    questionIndex === 0 && styles.progressOne,
+    questionIndex === 1 && styles.progressTwo,
+    questionIndex >= 2 && styles.progressThree,
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   const markSeen = () => {
     try {
@@ -306,7 +314,7 @@ export default function PearlFinderQuiz() {
               <span>{Math.round((progress / questions.length) * 100)}%</span>
             </div>
             <div className={styles.pearlFinderProgress} aria-hidden="true">
-              <span style={{ width: `${(progress / questions.length) * 100}%` }} />
+              <span className={progressClassName} />
             </div>
             <h2 id="pearl-finder-title">{currentQuestion.question}</h2>
             <p className={styles.pearlFinderZh}>{currentQuestion.zhQuestion}</p>
@@ -392,10 +400,10 @@ export default function PearlFinderQuiz() {
               <a className={`${styles.pearlFinderSecondary} ${styles.linkButton}`} href={emailHref} onClick={closeQuiz}>
                 Email Us
               </a>
-              <a className={`${styles.pearlFinderSecondary} ${styles.linkButton}`} href={instagramHref} target="_blank" rel="noreferrer" onClick={closeQuiz}>
+              <a className={`${styles.pearlFinderSecondary} ${styles.linkButton}`} href={instagramHref} target="_blank" rel="noopener noreferrer" onClick={closeQuiz}>
                 Instagram
               </a>
-              <a className={`${styles.pearlFinderSecondary} ${styles.linkButton}`} href={lineHref} target="_blank" rel="noreferrer" onClick={closeQuiz}>
+              <a className={`${styles.pearlFinderSecondary} ${styles.linkButton}`} href={lineHref} target="_blank" rel="noopener noreferrer" onClick={closeQuiz}>
                 LINE
               </a>
               <button type="button" className={styles.pearlFinderSecondary} onClick={closeQuiz}>

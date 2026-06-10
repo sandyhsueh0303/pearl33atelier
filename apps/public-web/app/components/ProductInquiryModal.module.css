@@ -1,0 +1,158 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  padding: 32px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: 0;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.title {
+  margin-bottom: 16px;
+  font-size: 22px;
+}
+
+.productMeta {
+  margin-bottom: 8px;
+  color: #888888;
+  font-size: 14px;
+}
+
+.result {
+  margin-top: 18px;
+}
+
+.resultTitle {
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.successMessage,
+.mutedMessage {
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.successMessage {
+  color: #2e7d32;
+}
+
+.mutedMessage {
+  color: #888888;
+}
+
+.channelCard {
+  padding: 12px;
+  border: 1px solid #e9e1cf;
+  border-radius: 8px;
+}
+
+.channelCard + .channelCard {
+  margin-top: 12px;
+}
+
+.channelTitle {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.channelHelper {
+  margin-bottom: 10px;
+  color: #666666;
+  font-size: 13px;
+}
+
+.primaryButton,
+.submitButton,
+.secondaryButton,
+.copyButton {
+  cursor: pointer;
+}
+
+.primaryButton,
+.submitButton {
+  width: 100%;
+  padding: 10px;
+  color: #ffffff;
+  border: 0;
+}
+
+.primaryButton {
+  background: #2d2d2d;
+  border-radius: 6px;
+}
+
+.socialGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+.secondaryButton,
+.copyButton {
+  padding: 10px;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 6px;
+}
+
+.copyButton {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.error {
+  margin-bottom: 8px;
+  color: #b42318;
+}
+
+.submitButton {
+  background: #bfa46b;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.submitButton:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}

@@ -1,8 +1,58 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { colors, typography, spacing, transitions } from './constants/design'
+import styles from './page.module.css'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
+
+const serviceCards = [
+  {
+    title: 'Complimentary Lifetime Care',
+    desc:
+      'Pearl necklaces include lifetime restringing and cleaning. Earrings and other pearl pieces receive complimentary cleaning and maintenance.',
+  },
+  {
+    title: 'Pearl Redesign Service',
+    desc: 'Transform treasured pearls into new pieces',
+  },
+]
+
+const orderFlows = [
+  {
+    title: 'Ready-to-Wear',
+    subtitle: 'For pieces available to purchase now',
+    steps: ['Browse the collection', 'Add to cart', 'Secure checkout'],
+    timeline: 'Ships in 3 days',
+  },
+  {
+    title: 'Custom Design',
+    subtitle: 'Accepted on a limited basis for more personal, considered projects',
+    steps: ['Request access', 'Private consultation', 'Design development'],
+    timeline: 'Limited availability',
+  },
+]
+
+const journalCards = [
+  {
+    href: '/blog/pearl-types-guide',
+    title: 'Pearl Types Guide',
+    description:
+      'Understand the subtle differences between Akoya, South Sea, Tahitian, and Freshwater pearls.',
+    cta: 'Read Guide ->',
+  },
+  {
+    href: '/blog/how-to-care-for-pearl-jewelry-daily',
+    title: 'Daily Pearl Care',
+    description: 'Simple habits to keep your pearl jewelry luminous and beautifully maintained.',
+    cta: 'Read Journal ->',
+  },
+  {
+    href: '/blog/pearl-quality-factors-shape-luster-surface-color-overtone',
+    title: 'Pearl Quality Factors',
+    description:
+      "Learn how luster, shape, surface, and overtone influence a pearl's beauty and character.",
+    cta: 'Read Guide ->',
+  },
+]
 
 export const metadata: Metadata = {
   title: '33 Pearl Atelier | Fine Pearl Jewelry | GIA Certified Pearls',
@@ -128,798 +178,163 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
 
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-      }}>
-      {/* Hero Section */}
-      <section style={{
-        minHeight: '75vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: `${spacing['3xl']} ${spacing.xl}`,
-        textAlign: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-        background: 'linear-gradient(180deg, #FAF8F5 0%, #FFFFFF 100%)',
-      }}>
-        {/* Organic Blob Animations */}
-        <div
-          className="homeBlobOne"
-          style={{
-          position: 'absolute',
-          top: '-20%',
-          right: '-10%',
-          background: 'radial-gradient(circle, rgba(201, 169, 97, 0.7), rgba(201, 169, 97, 0.2))',
-          opacity: 0.9,
-          borderRadius: '70% 30% 20% 80% / 70% 20% 80% 30%',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-        />
-        
-        <div
-          className="homeBlobTwo"
-          style={{
-          position: 'absolute',
-          bottom: '-20%',
-          left: '-10%',
-          background: 'radial-gradient(circle, rgba(250, 210, 190, 0.6), rgba(250, 225, 210, 0.25))',
-          opacity: 0.7,
-          borderRadius: '30% 70% 70% 30% / 70% 20% 80% 30%',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-        />
+      <div className={styles.page}>
+        <section className={styles.hero}>
+          <div className={styles.homeBlobOne} />
+          <div className={styles.homeBlobTwo} />
+          <div className={styles.homeBlobCenter} />
 
-        <div
-          className="homeBlobCenter"
-          style={{
-          position: 'absolute',
-          top: '40%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          opacity: 0.4,
-          background: 'radial-gradient(circle, rgba(201, 169, 97, 0.35), rgba(201, 169, 97, 0.08))',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-        />
+          <div className={styles.heroContent}>
+            <div className={styles.heroEyebrow}>Fine Pearl Jewelry</div>
+            <h1 className={styles.heroTitle}>33 Pearl Atelier</h1>
+            <p className={styles.heroDescription}>
+              Pearls chosen with intention, designed to stay with you.
+              <br />
+              <span className={styles.heroDescriptionNote}>
+                From hand-selected ready-to-wear pieces to custom design and lifetime care, each
+                piece is shaped with balance, wearability, and lasting beauty in mind.
+              </span>
+            </p>
 
-        {/* Content */}
-        <div style={{
-          position: 'relative',
-          zIndex: 1,
-        }}>
-          {/* Subtitle */}
-          <div style={{
-            fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.medium,
-            color: colors.gold,
-            letterSpacing: '0.3em',
-            marginBottom: spacing.xl,
-            textTransform: 'uppercase',
-          }}>
-            Fine Pearl Jewelry
-          </div>
-
-          {/* Main Heading - Elegant Serif Font */}
-          <h1 style={{
-            fontSize: typography.fontSize['8xl'],
-            fontFamily: typography.fontFamily.serif,
-            fontWeight: typography.fontWeight.light,
-            color: colors.darkGray,
-            letterSpacing: '0.05em',
-            marginBottom: spacing.xl,
-            lineHeight: typography.lineHeight.tight,
-            maxWidth: '900px',
-          }}>
-            33 Pearl Atelier
-          </h1>
-
-          {/* Description */}
-          <p style={{
-            fontSize: typography.fontSize.xl,
-            fontWeight: typography.fontWeight.normal,
-            color: colors.textSecondary,
-            lineHeight: typography.lineHeight.relaxed,
-            marginBottom: spacing['3xl'],
-            maxWidth: '700px',
-            letterSpacing: '0.02em',
-            margin: `0 auto ${spacing['3xl']} auto`,
-          }}>
-            Pearls chosen with intention, designed to stay with you.
-            <br />
-            <span style={{ 
-              fontSize: typography.fontSize.lg,
-              fontStyle: 'italic',
-              opacity: 0.95
-            }}>
-              From hand-selected ready-to-wear pieces to custom design and lifetime care, each piece is shaped with balance, wearability, and lasting beauty in mind.
-            </span>
-          </p>
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: spacing.md,
-              flexWrap: 'wrap',
-            }}
-          >
-            <Link
-              href="/products"
-              prefetch
-              className="heroCta"
-              style={{
-                display: 'inline-block',
-                padding: `${spacing.md} ${spacing['2xl']}`,
-                backgroundColor: 'rgba(201, 169, 97, 0.15)',
-                color: colors.darkGray,
-                fontSize: typography.fontSize.base,
-                fontWeight: typography.fontWeight.semibold,
-                letterSpacing: '0.15em',
-                textDecoration: 'none',
-                transition: transitions.normal,
-                border: '2px solid #C9A961',
-                cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-                backdropFilter: 'blur(4px)',
-              }}
-            >
-              Explore the Collection
-            </Link>
-          </div>
-
-        </div>
-
-        {/* Scroll Indicator */}
-        <div
-          className="homeScrollIndicator"
-          style={{
-          position: 'absolute',
-          bottom: spacing['2xl'],
-          fontSize: typography.fontSize.xs,
-          color: '#C9A961',
-          letterSpacing: '0.2em',
-          textTransform: 'uppercase',
-          zIndex: 1,
-        }}
-        >
-          <div style={{ marginBottom: spacing.xs }}>Scroll to Discover</div>
-          <div
-            className="homeScrollArrow"
-            style={{ fontSize: typography.fontSize.lg }}
-          >
-            ↓
-          </div>
-        </div>
-      </section>
-
-      {/* Why 33 Pearl Atelier */}
-      <section
-        style={{
-          padding: `${spacing.lg} ${spacing.xl}`,
-          borderTop: `1px solid ${colors.lightGray}`,
-          borderBottom: `1px solid ${colors.lightGray}`,
-          backgroundColor: '#fffdf9',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '1100px',
-            margin: '0 auto',
-            textAlign: 'center',
-          }}
-        >
-          <p
-            style={{
-              margin: 0,
-              color: colors.gold,
-              fontSize: typography.fontSize.sm,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Why 33 Pearl Atelier
-          </p>
-          <div
-            style={{
-              marginTop: spacing.md,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: spacing.md,
-              flexWrap: 'wrap',
-              color: colors.textSecondary,
-              fontSize: typography.fontSize.sm,
-              letterSpacing: '0.03em',
-              maxWidth: '900px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-          >
-            <span>GIA-certified gemologist selection</span>
-            <span style={{ color: colors.gold }}>•</span>
-            <span>Individually matched pearls</span>
-            <span style={{ color: colors.gold }}>•</span>
-            <span>Small-batch, intentional production</span>
-            <span style={{ color: colors.gold }}>•</span>
-            <span>Lifetime care included</span>
-            <span style={{ color: colors.gold }}>•</span>
-            <span>100+ satisfied customers</span>
-            <span style={{ color: colors.gold }}>•</span>
-            <span>4.9/5 rating</span>
-          </div>
-          <p
-            style={{
-              margin: `${spacing.sm} 0 0`,
-              color: colors.darkGray,
-              fontSize: typography.fontSize.base,
-              fontStyle: 'italic',
-            }}
-          >
-            Each piece is chosen, not produced.
-          </p>
-        </div>
-      </section>
-
-      <section
-        style={{
-          padding: `${spacing['2xl']} ${spacing.xl}`,
-          background:
-            'radial-gradient(circle at top left, rgba(201, 169, 97, 0.14), transparent 28%), linear-gradient(180deg, #fffdf8 0%, #f8f2e8 100%)',
-          borderBottom: `1px solid ${colors.lightGray}`,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '1040px',
-            margin: '0 auto',
-            padding: `clamp(1.5rem, 3vw, 2.5rem)`,
-            background: 'rgba(255, 252, 246, 0.92)',
-            border: '1px solid rgba(201, 169, 97, 0.22)',
-            boxShadow: '0 28px 70px rgba(55, 46, 34, 0.08)',
-          }}
-        >
-          <div
-            style={{
-              maxWidth: '680px',
-              margin: '0 auto',
-              textAlign: 'center',
-            }}
-          >
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: spacing.xs,
-                padding: '0.35rem 0.75rem',
-                marginBottom: spacing.md,
-                backgroundColor: 'rgba(201, 169, 97, 0.12)',
-                color: colors.gold,
-                fontSize: typography.fontSize.xs,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                fontWeight: typography.fontWeight.medium,
-              }}
-            >
-              Pearl Care
+            <div className={styles.heroActions}>
+              <Link href="/products" prefetch className={styles.heroCta}>
+                Explore the Collection
+              </Link>
             </div>
-            <h2
-              style={{
-                margin: `0 0 ${spacing.sm} 0`,
-                color: colors.darkGray,
-                fontSize: 'clamp(2rem, 5vw, 3.4rem)',
-                lineHeight: typography.lineHeight.tight,
-                fontFamily: typography.fontFamily.serif,
-              }}
-            >
-              Lifetime Service
-            </h2>
-            <p
-              style={{
-                margin: `0 0 ${spacing.sm} 0`,
-                color: colors.textSecondary,
-                fontSize: 'clamp(1rem, 2vw, 1.05rem)',
-                lineHeight: 1.8,
-              }}
-            >
-              Lifetime Care Included
-            </p>
-            <p
-              style={{
-                margin: 0,
-                color: colors.textSecondary,
-                fontSize: 'clamp(1rem, 2vw, 1.05rem)',
-                lineHeight: 1.8,
-              }}
-            >
-              Professional restringing, cleaning, and maintenance — always free.
-            </p>
           </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              gap: spacing.md,
-              marginTop: spacing.xl,
-            }}
-          >
-            {[
-              {
-                title: 'Complimentary Lifetime Care',
-                desc:
-                  'Pearl necklaces include lifetime restringing and cleaning. Earrings and other pearl pieces receive complimentary cleaning and maintenance.',
-              },
-              {
-                title: 'Pearl Redesign Service',
-                desc:
-                  'Transform treasured pearls into new pieces',
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                style={{
-                  padding: `clamp(1.25rem, 2vw, 1.75rem)`,
-                  border: '1px solid rgba(201, 169, 97, 0.18)',
-                  background:
-                    'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(250,245,236,0.98) 100%)',
-                  boxShadow: '0 18px 36px rgba(55, 46, 34, 0.05)',
-                  minHeight: '100%',
-                }}
-              >
-                <div
-                  style={{
-                    color: colors.darkGray,
-                    fontWeight: typography.fontWeight.medium,
-                    fontSize: 'clamp(1.2rem, 2.4vw, 1.5rem)',
-                    lineHeight: 1.35,
-                    marginBottom: spacing.sm,
-                  }}
-                >
-                  {item.title}
+
+          <div className={styles.homeScrollIndicator}>
+            <div className={styles.scrollLabel}>Scroll to Discover</div>
+            <div className={styles.homeScrollArrow}>↓</div>
+          </div>
+        </section>
+
+        <section className={styles.whySection}>
+          <div className={styles.whyInner}>
+            <p className={styles.sectionEyebrow}>Why 33 Pearl Atelier</p>
+            <div className={styles.whyList}>
+              <span>GIA-certified gemologist selection</span>
+              <span className={styles.goldDot}>•</span>
+              <span>Individually matched pearls</span>
+              <span className={styles.goldDot}>•</span>
+              <span>Small-batch, intentional production</span>
+              <span className={styles.goldDot}>•</span>
+              <span>Lifetime care included</span>
+              <span className={styles.goldDot}>•</span>
+              <span>100+ satisfied customers</span>
+              <span className={styles.goldDot}>•</span>
+              <span>4.9/5 rating</span>
+            </div>
+            <p className={styles.whyTagline}>Each piece is chosen, not produced.</p>
+          </div>
+        </section>
+
+        <section className={styles.serviceSection}>
+          <div className={styles.servicePanel}>
+            <div className={styles.serviceHeader}>
+              <div className={styles.serviceBadge}>Pearl Care</div>
+              <h2 className={styles.serviceTitle}>Lifetime Service</h2>
+              <p className={styles.serviceIntro}>Lifetime Care Included</p>
+              <p className={styles.serviceIntro}>
+                Professional restringing, cleaning, and maintenance — always free.
+              </p>
+            </div>
+            <div className={styles.serviceGrid}>
+              {serviceCards.map((item) => (
+                <div key={item.title} className={styles.serviceCard}>
+                  <div className={styles.serviceCardTitle}>{item.title}</div>
+                  <div className={styles.serviceDivider} />
+                  <div className={styles.serviceCardText}>{item.desc}</div>
                 </div>
-                <div
-                  style={{
-                    width: '3.25rem',
-                    height: '2px',
-                    marginBottom: spacing.md,
-                    background: 'linear-gradient(90deg, rgba(201, 169, 97, 0.7), rgba(201, 169, 97, 0.12))',
-                  }}
-                />
-                <div
-                  style={{
-                    color: colors.textSecondary,
-                    lineHeight: typography.lineHeight.relaxed,
-                    fontSize: typography.fontSize.base,
-                  }}
-                >
-                  {item.desc}
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.orderSection}>
+          <div className={styles.orderInner}>
+            <h2 className={styles.sectionTitle}>Before You Order</h2>
+            <p className={styles.sectionLead}>Choose the path that best fits your piece and timeline.</p>
+
+            <div className={styles.orderPanel}>
+              <div className={styles.orderPanelBody}>
+                <div className={styles.orderGrid}>
+                  {orderFlows.map((flow) => (
+                    <div key={flow.title} className={styles.orderCard}>
+                      <h4 className={styles.orderCardTitle}>{flow.title}</h4>
+                      <p className={styles.orderCardSubtitle}>{flow.subtitle}</p>
+                      <div className={styles.orderSteps}>
+                        {flow.steps.map((step, index) => (
+                          <div key={step} className={styles.orderStep}>
+                            <span className={styles.stepNumber}>{index + 1}</span>
+                            <span>{step}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className={styles.timelineBadge}>{flow.timeline}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Featured Section */}
-      <section style={{
-        padding: `${spacing['3xl']} ${spacing.xl}`,
-        background: 'linear-gradient(180deg, #ffffff 0%, #fdfbf7 100%)',
-      }}>
-        <div style={{ maxWidth: '980px', margin: '0 auto' }}>
-          <h2 style={{
-            fontSize: typography.fontSize['4xl'],
-            fontFamily: typography.fontFamily.serif,
-            fontWeight: typography.fontWeight.light,
-            color: colors.darkGray,
-            marginBottom: spacing.sm,
-            letterSpacing: '0.03em',
-            textAlign: 'center',
-          }}>
-            Before You Order
-          </h2>
-          <p
-            style={{
-              textAlign: 'center',
-              color: colors.textSecondary,
-              marginBottom: spacing['2xl'],
-            }}
-          >
-            Choose the path that best fits your piece and timeline.
-          </p>
-
-          <div
-            style={{
-              border: `1px solid ${colors.lightGray}`,
-              borderRadius: '14px',
-              backgroundColor: '#fff',
-              boxShadow: '0 12px 28px rgba(44, 44, 44, 0.06)',
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              style={{
-                padding: `${spacing.xl} ${spacing.lg}`,
-                borderBottom: `1px solid ${colors.lightGray}`,
-              }}
-            >
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                  gap: spacing.lg,
-                }}
-              >
-                {[
-                  {
-                    title: 'Ready-to-Wear',
-                    subtitle: 'For pieces available to purchase now',
-                    steps: ['Browse the collection', 'Add to cart', 'Secure checkout'],
-                    timeline: 'Ships in 3 days',
-                  },
-                  {
-                    title: 'Custom Design',
-                    subtitle: 'Accepted on a limited basis for more personal, considered projects',
-                    steps: ['Request access', 'Private consultation', 'Design development'],
-                    timeline: 'Limited availability',
-                  },
-                ].map((flow) => (
-                  <div
-                    key={flow.title}
-                    style={{
-                      border: `1px solid ${colors.lightGray}`,
-                      borderRadius: '12px',
-                      padding: spacing.lg,
-                      background: 'linear-gradient(180deg, #fff 0%, #fcf8ef 100%)',
-                      boxShadow: '0 12px 24px rgba(44, 44, 44, 0.04)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: spacing.md,
-                    }}
-                  >
-                    <h4
-                      style={{
-                        margin: 0,
-                        color: colors.darkGray,
-                        fontSize: typography.fontSize.lg,
-                      }}
-                    >
-                      {flow.title}
-                    </h4>
-                    <p
-                      style={{
-                        margin: 0,
-                        color: colors.textSecondary,
-                        fontSize: typography.fontSize.sm,
-                        lineHeight: 1.7,
-                      }}
-                    >
-                      {flow.subtitle}
-                    </p>
-                    <div
-                      style={{
-                        display: 'grid',
-                        gap: spacing.sm,
-                      }}
-                    >
-                      {flow.steps.map((step, index) => (
-                        <div
-                          key={step}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: spacing.sm,
-                            color: colors.textSecondary,
-                            fontSize: typography.fontSize.sm,
-                          }}
-                        >
-                          <span
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              width: '22px',
-                              height: '22px',
-                              borderRadius: '999px',
-                              backgroundColor: 'rgba(201, 169, 97, 0.14)',
-                              color: colors.gold,
-                              fontSize: '12px',
-                              fontWeight: typography.fontWeight.medium,
-                              flexShrink: 0,
-                            }}
-                          >
-                            {index + 1}
-                          </span>
-                          <span>{step}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div
-                      style={{
-                        marginTop: 'auto',
-                        alignSelf: 'flex-start',
-                        padding: '6px 12px',
-                        borderRadius: '999px',
-                        backgroundColor: 'rgba(201, 169, 97, 0.12)',
-                        color: colors.darkGray,
-                        fontSize: typography.fontSize.xs,
-                        fontWeight: typography.fontWeight.medium,
-                        letterSpacing: '0.04em',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      {flow.timeline}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div
-              style={{
-                padding: `${spacing.lg} ${spacing.lg}`,
-                display: 'flex',
-                gap: spacing.lg,
-                alignItems: 'flex-start',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                }}
-              >
-                <p
-                  style={{
-                    color: colors.textSecondary,
-                    marginBottom: 0,
-                    lineHeight: typography.lineHeight.relaxed,
-                    flex: '1 1 560px',
-                  }}
-                >
-                  Need help choosing between ready-to-wear and custom? We’re happy to guide you on timing,
-                  pearl care, and the best next step for your order.
+              <div className={styles.orderHelp}>
+                <p className={styles.orderHelpText}>
+                  Need help choosing between ready-to-wear and custom? We’re happy to guide you on
+                  timing, pearl care, and the best next step for your order.
                 </p>
-                <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginLeft: 'auto' }}>
-                  <Link
-                    href="/custom-services"
-                    style={{
-                      display: 'inline-block',
-                      border: `1px solid ${colors.lightGray}`,
-                      padding: `${spacing.xs} ${spacing.lg}`,
-                      color: colors.darkGray,
-                      textDecoration: 'none',
-                      letterSpacing: '0.08em',
-                      backgroundColor: colors.white,
-                    }}
-                  >
+                <div className={styles.orderHelpActions}>
+                  <Link href="/custom-services" className={styles.secondaryLink}>
                     Custom Services
                   </Link>
-                  <Link
-                    href="/contact"
-                    style={{
-                      display: 'inline-block',
-                      border: `1px solid ${colors.darkGray}`,
-                      padding: `${spacing.xs} ${spacing.lg}`,
-                      color: colors.darkGray,
-                      textDecoration: 'none',
-                      letterSpacing: '0.08em',
-                    }}
-                  >
+                  <Link href="/contact" className={styles.outlineLink}>
                     Contact Us
                   </Link>
                 </div>
               </div>
+            </div>
           </div>
-        </div>
-      </section>
-      {/* Journal Section */}
-      <section style={{
-        padding: `${spacing['3xl']} ${spacing.xl}`,
-        backgroundColor: colors.pearl,
-        textAlign: 'center',
-      }}>
-        <h2 style={{
-          fontSize: typography.fontSize['4xl'],
-          fontFamily: typography.fontFamily.serif,
-          fontWeight: typography.fontWeight.light,
-          color: colors.darkGray,
-          marginBottom: spacing.lg,
-          letterSpacing: '0.03em',
-        }}>
-          From the Journal
-        </h2>
-        <p style={{
-          fontSize: typography.fontSize.lg,
-          color: colors.textSecondary,
-          lineHeight: typography.lineHeight.relaxed,
-          marginBottom: spacing['2xl'],
-          maxWidth: '700px',
-          margin: `0 auto ${spacing['2xl']} auto`,
-        }}>
-          Discover pearl stories, care tips, and thoughtful buying guides -
-          a space to explore and understand pearls beyond the surface.
-        </p>
+        </section>
 
-        <div
-          style={{
-            maxWidth: '1100px',
-            margin: `0 auto ${spacing['2xl']}`,
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: spacing.lg,
-            textAlign: 'left',
-          }}
-        >
-          <Link
-            href="/blog/pearl-types-guide"
-            className="journalCardLink"
-            style={{
-              textDecoration: 'none',
-              color: 'inherit',
-              display: 'block',
-              height: '100%',
-            }}
-          >
-            <article
-              className="journalCard"
-              style={{
-                backgroundColor: colors.white,
-                padding: spacing.lg,
-                border: `1px solid ${colors.lightGray}`,
-                transition: transitions.normal,
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
-                Pearl Types Guide
-              </h3>
-              <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
-                Understand the subtle differences between Akoya, South Sea, Tahitian, and Freshwater pearls.
-              </p>
-              <span
-                className="journalCardCta"
-                style={{ color: colors.darkGray, textDecoration: 'underline', alignSelf: 'flex-end', marginTop: 'auto' }}
-              >
-                Read Guide →
-              </span>
-            </article>
-          </Link>
-
-          <Link
-            href="/blog/how-to-care-for-pearl-jewelry-daily"
-            className="journalCardLink"
-            style={{
-              textDecoration: 'none',
-              color: 'inherit',
-              display: 'block',
-              height: '100%',
-            }}
-          >
-            <article
-              className="journalCard"
-              style={{
-                backgroundColor: colors.white,
-                padding: spacing.lg,
-                border: `1px solid ${colors.lightGray}`,
-                transition: transitions.normal,
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
-                Daily Pearl Care
-              </h3>
-              <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
-                Simple habits to keep your pearl jewelry luminous and beautifully maintained.
-              </p>
-              <span
-                className="journalCardCta"
-                style={{ color: colors.darkGray, textDecoration: 'underline', alignSelf: 'flex-end', marginTop: 'auto' }}
-              >
-                Read Journal →
-              </span>
-            </article>
-          </Link>
-
-          <Link
-            href="/blog/pearl-quality-factors-shape-luster-surface-color-overtone"
-            className="journalCardLink"
-            style={{
-              textDecoration: 'none',
-              color: 'inherit',
-              display: 'block',
-              height: '100%',
-            }}
-          >
-            <article
-              className="journalCard"
-              style={{
-                backgroundColor: colors.white,
-                padding: spacing.lg,
-                border: `1px solid ${colors.lightGray}`,
-                transition: transitions.normal,
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <h3 style={{ fontSize: typography.fontSize.xl, color: colors.darkGray, marginBottom: spacing.xs }}>
-                Pearl Quality Factors
-              </h3>
-              <p style={{ color: colors.textSecondary, lineHeight: typography.lineHeight.relaxed, marginBottom: spacing.sm }}>
-                Learn how luster, shape, surface, and overtone influence a pearl's beauty and character.
-              </p>
-              <span
-                className="journalCardCta"
-                style={{ color: colors.darkGray, textDecoration: 'underline', alignSelf: 'flex-end', marginTop: 'auto' }}
-              >
-                Read Guide →
-              </span>
-            </article>
-          </Link>
-        </div>
-
-        <div style={{ display: 'flex', gap: spacing.md, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link
-            href="/blog"
-            style={{
-              display: 'inline-block',
-              padding: `${spacing.md} ${spacing['2xl']}`,
-              backgroundColor: colors.darkGray,
-              color: colors.white,
-              fontSize: typography.fontSize.base,
-              fontWeight: typography.fontWeight.semibold,
-              letterSpacing: '0.1em',
-              textDecoration: 'none',
-              border: `1px solid ${colors.darkGray}`,
-              transition: transitions.normal,
-            }}
-          >
-            View All Journal Posts
-          </Link>
-        </div>
-      </section>
-
-      <section
-        style={{
-          padding: `${spacing['3xl']} ${spacing.xl}`,
-          borderTop: `1px solid ${colors.lightGray}`,
-          borderBottom: `1px solid ${colors.lightGray}`,
-          backgroundColor: '#fffdf9',
-        }}
-      >
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: typography.fontSize['3xl'], color: colors.darkGray, marginBottom: spacing.sm, textAlign: 'center' }}>
-            Customer Care & FAQ
-          </h2>
-          <p style={{ color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.xl }}>
-            Find quick answers about ordering, availability, shipping, pearl care, and redesign services.
+        <section className={styles.journalSection}>
+          <h2 className={styles.sectionTitle}>From the Journal</h2>
+          <p className={styles.journalLead}>
+            Discover pearl stories, care tips, and thoughtful buying guides - a space to explore and
+            understand pearls beyond the surface.
           </p>
-          <div style={{ textAlign: 'center' }}>
-            <Link
-              href="/faq"
-              style={{
-                display: 'inline-block',
-                border: `1px solid ${colors.darkGray}`,
-                padding: `${spacing.xs} ${spacing.lg}`,
-                color: colors.darkGray,
-                textDecoration: 'none',
-                letterSpacing: '0.08em',
-              }}
-            >
-              View FAQ
+
+          <div className={styles.journalGrid}>
+            {journalCards.map((card) => (
+              <Link key={card.href} href={card.href} className={styles.journalCardLink}>
+                <article className={styles.journalCard}>
+                  <h3 className={styles.journalCardTitle}>{card.title}</h3>
+                  <p className={styles.journalCardText}>{card.description}</p>
+                  <span className={styles.journalCardCta}>{card.cta}</span>
+                </article>
+              </Link>
+            ))}
+          </div>
+
+          <div className={styles.centerActions}>
+            <Link href="/blog" className={styles.primaryLink}>
+              View All Journal Posts
             </Link>
           </div>
-        </div>
-      </section>
+        </section>
 
+        <section className={styles.faqSection}>
+          <div className={styles.faqInner}>
+            <h2 className={styles.faqTitle}>Customer Care & FAQ</h2>
+            <p className={styles.faqLead}>
+              Find quick answers about ordering, availability, shipping, pearl care, and redesign
+              services.
+            </p>
+            <div className={styles.centerActions}>
+              <Link href="/faq" className={styles.outlineLink}>
+                View FAQ
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
     </>
   )

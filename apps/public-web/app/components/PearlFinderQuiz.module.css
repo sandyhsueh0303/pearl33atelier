@@ -78,6 +78,22 @@
   transition: width 0.3s ease;
 }
 
+.pearlFinderProgressValue {
+  width: 0;
+}
+
+.progressOne {
+  width: 33.333%;
+}
+
+.progressTwo {
+  width: 66.667%;
+}
+
+.progressThree {
+  width: 100%;
+}
+
 .pearlFinderPanel h2 {
   margin: 0.5rem 0 1rem;
   color: #2c2c2c;

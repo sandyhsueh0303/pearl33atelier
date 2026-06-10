@@ -29,7 +29,7 @@ export default function Footer() {
         <a
           href="https://www.instagram.com/33_pearl_atelier/"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           aria-label="Instagram"
           className={styles.socialLink}
         >
@@ -64,7 +64,7 @@ export default function Footer() {
         <a
           href={lineUrl}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           aria-label="LINE"
           className={styles.socialLink}
         >
