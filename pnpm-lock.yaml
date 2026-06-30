@@ -14,9 +14,6 @@ importers:
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
-      papaparse:
-        specifier: ^5.5.3
-        version: 5.5.3
       remark:
         specifier: ^15.0.1
         version: 15.0.1
@@ -655,9 +652,6 @@ packages:
         optional: true
       sass:
         optional: true
-
-  papaparse@5.5.3:
-    resolution: {integrity: sha512-5QvjGxYVjxO59MGU2lHVYpRWBBtKHnlIAcSe1uNFCkkptUh63NFRj0FJQm7nR67puEruUci/ZkjmEFrjCAyP4A==}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -1347,8 +1341,6 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
-
-  papaparse@5.5.3: {}
 
   picocolors@1.1.1: {}
 
