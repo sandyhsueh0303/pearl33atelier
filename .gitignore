@@ -11,6 +11,7 @@ pnpm-debug.log*
 out/
 dist/
 build/
+*.tsbuildinfo
 
 # Environment files
 .env
