@@ -6,6 +6,7 @@ import {
   syncProductAvailabilitySnapshots,
 } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
+import { getNextProductSku } from '../../sku'
 import { validateAiDraft, type AiDraft } from '../validation'
 
 type ProductInsert = Database['public']['Tables']['catalog_products']['Insert']
@@ -51,36 +52,6 @@ const LUSTER_MAP = {
   high: 'high',
   soft: 'soft',
 } as const
-
-function parseSkuNumber(sku: string): number | null {
-  const match = /^PA(\d{4})$/.exec(sku)
-  if (!match) return null
-  return Number(match[1])
-}
-
-function formatSku(value: number): string {
-  return `PA${String(value).padStart(4, '0')}`
-}
-
-async function getNextProductSku(supabase: any): Promise<string> {
-  const { data, error } = await supabase
-    .from('catalog_products')
-    .select('sku')
-    .not('sku', 'is', null)
-    .ilike('sku', 'PA%')
-    .order('sku', { ascending: false })
-    .limit(100)
-
-  if (error) throw error
-
-  let max = 0
-  for (const row of data || []) {
-    const n = parseSkuNumber(String(row.sku || ''))
-    if (n && n > max) max = n
-  }
-
-  return formatSku(max + 1)
-}
 
 function resolvePearlType(value: string, context: string): string | null {
   const raw = value.trim()

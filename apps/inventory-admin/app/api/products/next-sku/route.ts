@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
-import { getNextProductSku } from '../route'
+import { getNextProductSku } from '../sku'
 
 export async function GET() {
   try {
