@@ -12,16 +12,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
-import { PRODUCT_IMAGE_BUCKET } from '@pearl33atelier/shared'
+import { getProductImageVariantPaths, PRODUCT_IMAGE_BUCKET } from '@pearl33atelier/shared'
 import type { Database } from '@pearl33atelier/shared/types'
-
-function getImageVariantPaths(storagePath: string): string[] {
-  const match = storagePath.match(/^(.*)-(thumb|medium|large)\.([^.]+)$/)
-  if (!match) return [storagePath]
-
-  const [, basePath, , extension] = match
-  return ['thumb', 'medium', 'large'].map((size) => `${basePath}-${size}.${extension}`)
-}
 
 // PATCH /api/products/[id]/images/[imageId] - Update image properties
 export async function PATCH(
@@ -89,7 +81,7 @@ export async function DELETE(
 
     // Step 1: Delete all size variants from storage first
     if (image?.storage_path) {
-      const pathsToDelete = getImageVariantPaths(image.storage_path)
+      const pathsToDelete = getProductImageVariantPaths(image.storage_path)
       const { error: storageError } = await supabase.storage
         .from(PRODUCT_IMAGE_BUCKET)
         .remove(pathsToDelete)

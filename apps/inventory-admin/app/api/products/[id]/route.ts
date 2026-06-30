@@ -11,6 +11,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/app/utils/adminAuth'
 import { logger } from '@/app/utils/logger'
 import {
+  getProductImageVariantPaths,
   PRODUCT_IMAGE_BUCKET,
   PRODUCT_VIDEO_BUCKET,
   slugify,
@@ -30,14 +31,6 @@ const PEARL_TYPES = [
   'Freshwater',
   'Other',
 ] as const
-
-function getImageVariantPaths(storagePath: string): string[] {
-  const match = storagePath.match(/^(.*)-(thumb|medium|large)\.([^.]+)$/)
-  if (!match) return [storagePath]
-
-  const [, basePath, , extension] = match
-  return ['thumb', 'medium', 'large'].map((size) => `${basePath}-${size}.${extension}`)
-}
 
 function normalizeSizeRange(value: unknown): string | null {
   if (value == null) return null
@@ -252,7 +245,7 @@ export async function DELETE(
 
     // Step 2: Delete all image variants from storage
     if (images && images.length > 0) {
-      const paths = [...new Set(images.flatMap((img) => getImageVariantPaths(img.storage_path)))]
+      const paths = [...new Set(images.flatMap((img) => getProductImageVariantPaths(img.storage_path)))]
       const { error: storageError } = await supabase
         .storage
         .from(PRODUCT_IMAGE_BUCKET)

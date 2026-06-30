@@ -4,6 +4,7 @@
 export const PRODUCT_IMAGE_BUCKET = 'product-images' as const
 export const PRODUCT_VIDEO_BUCKET = 'product-videos' as const
 export const STORAGE_FOLDER = 'uploads' as const
+const PRODUCT_IMAGE_VARIANTS = ['thumb', 'medium', 'large'] as const
 
 /**
  * Get Supabase URL from environment variable
@@ -102,6 +103,13 @@ export function getProductImageVariantPath(
 
   const [, basePath, , extension] = match
   return `${basePath}-${variant}.${extension}`
+}
+
+export function getProductImageVariantPaths(storagePath: string): string[] {
+  const match = storagePath.match(/^(.*)-(thumb|medium|large)\.([^.]+)$/)
+  if (!match) return [storagePath]
+
+  return PRODUCT_IMAGE_VARIANTS.map((variant) => getProductImageVariantPath(storagePath, variant))
 }
 
 export function getProductImageVariantUrl(
