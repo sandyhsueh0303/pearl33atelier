@@ -78,7 +78,8 @@ const getPublishedProductBySlug = async (slug: string) => {
       inventory_items (
         name,
         total_quantity,
-        allocated_quantity
+        allocated_quantity,
+        reserved_quantity
       )
     `)
     .eq('product_id', productData.id)

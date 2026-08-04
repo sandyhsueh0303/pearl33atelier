@@ -11,6 +11,7 @@ interface InventoryItem {
   cost: number | null
   total_quantity: number
   allocated_quantity: number
+  reserved_quantity: number
   remaining_quantity: number
   internal_note: string | null
 }
@@ -193,6 +194,7 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
         name: material.inventory_items.name,
         total_quantity: material.inventory_items.total_quantity,
         allocated_quantity: material.inventory_items.allocated_quantity,
+        reserved_quantity: material.inventory_items.reserved_quantity,
       },
     }))
   )

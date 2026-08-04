@@ -71,7 +71,7 @@ export async function PATCH(
 
     const { data: currentItem, error: currentItemError } = await supabase
       .from('inventory_items')
-      .select('total_quantity, allocated_quantity')
+      .select('total_quantity, allocated_quantity, reserved_quantity')
       .eq('id', id)
       .single()
 
@@ -118,9 +118,10 @@ export async function PATCH(
 
     const nextTotalQuantity = updates.total_quantity ?? currentItem.total_quantity ?? 0
     const nextAllocatedQuantity = updates.allocated_quantity ?? currentItem.allocated_quantity ?? 0
-    if (nextAllocatedQuantity > nextTotalQuantity) {
+    const currentReservedQuantity = currentItem.reserved_quantity ?? 0
+    if (nextAllocatedQuantity + currentReservedQuantity > nextTotalQuantity) {
       return NextResponse.json(
-        { error: 'allocated_quantity cannot be greater than total_quantity' },
+        { error: 'allocated_quantity plus reserved_quantity cannot be greater than total_quantity' },
         { status: 400 }
       )
     }

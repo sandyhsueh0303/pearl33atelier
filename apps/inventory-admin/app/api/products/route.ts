@@ -189,11 +189,13 @@ export async function GET(request: NextRequest) {
             name: string | null
             total_quantity: number
             allocated_quantity: number
+            reserved_quantity: number
           }
         | {
             name: string | null
             total_quantity: number
             allocated_quantity: number
+            reserved_quantity: number
           }[]
         | null
     }[] = []
@@ -208,7 +210,8 @@ export async function GET(request: NextRequest) {
           inventory_items (
             name,
             total_quantity,
-            allocated_quantity
+            allocated_quantity,
+            reserved_quantity
           )
         `)
         .in('product_id', productIds)

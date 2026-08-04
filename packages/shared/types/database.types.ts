@@ -203,6 +203,7 @@ export type Database = {
           internal_note: string | null
           name: string | null
           purchase_date: string | null
+          reserved_quantity: number
           total_quantity: number
           updated_at: string
         }
@@ -215,6 +216,7 @@ export type Database = {
           internal_note?: string | null
           name?: string | null
           purchase_date?: string | null
+          reserved_quantity?: number
           total_quantity?: number
           updated_at?: string
         }
@@ -227,6 +229,7 @@ export type Database = {
           internal_note?: string | null
           name?: string | null
           purchase_date?: string | null
+          reserved_quantity?: number
           total_quantity?: number
           updated_at?: string
         }
@@ -364,6 +367,51 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      order_material_reservations: {
+        Row: {
+          created_at: string
+          expires_at: string
+          inventory_item_id: string
+          order_id: string
+          quantity: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          inventory_item_id: string
+          order_id: string
+          quantity: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          inventory_item_id?: string
+          order_id?: string
+          quantity?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_material_reservations_inventory_item_id_fkey"
+            columns: ["inventory_item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_material_reservations_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       product_images: {
         Row: {
@@ -644,6 +692,7 @@ export type Database = {
       }
       get_product_total_cost: { Args: { prod_id: string }; Returns: number }
       is_admin: { Args: never; Returns: boolean }
+      consume_order_materials: { Args: { p_order_id: string }; Returns: Json }
       produce_product: {
         Args: { prod_id: string; produce_quantity: number }
         Returns: Json
@@ -685,6 +734,11 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      release_order_materials: { Args: { p_order_id: string }; Returns: Json }
+      reserve_order_materials: {
+        Args: { p_expires_at: string; p_order_id: string }
+        Returns: Json
       }
       sell_product: {
         Args: { prod_id: string; sell_quantity: number }

@@ -52,7 +52,8 @@ export async function fetchProductMaterialInputsByProductIds(
       inventory_items (
         name,
         total_quantity,
-        allocated_quantity
+        allocated_quantity,
+        reserved_quantity
       )
     `)
     .in('product_id', normalizedProductIds)

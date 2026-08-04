@@ -26,6 +26,7 @@ export async function GET(
           cost,
           total_quantity,
           allocated_quantity,
+          reserved_quantity,
           internal_note
         )
       `)
@@ -40,13 +41,14 @@ export async function GET(
         : material.inventory_items ?? null
       const totalQuantity = Number(inventoryItem?.total_quantity || 0)
       const allocatedQuantity = Number(inventoryItem?.allocated_quantity || 0)
+      const reservedQuantity = Number(inventoryItem?.reserved_quantity || 0)
 
       return {
         ...material,
         inventory_items: inventoryItem
           ? {
               ...inventoryItem,
-              remaining_quantity: Math.max(0, totalQuantity - allocatedQuantity),
+              remaining_quantity: Math.max(0, totalQuantity - allocatedQuantity - reservedQuantity),
             }
           : null,
       }

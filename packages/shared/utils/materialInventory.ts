@@ -6,6 +6,7 @@ export interface MaterialInventoryInput {
   inventory_item: {
     total_quantity: number | null
     allocated_quantity: number | null
+    reserved_quantity: number | null
     name?: string | null
   } | null
 }
@@ -16,6 +17,7 @@ export interface MaterialInventoryComponent {
   quantityPerUnit: number
   totalQuantity: number
   allocatedQuantity: number
+  reservedQuantity: number
   availableComponentQuantity: number
   producibleUnits: number
 }
@@ -65,7 +67,11 @@ export function computeProductInventorySummary(
     const quantityPerUnit = normalizeQuantityPerUnit(material.quantity_per_unit)
     const totalQuantity = normalizeQuantity(material.inventory_item?.total_quantity)
     const allocatedQuantity = normalizeQuantity(material.inventory_item?.allocated_quantity)
-    const availableComponentQuantity = Math.max(0, totalQuantity - allocatedQuantity)
+    const reservedQuantity = normalizeQuantity(material.inventory_item?.reserved_quantity)
+    const availableComponentQuantity = Math.max(
+      0,
+      totalQuantity - allocatedQuantity - reservedQuantity
+    )
     const producibleUnits = Math.floor(availableComponentQuantity / quantityPerUnit)
 
     return {
@@ -74,6 +80,7 @@ export function computeProductInventorySummary(
       quantityPerUnit,
       totalQuantity,
       allocatedQuantity,
+      reservedQuantity,
       availableComponentQuantity,
       producibleUnits,
     }

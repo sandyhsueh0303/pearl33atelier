@@ -51,7 +51,7 @@ export async function GET(_request: NextRequest) {
     // Build filtered summary with lightweight columns only.
     let summaryQuery = supabase
       .from('inventory_items')
-      .select('total_quantity,allocated_quantity,cost')
+      .select('total_quantity,allocated_quantity,reserved_quantity,cost')
 
     if (escapedSearch) {
       summaryQuery = summaryQuery.or(`name.ilike.%${escapedSearch}%,internal_note.ilike.%${escapedSearch}%`)
@@ -76,14 +76,14 @@ export async function GET(_request: NextRequest) {
     // Transform and calculate stats
     const transformed = items?.map(item => {
       const quantity_total = item.total_quantity || 0  // total = total inventory quantity (purchased quantity)
-      const quantity_available = (item.total_quantity || 0) - (item.allocated_quantity || 0)  // available = total - allocated
+      const quantity_available = (item.total_quantity || 0) - (item.allocated_quantity || 0) - (item.reserved_quantity || 0)
       const unit_cost = item.cost || 0
       
       return {
         ...item,
         quantity_total,
         quantity_available,
-        quantity_used: item.allocated_quantity || 0,
+        quantity_used: (item.allocated_quantity || 0) + (item.reserved_quantity || 0),
         unit_cost,
         total_value: quantity_total * unit_cost,  // total value = total x unit cost
         remaining_value: quantity_available * unit_cost  // remaining value = available x unit cost
@@ -104,12 +104,12 @@ export async function GET(_request: NextRequest) {
       total_items: applyStatusFilter ? statusFilteredItems.length : (count || summaryBase.length),
       total_quantity: summaryBase.reduce((sum, i) => sum + (i.total_quantity || 0), 0),
       available_quantity: summaryBase.reduce(
-        (sum, i) => sum + ((i.total_quantity || 0) - (i.allocated_quantity || 0)),
+        (sum, i) => sum + ((i.total_quantity || 0) - (i.allocated_quantity || 0) - (i.reserved_quantity || 0)),
         0
       ),
       total_value: summaryBase.reduce((sum, i) => sum + ((i.total_quantity || 0) * (i.cost || 0)), 0),
       remaining_value: summaryBase.reduce(
-        (sum, i) => sum + (((i.total_quantity || 0) - (i.allocated_quantity || 0)) * (i.cost || 0)),
+        (sum, i) => sum + (((i.total_quantity || 0) - (i.allocated_quantity || 0) - (i.reserved_quantity || 0)) * (i.cost || 0)),
         0
       )
     }

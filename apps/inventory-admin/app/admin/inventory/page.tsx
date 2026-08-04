@@ -14,6 +14,7 @@ interface InventoryItem {
   cost: number | null
   total_quantity: number
   allocated_quantity: number
+  reserved_quantity: number
   internal_note: string | null
   category: string | null
   created_at: string
@@ -437,7 +438,7 @@ function InventoryPageContent() {
             </thead>
             <tbody>
               {paginatedItems.map((item) => {
-                const remainingQuantity = item.total_quantity - item.allocated_quantity
+                const remainingQuantity = item.total_quantity - item.allocated_quantity - item.reserved_quantity
                 const unitCost = item.cost || 0
                 const remainingValue = remainingQuantity * unitCost
                 const isSold = remainingQuantity <= 0
