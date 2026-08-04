@@ -36,6 +36,7 @@ function generateOrderNumber() {
 export async function POST(request: NextRequest) {
   let createdOrderId: string | null = null
   let createdCheckoutSessionId: string | null = null
+  let reservationCreated = false
 
   try {
     const body = (await request.json()) as { items?: unknown[] }
@@ -180,6 +181,38 @@ export async function POST(request: NextRequest) {
       throw new Error(`Failed to create order: ${orderError.message}`)
     }
 
+    const { error: orderItemsError } = await adminSupabase.from('order_items').insert(
+      checkoutItemsSnapshot.map((item) => ({
+        order_id: orderId,
+        product_id: item.product_id,
+        product_slug_snapshot: item.product_slug_snapshot,
+        product_title_snapshot: item.product_title_snapshot,
+        unit_price_amount_cents: item.unit_price_amount_cents,
+        quantity: item.quantity,
+        line_total_amount_cents: item.line_total_amount_cents,
+      }))
+    )
+
+    if (orderItemsError) {
+      throw new Error(`Failed to create order items: ${orderItemsError.message}`)
+    }
+
+    const checkoutExpiresAtSeconds = Math.floor(Date.now() / 1000) + 30 * 60
+    const reservationExpiresAt = new Date(checkoutExpiresAtSeconds * 1000).toISOString()
+    const { error: reservationError } = await adminSupabase.rpc('reserve_order_materials', {
+      p_order_id: orderId,
+      p_expires_at: reservationExpiresAt,
+    })
+
+    if (reservationError) {
+      if (reservationError.message.includes('INSUFFICIENT_INVENTORY')) {
+        throw new Error('One or more items are no longer available.')
+      }
+
+      throw new Error(`Failed to reserve inventory: ${reservationError.message}`)
+    }
+    reservationCreated = true
+
     const headersList = await headers()
     const origin = headersList.get('origin') || SITE_URL
     const qualifiesForFreeShipping = subtotalAmount >= FREE_SHIPPING_THRESHOLD_CENTS
@@ -207,6 +240,7 @@ export async function POST(request: NextRequest) {
         },
       ],
       allow_promotion_codes: true,
+      expires_at: checkoutExpiresAtSeconds,
       metadata: {
         source: 'public-web-cart',
         order_id: orderId,
@@ -245,7 +279,23 @@ export async function POST(request: NextRequest) {
     if (createdOrderId) {
       try {
         const adminSupabase = createSupabaseAdminClient()
-        await adminSupabase.from('orders').delete().eq('id', createdOrderId)
+        if (reservationCreated) {
+          const { error: releaseError } = await adminSupabase.rpc('release_order_materials', {
+            p_order_id: createdOrderId,
+          })
+
+          if (releaseError) {
+            console.error('[checkout/session] Failed to release reservation after checkout failure', {
+              orderId: createdOrderId,
+              error: releaseError,
+            })
+          }
+        }
+
+        await adminSupabase
+          .from('orders')
+          .update({ status: 'cancelled' })
+          .eq('id', createdOrderId)
       } catch {
         // Ignore cleanup errors and return the original checkout failure.
       }
@@ -258,7 +308,8 @@ export async function POST(request: NextRequest) {
         error.message === 'One or more cart items are unavailable.' ||
         error.message.includes('does not have a valid online checkout price') ||
         error.message.includes('is sold out.') ||
-        error.message.includes('available for checkout')
+        error.message.includes('available for checkout') ||
+        error.message === 'One or more items are no longer available.'
       )
         ? error.message
         : 'Unable to start checkout right now. Please try again shortly.'
