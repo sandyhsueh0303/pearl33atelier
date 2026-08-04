@@ -293,6 +293,51 @@ export type Database = {
           },
         ]
       }
+      order_material_reservations: {
+        Row: {
+          created_at: string
+          expires_at: string
+          inventory_item_id: string
+          order_id: string
+          quantity: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          inventory_item_id: string
+          order_id: string
+          quantity: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          inventory_item_id?: string
+          order_id?: string
+          quantity?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_material_reservations_inventory_item_id_fkey"
+            columns: ["inventory_item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_material_reservations_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           confirmation_email_sent_at: string | null
@@ -367,51 +412,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
-      }
-      order_material_reservations: {
-        Row: {
-          created_at: string
-          expires_at: string
-          inventory_item_id: string
-          order_id: string
-          quantity: number
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          expires_at: string
-          inventory_item_id: string
-          order_id: string
-          quantity: number
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          expires_at?: string
-          inventory_item_id?: string
-          order_id?: string
-          quantity?: number
-          status?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "order_material_reservations_inventory_item_id_fkey"
-            columns: ["inventory_item_id"]
-            isOneToOne: false
-            referencedRelation: "inventory_items"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "order_material_reservations_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       product_images: {
         Row: {
@@ -681,6 +681,7 @@ export type Database = {
         Args: { item_id: string; quantity_change: number }
         Returns: undefined
       }
+      consume_order_materials: { Args: { p_order_id: string }; Returns: Json }
       get_product_pearl_cost: { Args: { prod_id: string }; Returns: number }
       get_product_profit: {
         Args: { prod_id: string }
@@ -692,7 +693,6 @@ export type Database = {
       }
       get_product_total_cost: { Args: { prod_id: string }; Returns: number }
       is_admin: { Args: never; Returns: boolean }
-      consume_order_materials: { Args: { p_order_id: string }; Returns: Json }
       produce_product: {
         Args: { prod_id: string; produce_quantity: number }
         Returns: Json
