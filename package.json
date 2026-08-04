@@ -15,6 +15,7 @@
     "build:inventory-admin": "pnpm --filter inventory-admin build",
     "start:public-web": "pnpm --filter public-web start",
     "start:inventory-admin": "pnpm --filter inventory-admin start",
+    "test:checkout-reservations": "node --test tests/checkout-material-reservations.test.mjs",
     "gen:types": "pnpm exec supabase gen types typescript --project-id xjrnyynfzbrhmotepzyl --schema public > packages/shared/types/database.types.ts"
   },
   "dependencies": {
