@@ -146,7 +146,11 @@ export async function ensureOrderItemsForPaidOrder(orderId: string) {
   }
 }
 
-export async function syncPaidOrderToSales(orderId: string) {
+export async function syncPaidOrderToSales(
+  orderId: string,
+  options: { adjustInventory?: boolean } = {}
+) {
+  const adjustInventory = options.adjustInventory ?? false
   const supabase = createSupabaseAdminClient()
 
   const { data: order, error: orderError } = await supabase
@@ -194,7 +198,9 @@ export async function syncPaidOrderToSales(orderId: string) {
     const profit = Number((totalPrice - totalCost).toFixed(2))
     const profitMargin = totalPrice > 0 ? Number(((profit / totalPrice) * 100).toFixed(2)) : 0
 
-    await applyMaterialInventoryDelta(supabase, item.product_id, item.quantity)
+    if (adjustInventory) {
+      await applyMaterialInventoryDelta(supabase, item.product_id, item.quantity)
+    }
 
     const { error: insertError } = await supabase.from('sales_records').insert({
       product_id: item.product_id,
@@ -213,7 +219,9 @@ export async function syncPaidOrderToSales(orderId: string) {
     })
 
     if (insertError) {
-      await applyMaterialInventoryDelta(supabase, item.product_id, -item.quantity)
+      if (adjustInventory) {
+        await applyMaterialInventoryDelta(supabase, item.product_id, -item.quantity)
+      }
       throw new Error(`Failed to create sales record for order item ${item.id}: ${insertError.message}`)
     }
   }

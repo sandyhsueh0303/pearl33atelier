@@ -69,8 +69,21 @@ async function markOrderPaid(session: Stripe.Checkout.Session) {
     )
   }
 
+  const { data: reservationResult, error: reservationError } = await adminSupabase.rpc(
+    'consume_order_materials',
+    { p_order_id: orderId }
+  )
+
+  if (reservationError) {
+    throw new Error(`Failed to consume material reservation for order ${orderId}: ${reservationError.message}`)
+  }
+
+  const reservationState =
+    reservationResult && typeof reservationResult === 'object' && 'state' in reservationResult
+      ? String(reservationResult.state)
+      : 'unknown'
+
   const updatePayload = {
-    status: 'paid',
     stripe_checkout_session_id: session.id,
     stripe_payment_intent_id: paymentIntentId,
     customer_email: session.customer_details?.email ?? session.customer_email ?? null,
@@ -117,7 +130,11 @@ async function markOrderPaid(session: Stripe.Checkout.Session) {
 
   try {
     await ensureOrderItemsForPaidOrder(orderId)
-    await syncPaidOrderToSales(orderId)
+    await syncPaidOrderToSales(orderId, {
+      // Legacy orders created before checkout reservations did not reserve
+      // inventory. New checkout orders are allocated by consume_order_materials.
+      adjustInventory: reservationState === 'no_reservation',
+    })
   } catch (error) {
     console.error('[stripe:webhook] syncPaidOrderToSales failed', {
       orderId,
@@ -213,7 +230,12 @@ export async function POST(request: NextRequest) {
         const orderId = session.metadata?.order_id
         if (orderId) {
           const adminSupabase = createSupabaseAdminClient()
-          await adminSupabase.from('orders').update({ status: 'cancelled' }).eq('id', orderId)
+          const { error } = await adminSupabase.rpc('release_order_materials', {
+            p_order_id: orderId,
+          })
+          if (error) {
+            throw new Error(`Failed to release material reservation for order ${orderId}: ${error.message}`)
+          }
         }
         break
       }
