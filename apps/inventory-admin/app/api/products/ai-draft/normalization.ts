@@ -155,12 +155,14 @@ function normalizeSize(size: string) {
 
 function normalizeMetal(metal: string) {
   const value = normalizeLower(metal)
-  if (value.includes('18k') && value.includes('white')) return '18k white gold'
+  if (value.includes('vermeil') && value.includes('white')) return '18k white gold vermeil'
+  if (value.includes('vermeil')) return '18k gold vermeil'
+  if (value.includes('18k') && value.includes('white')) return '18k solid white gold'
   if (value.includes('18k') && (value.includes('yellow') || value.includes('gold'))) {
-    return '18k yellow gold'
+    return '18k solid gold'
   }
-  if (value.includes('white gold')) return 'white gold'
-  if (value.includes('yellow gold')) return 'yellow gold'
+  if (value.includes('white gold')) return '18k solid white gold'
+  if (value.includes('yellow gold')) return '18k solid gold'
   if (value.includes('platinum')) return 'platinum'
   if (value.includes('silver')) return 'silver'
   return normalizeWhitespace(metal)

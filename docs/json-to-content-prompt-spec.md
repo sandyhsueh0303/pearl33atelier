@@ -32,7 +32,7 @@ Once the system has clean structured inputs, copy generation becomes:
   "luster": "high",
   "overtone": "blue",
   "size_mm": "7.5-8.0",
-  "metal": "18k white gold",
+  "metal": "18k solid white gold",
   "style_tags": ["minimal", "classic", "daily wear"],
   "positioning": "everyday luxury"
 }

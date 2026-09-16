@@ -388,10 +388,10 @@ I have reference photos to share!`
               }}
             >
               <option value="">Select a preference</option>
-              <option value="925 Silver with 18K Gold Vermeil">925 Silver with 18K Gold Vermeil</option>
-              <option value="925 Silver with White Gold Vermeil">925 Silver with White Gold Vermeil</option>
-              <option value="18K Yellow Gold">18K Yellow Gold</option>
-              <option value="18K White Gold">18K White Gold</option>
+              <option value="18k Gold Vermeil">18k Gold Vermeil</option>
+              <option value="18k White Gold Vermeil">18k White Gold Vermeil</option>
+              <option value="18k Solid Gold">18k Solid Gold</option>
+              <option value="18k Solid White Gold">18k Solid White Gold</option>
               <option value="PT900 Platinum">PT900 Platinum</option>
               <option value="Not Sure / Open to Suggestions">Not Sure / Open to Suggestions</option>
             </select>

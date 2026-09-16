@@ -46,7 +46,7 @@ This layer should:
   "luster": "high",
   "overtone": "blue",
   "size_mm": "7.5-8.0",
-  "metal": "18k white gold",
+  "metal": "18k solid white gold",
   "style_tags": ["minimal", "classic", "daily wear"],
   "raw": {
     "pearl_type": "Akoya",
@@ -147,8 +147,8 @@ Normalize raw metal tone into system-safe text:
 
 - `white gold`
 - `yellow gold`
-- `18k white gold`
-- `18k yellow gold`
+- `18k solid white gold`
+- `18k solid gold`
 - `silver`
 - `platinum`
 

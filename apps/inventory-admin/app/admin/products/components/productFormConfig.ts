@@ -1,8 +1,8 @@
 export const MATERIAL_OPTIONS = [
-  '18K Gold',
-  '18K White Gold',
-  '925 Sterling Silver with 18K Gold Plating',
-  '925 Sterling Silver with White Gold Plating',
+  '18k Solid Gold',
+  '18k Solid White Gold',
+  '18k Gold Vermeil',
+  '18k White Gold Vermeil',
   'Natural Diamond',
   'Lab-Grown Diamond',
   'Cubic Zirconia',

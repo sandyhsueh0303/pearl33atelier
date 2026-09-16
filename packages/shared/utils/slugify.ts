@@ -27,13 +27,17 @@ function compactMaterialSlugPart(material: string): string {
 
   if (
     normalized === '925 sterling silver with 18k gold plating' ||
-    normalized === '925 sterling silver with white gold plating'
+    normalized === '925 sterling silver with white gold plating' ||
+    normalized === '18k gold vermeil' ||
+    normalized === '18k white gold vermeil'
   ) {
-    return '925'
+    return normalized.replace(/^925\s+sterling\s+silver\s+with\s+/, '').replace(/\s+/g, ' ')
   }
 
-  if (normalized === '18k gold') return '18k'
-  if (normalized === '18k white gold') return '18kwg'
+  if (normalized === '18k solid gold' || normalized === '18k gold') return '18k'
+  if (normalized === '18k solid white gold' || normalized === '18k white gold') return '18kwg'
+  if (normalized === '18k gold vermeil') return '18kgv'
+  if (normalized === '18k white gold vermeil') return '18kwgv'
   if (normalized === 'natural diamond') return 'diamond'
   if (normalized === 'lab-grown diamond') return 'lab-diamond'
   if (normalized === 'cubic zirconia') return 'cz'

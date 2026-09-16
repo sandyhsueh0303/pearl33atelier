@@ -27,7 +27,7 @@ const CATEGORIES = [
   { value: 'finished_jewelry', label: 'Finished Jewelry', color: '#FFF4E6', textColor: '#9A3412' },
   { value: 'pt900', label: 'Pt900 Platinum 900', color: '#F3E5F5', textColor: '#7B1FA2' },
   { value: '925_silver', label: '925 Silver', color: '#E0F2FE', textColor: '#0369A1' },
-  { value: '18k', label: '18K Gold', color: '#FEF3C7', textColor: '#92400E' },
+  { value: '18k', label: '18k Solid Gold', color: '#FEF3C7', textColor: '#92400E' },
   { value: 'package', label: 'Packaging', color: '#F3F4F6', textColor: '#111827' },
   { value: 'shipment', label: 'Shipping', color: '#F3F4F6', textColor: '#111827' }
 ] as const

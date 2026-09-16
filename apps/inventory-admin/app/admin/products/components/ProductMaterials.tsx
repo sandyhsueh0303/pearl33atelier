@@ -58,7 +58,7 @@ export default function ProductMaterials({ productId, refreshToken = 0 }: Props)
     { value: 'finished_jewelry', label: 'Finished Jewelry' },
     { value: 'pt900', label: 'Pt900' },
     { value: '925_silver', label: '925 Silver' },
-    { value: '18k', label: '18K Gold' },
+    { value: '18k', label: '18k Solid Gold' },
     { value: 'package', label: 'Packaging' },
     { value: 'shipment', label: 'Shipping' },
   ] as const
