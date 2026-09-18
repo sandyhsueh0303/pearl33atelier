@@ -289,6 +289,11 @@ export default function ProductList({
                               Sold
                             </span>
                           )}
+                          {product.availability === 'PREORDER' && (
+                            <span className={styles.preorderBadge}>
+                              Pre-order
+                            </span>
+                          )}
                           {product.availability !== 'OUT_OF_STOCK' && (
                             <button
                               type="button"

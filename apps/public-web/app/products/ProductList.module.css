@@ -59,6 +59,7 @@
   overflow: hidden;
   cursor: pointer;
   background-color: #ffffff;
+  border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: 0.3s ease;
 }
@@ -83,7 +84,9 @@
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
+  overflow: hidden;
   background-color: #f8f6f0;
+  border-radius: 12px;
 }
 
 .editorsPickBadge {
@@ -176,11 +179,21 @@
 }
 
 .soldBadge {
-  padding: 6px 12px;
+  padding: 0.4rem 0.75rem;
   color: #b71c1c;
   font-size: 0.875rem;
   font-weight: 600;
   background-color: #fbe9e7;
+  border-radius: 999px;
+}
+
+.preorderBadge {
+  padding: 0.4rem 0.75rem;
+  color: #8a6a1f;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: #f7e7ce;
+  border-radius: 999px;
 }
 
 .addToCartButton {
@@ -196,6 +209,7 @@
   cursor: pointer;
   background-color: rgba(201, 169, 97, 0.08);
   border: 1px solid #d4af37;
+  border-radius: 50%;
 }
 
 .pagination {
