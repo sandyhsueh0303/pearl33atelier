@@ -337,6 +337,10 @@ export default function ProductList({
                   Previous
                 </Link>
 
+                <span className={styles.paginationSeparator} aria-hidden="true">
+                  |
+                </span>
+
                 <Link
                   href={nextPageHref}
                   prefetch
@@ -347,6 +351,18 @@ export default function ProductList({
                   Next
                 </Link>
               </div>
+              <a
+                href="https://xhslink.cn/m/7VRen3a84m1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.xiaohongshuLink}
+              >
+                <span className={styles.xiaohongshuEyebrow}>More pearl styling</span>
+                <span className={styles.xiaohongshuTitle}>
+                  See What&apos;s New Today
+                  <span className={styles.xiaohongshuArrow} aria-hidden="true">→</span>
+                </span>
+              </a>
             </div>
           )}
         </div>

@@ -427,6 +427,10 @@
   transition: 0.3s ease;
 }
 
+.browseMoreLink:hover {
+  transform: translateY(-2px);
+}
+
 @media (max-width: 768px) {
   .main {
     padding: 1rem;
@@ -443,4 +447,5 @@
   .currentPrice {
     font-size: 2.25rem;
   }
+
 }
