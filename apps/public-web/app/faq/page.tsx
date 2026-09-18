@@ -64,7 +64,7 @@ export default function FAQPage() {
     {
       id: 'returns-policy',
       q: 'Return policy?',
-      a: 'Because each pearl is individually selected, we do not offer standard returns. However, we provide long-term care and redesign support to ensure your piece evolves with you.',
+      a: 'Because each pearl is individually selected, we do not offer standard returns. If your item arrives damaged, please contact us promptly so we can review the issue and help with the appropriate next step. We also provide long-term care and redesign support to ensure your piece evolves with you.',
     },
     {
       id: 'repairs-restringing',

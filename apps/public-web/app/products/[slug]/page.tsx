@@ -18,6 +18,7 @@ export const revalidate = 0
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
 const DEFAULT_IMAGE_URL = `${SITE_URL}/images/default-product.jpg`
+const RETURN_POLICY_URL = `${SITE_URL}/faq#returns-policy`
 
 function getAvailabilityText(availability: CatalogProduct['availability']) {
   if (availability === 'IN_STOCK') return 'In stock.'
@@ -335,6 +336,41 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       seller: {
         '@type': 'Organization',
         name: '33 Pearl Atelier',
+      },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingDestination: {
+          '@type': 'DefinedRegion',
+          addressCountry: 'US',
+        },
+        shippingRate: {
+          '@type': 'MonetaryAmount',
+          value: '10.00',
+          currency: 'USD',
+        },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 0,
+            maxValue: 1,
+            unitCode: 'DAY',
+          },
+          transitTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 2,
+            maxValue: 3,
+            unitCode: 'DAY',
+          },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'US',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+        returnPolicyDescription:
+          'Standard returns are not accepted. Products that arrive damaged may be reviewed for an appropriate resolution; contact 33 Pearl Atelier promptly after delivery.',
+        merchantReturnLink: RETURN_POLICY_URL,
       },
     },
   }
