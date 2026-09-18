@@ -201,6 +201,16 @@ p {
     --home-blob-scale: 0.55;
   }
 
+  .blogArticle {
+    max-width: calc(100% - 1.5rem) !important;
+    margin-right: 0.75rem !important;
+    margin-left: 0.75rem !important;
+  }
+
+  .blogArticlePage {
+    background: linear-gradient(180deg, #fffefb 0%, #ffffff 56%, #fffdf9 100%) !important;
+  }
+
   .homeScrollIndicator {
     display: none !important;
   }

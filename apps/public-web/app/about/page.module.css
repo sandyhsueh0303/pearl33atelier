@@ -19,9 +19,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: start;
   justify-self: center;
   width: 100%;
   max-width: 360px;
+  height: fit-content;
   padding: 2.5%;
   overflow: hidden;
   background: rgba(201, 169, 97, 0.06);
@@ -31,6 +33,7 @@
 .founderImage {
   display: block;
   width: 100%;
+  height: auto;
   margin: 0 auto;
   border-radius: 24px;
 }
@@ -177,6 +180,7 @@
 
 .valuesGrid {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  align-items: stretch;
 }
 
 .card {
@@ -187,7 +191,7 @@
 }
 
 .valueCard {
-  padding: 2rem;
+  padding: 1.35rem 1.5rem;
   text-align: left;
   border-top: 3px solid rgba(212, 175, 55, 0.55);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -199,7 +203,7 @@
   justify-content: center;
   width: 42px;
   height: 42px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.9rem;
   color: #2c2c2c;
   font-size: 1.4rem;
   background: rgba(212, 175, 55, 0.12);
@@ -207,7 +211,7 @@
 }
 
 .cardTitle {
-  margin: 0 0 1rem;
+  margin: 0 0 0.65rem;
   color: #2c2c2c;
   font-size: 1.25rem;
   font-weight: 600;
@@ -217,7 +221,7 @@
   margin: 0;
   color: #666666;
   font-size: 1rem;
-  line-height: 1.65;
+  line-height: 1.55;
 }
 
 .valuesSummary {
@@ -362,6 +366,10 @@
 
   .founderGrid {
     gap: 4rem;
+  }
+
+  .founderImageFrame {
+    width: min(72vw, 260px);
   }
 
   .credentialsBar {

@@ -180,6 +180,7 @@ export default async function BlogPostPage({ params }: Props) {
       />
 
       <main
+        className="blogArticlePage"
         style={{
           background:
             'radial-gradient(circle at 8% 12%, rgba(212, 175, 55, 0.14), transparent 30%), radial-gradient(circle at 92% 20%, rgba(247, 231, 206, 0.8), transparent 34%), linear-gradient(180deg, #fffdf9 0%, #ffffff 34%, #f9f5ed 100%)',
