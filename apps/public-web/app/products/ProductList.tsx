@@ -214,11 +214,20 @@ export default function ProductList({
         {filteredProducts.length === 0 ? (
           <div className={styles.emptyState}>
             <p className={styles.emptyTitle}>
-              No products found
+              No products found here. Want to see what&apos;s currently trending? We update our collections daily on Xiaohongshu (RED).
             </p>
-            <p className={styles.emptyCopy}>
-              Try adjusting your filters to see more items
-            </p>
+            <a
+              href="https://xhslink.cn/m/7VRen3a84m1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.xiaohongshuLink}
+            >
+              <span className={styles.xiaohongshuEyebrow}>More pearl styling</span>
+              <span className={styles.xiaohongshuTitle}>
+                Catch the Latest Drops
+                <span className={styles.xiaohongshuArrow} aria-hidden="true">→</span>
+              </span>
+            </a>
           </div>
         ) : (
           <div className={styles.productGrid}>
@@ -329,33 +338,8 @@ export default function ProductList({
           </div>
         )}
 
-          {!hasActiveFilters && filteredProducts.length > 0 && (currentPage > 1 || hasNextPage) && (
+          {filteredProducts.length > 0 && (
             <div className={styles.pagination}>
-              <div className={styles.paginationControls}>
-                <Link
-                  href={previousPageHref}
-                  prefetch
-                  className={`${styles.paginationLink} ${
-                    currentPage === 1 ? styles.paginationLinkDisabled : ''
-                  }`}
-                >
-                  Previous
-                </Link>
-
-                <span className={styles.paginationSeparator} aria-hidden="true">
-                  |
-                </span>
-
-                <Link
-                  href={nextPageHref}
-                  prefetch
-                  className={`${styles.paginationLink} ${
-                    hasNextPage ? '' : styles.paginationLinkDisabled
-                  }`}
-                >
-                  Next
-                </Link>
-              </div>
               <a
                 href="https://xhslink.cn/m/7VRen3a84m1"
                 target="_blank"
@@ -364,10 +348,38 @@ export default function ProductList({
               >
                 <span className={styles.xiaohongshuEyebrow}>More pearl styling</span>
                 <span className={styles.xiaohongshuTitle}>
-                  See What&apos;s New Today
+                  Catch the Latest Drops
                   <span className={styles.xiaohongshuArrow} aria-hidden="true">→</span>
                 </span>
               </a>
+
+              {(currentPage > 1 || hasNextPage) && (
+                <div className={styles.paginationControls}>
+                  <Link
+                    href={previousPageHref}
+                    prefetch
+                    className={`${styles.paginationLink} ${
+                      currentPage === 1 ? styles.paginationLinkDisabled : ''
+                    }`}
+                  >
+                    Previous
+                  </Link>
+
+                  <span className={styles.paginationSeparator} aria-hidden="true">
+                    |
+                  </span>
+
+                  <Link
+                    href={nextPageHref}
+                    prefetch
+                    className={`${styles.paginationLink} ${
+                      hasNextPage ? '' : styles.paginationLinkDisabled
+                    }`}
+                  >
+                    Next
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </div>

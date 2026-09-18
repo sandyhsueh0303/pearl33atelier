@@ -49,16 +49,59 @@
 }
 
 .filterInput,
-.filterSelect {
+.filterSelectTrigger {
   width: 100%;
-  padding: 0.5rem 1rem;
-  border: 1px solid #f5f5f5;
-  background-color: #fffdf8;
+  padding: 0.65rem 2.25rem 0.65rem 1rem;
+  border: 1px solid #e9e1d3;
+  background-color: #fffefb;
+  color: #3a3328;
   font-size: 0.875rem;
 }
 
-.filterSelect {
+.filterSelectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   cursor: pointer;
+  text-align: left;
+}
+
+.filterSelectShell {
+  position: relative;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(58, 51, 40, 0.06);
+}
+
+.filterSelectArrow {
+  color: #8a7b67;
+  pointer-events: none;
+}
+
+.filterSelectMenu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  z-index: 2;
+  display: grid;
+  width: 100%;
+  padding: 0.4rem 0;
+  background-color: #fffefb;
+  border: 1px solid #e9e1d3;
+  box-shadow: 0 10px 30px rgba(58, 51, 40, 0.08);
+}
+
+.filterSelectOption {
+  padding: 0.65rem 1rem;
+  color: #3a3328;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+}
+
+.filterSelectOption:hover,
+.filterSelectOptionActive {
+  background-color: #f7f1e7;
 }
 
 .filterActions {
