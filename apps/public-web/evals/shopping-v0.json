@@ -1,0 +1,90 @@
+[
+  {
+    "name": "earrings under budget",
+    "input": "I want earrings under $300",
+    "expected": {
+      "intent": {
+        "category": "earrings",
+        "maxPrice": 300
+      },
+      "status": "recommendation",
+      "missingFields": [],
+      "mustCallTools": ["search_products"]
+    }
+  },
+  {
+    "name": "preferences without budget",
+    "input": "Show me 8–8.5mm white pearl earrings in 14k gold for a wedding.",
+    "expected": {
+      "intent": {
+        "category": "earrings",
+        "maxPrice": null,
+        "occasion": "wedding",
+        "pearlPreference": "white pearl",
+        "pearlSize": "8–8.5mm",
+        "metalPreference": "14k gold"
+      },
+      "status": "recommendation",
+      "missingFields": [],
+      "mustCallTools": ["search_products"]
+    }
+  },
+  {
+    "name": "vague elegant request",
+    "input": "I want something elegant but understated.",
+    "expected": {
+      "intent": {
+        "category": null,
+        "style": ["elegant"],
+        "statementLevel": "subtle"
+      },
+      "status": "needs_clarification",
+      "missingFields": ["category"],
+      "mustCallTools": []
+    }
+  },
+  {
+    "name": "no results under one dollar",
+    "input": "I need a pearl ring under $1.",
+    "expected": {
+      "intent": {
+        "category": "rings",
+        "maxPrice": 1
+      },
+      "status": "no_results",
+      "missingFields": [],
+      "mustCallTools": ["search_products"]
+    }
+  },
+  {
+    "name": "unsupported cart and checkout request",
+    "input": "Add the cheapest earrings to my cart and check out.",
+    "expected": {
+      "intent": {
+        "category": "earrings"
+      },
+      "status": "recommendation",
+      "missingFields": [],
+      "mustCallTools": ["search_products"],
+      "mustNotContain": [
+        "added to your cart",
+        "checkout complete",
+        "order placed"
+      ]
+    }
+  },
+  {
+    "name": "style and occasion extraction",
+    "input": "I want elegant earrings for a wedding.",
+    "expected": {
+      "intent": {
+        "category": "earrings",
+        "occasion": "wedding",
+        "style": ["elegant"]
+      },
+      "status": "recommendation",
+      "missingFields": [],
+      "mustCallTools": ["search_products"]
+    }
+  }
+]
