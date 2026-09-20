@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start -p $PORT -H 0.0.0.0"
+    "start": "next start -p $PORT -H 0.0.0.0",
+    "test:shopping-agent": "node --env-file=.env.local --import tsx scripts/test-shopping-agent.ts"
   },
   "dependencies": {
+    "@openai/agents": "^0.18.0",
     "@pearl33atelier/shared": "workspace:*",
     "@supabase/supabase-js": "^2.93.2",
     "gray-matter": "^4.0.3",
@@ -17,12 +19,14 @@
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
     "resend": "^6.9.4",
-    "stripe": "^20.4.1"
+    "stripe": "^20.4.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.0.0"
   }
 }
