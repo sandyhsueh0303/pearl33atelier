@@ -253,6 +253,7 @@ export default function ProductList({
                           alt={`${product.pearl_type || 'Pearl'} ${getCategoryLabel(product.category) || 'Jewelry'} - ${product.title}`}
                           fill
                           priority={index < 2}
+                          loading={index < 4 ? 'eager' : 'lazy'}
                           sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 25vw"
                           className={styles.productImage}
                         />
