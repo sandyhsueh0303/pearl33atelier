@@ -9,24 +9,75 @@
       },
       "status": "recommendation",
       "missingFields": [],
-      "mustCallTools": ["search_products"]
+
+      "mustCallTools": [
+        "search_products",
+        "check_product_availability"
+      ],
+
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 1
+      },
+
+      "toolArguments": {
+        "search_products": {
+          "category": "earrings",
+          "maxPrice": 300,
+          "minPrice": null,
+          "pearlPreference": null
+        }
+      },
+
+      "behavior": {
+        "availabilityMustCoverAllSearchResults": true,
+        "mustNotRecommendUnavailable": true,
+        "maxRecommendations": 3
+      }
     }
   },
   {
     "name": "preferences without budget",
-    "input": "Show me 8–8.5mm white pearl earrings in 14k gold for a wedding.",
+    "input": "Show me 8–8.5mm white pearl earrings in 18k gold for a wedding.",
     "expected": {
       "intent": {
         "category": "earrings",
         "maxPrice": null,
         "occasion": "wedding",
-        "pearlPreference": "white pearl",
+        "pearlPreference": "white",
         "pearlSize": "8–8.5mm",
-        "metalPreference": "14k gold"
+        "metalPreference": "18k gold"
       },
       "status": "recommendation",
       "missingFields": [],
-      "mustCallTools": ["search_products"]
+      "mustCallTools": [
+        "search_products",
+        "check_product_availability"
+      ],
+      "mustNotCallTools": [],
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 1
+      },
+      "toolArguments": {
+        "search_products": {
+          "category": "earrings",
+          "maxPrice": null,
+          "minPrice": null,
+          "pearlPreference": "white"
+        }
+      },
+      "behavior": {
+        "availabilityMustCoverAllSearchResults": true,
+        "recommendedProductsMustComeFromSearch": true,
+        "recommendedProductsMustHaveAvailabilityCheck": true,
+        "mustNotRecommendUnavailable": true,
+        "preorderMustBeDisclosed": true,
+        "maxRecommendations": 3
+      },
+      "mustContain": [
+        "available"
+      ]
     }
   },
   {
@@ -40,7 +91,15 @@
       },
       "status": "needs_clarification",
       "missingFields": ["category"],
-      "mustCallTools": []
+      "mustCallTools": [],
+      "mustNotCallTools": [
+        "search_products",
+        "check_product_availability"
+      ],
+      "toolCallCounts": {
+        "search_products": 0,
+        "check_product_availability": 0
+      }
     }
   },
   {
@@ -53,7 +112,24 @@
       },
       "status": "no_results",
       "missingFields": [],
-      "mustCallTools": ["search_products"]
+      "mustCallTools": [
+        "search_products"
+      ],
+      "mustNotCallTools": [
+        "check_product_availability"
+      ],
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 0
+      },
+      "toolArguments": {
+        "search_products": {
+          "category": "rings",
+          "minPrice": null,
+          "maxPrice": 1,
+          "pearlPreference": null
+        }
+      }
     }
   },
   {
@@ -65,7 +141,30 @@
       },
       "status": "recommendation",
       "missingFields": [],
-      "mustCallTools": ["search_products"],
+      "mustCallTools": [
+        "search_products",
+        "check_product_availability"
+      ],
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 1
+      },
+      "toolArguments": {
+        "search_products": {
+          "category": "earrings",
+          "minPrice": null,
+          "maxPrice": null,
+          "pearlPreference": null,
+          "sortBy": "price_asc"
+        }
+      },
+      "behavior": {
+        "availabilityMustCoverAllSearchResults": true,
+        "recommendedProductsMustComeFromSearch": true,
+        "recommendedProductsMustHaveAvailabilityCheck": true,
+        "mustNotRecommendUnavailable": true,
+        "maxRecommendations": 3
+      },
       "mustNotContain": [
         "added to your cart",
         "checkout complete",
@@ -84,7 +183,30 @@
       },
       "status": "recommendation",
       "missingFields": [],
-      "mustCallTools": ["search_products"]
+      "mustCallTools": [
+        "search_products",
+        "check_product_availability"
+      ],
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 1
+      },
+      "toolArguments": {
+        "search_products": {
+          "category": "earrings",
+          "minPrice": null,
+          "maxPrice": null,
+          "pearlPreference": null,
+          "sortBy": null
+        }
+      },
+      "behavior": {
+        "availabilityMustCoverAllSearchResults": true,
+        "recommendedProductsMustComeFromSearch": true,
+        "recommendedProductsMustHaveAvailabilityCheck": true,
+        "mustNotRecommendUnavailable": true,
+        "maxRecommendations": 3
+      }
     }
   }
 ]
