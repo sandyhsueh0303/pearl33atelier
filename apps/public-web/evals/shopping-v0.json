@@ -25,7 +25,9 @@
           "category": "earrings",
           "maxPrice": 300,
           "minPrice": null,
-          "pearlPreference": null
+          "pearlPreference": null,
+          "sortBy": null,
+          "productName": null
         }
       },
 
@@ -64,7 +66,9 @@
           "category": "earrings",
           "maxPrice": null,
           "minPrice": null,
-          "pearlPreference": "white"
+          "pearlPreference": "white",
+          "sortBy": null,
+          "productName": null
         }
       },
       "behavior": {
@@ -127,7 +131,9 @@
           "category": "rings",
           "minPrice": null,
           "maxPrice": 1,
-          "pearlPreference": null
+          "pearlPreference": null,
+          "sortBy": null,
+          "productName": null
         }
       }
     }
@@ -155,7 +161,8 @@
           "minPrice": null,
           "maxPrice": null,
           "pearlPreference": null,
-          "sortBy": "price_asc"
+          "sortBy": "price_asc",
+          "productName": null
         }
       },
       "behavior": {
@@ -197,7 +204,8 @@
           "minPrice": null,
           "maxPrice": null,
           "pearlPreference": null,
-          "sortBy": null
+          "sortBy": null,
+          "productName": null
         }
       },
       "behavior": {
@@ -207,6 +215,169 @@
         "mustNotRecommendUnavailable": true,
         "maxRecommendations": 3
       }
+    }
+  },
+  {
+    "name": "named product availability and detail request",
+    "input": "Is Fairy Chain Pearl Necklace currently available, and what are its shape, luster, and overtone?",
+    "expected": {
+      "intent": {
+        "category": "necklaces"
+      },
+      "status": "recommendation",
+      "missingFields": [],
+      "mustCallTools": [
+        "search_products",
+        "check_product_availability",
+        "get_product_details"
+      ],
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 1,
+        "get_product_details": 1
+      },
+      "toolArguments": {
+        "search_products": {
+          "category": "necklaces",
+          "minPrice": null,
+          "maxPrice": null,
+          "pearlPreference": null,
+          "sortBy": null,
+          "productName": "Fairy Chain Pearl Necklace"
+        }
+      },
+      "behavior": {
+        "availabilityMustCoverAllSearchResults": true,
+        "detailsProductMustComeFromSearch": true,
+        "detailsProductMustHaveAvailabilityCheck": true,
+        "mustNotInventDetails": true
+      }
+    }
+  },
+  {
+    "name": "specific product everyday wear detail",
+    "input": "Is Fairy Chain Pearl Necklace good for everyday wear? Tell me why.",
+    "expected": {
+      "intent": {
+        "category": "necklaces"
+      },
+      "status": "recommendation",
+      "missingFields": [],
+      "mustCallTools": [
+        "search_products",
+        "check_product_availability",
+        "get_product_details"
+      ],
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 1,
+        "get_product_details": 1
+      },
+      "toolArguments": {
+        "search_products": {
+          "category": "necklaces",
+          "productName": "Fairy Chain Pearl Necklace",
+          "minPrice": null,
+          "maxPrice": null,
+          "pearlPreference": null,
+          "sortBy": null
+        }
+      },
+      "behavior": {
+        "availabilityMustCoverAllSearchResults": true,
+        "detailsProductMustComeFromSearch": true,
+        "detailsProductMustHaveAvailabilityCheck": true,
+        "mustNotInventDetails": true,
+        "mustGroundRecommendationInProductDetails": true
+      },
+      "mustContain": [
+        "available",
+        "everyday wear"
+      ]
+    }
+  },
+  {
+    "name": "specific product technical details",
+    "input": "What is the shape, luster, and overtone of Fairy Chain Pearl Necklace?",
+    "expected": {
+      "intent": {
+        "category": "necklaces"
+      },
+      "status": "recommendation",
+      "missingFields": [],
+      "mustCallTools": [
+        "search_products",
+        "get_product_details"
+      ],
+      "mustNotCallTools": [
+        "check_product_availability"
+      ],
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 0,
+        "get_product_details": 1
+      },
+      "toolArguments": {
+        "search_products": {
+          "category": "necklaces",
+          "productName": "Fairy Chain Pearl Necklace",
+          "minPrice": null,
+          "maxPrice": null,
+          "pearlPreference": null,
+          "sortBy": null
+        }
+      },
+      "behavior": {
+        "detailsProductMustComeFromSearch": true,
+        "mustNotInventDetails": true
+      },
+      "mustContain": [
+        "round",
+        "high",
+        "white"
+      ]
+    }
+  },
+  {
+    "name": "specific product overview",
+    "input": "Tell me more about Fairy Chain Pearl Necklace.",
+    "expected": {
+      "intent": {
+        "category": "necklaces"
+      },
+      "status": "recommendation",
+      "missingFields": [],
+      "mustCallTools": [
+        "search_products",
+        "check_product_availability",
+        "get_product_details"
+      ],
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 1,
+        "get_product_details": 1
+      },
+      "toolArguments": {
+        "search_products": {
+          "category": "necklaces",
+          "productName": "Fairy Chain Pearl Necklace",
+          "minPrice": null,
+          "maxPrice": null,
+          "pearlPreference": null,
+          "sortBy": null
+        }
+      },
+      "behavior": {
+        "availabilityMustCoverAllSearchResults": true,
+        "detailsProductMustComeFromSearch": true,
+        "detailsProductMustHaveAvailabilityCheck": true,
+        "mustNotInventDetails": true,
+        "mustGroundRecommendationInProductDetails": true
+      },
+      "mustContain": [
+        "available",
+        "329"
+      ]
     }
   }
 ]
