@@ -13,7 +13,7 @@ const CATEGORY_VALUES: Record<SearchProductsInput['category'], readonly ProductC
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
-const MAX_RESULTS = 6
+const MAX_RESULTS = 3
 
 function normalizePearlPreference(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]/g, '')
@@ -31,7 +31,6 @@ export async function searchProducts(input: unknown) {
     .select('id, title, slug, pearl_type, size_mm, material, category, sell_price')
     .eq('published', true)
     .in('category', CATEGORY_VALUES[filters.category])
-    .limit(MAX_RESULTS)
 
   if (filters.maxPrice !== null) {
     query = query.lte('sell_price', filters.maxPrice)
@@ -53,11 +52,27 @@ export async function searchProducts(input: unknown) {
     }
   }
 
-  const { data, error } = await query.order('published_at', { ascending: false })
+  if (filters.sortBy === 'price_asc') {
+    query = query.order('sell_price', {
+      ascending: true,
+      nullsFirst: false,
+    })
+  } else if (filters.sortBy === 'price_desc') {
+    query = query.order('sell_price', {
+      ascending: false,
+      nullsFirst: false,
+    })
+  } else {
+    query = query.order('published_at', { ascending: false })
+  }
+
+  const { data, error } = await query.limit(MAX_RESULTS)
   if (error) throw new Error(`Product search failed: ${error.message}`)
 
-  return (data || []).map((product) => ({
-    ...product,
-    url: `${SITE_URL}/products/${product.slug}`,
-  }))
+  return {
+    products: (data || []).map((product) => ({
+      ...product,
+      url: `${SITE_URL}/products/${product.slug}`,
+    })),
+  }
 }

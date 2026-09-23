@@ -10,8 +10,31 @@ export const shoppingCategorySchema = z.enum([
   'brooches',
 ])
 
+export type ShoppingCategory = z.infer<typeof shoppingCategorySchema>
+
+const EXPLICIT_CATEGORY_PATTERNS: readonly [ShoppingCategory, RegExp][] = [
+  ['earrings', /\b(?:earrings?|studs?)\b/i],
+  ['necklaces', /\bnecklaces?\b/i],
+  ['bracelets', /\bbracelets?\b/i],
+  ['rings', /\brings?\b/i],
+  ['pendants', /\bpendants?\b/i],
+  ['brooches', /\bbrooch(?:es)?\b/i],
+  ['loose_pearls', /\bloose\s+pearls?\b/i],
+]
+
+export function detectExplicitCategory(message: string): ShoppingCategory | null {
+  return (
+    EXPLICIT_CATEGORY_PATTERNS.find(([, pattern]) => pattern.test(message))?.[0] ??
+    null
+  )
+}
+
 export const shoppingIntentSchema = z.object({
-  category: shoppingCategorySchema.nullable(),
+  category: shoppingCategorySchema
+    .nullable()
+    .describe(
+      'Normalized jewelry category explicitly mentioned by the customer. Singular and plural forms refer to the same category.'
+    ),
   minPrice: z.number().nonnegative().nullable(),
   maxPrice: z.number().nonnegative().nullable(),
   occasion: z.string().trim().max(80).nullable(),
