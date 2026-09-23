@@ -12,6 +12,7 @@ export const searchProductsInputSchema = shoppingIntentSchema
   .extend({
     category: shoppingCategorySchema,
     sortBy: searchSortSchema.nullable(),
+    productName: z.string().trim().min(1).max(200).nullable(),
   })
 
 export const searchProductResultSchema = z.object({

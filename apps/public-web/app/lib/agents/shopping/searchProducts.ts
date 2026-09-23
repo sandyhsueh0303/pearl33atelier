@@ -52,6 +52,10 @@ export async function searchProducts(input: unknown) {
     }
   }
 
+  if (filters.productName !== null) {
+    query = query.ilike('title', `%${filters.productName}%`)
+  }
+
   if (filters.sortBy === 'price_asc') {
     query = query.order('sell_price', {
       ascending: true,
