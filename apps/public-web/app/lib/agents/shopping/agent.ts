@@ -10,7 +10,14 @@ import {
   detectExplicitCategory,
   shoppingIntentSchema,
   type ShoppingCategory,
+  type ShoppingIntent,
 } from './intent'
+import {
+  createEmptyShoppingContext,
+  getMissingFields,
+  mergeShoppingContext,
+  type ShoppingContext,
+} from './shoppingContext'
 import { checkProductAvailability } from './checkProductAvailability'
 import {
   checkProductAvailabilityInputSchema,
@@ -36,7 +43,34 @@ const shoppingAgentResponseSchema = z.object({
 
 type ShoppingAgentContext = {
   explicitCategory: ShoppingCategory | null
+  shoppingContext: ShoppingContext
 }
+
+type ShoppingIntentAgentContext = {
+  explicitCategory: ShoppingCategory | null
+}
+
+const shoppingIntentAgent = new Agent<
+  ShoppingIntentAgentContext,
+  typeof shoppingIntentSchema
+>({
+  name: '33 Pearl Atelier Shopping Intent Extractor',
+  instructions: ({ context }) => [
+    'Extract only the shopping preferences expressed or clearly implied in the current customer message.',
+    'Return null for every nullable field not expressed in this message and an empty style array when no style is expressed.',
+    'Do not carry over preferences from earlier messages.',
+    'Treat corrections such as "actually", "instead", or "change it to" as explicit new values. Extract the corrected value so it replaces the previous scalar value during context merge.',
+    'Normalize category words: earring, earrings, stud, or studs means earrings; necklace or necklaces means necklaces; bracelet or bracelets means bracelets; ring or rings means rings; pendant or pendants means pendants; brooch or brooches means brooches; loose pearl or loose pearls means loose_pearls.',
+    ...(context.explicitCategory
+      ? [
+          `A deterministic parser found the category "${context.explicitCategory}". Set category to "${context.explicitCategory}".`,
+        ]
+      : []),
+    'Descriptive words such as elegant, minimal, classic, modern, or glamorous belong in style.',
+    'Map understated, delicate, or low-profile to statementLevel subtle; noticeable but restrained to balanced; and bold, glamorous, or eye-catching to statement.',
+  ].join('\n'),
+  outputType: shoppingIntentSchema,
+})
 
 const searchProductsTool = tool({
   name: 'search_products',
@@ -81,8 +115,9 @@ export const shoppingAgent = new Agent<
     'You help customers discover published pearl jewelry from 33 Pearl Atelier.',
 
     // Intent extraction
-    'Always extract every preference stated by the customer into intent. Use null for nullable fields they did not provide and an empty array when no style was provided.',
-    'Only put preferences explicitly stated or clearly implied by the customer into intent. Do not copy product attributes, descriptions, or tool-result language into intent unless the customer expressed them as a preference.',
+    `The merged shopping context for this turn is ${JSON.stringify(context.shoppingContext)}.`,
+    'Base every clarification, search, and recommendation decision on this merged shopping context, not only on the latest customer message.',
+    'Return the merged shopping context exactly in intent. Do not clear preferences merely because the latest message omits them.',
     'Determine intent.category before deciding whether clarification is needed.',
     'Normalize category words as follows: earring, earrings, stud, or studs means earrings; necklace or necklaces means necklaces; bracelet or bracelets means bracelets; ring or rings means rings; pendant or pendants means pendants; brooch or brooches means brooches; loose pearl or loose pearls means loose_pearls.',
     'If the customer explicitly uses any mapped category word, intent.category must be that category and must not be null.',
@@ -161,16 +196,64 @@ export const shoppingAgent = new Agent<
   outputType: shoppingAgentResponseSchema,
 })
 
-export async function runShoppingAgent(message: string) {
-  const result = await run(shoppingAgent, message, {
-    context: { explicitCategory: detectExplicitCategory(message) },
+async function extractShoppingIntent(message: string): Promise<ShoppingIntent> {
+  const explicitCategory = detectExplicitCategory(message)
+  const result = await run(shoppingIntentAgent, message, {
+    context: { explicitCategory },
   })
+
+  if (!result.finalOutput) {
+    throw new Error('The intent extractor completed without a final response.')
+  }
+
   return result.finalOutput
 }
 
-export async function runShoppingAgentWithDetails(message: string) {
+async function prepareShoppingTurn(
+  message: string,
+  currentContext: ShoppingContext
+) {
+  const incomingIntent = await extractShoppingIntent(message)
+  const shoppingContext = mergeShoppingContext(currentContext, incomingIntent)
+  const missingFields = getMissingFields(shoppingContext)
+
+  return { incomingIntent, shoppingContext, missingFields }
+}
+
+export async function runShoppingAgent(
+  message: string,
+  currentContext: ShoppingContext = createEmptyShoppingContext()
+) {
+  const result = await runShoppingAgentWithDetails(message, currentContext)
+  return result.output
+}
+
+export async function runShoppingAgentWithDetails(
+  message: string,
+  currentContext: ShoppingContext = createEmptyShoppingContext()
+) {
+  const { incomingIntent, shoppingContext, missingFields } =
+    await prepareShoppingTurn(message, currentContext)
+
+  if (missingFields.length > 0) {
+    return {
+      output: {
+        status: 'needs_clarification' as const,
+        missingFields,
+        intent: shoppingContext,
+        message: 'What type of jewelry are you looking for?',
+      },
+      incomingIntent,
+      shoppingContext,
+      toolCalls: [],
+    }
+  }
+
   const result = await run(shoppingAgent, message, {
-    context: { explicitCategory: detectExplicitCategory(message) },
+    context: {
+      explicitCategory: detectExplicitCategory(message),
+      shoppingContext,
+    },
   })
   const toolOutputs = result.newItems.filter(
     (item): item is RunToolCallOutputItem => item instanceof RunToolCallOutputItem
@@ -200,6 +283,8 @@ export async function runShoppingAgentWithDetails(message: string) {
 
   return {
     output: result.finalOutput,
+    incomingIntent,
+    shoppingContext,
     toolCalls,
   }
 }

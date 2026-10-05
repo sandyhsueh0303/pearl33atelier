@@ -6,6 +6,7 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start -p $PORT -H 0.0.0.0",
+    "test:shopping-context": "node --import tsx --test scripts/shopping-context.test.ts",
     "test:shopping-agent": "node --env-file=.env.local --import tsx scripts/test-shopping-agent.ts"
   },
   "dependencies": {
