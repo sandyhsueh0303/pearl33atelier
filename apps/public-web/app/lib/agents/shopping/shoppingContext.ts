@@ -1,11 +1,21 @@
+import { z } from 'zod'
 import {
   shoppingIntentSchema,
   type ShoppingIntent,
 } from './intent'
 
-export const ShoppingContextSchema = shoppingIntentSchema
+export const recommendedProductSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string().min(1),
+})
 
-export type ShoppingContext = ShoppingIntent
+export type RecommendedProduct = z.infer<typeof recommendedProductSchema>
+
+export const ShoppingContextSchema = shoppingIntentSchema.extend({
+  recommendedProducts: z.array(recommendedProductSchema).max(3).default([]),
+})
+
+export type ShoppingContext = z.infer<typeof ShoppingContextSchema>
 
 export type ShoppingSession = {
   context: ShoppingContext
@@ -22,6 +32,7 @@ export function createEmptyShoppingContext(): ShoppingContext {
     pearlPreference: null,
     pearlSize: null,
     metalPreference: null,
+    recommendedProducts: [],
   }
 }
 
@@ -59,5 +70,17 @@ export function mergeShoppingContext(
     pearlPreference: incoming.pearlPreference ?? current.pearlPreference,
     pearlSize: incoming.pearlSize ?? current.pearlSize,
     metalPreference: incoming.metalPreference ?? current.metalPreference,
+    recommendedProducts: [...current.recommendedProducts],
+  }
+}
+
+export function replaceRecommendedProducts(
+  context: ShoppingContext,
+  recommendedProducts: RecommendedProduct[]
+): ShoppingContext {
+  return {
+    ...context,
+    style: [...context.style],
+    recommendedProducts: recommendedProducts.map((product) => ({ ...product })),
   }
 }

@@ -16,8 +16,17 @@ import {
   createEmptyShoppingContext,
   getMissingFields,
   mergeShoppingContext,
+  recommendedProductSchema,
+  replaceRecommendedProducts,
+  type RecommendedProduct,
   type ShoppingContext,
 } from './shoppingContext'
+import {
+  hasRecommendedProductReference,
+  planRecommendedProductReferenceTools,
+  resolveRecommendedProductReference,
+  type RecommendedProductReferencePlan,
+} from './referenceResolution'
 import { checkProductAvailability } from './checkProductAvailability'
 import {
   checkProductAvailabilityInputSchema,
@@ -38,12 +47,15 @@ const shoppingAgentResponseSchema = z.object({
   status: z.enum(['needs_clarification', 'recommendation', 'no_results']),
   missingFields: z.array(z.string()),
   intent: shoppingIntentSchema,
+  recommendedProducts: z.array(recommendedProductSchema).max(3),
   message: z.string().min(1).max(1_200),
 })
 
 type ShoppingAgentContext = {
   explicitCategory: ShoppingCategory | null
   shoppingContext: ShoppingContext
+  resolvedProductReference: RecommendedProduct | null
+  referenceToolPlan: RecommendedProductReferencePlan | null
 }
 
 type ShoppingIntentAgentContext = {
@@ -105,6 +117,32 @@ const getProductDetailsTool = tool({
   },
 })
 
+function createResolvedProductDetailsTool(product: RecommendedProduct) {
+  return tool({
+    name: 'get_product_details',
+    description: `Return richer customer-facing facts for the resolved product "${product.title}".`,
+    parameters: z.object({ productId: z.literal(product.id) }),
+    outputSchema: getProductDetailsOutputSchema,
+    async execute() {
+      return getProductDetails({ productId: product.id })
+    },
+  })
+}
+
+function createResolvedProductAvailabilityTool(product: RecommendedProduct) {
+  return tool({
+    name: 'check_product_availability',
+    description: `Return current purchasability for the resolved product "${product.title}".`,
+    parameters: z.object({
+      productIds: z.array(z.literal(product.id)).length(1),
+    }),
+    outputSchema: checkProductAvailabilityOutputSchema,
+    async execute() {
+      return checkProductAvailability({ productIds: [product.id] })
+    },
+  })
+}
+
 export const shoppingAgent = new Agent<
   ShoppingAgentContext,
   typeof shoppingAgentResponseSchema
@@ -118,6 +156,20 @@ export const shoppingAgent = new Agent<
     `The merged shopping context for this turn is ${JSON.stringify(context.shoppingContext)}.`,
     'Base every clarification, search, and recommendation decision on this merged shopping context, not only on the latest customer message.',
     'Return the merged shopping context exactly in intent. Do not clear preferences merely because the latest message omits them.',
+    'The recommendedProducts output must contain only the products actually recommended in the customer-facing message, in exactly the same displayed order. Include each product ID and exact title.',
+    'For a recommendation response, recommendedProducts must contain every displayed recommendation and no undisplayed search result. For a non-recommendation response, return an empty recommendedProducts array.',
+    ...(context.resolvedProductReference
+      ? [
+          `The customer ordinal reference deterministically resolves to product ID "${context.resolvedProductReference.id}" with title "${context.resolvedProductReference.title}".`,
+          'Use this exact resolved product. Do not infer a different array position and do not search for it.',
+          context.referenceToolPlan?.getDetails
+            ? 'Call get_product_details with the resolved product ID.'
+            : 'Do not call get_product_details because the request only requires a fresh availability check.',
+          context.referenceToolPlan?.checkAvailability
+            ? 'Call check_product_availability with only the resolved product ID.'
+            : 'Do not call check_product_availability because the request does not ask about current purchasability.',
+        ]
+      : []),
     'Determine intent.category before deciding whether clarification is needed.',
     'Normalize category words as follows: earring, earrings, stud, or studs means earrings; necklace or necklaces means necklaces; bracelet or bracelets means bracelets; ring or rings means rings; pendant or pendants means pendants; brooch or brooches means brooches; loose pearl or loose pearls means loose_pearls.',
     'If the customer explicitly uses any mapped category word, intent.category must be that category and must not be null.',
@@ -232,15 +284,43 @@ export async function runShoppingAgentWithDetails(
   message: string,
   currentContext: ShoppingContext = createEmptyShoppingContext()
 ) {
+  const hasProductReference = hasRecommendedProductReference(message)
+  const resolvedProductReference = resolveRecommendedProductReference(
+    message,
+    currentContext.recommendedProducts
+  )
+
+  if (hasProductReference && !resolvedProductReference) {
+    const recommendationCount = currentContext.recommendedProducts.length
+    const countDescription =
+      recommendationCount === 0
+        ? 'I do not have a previous recommendation to reference.'
+        : `I only recommended ${recommendationCount} product${recommendationCount === 1 ? '' : 's'}.`
+
+    return {
+      output: {
+        status: 'needs_clarification' as const,
+        missingFields: [],
+        intent: currentContext,
+        recommendedProducts: [],
+        message: `${countDescription} Which product would you like to hear more about?`,
+      },
+      incomingIntent: null,
+      shoppingContext: currentContext,
+      toolCalls: [],
+    }
+  }
+
   const { incomingIntent, shoppingContext, missingFields } =
     await prepareShoppingTurn(message, currentContext)
 
-  if (missingFields.length > 0) {
+  if (missingFields.length > 0 && !resolvedProductReference) {
     return {
       output: {
         status: 'needs_clarification' as const,
         missingFields,
         intent: shoppingContext,
+        recommendedProducts: [],
         message: 'What type of jewelry are you looking for?',
       },
       incomingIntent,
@@ -249,10 +329,27 @@ export async function runShoppingAgentWithDetails(
     }
   }
 
-  const result = await run(shoppingAgent, message, {
+  const referenceToolPlan = resolvedProductReference
+    ? planRecommendedProductReferenceTools(message)
+    : null
+  const agentForTurn = resolvedProductReference
+    ? shoppingAgent.clone({
+        tools: [
+          ...(referenceToolPlan?.getDetails
+            ? [createResolvedProductDetailsTool(resolvedProductReference)]
+            : []),
+          ...(referenceToolPlan?.checkAvailability
+            ? [createResolvedProductAvailabilityTool(resolvedProductReference)]
+            : []),
+        ],
+      })
+    : shoppingAgent
+  const result = await run(agentForTurn, message, {
     context: {
       explicitCategory: detectExplicitCategory(message),
       shoppingContext,
+      resolvedProductReference,
+      referenceToolPlan,
     },
   })
   const toolOutputs = result.newItems.filter(
@@ -281,10 +378,19 @@ export async function runShoppingAgentWithDetails(
       }
     })
 
+  const updatedShoppingContext =
+    !resolvedProductReference &&
+    result.finalOutput?.status === 'recommendation'
+      ? replaceRecommendedProducts(
+          shoppingContext,
+          result.finalOutput.recommendedProducts
+        )
+      : shoppingContext
+
   return {
     output: result.finalOutput,
     incomingIntent,
-    shoppingContext,
+    shoppingContext: updatedShoppingContext,
     toolCalls,
   }
 }
