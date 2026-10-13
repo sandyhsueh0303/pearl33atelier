@@ -570,6 +570,11 @@
     margin-bottom: 4rem;
   }
 
+  .homeBlobOne,
+  .homeBlobTwo {
+    animation: none;
+  }
+
   .orderHelpActions {
     margin-left: 0;
   }
