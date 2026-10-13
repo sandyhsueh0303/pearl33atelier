@@ -39,7 +39,6 @@ export const shoppingIntentSchema = z.object({
   maxPrice: z.number().nonnegative().nullable(),
   occasion: z.string().trim().max(80).nullable(),
   style: z.array(z.string().trim().min(1).max(80)).max(8),
-  statementLevel: z.enum(['subtle', 'balanced', 'statement']).nullable(),
   pearlPreference: z.string().trim().max(80).nullable(),
   pearlSize: z.string().trim().max(80).nullable(),
   metalPreference: z.string().trim().max(80).nullable(),

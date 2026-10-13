@@ -28,7 +28,6 @@ export function createEmptyShoppingContext(): ShoppingContext {
     maxPrice: null,
     occasion: null,
     style: [],
-    statementLevel: null,
     pearlPreference: null,
     pearlSize: null,
     metalPreference: null,
@@ -66,7 +65,6 @@ export function mergeShoppingContext(
       incoming.style.length > 0
         ? [...new Set([...current.style, ...incoming.style])]
         : [...current.style],
-    statementLevel: incoming.statementLevel ?? current.statementLevel,
     pearlPreference: incoming.pearlPreference ?? current.pearlPreference,
     pearlSize: incoming.pearlSize ?? current.pearlSize,
     metalPreference: incoming.metalPreference ?? current.metalPreference,

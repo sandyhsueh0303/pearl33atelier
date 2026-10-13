@@ -16,7 +16,6 @@ function partialIntent(
     maxPrice: null,
     occasion: null,
     style: [],
-    statementLevel: null,
     pearlPreference: null,
     pearlSize: null,
     metalPreference: null,

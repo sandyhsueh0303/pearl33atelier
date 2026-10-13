@@ -1,0 +1,143 @@
+[
+  {
+    "name": "clarification preserves style and occasion",
+    "turns": [
+      {
+        "input": "I want something minimal for a wedding.",
+        "expected": {
+          "context": {
+            "category": null,
+            "occasion": "wedding",
+            "style": [
+              "minimal"
+            ]
+          },
+          "status": "needs_clarification",
+          "missingFields": [
+            "category"
+          ],
+          "mustNotCallTools": [
+            "search_products",
+            "check_product_availability",
+            "rank_products"
+          ]
+        }
+      },
+      {
+        "input": "Earrings.",
+        "expected": {
+          "context": {
+            "category": "earrings",
+            "occasion": "wedding",
+            "style": [
+              "minimal"
+            ]
+          },
+          "status": "recommendation",
+          "mustCallTools": [
+            "search_products",
+            "check_product_availability",
+            "rank_products"
+          ],
+          "toolCallCounts": {
+            "search_products": 1,
+            "check_product_availability": 1,
+            "rank_products": 1
+          },
+          "behavior": {
+            "availabilityMustCoverAllSearchResults": true,
+            "mustNotRecommendUnavailable": true,
+            "maxRecommendations": 3
+          },
+          "mustContain": [
+            "Textured Hoop Pearl Drops",
+            "18K South Sea Drop Earrings"
+          ],
+          "mustNotContain": [
+            "Minimal Pearl Drops",
+            "for your wedding",
+            "neutralReasons",
+            "matchedReasons",
+            "conflictingReasons",
+            "score"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "preference refinement preserves category and budget",
+    "turns": [
+      {
+        "input": "I want earrings under $300.",
+        "expected": {
+          "context": {
+            "category": "earrings",
+            "maxPrice": 300,
+            "style": []
+          },
+          "status": "recommendation",
+          "mustCallTools": [
+            "search_products",
+            "check_product_availability",
+            "rank_products"
+          ],
+          "toolCallCounts": {
+            "search_products": 1,
+            "check_product_availability": 1,
+            "rank_products": 1
+          }
+        }
+      },
+      {
+        "input": "Make them more minimal.",
+        "expected": {
+          "context": {
+            "category": "earrings",
+            "maxPrice": 300,
+            "style": [
+              "minimal"
+            ]
+          },
+          "status": "recommendation",
+          "mustCallTools": [
+            "search_products",
+            "check_product_availability",
+            "rank_products"
+          ],
+          "toolCallCounts": {
+            "search_products": 1,
+            "check_product_availability": 1,
+            "rank_products": 1
+          },
+          "toolArguments": {
+            "search_products": {
+              "category": "earrings",
+              "minPrice": null,
+              "maxPrice": 300,
+              "pearlPreference": null,
+              "sortBy": null,
+              "productName": null
+            }
+          },
+          "behavior": {
+            "availabilityMustCoverAllSearchResults": true,
+            "mustNotRecommendUnavailable": true,
+            "maxRecommendations": 3
+          },
+          "mustContain": [
+            "18k Classic Akoya Pearl Stud Earrings",
+            "18k Akoya Pearl Stud Earrings",
+            "18k Petite Akoya Pearl Stud Earrings"
+          ],
+          "mustNotContain": [
+            "neutralReasons",
+            "matchedReasons",
+            "conflictingReasons",
+            "score"
+          ]
+        }
+      }
+    ]
+  }
+]

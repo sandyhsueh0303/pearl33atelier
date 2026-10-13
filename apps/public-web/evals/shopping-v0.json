@@ -90,8 +90,7 @@
     "expected": {
       "intent": {
         "category": null,
-        "style": ["elegant"],
-        "statementLevel": "subtle"
+        "style": ["elegant", "understated"]
       },
       "status": "needs_clarification",
       "missingFields": ["category"],
@@ -377,6 +376,126 @@
       "mustContain": [
         "available",
         "329"
+      ]
+    }
+  },
+  {
+    "name": "minimal wedding necklace with size preference",
+    "input": "I want a minimal necklace for a wedding, around 9-12mm.",
+    "expected": {
+      "intent": {
+        "category": "necklaces",
+        "occasion": "wedding",
+        "style": ["minimal"],
+        "pearlSize": "9-12mm"
+      },
+
+      "status": "recommendation",
+      "missingFields": [],
+
+      "mustCallTools": [
+        "search_products",
+        "check_product_availability",
+        "rank_products"
+      ],
+
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 1,
+        "rank_products": 1
+      },
+
+      "toolArguments": {
+        "search_products": {
+          "category": "necklaces",
+          "minPrice": null,
+          "maxPrice": null,
+          "pearlPreference": null,
+          "sortBy": null,
+          "productName": null
+        }
+      },
+
+      "behavior": {
+        "availabilityMustCoverAllSearchResults": true,
+        "recommendedProductsMustComeFromSearch": true,
+        "recommendedProductsMustHaveAvailabilityCheck": true,
+        "mustNotRecommendUnavailable": true,
+        "maxRecommendations": 3
+      },
+
+      "mustContain": [
+        "Fairy Chain Pearl Necklace",
+        "Iridescent Diamond Pearl Pendant",
+        "Modern Gold Pearl Pendant"
+      ],
+
+      "mustNotContain": [
+        "neutralReasons",
+        "matchedReasons",
+        "conflictingReasons",
+        "score",
+        "does not support the wedding occasion",
+        "not suitable for weddings"
+      ]
+    }
+  },
+  {
+    "name": "solid gold preference discloses vermeil mismatch",
+    "input": "I want a minimal solid gold necklace.",
+    "expected": {
+      "intent": {
+        "category": "necklaces",
+        "style": ["minimal"],
+        "metalPreference": "solid gold"
+      },
+
+      "status": "recommendation",
+      "missingFields": [],
+
+      "mustCallTools": [
+        "search_products",
+        "check_product_availability",
+        "rank_products"
+      ],
+
+      "toolCallCounts": {
+        "search_products": 1,
+        "check_product_availability": 1,
+        "rank_products": 1
+      },
+
+      "toolArguments": {
+        "search_products": {
+          "category": "necklaces",
+          "minPrice": null,
+          "maxPrice": null,
+          "pearlPreference": null,
+          "sortBy": null,
+          "productName": null
+        }
+      },
+
+      "behavior": {
+        "availabilityMustCoverAllSearchResults": true,
+        "recommendedProductsMustComeFromSearch": true,
+        "recommendedProductsMustHaveAvailabilityCheck": true,
+        "mustNotRecommendUnavailable": true,
+        "maxRecommendations": 3
+      },
+
+      "mustContain": [
+        "gold vermeil",
+        "rather than solid gold"
+      ],
+
+      "mustNotContain": [
+        "matches your solid gold preference",
+        "solid gold match",
+        "neutralReasons",
+        "matchedReasons",
+        "conflictingReasons",
+        "score"
       ]
     }
   }

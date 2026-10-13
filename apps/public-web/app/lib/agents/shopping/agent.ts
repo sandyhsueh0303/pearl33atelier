@@ -31,16 +31,26 @@ import { checkProductAvailability } from './checkProductAvailability'
 import {
   checkProductAvailabilityInputSchema,
   checkProductAvailabilityOutputSchema,
+  type CheckProductAvailabilityOutput,
 } from './checkProductAvailabilitySchema'
 import { getProductDetails } from './getProductDetails'
 import {
   getProductDetailsInputSchema,
   getProductDetailsOutputSchema,
+  type ProductDetailsResult,
 } from './getProductDetailsSchema'
+import {
+  needsProductDetailsForSoftPreferences,
+  rankProducts,
+  rankedProductsOutputSchema,
+  type RankedProduct,
+} from './rankProducts'
+import { recommendationExplanationInstructions } from './recommendationExplanation'
 import { searchProducts } from './searchProducts'
 import {
   searchProductsInputSchema,
   searchProductsOutputSchema,
+  type SearchProductsOutput,
 } from './searchProductsSchema'
 
 const shoppingAgentResponseSchema = z.object({
@@ -56,6 +66,12 @@ type ShoppingAgentContext = {
   shoppingContext: ShoppingContext
   resolvedProductReference: RecommendedProduct | null
   referenceToolPlan: RecommendedProductReferencePlan | null
+  rankingState: {
+    searchResult: SearchProductsOutput | null
+    availabilityResult: CheckProductAvailabilityOutput | null
+    productDetails: Map<string, ProductDetailsResult>
+    rankedProducts: RankedProduct[] | null
+  }
 }
 
 type ShoppingIntentAgentContext = {
@@ -78,8 +94,7 @@ const shoppingIntentAgent = new Agent<
           `A deterministic parser found the category "${context.explicitCategory}". Set category to "${context.explicitCategory}".`,
         ]
       : []),
-    'Descriptive words such as elegant, minimal, classic, modern, or glamorous belong in style.',
-    'Map understated, delicate, or low-profile to statementLevel subtle; noticeable but restrained to balanced; and bold, glamorous, or eye-catching to statement.',
+    'Descriptive words such as elegant, minimal, classic, modern, glamorous, subtle, understated, delicate, bold, statement, dramatic, or eye-catching belong in style.',
   ].join('\n'),
   outputType: shoppingIntentSchema,
 })
@@ -90,8 +105,11 @@ const searchProductsTool = tool({
     'Search published 33 Pearl Atelier products using category and optional product name, minimum price, maximum price, pearl preference, and price ordering.',
   parameters: searchProductsInputSchema,
   outputSchema: searchProductsOutputSchema,
-  async execute(input) {
-    return searchProducts(input)
+  async execute(input, runContext) {
+    const output = await searchProducts(input)
+    const context = runContext?.context as ShoppingAgentContext | undefined
+    if (context) context.rankingState.searchResult = output
+    return output
   },
 })
 
@@ -101,8 +119,11 @@ const checkProductAvailabilityTool = tool({
     'Return the current purchasability of one to three published products in one batch using the existing inventory and BOM domain logic. Pass every product returned by search_products in one call.',
   parameters: checkProductAvailabilityInputSchema,
   outputSchema: checkProductAvailabilityOutputSchema,
-  async execute(input) {
-    return checkProductAvailability(input)
+  async execute(input, runContext) {
+    const output = await checkProductAvailability(input)
+    const context = runContext?.context as ShoppingAgentContext | undefined
+    if (context) context.rankingState.availabilityResult = output
+    return output
   },
 })
 
@@ -112,8 +133,57 @@ const getProductDetailsTool = tool({
     'Return richer customer-facing facts for one already-known published product. This tool does not search for products or determine availability.',
   parameters: getProductDetailsInputSchema,
   outputSchema: getProductDetailsOutputSchema,
-  async execute(input) {
-    return getProductDetails(input)
+  async execute(input, runContext) {
+    const output = await getProductDetails(input)
+    const context = runContext?.context as ShoppingAgentContext | undefined
+    if (context && output.product) {
+      context.rankingState.productDetails.set(output.product.id, output.product)
+    }
+    return output
+  },
+})
+
+const rankProductsTool = tool({
+  name: 'rank_products',
+  description:
+    'Deterministically rank the current run’s purchasable search candidates using ShoppingContext soft preferences and grounded product evidence. Call only after search_products and check_product_availability.',
+  parameters: z.object({}),
+  outputSchema: rankedProductsOutputSchema,
+  async execute(_input, runContext) {
+    const context = runContext?.context as ShoppingAgentContext | undefined
+    const searchResult = context?.rankingState.searchResult
+    const availabilityResult = context?.rankingState.availabilityResult
+
+    if (!context || !searchResult || !availabilityResult) {
+      throw new Error(
+        'rank_products requires search and availability results from the current run.'
+      )
+    }
+
+    if (needsProductDetailsForSoftPreferences(context.shoppingContext)) {
+      const purchasableProductIds = availabilityResult.products
+        .filter((product) => product.purchasability !== 'unavailable')
+        .map((product) => product.productId)
+
+      for (const productId of purchasableProductIds) {
+        if (context.rankingState.productDetails.has(productId)) continue
+
+        const output = await getProductDetails({ productId })
+        if (output.product) {
+          context.rankingState.productDetails.set(productId, output.product)
+        }
+      }
+    }
+
+    const products = rankProducts({
+      products: searchResult.products,
+      shoppingContext: context.shoppingContext,
+      availability: availabilityResult.products,
+      productDetails: context.rankingState.productDetails,
+    })
+    context.rankingState.rankedProducts = products
+
+    return { products }
   },
 })
 
@@ -179,8 +249,7 @@ export const shoppingAgent = new Agent<
         ]
       : []),
     'Example: "I need earrings under 300 dollars" means category earrings and maxPrice 300, so search instead of asking for the category.',
-    'Descriptive words such as elegant, minimal, classic, modern, or glamorous belong in the intent.style array, even when required fields are missing.',
-    'Set intent.statementLevel to subtle for understated, delicate, low-profile requests; balanced for noticeable but restrained requests; and statement for bold, glamorous, or eye-catching requests.',
+    'Descriptive words such as elegant, minimal, classic, modern, glamorous, subtle, understated, delicate, bold, statement, dramatic, or eye-catching belong in the intent.style array, even when required fields are missing.',
     'Pearl measurements such as 8mm or 8–8.5mm belong in intent.pearlSize.',
     'Metal preferences such as 18k gold, white gold, or sterling silver belong in intent.metalPreference.',
 
@@ -207,7 +276,16 @@ export const shoppingAgent = new Agent<
 
     // Search result interpretation
     'pearlSize and metalPreference are soft ranking preferences, not database filters. Use them only to rank returned products when the returned size_mm or material directly supports the preference.',
-    'style, occasion, and statementLevel are captured shopping context but are not currently searchable product fields. Do not claim that search_products filtered by them, and do not invent a match that the returned product data does not support.',
+    'style and occasion are captured shopping context but are not currently searchable product fields. Do not claim that search_products filtered by them, and do not invent a match that the returned product data does not support.',
+
+    // Soft-preference ranking
+    'After search_products and check_product_availability, you must call rank_products exactly once before producing a recommendation or no-results response.',
+    'rank_products calculates all soft-preference scores and ordering. Never calculate, change, or override its scores or order yourself.',
+    needsProductDetailsForSoftPreferences(context.shoppingContext)
+      ? 'Semantic soft preferences are present. rank_products will fetch missing details only for available or preorder candidates. Do not call get_product_details separately for ranking.'
+      : 'No semantic soft preferences are present. rank_products will use size_mm and material from search results and will not fetch product details.',
+    'Recommend every product returned by rank_products, up to three, in exactly that order. If it returns products, set status to recommendation; if it returns none, set status to no_results.',
+    ...recommendationExplanationInstructions,
 
     // Product detail lookup
     'If the customer refers to a specific product by name but no product ID is known, use search_products with productName to resolve that name to a real catalog product. Never ask the customer to provide an internal product ID.',
@@ -229,7 +307,7 @@ export const shoppingAgent = new Agent<
     // Recommendation policy
     'Prioritize available products as the main recommendations and state that they are currently available.',
     'You may recommend preorder products, but you must clearly state that each one is a preorder and include its preorder note when provided.',
-    'Normally exclude unavailable products. Mention one only when it is an exceptional match, clearly say it cannot currently be purchased, and prioritize purchasable alternatives.',
+    'Never recommend unavailable products. Availability is a hard gate regardless of soft-preference score.',
 
     'If at least one checked candidate is available or preorder, set status to recommendation and use an empty missingFields array.',
     'If all checked candidates are unavailable, set status to no_results and use an empty missingFields array.',
@@ -244,7 +322,12 @@ export const shoppingAgent = new Agent<
     // Final response
     'Return a warm, concise customer-facing answer in the message field.',
   ].join('\n'),
-  tools: [searchProductsTool, checkProductAvailabilityTool, getProductDetailsTool],
+  tools: [
+    searchProductsTool,
+    checkProductAvailabilityTool,
+    getProductDetailsTool,
+    rankProductsTool,
+  ],
   outputType: shoppingAgentResponseSchema,
 })
 
@@ -344,13 +427,20 @@ export async function runShoppingAgentWithDetails(
         ],
       })
     : shoppingAgent
-  const result = await run(agentForTurn, message, {
-    context: {
-      explicitCategory: detectExplicitCategory(message),
-      shoppingContext,
-      resolvedProductReference,
-      referenceToolPlan,
+  const agentContext: ShoppingAgentContext = {
+    explicitCategory: detectExplicitCategory(message),
+    shoppingContext,
+    resolvedProductReference,
+    referenceToolPlan,
+    rankingState: {
+      searchResult: null,
+      availabilityResult: null,
+      productDetails: new Map(),
+      rankedProducts: null,
     },
+  }
+  const result = await run(agentForTurn, message, {
+    context: agentContext,
   })
   const toolOutputs = result.newItems.filter(
     (item): item is RunToolCallOutputItem => item instanceof RunToolCallOutputItem
@@ -378,17 +468,40 @@ export async function runShoppingAgentWithDetails(
       }
     })
 
+  if (
+    !resolvedProductReference &&
+    agentContext.rankingState.availabilityResult &&
+    !agentContext.rankingState.rankedProducts
+  ) {
+    throw new Error('The agent recommended products without ranking them.')
+  }
+
+  const rankedRecommendations =
+    agentContext.rankingState.rankedProducts?.map((product) => ({
+      id: product.productId,
+      title: product.title,
+    })) ?? []
+  const finalOutput =
+    !resolvedProductReference && result.finalOutput
+      ? {
+          ...result.finalOutput,
+          recommendedProducts:
+            result.finalOutput.status === 'recommendation'
+              ? rankedRecommendations
+              : [],
+        }
+      : result.finalOutput
   const updatedShoppingContext =
     !resolvedProductReference &&
-    result.finalOutput?.status === 'recommendation'
+    finalOutput?.status === 'recommendation'
       ? replaceRecommendedProducts(
           shoppingContext,
-          result.finalOutput.recommendedProducts
+          rankedRecommendations
         )
       : shoppingContext
 
   return {
-    output: result.finalOutput,
+    output: finalOutput,
     incomingIntent,
     shoppingContext: updatedShoppingContext,
     toolCalls,
