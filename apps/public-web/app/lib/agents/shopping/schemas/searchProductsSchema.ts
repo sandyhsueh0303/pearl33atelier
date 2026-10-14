@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { shoppingCategorySchema, shoppingIntentSchema } from './intent'
+import { shoppingCategorySchema, shoppingIntentSchema } from '../intent'
 
 export const searchSortSchema = z.enum(['price_asc', 'price_desc'])
 

@@ -1,6 +1,9 @@
 import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
 import type { ProductCategory } from '@pearl33atelier/shared/types'
-import { searchProductsInputSchema, type SearchProductsInput } from './searchProductsSchema'
+import {
+  searchProductsInputSchema,
+  type SearchProductsInput,
+} from '../schemas/searchProductsSchema'
 
 const CATEGORY_VALUES: Record<SearchProductsInput['category'], readonly ProductCategory[]> = {
   bracelets: ['BRACELETS'],

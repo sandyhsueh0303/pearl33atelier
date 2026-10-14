@@ -1,8 +1,8 @@
 import { z } from 'zod'
-import { productAvailabilityResultSchema } from './checkProductAvailabilitySchema'
-import type { ProductDetailsResult } from './getProductDetailsSchema'
+import { productAvailabilityResultSchema } from './schemas/checkProductAvailabilitySchema'
+import type { ProductDetailsResult } from './schemas/getProductDetailsSchema'
 import type { ShoppingContext } from './shoppingContext'
-import { searchProductResultSchema } from './searchProductsSchema'
+import { searchProductResultSchema } from './schemas/searchProductsSchema'
 
 type ProductAvailabilityResult = z.infer<
   typeof productAvailabilityResultSchema

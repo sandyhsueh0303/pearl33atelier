@@ -2,7 +2,7 @@ import { createSupabaseClient } from '@pearl33atelier/shared/supabase'
 import {
   getProductDetailsInputSchema,
   type GetProductDetailsOutput,
-} from './getProductDetailsSchema'
+} from '../schemas/getProductDetailsSchema'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.33pearlatelier.com'
 

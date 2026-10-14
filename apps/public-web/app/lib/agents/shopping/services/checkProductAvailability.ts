@@ -4,11 +4,11 @@ import {
   resolveProductAvailability,
   type AvailabilityKind,
 } from '@pearl33atelier/shared'
-import { createSupabaseAdminClient } from '../../supabaseAdmin'
+import { createSupabaseAdminClient } from '../../../supabaseAdmin'
 import {
   checkProductAvailabilityInputSchema,
   type ProductPurchasability,
-} from './checkProductAvailabilitySchema'
+} from '../schemas/checkProductAvailabilitySchema'
 
 function toPurchasability(availability: AvailabilityKind): ProductPurchasability {
   if (availability === 'IN_STOCK') return 'available'

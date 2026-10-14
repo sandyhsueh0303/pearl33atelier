@@ -1,10 +1,10 @@
-import type { ProductDetailsResult } from '../../app/lib/agents/shopping/getProductDetailsSchema'
+import type { ProductDetailsResult } from '../../app/lib/agents/shopping/schemas/getProductDetailsSchema'
 import {
   createEmptyShoppingContext,
   type ShoppingContext,
 } from '../../app/lib/agents/shopping/shoppingContext'
-import type { SearchProductsOutput } from '../../app/lib/agents/shopping/searchProductsSchema'
-import type { CheckProductAvailabilityOutput } from '../../app/lib/agents/shopping/checkProductAvailabilitySchema'
+import type { SearchProductsOutput } from '../../app/lib/agents/shopping/schemas/searchProductsSchema'
+import type { CheckProductAvailabilityOutput } from '../../app/lib/agents/shopping/schemas/checkProductAvailabilitySchema'
 
 type SearchProduct = SearchProductsOutput['products'][number]
 type Availability = CheckProductAvailabilityOutput['products'][number]
