@@ -21,6 +21,9 @@ export default function Navbar() {
           <Link href="/admin/products" className={styles.navLink}>
             Products
           </Link>
+          <Link href="/admin/etsy-listing" className={styles.navLink}>
+            Etsy Listing
+          </Link>
           <Link href="/admin/inventory" className={styles.navLink}>
             Inventory
           </Link>
@@ -66,6 +69,9 @@ export default function Navbar() {
         <div id="mobile-admin-menu" className={styles.mobileMenu}>
           <Link href="/admin/products" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
             Products
+          </Link>
+          <Link href="/admin/etsy-listing" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
+            Etsy Listing
           </Link>
           <Link href="/admin/inventory" className={styles.mobileMenuLink} onClick={() => setMobileMenuOpen(false)}>
             Inventory

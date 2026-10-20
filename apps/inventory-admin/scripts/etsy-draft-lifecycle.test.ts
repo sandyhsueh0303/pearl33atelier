@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import {
   beginEtsyListingDraftWithClient,
   claimFailedEtsyListingDraftWithClient,
   EtsyApiError,
+  getEtsyListingDraftWithClient,
 } from '../app/api/etsy/etsyClient'
 import {
   getEtsyDraftFailureDisposition,
@@ -22,6 +24,10 @@ import {
   prepareReservationAfterImageValidation,
   resolveEtsyDraftImageOrder,
 } from '../app/api/products/[id]/etsy-listing/create/route'
+import {
+  buildEtsyDraftRecoveryResponse,
+  EtsyDraftRecoveryValidationError,
+} from '../app/api/products/[id]/etsy-listing/draft/route'
 
 const draft: EtsyListingDraft = {
   title: 'Akoya Pearl Stud Earrings',
@@ -50,6 +56,26 @@ const draft: EtsyListingDraft = {
   itemHeight: 2,
   itemDimensionsUnit: 'in',
   imageOrder: ['11111111-1111-4111-8111-111111111111'],
+}
+
+function persistedRecord(overrides: Record<string, unknown> = {}) {
+  return {
+    id: '11111111-1111-4111-8111-111111111111',
+    admin_user_id: 'admin-1',
+    product_id: 'product-1',
+    idempotency_key: '11111111-1111-4111-8111-111111111111',
+    etsy_listing_id: 123456,
+    etsy_shop_id: 68_557_425,
+    status: 'partial' as const,
+    image_order: draft.imageOrder,
+    next_image_rank: 2,
+    listing_payload: {
+      ...draft,
+      readinessState: 'made_to_order',
+    },
+    last_error: 'Resume the Draft to complete it.',
+    ...overrides,
+  }
 }
 
 test('createDraftListing uses processing-profile mode and includes readiness_state_id', () => {
@@ -281,4 +307,128 @@ test('non-unique reservation insert errors are not treated as retries', async ()
     }),
     /Failed to reserve Etsy Draft creation/
   )
+})
+
+test('draft recovery lookup is scoped to the exact draft, admin, and product IDs', async () => {
+  const filters: Array<[string, unknown]> = []
+  const query = {
+    select() { return query },
+    eq(column: string, value: unknown) { filters.push([column, value]); return query },
+    async maybeSingle() { return { data: persistedRecord(), error: null } },
+  }
+  const client = {
+    from(table: string) {
+      assert.equal(table, 'etsy_listing_drafts')
+      return query
+    },
+  }
+
+  const record = await getEtsyListingDraftWithClient(
+    client,
+    '11111111-1111-4111-8111-111111111111',
+    'admin-1',
+    'product-1'
+  )
+
+  assert.equal(record?.id, '11111111-1111-4111-8111-111111111111')
+  assert.deepEqual(filters, [
+    ['id', '11111111-1111-4111-8111-111111111111'],
+    ['admin_user_id', 'admin-1'],
+    ['product_id', 'product-1'],
+  ])
+})
+
+test('draft recovery distinguishes a missing record from a query failure', async () => {
+  function clientFor(result: { data: unknown; error: null | { message: string } }) {
+    return {
+      from() {
+        const query = {
+          select() { return query },
+          eq() { return query },
+          async maybeSingle() { return result },
+        }
+        return query
+      },
+    }
+  }
+
+  const missing = await getEtsyListingDraftWithClient(
+    clientFor({ data: null, error: null }),
+    '11111111-1111-4111-8111-111111111111',
+    'admin-1',
+    'product-1'
+  )
+  assert.equal(missing, null)
+
+  await assert.rejects(
+    getEtsyListingDraftWithClient(
+      clientFor({ data: null, error: { message: 'network unavailable' } }),
+      '11111111-1111-4111-8111-111111111111',
+      'admin-1',
+      'product-1'
+    ),
+    /Failed to restore Etsy Draft: network unavailable/
+  )
+})
+
+test('draft recovery response exposes validated resume state without server-only identity fields', () => {
+  const previousSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://example.supabase.co'
+  let response: ReturnType<typeof buildEtsyDraftRecoveryResponse>
+  try {
+    response = buildEtsyDraftRecoveryResponse(
+      persistedRecord(),
+      [{
+        id: draft.imageOrder[0],
+        storage_path: 'products/example.jpg',
+        sort_order: 0,
+      }]
+    )
+  } finally {
+    if (previousSupabaseUrl === undefined) delete process.env.NEXT_PUBLIC_SUPABASE_URL
+    else process.env.NEXT_PUBLIC_SUPABASE_URL = previousSupabaseUrl
+  }
+
+  assert.equal(response.status, 'partial')
+  assert.equal(response.etsyListingId, 123456)
+  assert.equal(response.nextImageRank, 2)
+  assert.deepEqual(response.listing.imageOrder, draft.imageOrder)
+  assert.equal(response.listing.readinessState, 'made_to_order')
+  assert.equal(response.images[0]?.id, draft.imageOrder[0])
+  assert.equal('admin_user_id' in response, false)
+  assert.equal('idempotency_key' in response, false)
+  assert.equal('etsy_shop_id' in response, false)
+})
+
+test('draft recovery rejects an invalid persisted listing payload', () => {
+  assert.throws(
+    () => buildEtsyDraftRecoveryResponse(
+      persistedRecord({ listing_payload: { title: 'Incomplete' } }),
+      []
+    ),
+    EtsyDraftRecoveryValidationError
+  )
+})
+
+test('client recovery wiring keeps refresh, resume, and retry on the URL draft ID', () => {
+  const source = readFileSync(
+    new URL(
+      '../app/admin/products/[id]/etsy-listing/EtsyListingClient.tsx',
+      import.meta.url
+    ),
+    'utf8'
+  )
+  const persistBeforeCreate = source.indexOf('replaceDraftIdInUrl(draftId)')
+  const createRequest = source.indexOf(
+    'fetch(`/api/products/${productId}/etsy-listing/create`'
+  )
+
+  assert.ok(persistBeforeCreate >= 0)
+  assert.ok(createRequest > persistBeforeCreate)
+  assert.match(source, /searchParams\.get\('draftId'\)/)
+  assert.match(source, /draft\?draftId=\$\{encodeURIComponent\(operationId\)\}/)
+  assert.match(source, /recovery\.kind === 'resume' \? persistedSubmission\.current/)
+  assert.match(source, /if \(status === 'failed' && !listingId\) return 'retry'/)
+  assert.match(source, /return 'blocked'/)
+  assert.match(source, /replaceDraftIdInUrl\(null\)/)
 })

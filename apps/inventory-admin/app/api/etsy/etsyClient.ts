@@ -331,12 +331,12 @@ export async function markEtsyListingDraftPartial(
   return Boolean(data)
 }
 
-export async function getEtsyListingDraft(
+export async function getEtsyListingDraftWithClient(
+  supabase: any,
   draftId: string,
   adminUserId: string,
   productId: string
 ): Promise<EtsyListingDraftRecord | null> {
-  const supabase = getServiceClient()
   const { data, error } = await (supabase as any)
     .from('etsy_listing_drafts')
     .select('*')
@@ -346,6 +346,19 @@ export async function getEtsyListingDraft(
     .maybeSingle()
   if (error) throw new Error(`Failed to restore Etsy Draft: ${error.message}`)
   return data as EtsyListingDraftRecord | null
+}
+
+export async function getEtsyListingDraft(
+  draftId: string,
+  adminUserId: string,
+  productId: string
+): Promise<EtsyListingDraftRecord | null> {
+  return getEtsyListingDraftWithClient(
+    getServiceClient(),
+    draftId,
+    adminUserId,
+    productId
+  )
 }
 
 export async function findEtsyListingDraftReservation(input: {

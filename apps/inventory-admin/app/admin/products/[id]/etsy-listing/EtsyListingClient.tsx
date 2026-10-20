@@ -42,6 +42,43 @@ type ListingDraft = {
 }
 
 type ListingImage = { id: string; url: string; sortOrder: number }
+type PersistedAttribute = {
+  propertyId: number
+  valueIds: number[]
+  values: string[]
+}
+type RecoveryStatus = 'creating' | 'partial' | 'failed' | 'draft_created'
+type RecoveryKind =
+  | 'none'
+  | 'not_persisted'
+  | 'resume'
+  | 'retry'
+  | 'blocked'
+  | 'completed'
+  | 'load_error'
+type RecoveryState = {
+  kind: RecoveryKind
+  status?: RecoveryStatus
+  listingId?: number | null
+  nextImageRank?: number
+  lastError?: string | null
+}
+type RecoveredListing = Omit<ListingDraft, 'attributeSuggestions'> & {
+  attributes: PersistedAttribute[]
+  readinessState: EtsyReadinessState
+}
+type RecoveryResponse = {
+  draft: null | {
+    id: string
+    status: RecoveryStatus
+    etsyListingId: number | null
+    nextImageRank: number
+    lastError: string | null
+    listing: RecoveredListing
+    images: ListingImage[]
+  }
+  error?: string
+}
 type TaxonomyOption = { id: number; label: string; name: string }
 type EtsyProperty = {
   property_id: number
@@ -111,6 +148,26 @@ function isPositiveNumber(value: number | null) {
   return typeof value === 'number' && Number.isFinite(value) && value > 0
 }
 
+const DRAFT_ID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+
+function replaceDraftIdInUrl(draftId: string | null) {
+  const url = new URL(window.location.href)
+  if (draftId) url.searchParams.set('draftId', draftId)
+  else url.searchParams.delete('draftId')
+  window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
+}
+
+function classifyRecovery(
+  status: RecoveryStatus,
+  listingId: number | null
+): RecoveryKind {
+  if (status === 'partial' && listingId) return 'resume'
+  if (status === 'failed' && !listingId) return 'retry'
+  if (status === 'draft_created' && listingId) return 'completed'
+  return 'blocked'
+}
+
 export default function EtsyListingClient({ productId }: { productId: string }) {
   const [options, setOptions] = useState<EtsyOptions | null>(null)
   const [optionsReady, setOptionsReady] = useState(false)
@@ -123,6 +180,8 @@ export default function EtsyListingClient({ productId }: { productId: string }) 
   const [loadingConnection, setLoadingConnection] = useState(true)
   const [generating, setGenerating] = useState(false)
   const [creating, setCreating] = useState(false)
+  const [restoring, setRestoring] = useState(false)
+  const [recovery, setRecovery] = useState<RecoveryState>({ kind: 'none' })
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<{ listingId: number; url: string } | null>(null)
   const [taxonomySearch, setTaxonomySearch] = useState('')
@@ -131,7 +190,105 @@ export default function EtsyListingClient({ productId }: { productId: string }) 
   const [productReadinessState, setProductReadinessState] =
     useState<EtsyReadinessState | null>(null)
   const optionsRequestVersion = useRef(0)
+  const recoveryRequestVersion = useRef(0)
+  const persistedSubmission = useRef<{
+    draft: ListingDraft
+    attributes: PersistedAttribute[]
+  } | null>(null)
   const previousConnectionShopId = useRef<number | null>(null)
+
+  const restoreDraftById = async (operationId: string) => {
+    const requestVersion = ++recoveryRequestVersion.current
+    setRestoring(true)
+    setError(null)
+
+    try {
+      const response = await fetch(
+        `/api/products/${productId}/etsy-listing/draft?draftId=${encodeURIComponent(operationId)}`,
+        { cache: 'no-store' }
+      )
+      const data = await response.json().catch(() => ({})) as RecoveryResponse
+      if (!response.ok) {
+        throw new Error(data.error || `Could not restore the Etsy Draft (${response.status}).`)
+      }
+      if (requestVersion !== recoveryRequestVersion.current) return 'stale' as const
+
+      if (!data.draft) {
+        setRecovery({ kind: 'not_persisted' })
+        persistedSubmission.current = null
+        return 'missing' as const
+      }
+
+      const recovered = data.draft
+      const { attributes, readinessState, ...listing } = recovered.listing
+      const recoveredDraft: ListingDraft = {
+        ...emptyDraft(),
+        ...listing,
+        attributeSuggestions: [],
+      }
+      const kind = classifyRecovery(recovered.status, recovered.etsyListingId)
+
+      setDraft(recoveredDraft)
+      setImages(recovered.images)
+      setDraftId(recovered.id)
+      setSelectedAttributes(Object.fromEntries(
+        attributes.flatMap((attribute) =>
+          attribute.valueIds[0]
+            ? [[attribute.propertyId, attribute.valueIds[0]]]
+            : []
+        )
+      ))
+      setProductReadinessState(readinessState)
+      setSuggestedTaxonomy(null)
+      setRecovery({
+        kind,
+        status: recovered.status,
+        listingId: recovered.etsyListingId,
+        nextImageRank: recovered.nextImageRank,
+        lastError: recovered.lastError,
+      })
+      persistedSubmission.current = {
+        draft: recoveredDraft,
+        attributes,
+      }
+
+      if (kind === 'completed' && recovered.etsyListingId) {
+        setSuccess({
+          listingId: recovered.etsyListingId,
+          url: `https://www.etsy.com/your/shops/me/tools/listings/${recovered.etsyListingId}/edit`,
+        })
+      } else {
+        setSuccess(null)
+      }
+      return 'restored' as const
+    } catch (requestError) {
+      if (requestVersion !== recoveryRequestVersion.current) return 'stale' as const
+      setRecovery({ kind: 'load_error' })
+      persistedSubmission.current = null
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : 'Could not verify the Etsy Draft recovery state.'
+      )
+      return 'error' as const
+    } finally {
+      if (requestVersion === recoveryRequestVersion.current) setRestoring(false)
+    }
+  }
+
+  useEffect(() => {
+    const operationId = new URL(window.location.href).searchParams.get('draftId')
+    if (!operationId) return
+
+    setDraftId(operationId)
+    if (!DRAFT_ID_PATTERN.test(operationId)) {
+      setRecovery({ kind: 'load_error' })
+      setError('The Etsy Draft recovery URL contains an invalid draft ID.')
+      return
+    }
+
+    void restoreDraftById(operationId)
+  }, [productId])
 
   const reconcileDraftSelection = (input: {
     connected: boolean
@@ -280,6 +437,31 @@ export default function EtsyListingClient({ productId }: { productId: string }) 
 
   const updateArrayText = (value: string) => value.split(/[\n,]+/).map((item) => item.trim()).filter(Boolean)
 
+  const hasPersistedReservation = ['resume', 'retry', 'blocked', 'completed'].includes(
+    recovery.kind
+  )
+  const editorLocked = ['resume', 'blocked', 'completed', 'load_error'].includes(
+    recovery.kind
+  )
+
+  const handleStartNew = () => {
+    recoveryRequestVersion.current += 1
+    replaceDraftIdInUrl(null)
+    setDraft(emptyDraft())
+    setImages([])
+    setDraftId('')
+    setNotes('')
+    setRecovery({ kind: 'none' })
+    setRestoring(false)
+    setError(null)
+    setSuccess(null)
+    setTaxonomySearch('')
+    setSelectedAttributes({})
+    setSuggestedTaxonomy(null)
+    setProductReadinessState(null)
+    persistedSubmission.current = null
+  }
+
   const handleGenerate = async () => {
     setGenerating(true)
     setError(null)
@@ -310,7 +492,14 @@ export default function EtsyListingClient({ productId }: { productId: string }) 
       setSuggestedTaxonomy(data.taxonomySuggestion || null)
       setProductReadinessState(data.product?.readinessState || null)
       setImages(data.images || [])
-      setDraftId(crypto.randomUUID())
+      const operationId =
+        recovery.kind === 'not_persisted' && draftId
+          ? draftId
+          : crypto.randomUUID()
+      replaceDraftIdInUrl(operationId)
+      setDraftId(operationId)
+      setRecovery({ kind: 'not_persisted' })
+      persistedSubmission.current = null
       setSelectedAttributes({})
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'Could not generate listing.')
@@ -370,28 +559,47 @@ export default function EtsyListingClient({ productId }: { productId: string }) 
     setCreating(true)
     setError(null)
     try {
-      const attributes = Object.entries(selectedAttributes).map(([propertyId, valueId]) => {
-        const property = options?.properties?.find((item) => item.property_id === Number(propertyId))
-        const value = property?.possible_values?.find((item) => item.value_id === valueId)
-        return {
-          propertyId: Number(propertyId),
-          valueIds: value ? [value.value_id] : [],
-          values: value ? [value.name] : [],
-        }
-      })
+      const resumeSnapshot =
+        recovery.kind === 'resume' ? persistedSubmission.current : null
+      const submissionDraft = resumeSnapshot?.draft || draft
+      const attributes = resumeSnapshot?.attributes ||
+        Object.entries(selectedAttributes).map(([propertyId, valueId]) => {
+          const property = options?.properties?.find((item) => item.property_id === Number(propertyId))
+          const value = property?.possible_values?.find((item) => item.value_id === valueId)
+          return {
+            propertyId: Number(propertyId),
+            valueIds: value ? [value.value_id] : [],
+            values: value ? [value.name] : [],
+          }
+        })
+
+      // Persist the operation identity synchronously before the first create request.
+      replaceDraftIdInUrl(draftId)
       const response = await fetch(`/api/products/${productId}/etsy-listing/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           draftId,
-          draft: { ...draft, attributes },
+          draft: { ...submissionDraft, attributes },
         }),
       })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'Could not create Etsy Draft.')
+      setRecovery({
+        kind: 'completed',
+        status: 'draft_created',
+        listingId: data.listingId,
+      })
       setSuccess({ listingId: data.listingId, url: data.url || `https://www.etsy.com/your/shops/me/tools/listings/${data.listingId}/edit` })
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : 'Could not create Etsy Draft.')
+      const createError =
+        requestError instanceof Error
+          ? requestError.message
+          : 'Could not create Etsy Draft.'
+      const restoreResult = await restoreDraftById(draftId)
+      if (restoreResult !== 'error' && restoreResult !== 'stale') {
+        setError(createError)
+      }
     } finally {
       setCreating(false)
     }
@@ -416,13 +624,59 @@ export default function EtsyListingClient({ productId }: { productId: string }) 
     <main className="admin-page">
       <AdminPageHeader
         title="Etsy Listing Agent"
-        actions={<Link href={`/admin/products/${productId}`} className="admin-link-btn admin-btn-secondary">Back to product</Link>}
+        actions={<Link href="/admin/etsy-listing" className="admin-link-btn admin-btn-secondary">Back to Etsy Workspace</Link>}
       />
 
       {error && <div className="admin-banner admin-banner-error">{error}</div>}
+      {restoring && (
+        <div className="admin-banner admin-banner-info">
+          Restoring the Etsy Draft operation from this URL…
+        </div>
+      )}
+      {recovery.kind === 'resume' && (
+        <div className="admin-banner admin-banner-warning">
+          This Etsy Draft already has listing #{recovery.listingId}. Resume will use its
+          persisted listing data and continue at image rank {recovery.nextImageRank || 1}.
+          {recovery.lastError ? ` ${recovery.lastError}` : ''}
+          <button type="button" className="admin-btn admin-btn-secondary" onClick={handleStartNew}>
+            Start New Listing
+          </button>
+        </div>
+      )}
+      {recovery.kind === 'retry' && (
+        <div className="admin-banner admin-banner-warning">
+          The previous request was rejected before an Etsy listing was created. Review the
+          restored fields, then retry using the same operation ID.
+          {recovery.lastError ? ` ${recovery.lastError}` : ''}
+          <button type="button" className="admin-btn admin-btn-secondary" onClick={handleStartNew}>
+            Start New Listing
+          </button>
+        </div>
+      )}
+      {recovery.kind === 'blocked' && (
+        <div className="admin-banner admin-banner-error">
+          This Etsy Draft is in the {recovery.status || 'inconsistent'} state and cannot be
+          retried automatically. Reconcile it before continuing to avoid creating a duplicate.
+          {recovery.lastError ? ` ${recovery.lastError}` : ''}
+          <button type="button" className="admin-btn admin-btn-secondary" onClick={handleStartNew}>
+            Start New Listing
+          </button>
+        </div>
+      )}
+      {recovery.kind === 'not_persisted' && draftId && !draft.title && (
+        <div className="admin-banner admin-banner-info">
+          This operation ID has no persisted reservation. Generate the listing again to continue
+          with the same ID.
+        </div>
+      )}
       {success && (
         <div className="admin-banner admin-banner-success">
           Etsy Draft #{success.listingId} created. It has not been published. <a href={success.url} target="_blank" rel="noreferrer">Review on Etsy</a>
+          {recovery.kind === 'completed' ? (
+            <button type="button" className="admin-btn admin-btn-secondary" onClick={handleStartNew}>
+              Start New Listing
+            </button>
+          ) : null}
         </div>
       )}
 
@@ -457,16 +711,22 @@ export default function EtsyListingClient({ productId }: { productId: string }) 
         )}
       </section>
 
-      <section className={`admin-card ${styles.generator}`}>
-        <label className={styles.label} htmlFor="etsy-notes">Generation notes</label>
-        <textarea id="etsy-notes" className="admin-control" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Optional facts or tone guidance. Do not include guesses about origin, grade, or certification." />
-        <button type="button" className="admin-link-btn admin-link-btn-primary" onClick={() => void handleGenerate()} disabled={generating}>
-          {generating ? 'Generating…' : draft.title ? 'Regenerate listing' : 'Generate Etsy listing'}
-        </button>
-      </section>
+      {!hasPersistedReservation && recovery.kind !== 'load_error' ? (
+        <section className={`admin-card ${styles.generator}`}>
+          <label className={styles.label} htmlFor="etsy-notes">Generation notes</label>
+          <textarea id="etsy-notes" className="admin-control" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Optional facts or tone guidance. Do not include guesses about origin, grade, or certification." />
+          <button type="button" className="admin-link-btn admin-link-btn-primary" onClick={() => void handleGenerate()} disabled={generating || restoring}>
+            {generating ? 'Generating…' : draft.title ? 'Regenerate listing' : 'Generate Etsy listing'}
+          </button>
+        </section>
+      ) : null}
 
       {draft.title && (
-        <div className={styles.reviewGrid}>
+        <fieldset
+          className={styles.reviewGrid}
+          disabled={editorLocked}
+          style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}
+        >
           <section className={`admin-card ${styles.fields}`}>
             <h2>Listing copy</h2>
             <label className={styles.label}>Title <span>{draft.title.length}/140</span></label>
@@ -589,17 +849,19 @@ export default function EtsyListingClient({ productId }: { productId: string }) 
               </ol>
             </section>
           </aside>
-        </div>
+        </fieldset>
       )}
 
-      {draft.title ? (
+      {draft.title && !['blocked', 'completed', 'load_error'].includes(recovery.kind) ? (
         <section className={`admin-card ${styles.submit}`}>
           <div>
-            <h2>Review and create Draft</h2>
+            <h2>{recovery.kind === 'resume' ? 'Resume Etsy Draft' : recovery.kind === 'retry' ? 'Retry Etsy Draft' : 'Review and create Draft'}</h2>
             {validationMessages.length ? <ul>{validationMessages.map((message) => <li key={message}>{message}</li>)}</ul> : <p>All required fields are ready. This creates an Etsy Draft only; it will not publish.</p>}
           </div>
-          <button type="button" className="admin-link-btn admin-link-btn-primary" disabled={!connected || !optionsReady || creating || validationMessages.length > 0 || !draftId} onClick={() => void handleCreateDraft()}>
-            {creating ? 'Creating Etsy Draft…' : 'Create Etsy Draft'}
+          <button type="button" className="admin-link-btn admin-link-btn-primary" disabled={!connected || !optionsReady || creating || restoring || validationMessages.length > 0 || !draftId} onClick={() => void handleCreateDraft()}>
+            {creating
+              ? recovery.kind === 'resume' ? 'Resuming Etsy Draft…' : recovery.kind === 'retry' ? 'Retrying Etsy Draft…' : 'Creating Etsy Draft…'
+              : recovery.kind === 'resume' ? 'Resume Etsy Draft' : recovery.kind === 'retry' ? 'Retry Etsy Draft' : 'Create Etsy Draft'}
           </button>
         </section>
       ) : null}
