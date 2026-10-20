@@ -1,0 +1,210 @@
+.connection,
+.generator,
+.submit {
+  align-items: center;
+  display: flex;
+  gap: 1.25rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 1.25rem;
+}
+
+.connection h2,
+.generator h2,
+.fields h2,
+.submit h2 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.connection p,
+.generator p,
+.fields p,
+.submit p {
+  color: #626262;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.generator {
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.generator textarea {
+  min-height: 5rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 650;
+  margin: 1rem 0 0.4rem;
+}
+
+.label > span {
+  color: #777;
+  float: right;
+  font-weight: 400;
+}
+
+.reviewGrid {
+  align-items: start;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+}
+
+.fields {
+  padding: 1.25rem;
+}
+
+.fields > h2:not(:first-child) {
+  border-top: 1px solid #e5e5e5;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+}
+
+.fields input,
+.fields textarea,
+.fields select {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.fields textarea {
+  resize: vertical;
+}
+
+.tagGrid {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tagField {
+  min-width: 0;
+}
+
+.tagField span {
+  color: #686868;
+  display: block;
+  font-size: 0.75rem;
+  margin: 0.25rem 0;
+}
+
+.sideColumn {
+  display: grid;
+  gap: 1rem;
+}
+
+.checkbox {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.checkbox input {
+  width: auto;
+}
+
+.measurementField {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(0, 1fr) 6rem;
+}
+
+.dimensionGrid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dimensionGrid span {
+  color: #686868;
+  display: block;
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.imageList {
+  display: grid;
+  gap: 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.imageList li {
+  align-items: center;
+  border: 1px solid #dedede;
+  border-radius: 4px;
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: 64px 1fr auto;
+  min-height: 64px;
+  padding: 0.4rem;
+}
+
+.imageList img {
+  aspect-ratio: 1;
+  height: 64px;
+  object-fit: cover;
+  width: 64px;
+}
+
+.imageList li > span {
+  font-weight: 650;
+}
+
+.imageList li > div {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.imageList button {
+  background: #fff;
+  border: 1px solid #d6d6d6;
+  border-radius: 3px;
+  cursor: pointer;
+  height: 2rem;
+  width: 2rem;
+}
+
+.imageList button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.submit {
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+.submit ul {
+  color: #8a4316;
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+
+@media (max-width: 900px) {
+  .reviewGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .connection,
+  .submit {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tagGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dimensionGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -193,6 +193,105 @@ export type Database = {
         }
         Relationships: []
       }
+      etsy_listing_connections: {
+        Row: {
+          access_token_ciphertext: string
+          admin_user_id: string
+          created_at: string
+          granted_scopes: string[]
+          refresh_token_ciphertext: string
+          shop_id: number
+          shop_name: string
+          token_expires_at: string
+          updated_at: string
+        }
+        Insert: {
+          access_token_ciphertext: string
+          admin_user_id: string
+          created_at?: string
+          granted_scopes?: string[]
+          refresh_token_ciphertext: string
+          shop_id: number
+          shop_name: string
+          token_expires_at: string
+          updated_at?: string
+        }
+        Update: {
+          access_token_ciphertext?: string
+          admin_user_id?: string
+          created_at?: string
+          granted_scopes?: string[]
+          refresh_token_ciphertext?: string
+          shop_id?: number
+          shop_name?: string
+          token_expires_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      etsy_listing_drafts: {
+        Row: {
+          admin_user_id: string
+          created_at: string
+          etsy_listing_id: number | null
+          etsy_shop_id: number
+          id: string
+          idempotency_key: string
+          image_order: string[]
+          last_error: string | null
+          listing_payload: Json
+          next_image_rank: number
+          product_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_user_id: string
+          created_at?: string
+          etsy_listing_id?: number | null
+          etsy_shop_id: number
+          id: string
+          idempotency_key: string
+          image_order: string[]
+          last_error?: string | null
+          listing_payload: Json
+          next_image_rank?: number
+          product_id: string
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          admin_user_id?: string
+          created_at?: string
+          etsy_listing_id?: number | null
+          etsy_shop_id?: number
+          id?: string
+          idempotency_key?: string
+          image_order?: string[]
+          last_error?: string | null
+          listing_payload?: Json
+          next_image_rank?: number
+          product_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "etsy_listing_drafts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "etsy_listing_drafts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_sales_summary"
+            referencedColumns: ["product_id"]
+          },
+        ]
+      }
       inventory_items: {
         Row: {
           allocated_quantity: number
@@ -817,12 +916,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -846,11 +945,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -871,11 +970,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -896,11 +995,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -913,11 +1012,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }

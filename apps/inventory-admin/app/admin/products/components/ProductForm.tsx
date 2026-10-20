@@ -13,6 +13,7 @@ import ProductMaterials from './ProductMaterials'
 import ProductPublishSection from './ProductPublishSection'
 import ProductSeoPanel from './ProductSeoPanel'
 import QuickSaleButton from './QuickSaleButton'
+import EtsyListingButton from './EtsyListingButton'
 import styles from './ProductForm.module.css'
 import MaterialField from './fields/MaterialField'
 import OvertoneField from './fields/OvertoneField'
@@ -261,6 +262,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
         <h1 className="admin-product-form-title">{isEditMode ? 'Edit Product' : 'Add Product'}</h1>
         <div className={`admin-product-form-header-actions ${styles.headerActions}`}>
           {isEditMode && <QuickSaleButton productId={currentProductId} />}
+          {isEditMode && <EtsyListingButton productId={currentProductId} />}
           <button
             onClick={() => router.push(backToListPath)}
             type="button"
