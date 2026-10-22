@@ -6,9 +6,10 @@ keywords: ["do saltwater pearls hold their value", "saltwater pearl value", "pea
 ogImage: "/images/og-home.png"
 ogImageAlt: "Saltwater pearl jewelry arranged in a refined editorial composition"
 publishedAt: "2026-10-20"
+updatedAt: "2026-10-21"
 author: "33 Pearl Atelier"
 tags: ["Pearl Value", "Saltwater Pearls", "Buying Guide", "Pearl Education"]
-readingMinutes: 5
+readingMinutes: 6
 ---
 
 ## The short answer
@@ -21,7 +22,7 @@ The words *saltwater pearl* describe a broad category, not a promise of future v
 
 Saltwater cultured pearls include Akoya, South Sea, and Tahitian pearls. They are often more expensive than freshwater pearls because of differences in cultivation, production, size, and market availability. That higher starting price does not mean every saltwater pearl will retain the same percentage of its original cost.
 
-Pearls are evaluated through a combination of factors rather than by origin alone. Size, shape, color, luster, surface quality, nacre quality, and matching all contribute to the overall quality of a pearl or finished piece.
+Pearls are evaluated through a combination of factors rather than by origin alone. The [GIA Pearl Quality Factors](https://www.gia.edu/pearl-quality-factor) consider size, shape, color, luster, surface quality, nacre quality, and matching when describing the overall quality of a pearl or finished piece.
 
 Among these qualities, luster is especially important. Bright, sharp reflections give a pearl its sense of depth and life. A saltwater pearl with strong luster, attractive color, a clean surface, and good nacre quality is more likely to remain desirable than one whose only selling point is its category name.
 
@@ -37,7 +38,7 @@ Within each type, quality still creates a wide range of value. A smaller pearl w
 
 ## Natural and cultured pearls are not the same market
 
-Most saltwater pearl jewelry sold today contains cultured pearls. Cultured does not mean imitation: the pearls form inside living mollusks, with human involvement beginning the cultivation process.
+Most saltwater pearl jewelry sold today contains cultured pearls. Cultured does not mean imitation: the pearls form inside living mollusks, with human involvement beginning the cultivation process. GIA's [guide to pearl types](https://www.gia.edu/gia-news-research/differences-between-pearl-types) provides additional context on cultured Akoya, South Sea, Tahitian, and freshwater pearls.
 
 Natural pearls form without intentional cultivation and are far rarer. Fine natural saltwater pearls can belong to a very different collector and auction market, especially when they have strong documentation and provenance. A cultured saltwater pearl should not be described or valued as natural simply because it came from a saltwater mollusk.
 
@@ -66,6 +67,16 @@ Several qualities can support long-term desirability:
 
 Design matters too. A well-proportioned piece that remains wearable may have a broader audience than a design tied closely to a short-lived trend. Recognizable makers can also influence resale interest, although a brand name cannot compensate for poor pearl quality or condition.
 
+## How we evaluate pearls at 33 Pearl Atelier
+
+In our selection process, we do not treat the saltwater label as shorthand for quality. We look at the pearl as a whole, beginning with luster. Under consistent lighting, we compare how clearly and evenly each surface returns light. A lively reflection can give a pearl more presence than size alone.
+
+For earrings, matching is also more nuanced than finding two pearls with the same diameter. We compare luster, body color, overtone, shape, and the way the pair reads together. Two pearls can share the same millimeter measurement and still feel visually unbalanced if one appears brighter, warmer, or more rounded than the other.
+
+Surface characteristics are considered in context rather than treated as an automatic rejection. A minor feature may be less important when the pearl has exceptional luster, attractive color, and a shape that suits the design. By contrast, a larger pearl is not necessarily the stronger choice if its surface appears dull or its character does not work with the finished piece.
+
+This is why we prefer to think about value as a balance of beauty, condition, craftsmanship, and wearability. The goal is not to select the largest pearl on paper. It is to choose pearls whose qualities remain compelling when they are viewed, paired, set, and worn.
+
 ## Condition matters because pearls are organic gems
 
 Pearls are more delicate than many gemstones. Contact with perfume, hairspray, household chemicals, perspiration, and abrasive surfaces can gradually affect their appearance. Poor storage can also allow pearls to rub against harder jewelry.
@@ -85,3 +96,8 @@ Most importantly, choose a piece you genuinely want to wear. The most dependable
 Saltwater pearls can hold meaningful value when their quality, condition, design, and documentation support it. Fine Akoya, South Sea, and Tahitian pearls may remain desirable for many years, but category alone is not enough, and appreciation is never guaranteed.
 
 If resale matters, buy quality with clear information and realistic expectations. If personal value matters most, choose the pearl whose luster, color, and presence continue to feel right each time you wear it.
+
+## Sources and further reading
+
+- [GIA: Pearl Quality Factors](https://www.gia.edu/pearl-quality-factor)
+- [GIA: Different Pearl Types Explained](https://www.gia.edu/gia-news-research/differences-between-pearl-types)

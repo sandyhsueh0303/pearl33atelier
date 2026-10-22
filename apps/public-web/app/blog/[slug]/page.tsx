@@ -121,7 +121,7 @@ export default async function BlogPostPage({ params }: Props) {
     datePublished: post.publishedAt,
     dateModified: post.updatedAt || post.publishedAt,
     author: {
-      '@type': 'Person',
+      '@type': 'Organization',
       name: post.author,
       url: `${SITE_URL}/about`,
     },
