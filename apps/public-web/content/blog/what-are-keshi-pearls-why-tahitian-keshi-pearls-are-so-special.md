@@ -77,9 +77,6 @@ We also consider how the drill direction or setting will change what the wearer 
 
 Their formation is less predictable than producing pearls around an intentionally inserted round bead, and assembling well-matched Keshi pearls can be difficult. That can make exceptional individual pearls and cohesive pairs especially desirable.
 
-Still, *Keshi* is not a guarantee of rarity or monetary value. A pearl should be evaluated by its actual quality, beauty, size, condition, color, luster, and suitability for the finished piece. Documentation, craftsmanship, precious-metal content, and market demand also affect the value of the jewelry.
-
-As with other pearls, retail price should not be confused with guaranteed resale value. Our article on [whether saltwater pearls hold their value](/blog/do-saltwater-pearls-hold-their-value) explains that distinction in more detail.
 
 ## What to look for when buying Keshi pearl jewelry
 
