@@ -8,6 +8,12 @@ import {
   parseTaxonomySuggestionOptions,
   resolveTaxonomySuggestion,
 } from '../../../etsy-listing/taxonomySuggestion'
+import {
+  logEtsyGenerationMetric,
+  readOpenAIUsage,
+  type EtsyGenerationOutcome,
+  type EtsyGenerationStage,
+} from '../../../etsy-listing/generationMetrics'
 
 function outputSchema(taxonomyIds: number[]) {
   return {
@@ -47,11 +53,38 @@ export async function POST(
   const { errorResponse } = await requireAdmin()
   if (errorResponse) return errorResponse
 
+  const startedAt = Date.now()
+  const model = getDefaultOpenAIModel()
+  let stage: EtsyGenerationStage = 'configuration'
+  let outcome: EtsyGenerationOutcome = 'configuration_error'
+  let imageCount = 0
+  let taxonomyCandidateCount = 0
+  let hasAdminNotes = false
+  let openAIStatus: number | null = null
+  let usage = readOpenAIUsage(null)
+
+  const recordMetrics = () => {
+    logEtsyGenerationMetric({
+      outcome,
+      stage,
+      model,
+      durationMs: Date.now() - startedAt,
+      imageCount,
+      taxonomyCandidateCount,
+      hasAdminNotes,
+      openAIStatus,
+      usage,
+    })
+  }
+
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) {
+    recordMetrics()
     return NextResponse.json({ error: 'OPENAI_API_KEY is missing on the server.' }, { status: 503 })
   }
 
+  stage = 'preflight'
+  outcome = 'preflight_rejected'
   try {
     const { id } = await params
     const { supabase } = await requireAdmin()
@@ -81,6 +114,7 @@ export async function POST(
       .eq('product_id', id)
       .order('sort_order', { ascending: true })
     if (imageError) throw imageError
+    imageCount = images?.length || 0
     if (!images?.length) {
       return NextResponse.json({ error: 'Upload at least one product image before generating an Etsy listing.' }, { status: 400 })
     }
@@ -91,6 +125,8 @@ export async function POST(
     const body = await request.json().catch(() => ({}))
     const notes = typeof body.notes === 'string' ? body.notes.trim().slice(0, 2_000) : ''
     const taxonomyOptions = parseTaxonomySuggestionOptions(body.taxonomyOptions)
+    hasAdminNotes = Boolean(notes)
+    taxonomyCandidateCount = taxonomyOptions.length
     const userContent: Array<Record<string, unknown>> = [
       {
         type: 'input_text',
@@ -110,6 +146,7 @@ export async function POST(
       })),
     ]
 
+    stage = 'openai_request'
     const response = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST',
       headers: {
@@ -117,7 +154,7 @@ export async function POST(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: getDefaultOpenAIModel(),
+        model,
         input: [
           {
             role: 'system',
@@ -145,12 +182,16 @@ export async function POST(
         },
       }),
     })
+    openAIStatus = response.status
 
     if (!response.ok) {
+      outcome = 'openai_http_error'
       const error = await response.text()
       throw new Error(`Listing generation failed (${response.status}): ${error.slice(0, 300)}`)
     }
     const responseData = await response.json()
+    usage = readOpenAIUsage(responseData)
+    stage = 'output_validation'
     const outputText = extractOutputText(responseData)
     if (!outputText) throw new Error('The model did not return a listing draft.')
 
@@ -169,6 +210,8 @@ export async function POST(
       throw new Error('Generated image order did not match the product images. Please try again.')
     }
 
+    stage = 'complete'
+    outcome = 'success'
     return NextResponse.json({
       draft: {
         ...draft,
@@ -191,9 +234,16 @@ export async function POST(
       })),
     })
   } catch (error) {
+    if (outcome !== 'openai_http_error') {
+      if (stage === 'preflight') outcome = 'preflight_error'
+      else if (stage === 'openai_request') outcome = 'openai_network_error'
+      else outcome = 'invalid_model_output'
+    }
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to generate Etsy listing.' },
       { status: 500 }
     )
+  } finally {
+    recordMetrics()
   }
 }
